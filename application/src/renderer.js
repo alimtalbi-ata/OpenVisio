@@ -53,6 +53,8 @@ const renderStatistics=new WeakMap();
 const diagnosticCache=new WeakMap();
 const routingDecisions=new WeakMap();
 const clearanceDiagnostics=new WeakMap();
+const routeSegmentGeometry=new WeakMap();
+export function lastRouteSegmentGeometry(svg,edgeId){const points=routeSegmentGeometry.get(svg)?.get(String(edgeId));return points?structuredClone(points):[];}
 export function lastRouteClearanceDiagnostics(svg){return structuredClone(clearanceDiagnostics.get(svg)||{checked:0,invalid:0,edges:[]});}
 export function lastRoutingDecision(svg){return {...(routingDecisions.get(svg)||{mode:"not-measured",reasons:[]})};}
 // Cache par canevas : la sélection ne doit pas relancer les diagnostics SAN.
@@ -245,6 +247,7 @@ export function renderGraph(svg,state,handlers){
  routingDecisions.set(svg,{mode:previous.lastRoutingMode||"cached",reasons:[]});
  const placedRoutes=[];
  const clearanceResults=[];
+ const segmentGeometry=new Map();
  for(const edge of state.edges){
   const a=byId.get(edge.from),b=byId.get(edge.to);if(!a||!b)continue;
   const baseRoute=resolveDistributedRoute(edge,a,b,state.nodes,distributedRoutes,placedRoutes);
@@ -259,6 +262,7 @@ export function renderGraph(svg,state,handlers){
    if(physicalEnd)points.push(physicalEnd);
    return {...baseRoute,points,path:points.map((p,i)=>`${i?'L':'M'} ${p.x} ${p.y}`).join(' ')};
   })():baseRoute;
+  segmentGeometry.set(String(edge.id),routed.points.map(p=>({x:p.x,y:p.y})));
   const clearance=classifyRouteClearance(routed.points,state.nodes.filter(n=>n.id!==edge.from&&n.id!==edge.to),{physicalStart:!!physicalStart,physicalEnd:!!physicalEnd});
   clearanceResults.push({edgeId:edge.id,valid:clearance.valid,strictValid:clearance.strictValid,errors:clearance.errors,reviews:clearance.reviews,issues:clearance.issues});
   const signature=edgeVisualSignature(edge,routed.path,state.selected===edge.id,badEdges.has(edge.id));
@@ -295,6 +299,7 @@ export function renderGraph(svg,state,handlers){
   if(prior)prior.element.replaceWith(group);else edgesLayer.append(group);
   nextEdges.set(edge.id,{signature,element:group});
  }
+ routeSegmentGeometry.set(svg,segmentGeometry);
  clearanceDiagnostics.set(svg,{checked:clearanceResults.length,invalid:clearanceResults.filter(x=>!x.valid).length,review:clearanceResults.filter(x=>x.reviews>0).length,edges:clearanceResults});
  markPhase("edgeDom");
  for(const n of state.nodes){
