@@ -90,6 +90,8 @@ class Editor(tk.Tk):
         view.add_command(label="Distribuer verticalement", command=lambda: self.distribute_selection("y"))
         bar.add_cascade(label="Affichage", menu=view)
         self.config(menu=bar)
+        self.bind("<Control-a>", lambda event: self.select_all())
+        self.bind("<Escape>", lambda event: self.clear_selection())
         self.bind("<Control-c>", lambda event: self.copy_selected())
         self.bind("<Control-v>", lambda event: self.paste_selected())
         self.bind("<Control-d>", lambda event: self.duplicate_selected())
@@ -114,6 +116,16 @@ class Editor(tk.Tk):
         self.saved_snapshot = json.dumps({"nodes": [], "edges": []}, sort_keys=True, ensure_ascii=False)
         self.fit_view()
         self.status.set("Modèle chargé : " + name + " — Enregistrez pour conserver votre diagramme")
+    def select_all(self):
+        self.selected_nodes = {n["id"] for n in self.document["nodes"]}
+        self.selected = None
+        self.selected_edge = None
+        self.draw()
+    def clear_selection(self):
+        self.selected_nodes.clear()
+        self.selected = None
+        self.selected_edge = None
+        self.draw()
     def copy_selected(self):
         ids = self.selected_nodes or ({self.selected} if self.selected else set())
         self._clipboard = copy_selection(self.document, ids)
@@ -243,8 +255,11 @@ class Editor(tk.Tk):
                 self.selected_nodes.add(node["id"])
             self.selected = None
         else:
-            self.selected = node["id"] if node else None
-            self.selected_nodes = {node["id"]} if node else set()
+            if node and node["id"] in self.selected_nodes and len(self.selected_nodes) > 1:
+                self.selected = node["id"]
+            else:
+                self.selected = node["id"] if node else None
+                self.selected_nodes = {node["id"]} if node else set()
         self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
         self._drag_anchor = self.viewport.world(event.x, event.y) if node and not (event.state & 0x0004) else None
         self.draw()
