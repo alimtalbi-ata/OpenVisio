@@ -14,6 +14,7 @@ from .viewport import Viewport
 from .layout import snap, align, distribute, move_group
 from .clipboard import copy_selection, paste_selection
 from .templates import TEMPLATES, create_template
+from .selection import nodes_in_rectangle
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -31,6 +32,8 @@ class Editor(tk.Tk):
         self.viewport = Viewport()
         self._pan_anchor = None
         self._drag_anchor = None
+        self._marquee_start = None
+        self._marquee_end = None
         self._clipboard = None
         self._paste_count = 0
         self.history = History(self.document)
@@ -161,8 +164,18 @@ class Editor(tk.Tk):
         else:
             messagebox.showinfo("Distribution", "Sélectionnez au moins trois équipements avec des positions différentes")
     def end_drag(self, event):
+        if self._marquee_start is not None and self._marquee_end is not None:
+            x0, y0 = self._marquee_start
+            x1, y1 = self._marquee_end
+            if abs(x1-x0) >= 4 or abs(y1-y0) >= 4:
+                ids = nodes_in_rectangle(self.document["nodes"], x0, y0, x1, y1)
+                self.selected_nodes = self.selected_nodes | ids if (event.state & 0x0001) else ids
+                self.selected = next(iter(self.selected_nodes), None) if len(self.selected_nodes)==1 else None
+                self.selected_edge = None
+        self._marquee_start = self._marquee_end = None
         self._drag_anchor = None
         self._record_change()
+        self.draw()
     def zoom_at(self, event, factor):
         self.viewport.zoom_at(factor, event.x, event.y)
         self.draw()
@@ -262,8 +275,14 @@ class Editor(tk.Tk):
                 self.selected_nodes = {node["id"]} if node else set()
         self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
         self._drag_anchor = self.viewport.world(event.x, event.y) if node and not (event.state & 0x0004) else None
+        self._marquee_start = self.viewport.world(event.x, event.y) if node is None else None
+        self._marquee_end = None
         self.draw()
     def drag(self, event):
+        if self._marquee_start is not None:
+            self._marquee_end = self.viewport.world(event.x, event.y)
+            self.draw()
+            return
         if self._drag_anchor is None or not self.selected_nodes:
             return
         x, y = self.viewport.world(event.x, event.y)
@@ -357,6 +376,10 @@ class Editor(tk.Tk):
         self.draw()
     def draw(self):
         draw_document(self.canvas, self.document, self.selected, self.selected_edge, self.viewport, grid=self.grid_enabled, selected_nodes=self.selected_nodes)
+        if self._marquee_start is not None and self._marquee_end is not None:
+            x0, y0 = self.viewport.screen(*self._marquee_start)
+            x1, y1 = self.viewport.screen(*self._marquee_end)
+            self.canvas.create_rectangle(x0, y0, x1, y1, outline="#2563eb", dash=(5, 3), width=2)
     def open(self):
         if not self._confirm_discard():
             return
