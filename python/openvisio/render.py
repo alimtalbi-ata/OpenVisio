@@ -51,10 +51,22 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
         if a and b:
             selected = edge.get("id") == selected_edge
             canvas.create_line(*xy(a["x"], a["y"]), *xy(b["x"], b["y"]), fill="#dc2626" if selected else "#2563eb", width=(4 if selected else 2) * scale, arrow=tk.LAST)
+            details = []
             protocol = str(edge.get("protocol", "")).strip()
             if protocol:
+                details.append(protocol)
+            speed = str(edge.get("speed_gbps", "")).strip()
+            if speed:
+                details.append(speed + " Gbit/s")
+            fabric = str(edge.get("fabric", "")).strip()
+            if fabric:
+                details.append("Fabric " + fabric)
+            ports = " → ".join(str(edge.get(key, "")).strip() for key in ("source_port", "target_port") if str(edge.get(key, "")).strip())
+            if ports:
+                details.append(ports)
+            if details:
                 mx, my = xy((a["x"] + b["x"]) / 2, (a["y"] + b["y"]) / 2)
-                canvas.create_text(mx, my - 9 * scale, text=protocol[:24], fill="#991b1b" if selected else "#334155", font=("Arial", max(6, int(9 * scale))), tags=("edge-label",))
+                canvas.create_text(mx, my - 9 * scale, text=" · ".join(details)[:72], fill="#991b1b" if selected else "#334155", font=("Arial", max(6, int(9 * scale))), tags=("edge-label",))
     for node in document["nodes"]:
         x, y = node["x"], node["y"]
         selected = node["id"] == selected_node or node["id"] in (selected_nodes or ())
