@@ -22,8 +22,10 @@ def run(chromium=None, port=18765, screenshot=None):
             page=context.new_page(); errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
             url=f'http://127.0.0.1:{port}/'
             page.goto(url,wait_until='load')
+            assert not errors, 'Erreurs JavaScript au démarrage : '+repr(errors)
             page.locator('#addFirstShape').click()
             assert '1 objet' in page.locator('#objectCount').inner_text(), 'Ajout de forme impossible'
+            page.locator('.quick-actions-more > summary').click()
             with page.expect_download() as download_info: page.locator('#portableExportBtn').click()
             download=download_info.value
             raw=download.path().read_text(encoding='utf-8')
@@ -39,6 +41,7 @@ def run(chromium=None, port=18765, screenshot=None):
             assert page.locator('#recoveryStatusDialog').is_visible(), 'Diagnostic inaccessible'
             assert page.locator('#recoveryPrimaryStatus').inner_text().strip(), 'Diagnostic primaire absent'
             page.locator('#recoveryCloseBtn').click()
+            page.locator('.quick-actions-more > summary').click()
             page.on('dialog',lambda d:d.accept())
             page.locator('#newDiagram').click()
             assert '0 objet' in page.locator('#objectCount').inner_text()
@@ -46,13 +49,14 @@ def run(chromium=None, port=18765, screenshot=None):
             assert '1 objet' in page.locator('#objectCount').inner_text(), 'Restauration non appliquée'
             page.reload(wait_until='load')
             assert '1 objet' in page.locator('#objectCount').inner_text(), 'Persistance après redémarrage absente'
-            # Créer une nouvelle révision : la copie de secours contient alors une forme.
-            page.locator('#addFirstShape').click()
+            # Créer une nouvelle révision depuis le ruban (l'état vide est masqué).
+            page.locator('[data-shape=server]').click()
             assert '2 objets' in page.locator('#objectCount').inner_text()
             # Provoquer une corruption et accepter explicitement la récupération.
             page.evaluate("localStorage.setItem('openvisio-document-v206','{corrupt')")
             page.reload(wait_until='load')
             assert '1 objet' in page.locator('#objectCount').inner_text(), 'Récupération secours impossible'
+            page.locator('.quick-actions-more > summary').click()
             page.locator('#recoveryStatusBtn').click()
             assert page.locator('#recoveryStatusSummary').inner_text().strip(), 'Diagnostic post-récupération absent'
             page.locator('#recoveryCloseBtn').click()

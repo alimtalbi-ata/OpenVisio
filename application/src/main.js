@@ -69,6 +69,8 @@ import {renderInspector} from "./inspector.js";
 import {groupNodes,ungroupNodes,createLayer,setLayer,visibleNode,editableNode} from "./organization.js";
 const $=id=>document.getElementById(id);
 let unifiedStorageReady=false;
+let declaredZones=[];
+let lastSanImport=null;
 const svg=$("diagramCanvas"),state={nodes:[],edges:[],selected:null,tool:"select",zoom:1,groups:[],layers:[{id:"default",name:"Principal",visible:true,locked:false}],guides:[]};
 const history=createHistory(60,{
  captureExtras:()=>({declaredZones:structuredClone(declaredZones),lastSanImport:structuredClone(lastSanImport)}),
@@ -628,7 +630,7 @@ document.addEventListener("keydown",e=>{const tag=e.target?.tagName?.toLowerCase
  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="d"){e.preventDefault();duplicateSelected();}
  if((e.key==="Delete"||e.key==="Backspace")&&state.selected){e.preventDefault();removeSelected();}});
 try{const raw=localStorage.getItem("openvisio-v82");if(raw){const restored=restore(raw);state.nodes=restored.nodes;state.edges=restored.edges;state.groups=restored.groups||[];state.layers=restored.layers?.length?restored.layers:state.layers;state.guides=normalizeGuides(restored.guides??[]);}}catch{}
-renderLibrary();paint();
+// Initial rendering is deferred until persisted document state is restored.
 // Galerie de modèles : insérée dans le ruban existant sans dépendance supplémentaire.
 const templatePicker=document.createElement("select");
 templatePicker.setAttribute("aria-label","Créer un diagramme depuis un modèle");
@@ -663,12 +665,10 @@ document.addEventListener("keydown",event=>{
 
 // v12.0 : panneau global de câblage et exports CSV.
 const zoningEditor=$("zoningEditor");
-let declaredZones=[];
 function readZones(){return declaredZones;}
 function persistZones(){persist();}
 try{declaredZones=validateZones(JSON.parse(localStorage.getItem("openvisio-zones-v1")||"[]"));}catch{declaredZones=[];}
 let pendingSanImport=null;
-let lastSanImport=null;
 function persistSanImport(){persist();}
 try{lastSanImport=validateSanImport(JSON.parse(localStorage.getItem('openvisio-san-import-v1')||'null'));}catch{lastSanImport=null;}
 // Migration non destructive : le document unifié prime sur les trois anciennes clés.
@@ -1200,3 +1200,6 @@ $('inspectSelectionBtn').addEventListener('click',openSelectionInspector);
 document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey)||e.altKey)return;const key=e.key.toLowerCase();if(e.shiftKey&&key==='p'){e.preventDefault();openCommandSearch();}else if(!e.shiftKey&&key==='i'){e.preventDefault();openSelectionInspector();}});
 
 installPrimaryShortcuts(document);
+// Restore the document before computing its saved state or rendering the canvas.
+savedFingerprint=documentFingerprint();
+renderLibrary();paint();

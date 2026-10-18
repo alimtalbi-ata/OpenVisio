@@ -5,6 +5,11 @@
 .ov-mode-nav button.active{background:#173e69;color:#fff;border-color:#173e69}
 .ov-mode-nav button:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
 /* SAN-specific analytical panels remain reachable via the SAN mode and command search. */
+:root[data-ov-mode="edition"] .canvas-region > section[id^="san"]{display:none}
+:root[data-ov-mode="san"] .canvas-region,
+:root[data-ov-mode="advanced"] .canvas-region{overflow:auto}
+:root[data-ov-mode="san"] .canvas-viewport,
+:root[data-ov-mode="advanced"] .canvas-viewport{min-height:240px;flex-shrink:0}
 :root[data-ov-mode="edition"] section[id^="sanSpofPanel"],
 :root[data-ov-mode="edition"] section[id^="sanResiliencePanel"],
 :root[data-ov-mode="edition"] section[id^="sanSimulationPanel"],
