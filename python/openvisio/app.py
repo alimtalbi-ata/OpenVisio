@@ -13,6 +13,7 @@ from .render import node_at, edge_at, draw_document
 from .viewport import Viewport
 from .layout import snap, align, distribute, move_group
 from .clipboard import copy_selection, paste_selection
+from .templates import TEMPLATES, create_template
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -71,6 +72,10 @@ class Editor(tk.Tk):
         for key, shape in SHAPES.items():
             shapes_menu.add_command(label=shape["label"], command=lambda kind=key: self.create_node(180, 140, kind))
         bar.add_cascade(label="Équipements", menu=shapes_menu)
+        templates_menu = tk.Menu(bar, tearoff=False)
+        for template_name in TEMPLATES:
+            templates_menu.add_command(label=template_name, command=lambda name=template_name: self.load_template(name))
+        bar.add_cascade(label="Modèles", menu=templates_menu)
         view = tk.Menu(bar, tearoff=False)
         view.add_command(label="Ajuster à la fenêtre", command=self.fit_view)
         view.add_command(label="Zoom +", command=lambda: self.zoom_center(1.2))
@@ -96,6 +101,19 @@ class Editor(tk.Tk):
         self.bind("<F2>", lambda event: self.edit_properties())
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
+    def load_template(self, name):
+        if not self._confirm_discard():
+            return
+        self.document = create_template(name)
+        self.current_path = None
+        self.selected = None
+        self.selected_edge = None
+        self.selected_nodes.clear()
+        self.link_start = None
+        self.history.reset(self.document)
+        self.saved_snapshot = json.dumps({"nodes": [], "edges": []}, sort_keys=True, ensure_ascii=False)
+        self.fit_view()
+        self.status.set("Modèle chargé : " + name + " — Enregistrez pour conserver votre diagramme")
     def copy_selected(self):
         ids = self.selected_nodes or ({self.selected} if self.selected else set())
         self._clipboard = copy_selection(self.document, ids)
