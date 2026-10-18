@@ -28,6 +28,8 @@ with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.write(file, "04-Tests/" + str(file.relative_to(root)))
     for file in [root / "Build-Windows.cmd", root / "installer/OpenVisio-Python.iss", root / "requirements-build.txt", root / "README.md"]:
         archive.write(file, "02-Compilation/" + str(file.relative_to(root)))
+    for file in sorted((root / "docs").rglob("*.md")):
+        archive.write(file, "05-Documentation/technique/" + file.name)
     for file in (portable, installer):
         archive.write(file, "01-Application/binary/" + file.name)
     for file in docs:
