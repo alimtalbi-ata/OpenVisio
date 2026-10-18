@@ -1,0 +1,53 @@
+name: Windows binaries v41.77
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop/openvisio-v41-77]
+    paths:
+      - 'application/**'
+      - '.github/workflows/windows-build.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: application
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Validate JavaScript and release metadata
+        shell: pwsh
+        run: |
+          node --test tests
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node windows/verify-release.mjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile installer and portable EXE
+        shell: cmd
+        run: Build-OpenVisio-Windows.cmd
+      - name: Verify outputs
+        shell: pwsh
+        run: |
+          $outputs = @('dist/installer/OpenVisio-Setup-v41.77-x64.exe', 'dist/portable/OpenVisio-v41.77-Windows-x64-Portable.exe')
+          foreach ($path in $outputs) {
+            if (-not (Test-Path $path)) { throw "Missing Windows binary: $path" }
+            if ((Get-Item $path).Length -lt 1000000) { throw "Invalid binary size: $path" }
+            Get-FileHash $path -Algorithm SHA256 | Format-List
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-v41.77-Windows-Binaries
+          path: |
+            application/dist/installer/OpenVisio-Setup-v41.77-x64.exe
+            application/dist/portable/OpenVisio-v41.77-Windows-x64-Portable.exe
+            application/binary/**
+          if-no-files-found: error
+          retention-days: 30
