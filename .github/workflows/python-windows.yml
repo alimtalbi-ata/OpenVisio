@@ -40,6 +40,10 @@ jobs:
           New-Item -ItemType Directory -Force $isolated | Out-Null
           Copy-Item 'binary/OpenVisio-v42.0-Windows-x64-Portable.exe' (Join-Path $isolated 'OpenVisio.exe')
           if (Test-Path (Join-Path $isolated 'openvisio')) { throw 'Source leakage' }
+      - name: Smoke test portable outside repository
+        shell: pwsh
+        working-directory: python
+        run: ./scripts/Smoke-Portable-Windows.ps1 -Executable 'binary/OpenVisio-v42.0-Windows-x64-Portable.exe'
       - uses: actions/upload-artifact@v4
         with:
           name: OpenVisio-v42.0-Python-Windows
