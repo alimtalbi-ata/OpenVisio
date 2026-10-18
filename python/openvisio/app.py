@@ -1,5 +1,6 @@
 """Native Tkinter diagram editor. Author: Abdelhalim Talbi."""
 import tkinter as tk
+from math import hypot
 from tkinter import filedialog, messagebox, simpledialog
 from uuid import uuid4
 from .model import load, save
@@ -16,6 +17,7 @@ class Editor(tk.Tk):
         self.document = {"nodes": [], "edges": []}
         self.current_path = None
         self.selected = None
+        self.selected_edge = None
         self.link_start = None
         self.canvas = tk.Canvas(self, bg="#f8fafc", highlightthickness=0)
         self.canvas.pack(fill="both", expand=True)
@@ -32,7 +34,7 @@ class Editor(tk.Tk):
         edit.add_command(label="Ajouter un équipement", command=lambda: self.create_node(150, 120))
         edit.add_command(label="Relier deux équipements", command=self.begin_link)
         edit.add_command(label="Propriétés de la sélection", command=self.edit_properties)
-        edit.add_command(label="Propriétés de la dernière liaison", command=self.edit_last_link)
+        edit.add_command(label="Propriétés de la dernière liaison", command=self.edit_selected_link)
         edit.add_command(label="Supprimer la sélection", command=self.delete_selected)
         bar.add_cascade(label="Édition", menu=edit)
         shapes_menu = tk.Menu(bar, tearoff=False)
@@ -50,6 +52,7 @@ class Editor(tk.Tk):
         self.document = {"nodes": [], "edges": []}
         self.current_path = None
         self.selected = None
+        self.selected_edge = None
         self.draw()
     def create_node(self, x, y, kind="server"):
         node = {"id": uuid4().hex, "x": round(x), "y": round(y), "label": get_shape(kind)["label"], "shape": kind}
@@ -63,6 +66,20 @@ class Editor(tk.Tk):
             if abs(node["x"]-x) <= 70 and abs(node["y"]-y) <= 30:
                 return node
         return None
+    def edge_at(self, x, y):
+        by_id = {n["id"]: n for n in self.document["nodes"]}
+        for edge in reversed(self.document["edges"]):
+            a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
+            if not a or not b:
+                continue
+            dx, dy = b["x"] - a["x"], b["y"] - a["y"]
+            length_sq = dx * dx + dy * dy
+            if not length_sq:
+                continue
+            t = max(0, min(1, ((x-a["x"])*dx+(y-a["y"])*dy)/length_sq))
+            if hypot(x-(a["x"]+t*dx), y-(a["y"]+t*dy)) <= 9:
+                return edge
+        return None
     def click(self, event):
         node = self.node_at(event.x, event.y)
         if self.link_start is not None and node is not None:
@@ -70,6 +87,7 @@ class Editor(tk.Tk):
                 self.document["edges"].append({"id": uuid4().hex, "from": self.link_start, "to": node["id"]})
             self.link_start = None
         self.selected = node["id"] if node else None
+        self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
         self.draw()
     def drag(self, event):
         node = next((n for n in self.document["nodes"] if n["id"] == self.selected), None)
@@ -110,11 +128,14 @@ class Editor(tk.Tk):
         dialog.bind("<Return>", lambda event: apply())
         dialog.bind("<Escape>", lambda event: dialog.destroy())
         dialog.wait_window()
-    def edit_last_link(self):
+    def edit_selected_link(self):
         if not self.document["edges"]:
             messagebox.showinfo("Liaisons", "Créez d'abord une connexion")
             return
-        edge = self.document["edges"][-1]
+        edge = next((e for e in self.document["edges"] if e["id"] == self.selected_edge), None)
+        if edge is None:
+            messagebox.showinfo("Liaisons", "Cliquez sur une liaison pour la sélectionner")
+            return
         dialog = tk.Toplevel(self)
         dialog.title("Propriétés de la liaison SAN")
         dialog.transient(self)
@@ -141,6 +162,9 @@ class Editor(tk.Tk):
         dialog.wait_window()
     def delete_selected(self):
         sid = self.selected
+        if self.selected_edge:
+            self.document["edges"] = [e for e in self.document["edges"] if e["id"] != self.selected_edge]
+            self.selected_edge = None
         self.document["nodes"] = [n for n in self.document["nodes"] if n["id"] != sid]
         self.document["edges"] = [e for e in self.document["edges"] if e["from"] != sid and e["to"] != sid]
         self.selected = None
@@ -151,7 +175,7 @@ class Editor(tk.Tk):
         for edge in self.document["edges"]:
             a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
             if a and b:
-                self.canvas.create_line(a["x"], a["y"], b["x"], b["y"], fill="#2563eb", width=2, arrow=tk.LAST)
+                self.canvas.create_line(a["x"], a["y"], b["x"], b["y"], fill="#dc2626" if edge.get("id") == self.selected_edge else "#2563eb", width=4 if edge.get("id") == self.selected_edge else 2, arrow=tk.LAST)
         for n in self.document["nodes"]:
             x, y = n["x"], n["y"]
             selected = n["id"] == self.selected
