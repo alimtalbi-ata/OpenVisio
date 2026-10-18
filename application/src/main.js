@@ -1,4 +1,4 @@
-import {lastRouteClearanceDiagnostics} from "./renderer.js";
+import {lastRouteClearanceDiagnostics,lastRouteSegmentGeometry} from "./renderer.js";
 import {renderRouteClearancePanel} from "./route-clearance-view.js";
 import { installPrimaryShortcuts } from "./primary-shortcuts-v395.js";
 import {simulateSanFailure as simulateSanFailureV289} from './san-failure-simulation.js';
@@ -194,6 +194,21 @@ function highlightRouteDiagnosticEdge(canvas,edgeId){
  if(selected){selected.classList.add('route-diagnostic-focus');selected.setAttribute('data-route-diagnostic-focus','true');}
  return Boolean(selected);
 }
+function clearRouteDiagnosticSegments(canvas){for(const line of canvas.querySelectorAll('[data-route-segment-overlay]'))line.remove();}
+function highlightRouteDiagnosticSegment(canvas,edgeId,number){
+ clearRouteDiagnosticSegments(canvas);
+ const points=lastRouteSegmentGeometry(canvas,edgeId);
+ if(!Number.isInteger(number)||number<1||number>=points.length)return false;
+ const a=points[number-1],b=points[number];
+ if(![a.x,a.y,b.x,b.y].every(Number.isFinite))return false;
+ const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+ for(const [key,value] of Object.entries({x1:a.x,y1:a.y,x2:b.x,y2:b.y}))line.setAttribute(key,String(value));
+ line.setAttribute('data-route-segment-overlay','true');line.setAttribute('class','route-diagnostic-segment-focus');line.setAttribute('pointer-events','none');
+ canvas.append(line);
+ const viewport=$('canvasViewport');
+ if(viewport){const target=edgeViewportTarget(viewport.getBoundingClientRect(),line.getBoundingClientRect(),viewport.scrollLeft,viewport.scrollTop);if(target)viewport.scrollTo?.({...target,behavior:'auto'});}
+ return true;
+}
 function refreshRouteQualityPanel(){
  const panel=$('routeQualityPanel');
  if(!panel||panel.hidden)return;
@@ -201,6 +216,7 @@ function refreshRouteQualityPanel(){
   filter:$('routeQualityFilter')?.value||"all",
   search:$('routeQualitySearch')?.value||"",
   selectedEdgeId:state.selected,
+  onSelectSegment:(id,number)=>{if(!state.edges.some(edge=>String(edge.id)===String(id)))return;select(id);highlightRouteDiagnosticEdge(svg,id);highlightRouteDiagnosticSegment(svg,id,number);svg.focus?.();},
   onSelect:id=>{
    if(!state.edges.some(edge=>String(edge.id)===String(id)))return;
    select(id);
@@ -213,12 +229,12 @@ function refreshRouteQualityPanel(){
 $('routeQualityFilter')?.addEventListener('change',refreshRouteQualityPanel);
 $('routeQualitySearch')?.addEventListener('input',refreshRouteQualityPanel);
 $('routeQualityToggle')?.addEventListener('click',()=>{
- const panel=$('routeQualityPanel');panel.hidden=!panel.hidden;
+ const panel=$('routeQualityPanel');panel.hidden=!panel.hidden;if(panel.hidden){clearRouteDiagnosticSegments(svg);highlightRouteDiagnosticEdge(svg,null);}
  $('routeQualityToggle').setAttribute('aria-expanded',String(!panel.hidden));
  refreshRouteQualityPanel();
 });
 function paint(){interactiveFrames.cancel();invalidateInteractiveGraph();refreshDocumentStatus();const fullStarted=performance.now();const picker=$('guidePicker');if(picker){const previous=picker.value;picker.replaceChildren();state.guides.forEach((g,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=`${i+1} · ${g.axis==='x'?'Vertical':'Horizontal'} ${g.position} ${g.locked?'🔒':'🔓'}`;picker.append(option);});if([...picker.options].some(o=>o.value===previous))picker.value=previous;}activeMagneticGuides=[];renderGraph(svg,visibleGraph(),graphHandlers);drawEditorOverlays();refreshMulti();if(multi.size>1)renderMultiInspector();else renderInspector($("inspectorContent"),state,{update:updateProperty,remove:removeSelected,duplicate:duplicateSelected,renamePort:renameSelectedPort});renderLayers();updateCounts();updateSelectionLabel();document.dispatchEvent(new Event('openvisio:canvas-painted'));persist();fullPaintMetrics.record(performance.now()-fullStarted);if(!$('renderDiagnosticsPanel').hidden)refreshRenderDiagnostics();refreshRouteQualityPanel();}
-function select(id){clearMulti();if(state.nodes.some(n=>n.id===id))multi.add(id);state.selected=id;paint();}
+function select(id){clearRouteDiagnosticSegments(svg);clearMulti();if(state.nodes.some(n=>n.id===id))multi.add(id);state.selected=id;paint();}
 function onNodeClick(id,e){
  if(state.tool!=="select"||e.ctrlKey||e.metaKey||e.shiftKey)return;
  if(suppressNextClick){suppressNextClick=false;return;}
