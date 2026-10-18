@@ -1,0 +1,33 @@
+"""Build versioned Word/PDF documentation, clearly marking unverified evidence."""
+from pathlib import Path
+from docx import Document
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
+from xml.sax.saxutils import escape
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "dist" / "documentation"
+OUT.mkdir(parents=True, exist_ok=True)
+sections = [
+ ("OpenVisio v42.0 — Guide Windows", "Auteur : Abdelhalim Talbi. Édition native Python/Tkinter."),
+ ("Périmètre fonctionnel", "Version initiale : créer, déplacer, relier et supprimer des équipements ; ouvrir et enregistrer des documents JSON. Parité avec v41.77 non atteinte."),
+ ("Installation", "Exécuter OpenVisio-Setup-v42.0-x64.exe sur Windows x64. L'application et l'interpréteur Python sont intégrés à l'exécutable. Aucun code source ni environnement Python requis sur le PC cible."),
+ ("Portable", "Copier OpenVisio-v42.0-Windows-x64-Portable.exe sur le PC Windows x64 et le lancer. Aucun Node.js, Java, WebView2 ou .NET requis. Les bibliothèques Windows système et l'environnement graphique Windows restent nécessaires."),
+ ("Utilisation", "Double-clic sur le canevas : équipement ; glisser : déplacement ; menu Édition : créer une liaison ; Ctrl+O : ouvrir ; Ctrl+S : enregistrer ; Suppr : supprimer."),
+ ("Architecture", "Tkinter (interface) -> modèle Python validé -> JSON atomique. PyInstaller compile le programme en EXE portable. Inno Setup crée l'installateur."),
+ ("Compilation", "Sur Windows x64 avec Python 3.12, lancer python/Build-Windows.cmd. Le script installe PyInstaller dans un venv, exécute les tests, produit les deux exécutables, calcule SHA256 et construit l'archive cumulative."),
+ ("Validation", "Les tests automatisés valident la sérialisation, les identifiants et les références. L'exécution sur un PC Windows propre et les captures réelles doivent être effectuées séparément. Aucune capture réelle n'est fournie par ce générateur."),
+ ("Limites", "Moteur SAN, import/export Visio, bibliothèque de formes avancée, routage, annuler/rétablir et parité v41.77 restent à développer. Ce document ne constitue pas une preuve de qualification Windows."),
+]
+doc = Document()
+for i, (title, body) in enumerate(sections):
+    doc.add_heading(title, 0 if i == 0 else 1)
+    doc.add_paragraph(body)
+doc.save(OUT / "OpenVisio-v42.0-Guide-Windows.docx")
+styles = getSampleStyleSheet()
+story = []
+for i, (title, body) in enumerate(sections):
+    story.extend([Paragraph(escape(title), styles["Title"] if i == 0 else styles["Heading2"]), Spacer(1, 9), Paragraph(escape(body), styles["BodyText"]), Spacer(1, 12)])
+SimpleDocTemplate(str(OUT / "OpenVisio-v42.0-Guide-Windows.pdf"), pagesize=A4).build(story)
+print("Documentation Word et PDF générée :", OUT)
