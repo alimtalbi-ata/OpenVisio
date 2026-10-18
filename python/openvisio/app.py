@@ -15,6 +15,7 @@ from .layout import snap, align, distribute, move_group
 from .clipboard import copy_selection, paste_selection
 from .templates import TEMPLATES, create_template
 from .selection import nodes_in_rectangle
+from .search import find_nodes
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -64,6 +65,7 @@ class Editor(tk.Tk):
         edit.add_command(label="Copier", command=self.copy_selected)
         edit.add_command(label="Coller", command=self.paste_selected)
         edit.add_command(label="Dupliquer", command=self.duplicate_selected)
+        edit.add_command(label="Rechercher un équipement", command=self.find_equipment)
         edit.add_separator()
         edit.add_command(label="Ajouter un équipement", command=lambda: self.create_node(150, 120))
         edit.add_command(label="Relier deux équipements", command=self.begin_link)
@@ -93,6 +95,7 @@ class Editor(tk.Tk):
         view.add_command(label="Distribuer verticalement", command=lambda: self.distribute_selection("y"))
         bar.add_cascade(label="Affichage", menu=view)
         self.config(menu=bar)
+        self.bind("<Control-f>", lambda event: self.find_equipment())
         self.bind("<Control-a>", lambda event: self.select_all())
         self.bind("<Escape>", lambda event: self.clear_selection())
         self.bind("<Control-c>", lambda event: self.copy_selected())
@@ -119,6 +122,20 @@ class Editor(tk.Tk):
         self.saved_snapshot = json.dumps({"nodes": [], "edges": []}, sort_keys=True, ensure_ascii=False)
         self.fit_view()
         self.status.set("Modèle chargé : " + name + " — Enregistrez pour conserver votre diagramme")
+    def find_equipment(self):
+        query = simpledialog.askstring("Rechercher", "Nom, hôte, IP, constructeur, modèle ou type :", parent=self)
+        if query is None:
+            return
+        matches = find_nodes(self.document["nodes"], query)
+        if not matches:
+            self.status.set("Aucun équipement trouvé pour : " + query)
+            return
+        self.selected_nodes = {node["id"] for node in matches}
+        self.selected = matches[0]["id"] if len(matches) == 1 else None
+        self.selected_edge = None
+        self.viewport.fit(matches, self.canvas.winfo_width(), self.canvas.winfo_height())
+        self.status.set(str(len(matches)) + " équipement(s) trouvé(s) pour : " + query)
+        self.draw()
     def select_all(self):
         self.selected_nodes = {n["id"] for n in self.document["nodes"]}
         self.selected = None
