@@ -26,12 +26,25 @@ def edge_at(nodes, edges, x, y, tolerance=9):
             return edge
     return None
 
-def draw_document(canvas, document, selected_node=None, selected_edge=None, viewport=None):
+def draw_document(canvas, document, selected_node=None, selected_edge=None, viewport=None, grid=False, grid_spacing=20, selected_nodes=None):
     import tkinter as tk
     canvas.delete("all")
     def xy(x, y):
         return viewport.screen(x, y) if viewport is not None else (x, y)
     scale = viewport.zoom if viewport is not None else 1.0
+    if grid:
+        width, height = canvas.winfo_width(), canvas.winfo_height()
+        zoom = viewport.zoom if viewport is not None else 1
+        if zoom * grid_spacing >= 8:
+            x0, y0 = viewport.world(0, 0) if viewport is not None else (0, 0)
+            x1, y1 = viewport.world(width, height) if viewport is not None else (width, height)
+            import math
+            for i in range(math.floor(x0 / grid_spacing), math.ceil(x1 / grid_spacing) + 1):
+                sx = xy(i * grid_spacing, 0)[0]
+                canvas.create_line(sx, 0, sx, height, fill="#e2e8f0")
+            for i in range(math.floor(y0 / grid_spacing), math.ceil(y1 / grid_spacing) + 1):
+                sy = xy(0, i * grid_spacing)[1]
+                canvas.create_line(0, sy, width, sy, fill="#e2e8f0")
     by_id = {n["id"]: n for n in document["nodes"]}
     for edge in document["edges"]:
         a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
@@ -40,6 +53,6 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
             canvas.create_line(*xy(a["x"], a["y"]), *xy(b["x"], b["y"]), fill="#dc2626" if selected else "#2563eb", width=(4 if selected else 2) * scale, arrow=tk.LAST)
     for node in document["nodes"]:
         x, y = node["x"], node["y"]
-        selected = node["id"] == selected_node
+        selected = node["id"] == selected_node or node["id"] in (selected_nodes or ())
         canvas.create_rectangle(*xy(x-70, y-30), *xy(x+70, y+30), fill="#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"], outline="#1d4ed8", width=(3 if selected else 1) * scale)
         canvas.create_text(*xy(x, y), text=node.get("label", "Équipement")[:40], fill="#172554", font=("Arial", max(6, int(10 * scale))))
