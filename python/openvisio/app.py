@@ -325,17 +325,31 @@ class Editor(tk.Tk):
         dialog.transient(self)
         dialog.grab_set()
         fields = {}
-        for row, (key, title) in enumerate((("label", "Nom"), ("hostname", "Hôte / FQDN"), ("address", "Adresse IP"), ("vendor", "Constructeur"), ("model", "Modèle"))):
-            tk.Label(dialog, text=title, anchor="w").grid(row=row, column=0, padx=12, pady=6, sticky="w")
+        property_fields = (
+            ("label", "Nom"), ("hostname", "Hôte / FQDN"), ("address", "Adresse IP"),
+            ("vendor", "Constructeur"), ("model", "Modèle"), ("role", "Rôle"),
+            ("location", "Site / emplacement"), ("serial_number", "Numéro de série"),
+            ("firmware", "Firmware"), ("notes", "Notes"),
+        )
+        for row, (key, title) in enumerate(property_fields):
+            tk.Label(dialog, text=title, anchor="w").grid(row=row, column=0, padx=12, pady=5, sticky="w")
             value = tk.StringVar(value=node.get(key, ""))
-            tk.Entry(dialog, textvariable=value, width=42).grid(row=row, column=1, padx=12, pady=6)
-            fields[key] = value
-        tk.Label(dialog, text="Type de forme", anchor="w").grid(row=5, column=0, padx=12, pady=6, sticky="w")
+            if key == "notes":
+                entry = tk.Text(dialog, width=40, height=3, wrap="word")
+                entry.insert("1.0", value.get())
+                entry.grid(row=row, column=1, padx=12, pady=5, sticky="ew")
+                fields[key] = entry
+            else:
+                tk.Entry(dialog, textvariable=value, width=42).grid(row=row, column=1, padx=12, pady=5)
+                fields[key] = value
+        shape_row = len(property_fields)
+        tk.Label(dialog, text="Type de forme", anchor="w").grid(row=shape_row, column=0, padx=12, pady=5, sticky="w")
         shape = tk.StringVar(value=node.get("shape", "server"))
-        tk.OptionMenu(dialog, shape, *SHAPES.keys()).grid(row=5, column=1, padx=12, pady=6, sticky="ew")
+        tk.OptionMenu(dialog, shape, *SHAPES.keys()).grid(row=shape_row, column=1, padx=12, pady=5, sticky="ew")
         def apply():
             try:
-                values = normalize_properties(**{key: value.get() for key, value in fields.items()})
+                raw = {key: (value.get("1.0", "end-1c") if key == "notes" else value.get()) for key, value in fields.items()}
+                values = normalize_properties(**raw)
             except ValueError as exc:
                 messagebox.showerror("Propriétés invalides", str(exc), parent=dialog)
                 return
@@ -344,7 +358,7 @@ class Editor(tk.Tk):
             self._record_change()
             self.draw()
             dialog.destroy()
-        tk.Button(dialog, text="Enregistrer", command=apply).grid(row=6, column=1, pady=12, sticky="e")
+        tk.Button(dialog, text="Enregistrer", command=apply).grid(row=shape_row+1, column=1, pady=12, sticky="e")
         dialog.bind("<Return>", lambda event: apply())
         dialog.bind("<Escape>", lambda event: dialog.destroy())
         dialog.wait_window()
