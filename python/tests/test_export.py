@@ -7,6 +7,6 @@ class SvgTests(unittest.TestCase):
         self.assertIn("A &amp; &lt;B&gt;", xml)
         self.assertNotIn("A & <B>", xml)
     def test_link(self):
-        xml = to_svg({"nodes":[{"id":"a","x":10,"y":20},{"id":"b","x":50,"y":60}],"edges":[{"from":"a","to":"b"}]})
+        xml = to_svg({"nodes":[{"id":"a","x":10,"y":20},{"id":"b","x":50,"y":60}],"edges":[{"id":"edge-ab","from":"a","to":"b"}]})
         self.assertIn('x1="10"', xml)
         self.assertIn('x2="50"', xml)
