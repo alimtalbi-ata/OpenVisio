@@ -26,17 +26,20 @@ def edge_at(nodes, edges, x, y, tolerance=9):
             return edge
     return None
 
-def draw_document(canvas, document, selected_node=None, selected_edge=None):
+def draw_document(canvas, document, selected_node=None, selected_edge=None, viewport=None):
     import tkinter as tk
     canvas.delete("all")
+    def xy(x, y):
+        return viewport.screen(x, y) if viewport is not None else (x, y)
+    scale = viewport.zoom if viewport is not None else 1.0
     by_id = {n["id"]: n for n in document["nodes"]}
     for edge in document["edges"]:
         a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
         if a and b:
             selected = edge.get("id") == selected_edge
-            canvas.create_line(a["x"], a["y"], b["x"], b["y"], fill="#dc2626" if selected else "#2563eb", width=4 if selected else 2, arrow=tk.LAST)
+            canvas.create_line(*xy(a["x"], a["y"]), *xy(b["x"], b["y"]), fill="#dc2626" if selected else "#2563eb", width=(4 if selected else 2) * scale, arrow=tk.LAST)
     for node in document["nodes"]:
         x, y = node["x"], node["y"]
         selected = node["id"] == selected_node
-        canvas.create_rectangle(x-70, y-30, x+70, y+30, fill="#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"], outline="#1d4ed8", width=3 if selected else 1)
-        canvas.create_text(x, y, text=node.get("label", "Équipement")[:40], fill="#172554")
+        canvas.create_rectangle(*xy(x-70, y-30), *xy(x+70, y+30), fill="#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"], outline="#1d4ed8", width=(3 if selected else 1) * scale)
+        canvas.create_text(*xy(x, y), text=node.get("label", "Équipement")[:40], fill="#172554", font=("Arial", max(6, int(10 * scale))))
