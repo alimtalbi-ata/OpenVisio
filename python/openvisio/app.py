@@ -330,6 +330,9 @@ class Editor(tk.Tk):
             value = tk.StringVar(value=node.get(key, ""))
             tk.Entry(dialog, textvariable=value, width=42).grid(row=row, column=1, padx=12, pady=6)
             fields[key] = value
+        tk.Label(dialog, text="Type de forme", anchor="w").grid(row=5, column=0, padx=12, pady=6, sticky="w")
+        shape = tk.StringVar(value=node.get("shape", "server"))
+        tk.OptionMenu(dialog, shape, *SHAPES.keys()).grid(row=5, column=1, padx=12, pady=6, sticky="ew")
         def apply():
             try:
                 values = normalize_properties(**{key: value.get() for key, value in fields.items()})
@@ -337,10 +340,11 @@ class Editor(tk.Tk):
                 messagebox.showerror("Propriétés invalides", str(exc), parent=dialog)
                 return
             node.update(values)
+            node["shape"] = shape.get()
             self._record_change()
             self.draw()
             dialog.destroy()
-        tk.Button(dialog, text="Enregistrer", command=apply).grid(row=5, column=1, pady=12, sticky="e")
+        tk.Button(dialog, text="Enregistrer", command=apply).grid(row=6, column=1, pady=12, sticky="e")
         dialog.bind("<Return>", lambda event: apply())
         dialog.bind("<Escape>", lambda event: dialog.destroy())
         dialog.wait_window()
