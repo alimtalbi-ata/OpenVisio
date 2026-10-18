@@ -1,5 +1,6 @@
 """Validated diagram model, no Java or JavaScript runtime. Author: Abdelhalim Talbi."""
 import json
+from uuid import uuid5, NAMESPACE_URL
 from pathlib import Path
 
 from .validation import validate_document
@@ -8,7 +9,17 @@ def validate(data):
     return validate_document(data)
 
 def load(path):
-    return validate(json.loads(Path(path).read_text(encoding="utf-8")))
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    if isinstance(data, dict) and isinstance(data.get("edges", []), list):
+        # Backward compatibility with earlier diagrams lacking edge IDs.
+        edges = []
+        for index, edge in enumerate(data["edges"]):
+            if isinstance(edge, dict) and "id" not in edge:
+                key = str(index) + ":" + str(edge.get("from")) + ":" + str(edge.get("to"))
+                edge = {**edge, "id": "legacy-" + uuid5(NAMESPACE_URL, key).hex}
+            edges.append(edge)
+        data = {**data, "edges": edges}
+    return validate(data)
 
 def save(path, data):
     import os
