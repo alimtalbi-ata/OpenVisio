@@ -186,6 +186,14 @@ $('renderDiagnosticsExport')?.addEventListener('click',()=>{
 });
 const interactiveFrames=createFrameScheduler(()=>{const started=performance.now();renderGraph(svg,interactiveVisibleGraph(),graphHandlers);const afterGraph=performance.now();drawMagneticGuides();drawEditorOverlays();refreshMulti();const finished=performance.now();graphPhaseMetrics.record(afterGraph-started);overlayPhaseMetrics.record(finished-afterGraph);interactionMetrics.record(finished-started);if(!$('renderDiagnosticsPanel').hidden)refreshRenderDiagnostics();refreshRouteQualityPanel();});
 document.addEventListener('openvisio:san-snapshot-request',()=>{document.dispatchEvent(new CustomEvent('openvisio:san-snapshot',{detail:{nodes:structuredClone(state.nodes),edges:structuredClone(state.edges)}}));});
+// Transient diagnostic highlight: remove any previous mark before highlighting a new edge.
+function highlightRouteDiagnosticEdge(canvas,edgeId){
+ const edges=[...canvas.querySelectorAll('[data-edge-id]')];
+ for(const edge of edges){edge.classList.remove('route-diagnostic-focus');edge.removeAttribute('data-route-diagnostic-focus');}
+ const selected=edges.find(edge=>edge.getAttribute('data-edge-id')===String(edgeId));
+ if(selected){selected.classList.add('route-diagnostic-focus');selected.setAttribute('data-route-diagnostic-focus','true');}
+ return Boolean(selected);
+}
 function refreshRouteQualityPanel(){
  const panel=$('routeQualityPanel');
  if(!panel||panel.hidden)return;
@@ -197,7 +205,7 @@ function refreshRouteQualityPanel(){
    if(!state.edges.some(edge=>String(edge.id)===String(id)))return;
    select(id);
    const element=[...svg.querySelectorAll('[data-edge-id]')].find(el=>el.getAttribute('data-edge-id')===String(id));
-   if(element){const viewport=$('canvasViewport');const target=edgeViewportTarget(viewport.getBoundingClientRect(),element.getBoundingClientRect(),viewport.scrollLeft,viewport.scrollTop);if(target)viewport.scrollTo?.({...target,behavior:'smooth'});}
+   if(element){highlightRouteDiagnosticEdge(svg,id);const viewport=$('canvasViewport');const target=edgeViewportTarget(viewport.getBoundingClientRect(),element.getBoundingClientRect(),viewport.scrollLeft,viewport.scrollTop);if(target)viewport.scrollTo?.({...target,behavior:'smooth'});}
    svg.focus?.();
   }
  });

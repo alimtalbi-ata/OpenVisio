@@ -24,6 +24,12 @@ export function routeDiagnosticFocusIndex(current, key, count){
 }
 
 // Panneau DOM facultatif : le clic transmet l'identifiant au contrôleur de sélection.
+// Pure presentation helper: segment numbers are 1-based for end users.
+export function summarizeRouteIssueSegments(issues=[], limit=5){
+ if(!Array.isArray(issues))return {segments:[],overflow:0};
+ const indices=[...new Set(issues.filter(i=>Number.isInteger(i?.segment)&&i.segment>=0).map(i=>i.segment+1))].sort((a,b)=>a-b);
+ return {segments:indices.slice(0,limit),overflow:Math.max(0,indices.length-limit)};
+}
 export function renderRouteClearancePanel(container,diagnostics,{onSelect=()=>{},filter="all",search="",selectedEdgeId=null}={}){
  if(!["all","error","review"].includes(filter))throw new RangeError("Filtre de gravité invalide");
  if(!container||typeof container.replaceChildren!=='function')throw new TypeError('Conteneur DOM invalide');
@@ -36,7 +42,9 @@ export function renderRouteClearancePanel(container,diagnostics,{onSelect=()=>{}
  const buttons=[];
  for(const item of view.items.filter(x=>x.severity!=='ok'&&(filter==="all"||x.severity===filter)&&(!needle||x.edgeId.toLocaleLowerCase().includes(needle)))){
   const li=doc.createElement('li');const button=doc.createElement('button');
+  const affected=summarizeRouteIssueSegments(item.issues);
   button.type='button';button.textContent=`${item.edgeId} — ${item.label}`;
+  if(affected.segments.length){const detail=doc.createElement('span');detail.className='route-issue-segments';detail.textContent=`Segments à examiner : ${affected.segments.join(', ')}${affected.overflow?` (+${affected.overflow} autres)`:''}`;li.append(detail);}
   button.setAttribute('aria-label',`Examiner la connexion ${item.edgeId}`);
   if(selectedEdgeId!==null&&String(selectedEdgeId)===item.edgeId){button.setAttribute('aria-current','true');li.setAttribute('data-selected','true');}
   button.addEventListener('click',()=>onSelect(item.edgeId));buttons.push(button);li.append(button);list.append(li);

@@ -3,13 +3,19 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>OpenVisio v41.70 — Éditeur de diagrammes</title>
+<title>OpenVisio v41.72 — Éditeur de diagrammes</title>
 <link href="styles/app.css" rel="stylesheet"/><link href="styles/workspace-v345.css" rel="stylesheet"/><link href="styles/workspace-v331.css" rel="stylesheet"/><link href="styles/workspace-v332.css" rel="stylesheet"/><link href="styles/workspace-v333.css" rel="stylesheet"/><link href="styles/workspace-v334.css" rel="stylesheet"/><link href="styles/workspace-v335.css" rel="stylesheet"/><link href="styles/workspace-v336.css" rel="stylesheet"/>
 <style>.wiring-locate{margin-left:10px;padding:3px 9px;border:1px solid #64748b;border-radius:6px;cursor:pointer}.wiring-locate:focus-visible{outline:3px solid #2563eb;outline-offset:2px}.wiring-located .edge{stroke:#dc2626!important;stroke-width:5!important;stroke-dasharray:8 4}</style><style>.san-resilience-focused{filter:drop-shadow(0 0 5px #f59e0b)!important;stroke:#f59e0b!important;stroke-width:4px!important}</style><style>.san-path-lost{stroke:#dc2626!important;stroke-width:5px!important;stroke-dasharray:7 4!important}.san-path-surviving{stroke:#16a34a!important;stroke-width:4px!important}.san-path-shared{stroke:#f59e0b!important;stroke-width:5px!important;filter:drop-shadow(0 0 4px #f59e0b)!important}</style><link rel="stylesheet" href="styles/workspace-v337.css"/><link rel="stylesheet" href="styles/topology-navigator-v346.css"><link rel="stylesheet" href="styles/topology-workflow-v347.css"><link rel="stylesheet" href="styles/topology-groups-v348.css"><link rel="stylesheet" href="styles/topology-filter-v349.css"><link rel="stylesheet" href="styles/topology-overview-v350.css"><link rel="stylesheet" href="styles/san-redundancy-panel-v364.css"><link rel="stylesheet" href="styles/workspace-v385.css">
-<link rel="stylesheet" href="styles/workspace-v387.css"/></head>
+<link rel="stylesheet" href="styles/workspace-v387.css"/><style>
+/* Route diagnostic focus: stroke glow only, never alters saved geometry. */
+svg [data-edge-id].route-diagnostic-focus > path,
+svg [data-edge-id].route-diagnostic-focus > polyline,
+svg [data-edge-id].route-diagnostic-focus > line { filter: drop-shadow(0 0 5px #e9a500); stroke-width: 3px; }
+</style>
+</head>
 <body>
 <header class="app-header">
-<div class="brand"><span class="brand-mark">O</span><div><strong>OpenVisio</strong><small>Atelier d’architecture · v41.70</small></div></div>
+<div class="brand"><span class="brand-mark">O</span><div><strong>OpenVisio</strong><small>Atelier d’architecture · v41.72</small></div></div>
 <nav class="quick-actions" aria-label="Actions principales">
   <button class="quiet" id="startGuideBtn" type="button" title="Créer, ouvrir ou choisir un modèle">Démarrer…</button>
   <button class="quiet" id="newDiagram" type="button" title="Créer un diagramme vierge (Ctrl+N)">Nouveau</button>
