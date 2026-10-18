@@ -15,6 +15,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "windows\Check-Release-Versi
 if errorlevel 1 goto :error
 powershell -NoProfile -ExecutionPolicy Bypass -File "windows\Preflight-Windows.ps1"
 if errorlevel 1 goto :error
+REM Mandatory application regression tests before compiling release binaries.
+where node.exe >nul 2>&1
+if errorlevel 1 (echo Node.js requis pour la qualification de la release. & goto :error)
+node --version
+node --test tests/*.test.mjs
+if errorlevel 1 (echo ECHEC: tests Node.js. & goto :error)
+node windows/verify-release.mjs
+if errorlevel 1 goto :error
 echo [1/5] Preparation du SDK .NET 8 local...
 if not exist "%DOTNET_ROOT%\dotnet.exe" (
  powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1' -OutFile '%TOOLS%\dotnet-install.ps1'; & '%TOOLS%\dotnet-install.ps1' -Channel 8.0 -InstallDir '%DOTNET_ROOT%' -NoPath; if($LASTEXITCODE -ne 0){exit 1}"
