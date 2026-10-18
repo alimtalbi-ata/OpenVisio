@@ -9,6 +9,7 @@ from .export import export_svg
 from .shapes import SHAPES, get_shape
 from .properties import normalize_properties
 from .links import normalize_link, PROTOCOLS
+from .history import History
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -20,6 +21,7 @@ class Editor(tk.Tk):
         self.selected = None
         self.selected_edge = None
         self.link_start = None
+        self.history = History(self.document)
         self.saved_snapshot = self._snapshot()
         self.protocol("WM_DELETE_WINDOW", self.close_safely)
         self.canvas = tk.Canvas(self, bg="#f8fafc", highlightthickness=0)
@@ -27,6 +29,7 @@ class Editor(tk.Tk):
         self.canvas.bind("<Double-Button-1>", self.add_node)
         self.canvas.bind("<Button-1>", self.click)
         self.canvas.bind("<B1-Motion>", self.drag)
+        self.canvas.bind("<ButtonRelease-1>", lambda event: self._record_change())
         self.canvas.bind("<Configure>", lambda event: self.draw())
         bar = tk.Menu(self)
         filemenu = tk.Menu(bar, tearoff=False)
@@ -34,6 +37,9 @@ class Editor(tk.Tk):
             filemenu.add_command(label=label, command=command)
         bar.add_cascade(label="Fichier", menu=filemenu)
         edit = tk.Menu(bar, tearoff=False)
+        edit.add_command(label="Annuler", command=self.undo)
+        edit.add_command(label="Rétablir", command=self.redo)
+        edit.add_separator()
         edit.add_command(label="Ajouter un équipement", command=lambda: self.create_node(150, 120))
         edit.add_command(label="Relier deux équipements", command=self.begin_link)
         edit.add_command(label="Propriétés de la sélection", command=self.edit_properties)
@@ -45,12 +51,28 @@ class Editor(tk.Tk):
             shapes_menu.add_command(label=shape["label"], command=lambda kind=key: self.create_node(180, 140, kind))
         bar.add_cascade(label="Équipements", menu=shapes_menu)
         self.config(menu=bar)
+        self.bind("<Control-z>", lambda event: self.undo())
+        self.bind("<Control-y>", lambda event: self.redo())
         self.bind("<Control-s>", lambda event: self.store())
         self.bind("<Control-o>", lambda event: self.open())
         self.bind("<Delete>", lambda event: self.delete_selected())
         self.bind("<F2>", lambda event: self.edit_properties())
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
+    def _record_change(self):
+        self.history.record(self.document)
+    def undo(self):
+        document = self.history.undo()
+        if document is not None:
+            self.document = document
+            self.selected = self.selected_edge = None
+            self.draw()
+    def redo(self):
+        document = self.history.redo()
+        if document is not None:
+            self.document = document
+            self.selected = self.selected_edge = None
+            self.draw()
     def _snapshot(self):
         return json.dumps(self.document, sort_keys=True, ensure_ascii=False)
     def _confirm_discard(self):
@@ -74,10 +96,12 @@ class Editor(tk.Tk):
         self.selected = None
         self.selected_edge = None
         self.saved_snapshot = self._snapshot()
+        self.history.reset(self.document)
         self.draw()
     def create_node(self, x, y, kind="server"):
         node = {"id": uuid4().hex, "x": round(x), "y": round(y), "label": get_shape(kind)["label"], "shape": kind}
         self.document["nodes"].append(node)
+        self._record_change()
         self.selected = node["id"]
         self.draw()
     def add_node(self, event):
@@ -106,6 +130,7 @@ class Editor(tk.Tk):
         if self.link_start is not None and node is not None:
             if node["id"] != self.link_start:
                 self.document["edges"].append({"id": uuid4().hex, "from": self.link_start, "to": node["id"]})
+                self._record_change()
             self.link_start = None
         self.selected = node["id"] if node else None
         self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
@@ -143,6 +168,7 @@ class Editor(tk.Tk):
                 messagebox.showerror("Propriétés invalides", str(exc), parent=dialog)
                 return
             node.update(values)
+            self._record_change()
             self.draw()
             dialog.destroy()
         tk.Button(dialog, text="Enregistrer", command=apply).grid(row=5, column=1, pady=12, sticky="e")
@@ -173,6 +199,7 @@ class Editor(tk.Tk):
         def apply():
             try:
                 edge.update(normalize_link(**{key: value.get() for key, value in fields.items()}))
+                self._record_change()
             except ValueError as exc:
                 messagebox.showerror("Liaison invalide", str(exc), parent=dialog)
                 return
@@ -189,6 +216,7 @@ class Editor(tk.Tk):
         self.document["nodes"] = [n for n in self.document["nodes"] if n["id"] != sid]
         self.document["edges"] = [e for e in self.document["edges"] if e["from"] != sid and e["to"] != sid]
         self.selected = None
+        self._record_change()
         self.draw()
     def draw(self):
         self.canvas.delete("all")
@@ -213,6 +241,7 @@ class Editor(tk.Tk):
             self.selected = None
             self.selected_edge = None
             self.saved_snapshot = self._snapshot()
+            self.history.reset(self.document)
             self.draw()
         except (ValueError, OSError) as exc:
             messagebox.showerror("Ouverture impossible", str(exc))
