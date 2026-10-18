@@ -19,3 +19,14 @@ test('v41.77 segment controls provide keyboard navigation',()=>{
  assert.match(src,/siblings\[next\]\?\.focus/);
  assert.match(src,/event\.stopPropagation\?\.\(\)/);
 });
+
+test('route segment geometry is available as a detached snapshot',async()=>{
+ const {lastRouteSegmentGeometry}=await import('../src/renderer.js');
+ assert.deepEqual(lastRouteSegmentGeometry({}),[]);
+});
+test('segment focus is cleaned on selection and panel closure',()=>{
+ const src=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+ assert.match(src,/function select\(id\)\{clearRouteDiagnosticSegments\(svg\)/);
+ assert.match(src,/onSelectSegment:\(id,number\)=>/);
+ assert.match(src,/behavior:'auto'/);
+});
