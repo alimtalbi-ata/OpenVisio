@@ -1,7 +1,6 @@
 """Native Tkinter diagram editor. Author: Abdelhalim Talbi."""
 import tkinter as tk
 import json
-from math import hypot
 from tkinter import filedialog, messagebox, simpledialog
 from uuid import uuid4
 from .model import load, save
@@ -10,6 +9,7 @@ from .shapes import SHAPES, get_shape
 from .properties import normalize_properties
 from .links import normalize_link, PROTOCOLS
 from .history import History
+from .render import node_at, edge_at, draw_document
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -43,7 +43,7 @@ class Editor(tk.Tk):
         edit.add_command(label="Ajouter un équipement", command=lambda: self.create_node(150, 120))
         edit.add_command(label="Relier deux équipements", command=self.begin_link)
         edit.add_command(label="Propriétés de la sélection", command=self.edit_properties)
-        edit.add_command(label="Propriétés de la dernière liaison", command=self.edit_selected_link)
+        edit.add_command(label="Propriétés de la liaison sélectionnée", command=self.edit_selected_link)
         edit.add_command(label="Supprimer la sélection", command=self.delete_selected)
         bar.add_cascade(label="Édition", menu=edit)
         shapes_menu = tk.Menu(bar, tearoff=False)
@@ -107,24 +107,9 @@ class Editor(tk.Tk):
     def add_node(self, event):
         self.create_node(event.x, event.y)
     def node_at(self, x, y):
-        for node in reversed(self.document["nodes"]):
-            if abs(node["x"]-x) <= 70 and abs(node["y"]-y) <= 30:
-                return node
-        return None
+        return node_at(self.document["nodes"], x, y)
     def edge_at(self, x, y):
-        by_id = {n["id"]: n for n in self.document["nodes"]}
-        for edge in reversed(self.document["edges"]):
-            a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
-            if not a or not b:
-                continue
-            dx, dy = b["x"] - a["x"], b["y"] - a["y"]
-            length_sq = dx * dx + dy * dy
-            if not length_sq:
-                continue
-            t = max(0, min(1, ((x-a["x"])*dx+(y-a["y"])*dy)/length_sq))
-            if hypot(x-(a["x"]+t*dx), y-(a["y"]+t*dy)) <= 9:
-                return edge
-        return None
+        return edge_at(self.document["nodes"], self.document["edges"], x, y)
     def click(self, event):
         node = self.node_at(event.x, event.y)
         if self.link_start is not None and node is not None:
@@ -219,17 +204,7 @@ class Editor(tk.Tk):
         self._record_change()
         self.draw()
     def draw(self):
-        self.canvas.delete("all")
-        by_id = {n["id"]: n for n in self.document["nodes"]}
-        for edge in self.document["edges"]:
-            a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
-            if a and b:
-                self.canvas.create_line(a["x"], a["y"], b["x"], b["y"], fill="#dc2626" if edge.get("id") == self.selected_edge else "#2563eb", width=4 if edge.get("id") == self.selected_edge else 2, arrow=tk.LAST)
-        for n in self.document["nodes"]:
-            x, y = n["x"], n["y"]
-            selected = n["id"] == self.selected
-            self.canvas.create_rectangle(x-70, y-30, x+70, y+30, fill=get_shape(n.get("shape", "server"))["fill"] if not selected else "#bfdbfe", outline="#1d4ed8", width=3 if selected else 1)
-            self.canvas.create_text(x, y, text=n.get("label", "Équipement")[:40], fill="#172554")
+        draw_document(self.canvas, self.document, self.selected, self.selected_edge)
     def open(self):
         if not self._confirm_discard():
             return
