@@ -12,6 +12,7 @@ from .history import History
 from .render import node_at, edge_at, draw_document
 from .viewport import Viewport
 from .layout import snap, align, distribute, move_group
+from .clipboard import copy_selection, paste_selection
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -29,6 +30,8 @@ class Editor(tk.Tk):
         self.viewport = Viewport()
         self._pan_anchor = None
         self._drag_anchor = None
+        self._clipboard = None
+        self._paste_count = 0
         self.history = History(self.document)
         self.saved_snapshot = self._snapshot()
         self.protocol("WM_DELETE_WINDOW", self.close_safely)
@@ -54,6 +57,10 @@ class Editor(tk.Tk):
         edit.add_command(label="Annuler", command=self.undo)
         edit.add_command(label="Rétablir", command=self.redo)
         edit.add_separator()
+        edit.add_command(label="Copier", command=self.copy_selected)
+        edit.add_command(label="Coller", command=self.paste_selected)
+        edit.add_command(label="Dupliquer", command=self.duplicate_selected)
+        edit.add_separator()
         edit.add_command(label="Ajouter un équipement", command=lambda: self.create_node(150, 120))
         edit.add_command(label="Relier deux équipements", command=self.begin_link)
         edit.add_command(label="Propriétés de la sélection", command=self.edit_properties)
@@ -78,6 +85,9 @@ class Editor(tk.Tk):
         view.add_command(label="Distribuer verticalement", command=lambda: self.distribute_selection("y"))
         bar.add_cascade(label="Affichage", menu=view)
         self.config(menu=bar)
+        self.bind("<Control-c>", lambda event: self.copy_selected())
+        self.bind("<Control-v>", lambda event: self.paste_selected())
+        self.bind("<Control-d>", lambda event: self.duplicate_selected())
         self.bind("<Control-z>", lambda event: self.undo())
         self.bind("<Control-y>", lambda event: self.redo())
         self.bind("<Control-s>", lambda event: self.store())
@@ -86,6 +96,22 @@ class Editor(tk.Tk):
         self.bind("<F2>", lambda event: self.edit_properties())
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
+    def copy_selected(self):
+        ids = self.selected_nodes or ({self.selected} if self.selected else set())
+        self._clipboard = copy_selection(self.document, ids)
+        self._paste_count = 0
+    def paste_selected(self):
+        if not self._clipboard or not self._clipboard["nodes"]:
+            return
+        self._paste_count += 1
+        self.selected_nodes = paste_selection(self.document, self._clipboard, offset=40*self._paste_count)
+        self.selected = next(iter(self.selected_nodes), None)
+        self.selected_edge = None
+        self._record_change()
+        self.draw()
+    def duplicate_selected(self):
+        self.copy_selected()
+        self.paste_selected()
     def toggle_grid(self):
         self.grid_enabled = not self.grid_enabled
         self.draw()
@@ -138,6 +164,7 @@ class Editor(tk.Tk):
         if document is not None:
             self.document = document
             self.selected = self.selected_edge = None
+            self.selected_nodes.clear()
             self.draw()
     def redo(self):
         document = self.history.redo()
@@ -167,6 +194,7 @@ class Editor(tk.Tk):
         self.current_path = None
         self.selected = None
         self.selected_edge = None
+        self.selected_nodes.clear()
         self.saved_snapshot = self._snapshot()
         self.history.reset(self.document)
         self.draw()
@@ -281,13 +309,16 @@ class Editor(tk.Tk):
         dialog.bind("<Escape>", lambda event: dialog.destroy())
         dialog.wait_window()
     def delete_selected(self):
-        sid = self.selected
-        if self.selected_edge:
-            self.document["edges"] = [e for e in self.document["edges"] if e["id"] != self.selected_edge]
-            self.selected_edge = None
-        self.document["nodes"] = [n for n in self.document["nodes"] if n["id"] != sid]
-        self.document["edges"] = [e for e in self.document["edges"] if e["from"] != sid and e["to"] != sid]
+        ids = set(self.selected_nodes)
+        if self.selected:
+            ids.add(self.selected)
+        selected_edge = self.selected_edge
+        if not ids and not selected_edge:
+            return
+        self.document["nodes"] = [n for n in self.document["nodes"] if n["id"] not in ids]
+        self.document["edges"] = [e for e in self.document["edges"] if e["id"] != selected_edge and e["from"] not in ids and e["to"] not in ids]
         self.selected = None
+        self.selected_edge = None
         self.selected_nodes.clear()
         self._record_change()
         self.draw()
