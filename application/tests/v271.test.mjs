@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {describeRouteBatchConflicts} from '../src/route-batch.js';
+const p=id=>({edgeId:id});
+const b={proposals:['A','B','C','D'].map(p),conflicts:[{a:'B',b:'A',crossFabric:true},{a:'B',b:'C'}]};
+test('v27.1 connected components and isolated routes',()=>{const r=describeRouteBatchConflicts(b);assert.deepEqual(r.groups.map(g=>g.edgeIds),[['A','B','C'],['D']]);assert.equal(r.conflicts.length,2);});
+test('v27.1 live selection exposes active conflicts',()=>{const r=describeRouteBatchConflicts(b,new Set(['A','B']));assert.equal(r.valid,false);assert.equal(r.activeConflicts.length,1);assert.equal(r.activeConflicts[0].crossFabric,true);});
+test('v27.1 conflict-free selection remains valid',()=>{const r=describeRouteBatchConflicts(b,new Set(['A','C','D']));assert.equal(r.valid,true);assert.equal(r.selectedCount,3);});
+test('v27.1 duplicates are normalized',()=>{const r=describeRouteBatchConflicts({...b,conflicts:[...b.conflicts,{a:'A',b:'B'}]});assert.equal(r.conflicts.length,2);});
+test('v27.1 malformed and unknown links are rejected',()=>{assert.throws(()=>describeRouteBatchConflicts({...b,conflicts:[{a:'A',b:'X'}]}),/invalide/);assert.throws(()=>describeRouteBatchConflicts({...b,proposals:[p('A'),p('A')]}),/invalide/);});

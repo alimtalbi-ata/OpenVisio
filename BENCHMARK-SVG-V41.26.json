@@ -1,0 +1,64 @@
+{
+  "version": "41.26",
+  "scope": "Synthetic JS DOM only; excludes browser layout/paint and Windows",
+  "timeoutMs": 5000,
+  "node": "v22.16.0",
+  "results": [
+    {
+      "size": 10,
+      "status": "PASS",
+      "wallMs": 90.34,
+      "result": {
+        "nodes": 10,
+        "edges": 9,
+        "medianFirstRenderMs": 36.119114999999994,
+        "medianSecondRenderMs": 0.5232460000000003,
+        "topLevelElements": 19,
+        "stable": true
+      },
+      "error": null
+    },
+    {
+      "size": 25,
+      "status": "PASS",
+      "wallMs": 168.83,
+      "result": {
+        "nodes": 25,
+        "edges": 24,
+        "medianFirstRenderMs": 128.913168,
+        "medianSecondRenderMs": 0.7839379999999778,
+        "topLevelElements": 49,
+        "stable": true
+      },
+      "error": null
+    },
+    {
+      "size": 50,
+      "status": "PASS",
+      "wallMs": 278.72,
+      "result": {
+        "nodes": 50,
+        "edges": 49,
+        "medianFirstRenderMs": 237.30384600000002,
+        "medianSecondRenderMs": 0.9767569999999637,
+        "topLevelElements": 99,
+        "stable": true
+      },
+      "error": null
+    },
+    {
+      "size": 100,
+      "status": "PASS",
+      "wallMs": 748.06,
+      "result": {
+        "nodes": 100,
+        "edges": 99,
+        "medianFirstRenderMs": 702.620652,
+        "medianSecondRenderMs": 1.5083060000000614,
+        "topLevelElements": 199,
+        "stable": true
+      },
+      "error": null
+    }
+  ]
+}

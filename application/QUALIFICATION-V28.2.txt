@@ -1,0 +1,29 @@
+Subtest: réutilisation de connexions inchangées
+ok 1236 - réutilisation de connexions inchangées
+  ---
+  duration_ms: 0.09956
+  type: 'test'
+  ...
+# Subtest: suppression des éléments retirés
+ok 1237 - suppression des éléments retirés
+  ---
+  duration_ms: 0.222435
+  type: 'test'
+  ...
+# Subtest: remplacement local de la forme modifiée
+ok 1238 - remplacement local de la forme modifiée
+  ---
+  duration_ms: 0.09999
+  type: 'test'
+  ...
+1..1238
+# tests 1238
+# suites 0
+# pass 1238
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8822.180795
+
+Windows UI screenshots: not performed

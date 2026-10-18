@@ -1,0 +1,7 @@
+import {performance} from 'node:perf_hooks';
+import {reduceFanOutCrossings as incremental} from '../src/routing.js';
+import {reduceFanOutCrossings as legacy} from '../src/routing-legacy-benchmark.js';
+const sizes=[20,50,100]; const output=[];
+function fixture(n){const nodes=[];const edges=[];const routes=new Map();for(let i=0;i<n+1;i++)nodes.push({id:'n'+i,x:i*120,y:(i%5)*120,width:60,height:40});for(let i=0;i<n;i++){const id='e'+i;edges.push({id,from:'n'+i,to:'n'+(i+1)});const x=i*120+60,y=(i%5)*120+20,tx=(i+1)*120,ty=((i+1)%5)*120+20;const points=[{x,y},{x:x+10,y},{x:x+10,y:ty},{x:tx-10,y:ty},{x:tx,y:ty}];routes.set(id,{points,orthogonalFanOut:true,path:points.map((p,j)=>`${j?'L':'M'} ${p.x} ${p.y}`).join(' ')});}return {nodes,edges,routes};}
+for(const n of sizes){const f=fixture(n);const durations={legacy:[],incremental:[]};let equivalent=true;for(let k=0;k<5;k++){for(const [name,fn] of [['legacy',legacy],['incremental',incremental]]){const t=performance.now();const r=fn(f.edges,f.routes,f.nodes);durations[name].push(performance.now()-t);if(name==='legacy')f.baseline=r;else for(const [id,v] of r)if(JSON.stringify(v.points)!==JSON.stringify(f.baseline.get(id)?.points))equivalent=false;}}const median=a=>[...a].sort((x,y)=>x-y)[Math.floor(a.length/2)];output.push({edges:n,legacy_ms:median(durations.legacy),incremental_ms:median(durations.incremental),equivalent});}
+console.log(JSON.stringify({environment:process.version,method:'synthetic, 5 repetitions, same input; no Windows UI',results:output},null,2));

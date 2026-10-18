@@ -1,0 +1,42 @@
+// Auteur : Abdelhalim Talbi
+export const SHAPES = [
+ {type:"process",name:"Processus",vendor:"Generic",category:"diagram",icon:"▭",subtitle:"Étape de processus"},
+ {type:"decision",name:"Décision",vendor:"Generic",category:"diagram",icon:"◇",subtitle:"Branchement oui / non"},
+ {type:"terminator",name:"Début / Fin",vendor:"Generic",category:"diagram",icon:"⬭",subtitle:"Début ou fin de flux"},
+ {type:"document",name:"Document",vendor:"Generic",category:"diagram",icon:"▤",subtitle:"Document / livrable"},
+ {type:"database",name:"Base de données",vendor:"Generic",category:"data",icon:"▥",subtitle:"Données / SGBD"},
+ {type:"person",name:"Personne / rôle",vendor:"Generic",category:"organization",icon:"♙",subtitle:"Organigramme / responsabilité"},
+ {type:"department",name:"Équipe / service",vendor:"Generic",category:"organization",icon:"▣",subtitle:"Unité organisationnelle"},
+ {type:"application",name:"Application",vendor:"Generic",category:"application",icon:"▦",subtitle:"Service applicatif"},
+ {type:"api",name:"API / interface",vendor:"Generic",category:"application",icon:"⇄",subtitle:"Contrat / échange"},
+ {type:"firewall",name:"Pare-feu",vendor:"Generic",category:"security",icon:"⬡",subtitle:"Sécurité réseau"},
+ {type:"router",name:"Routeur",vendor:"Generic",category:"network",icon:"⬡",subtitle:"Routage IP"},
+ {type:"loadbalancer",name:"Load balancer",vendor:"Generic",category:"network",icon:"⇄",subtitle:"Répartition de charge"},
+ {type:"container",name:"Conteneur",vendor:"Generic",category:"compute",icon:"▤",subtitle:"Conteneur / runtime"},
+ {type:"vm",name:"Machine virtuelle",vendor:"Generic",category:"compute",icon:"▤",subtitle:"Hyperviseur / VM"},
+ {type:"backup",name:"Sauvegarde",vendor:"Generic",category:"backup",icon:"▱",subtitle:"Protection des données"},
+ {type:"tape",name:"Librairie de bandes",vendor:"Generic",category:"backup",icon:"▥",subtitle:"Archivage sur bande"},
+ {type:"server",name:"Serveur",vendor:"Generic",category:"compute",icon:"▤",subtitle:"Compute / OS"},
+ {type:"server",name:"PowerEdge",vendor:"Dell",category:"compute",icon:"▤",subtitle:"Serveur rack"},
+ {type:"server",name:"ProLiant",vendor:"HPE",category:"compute",icon:"▤",subtitle:"Serveur rack"},
+ {type:"server",name:"IBM Power",vendor:"IBM",category:"compute",icon:"▤",subtitle:"Serveur Unix"},
+ {type:"storage",name:"Baie SAN",vendor:"Generic",category:"storage",icon:"▱",subtitle:"Stockage bloc"},
+ {type:"storage",name:"PowerStore",vendor:"Dell",category:"storage",icon:"▱",subtitle:"Block / File"},
+ {type:"storage",name:"Alletra",vendor:"HPE",category:"storage",icon:"▱",subtitle:"Stockage hybride"},
+ {type:"storage",name:"FlashSystem",vendor:"IBM",category:"storage",icon:"▱",subtitle:"Stockage bloc"},
+ {type:"storage",name:"AFF / FAS",vendor:"NetApp",category:"storage",icon:"▱",subtitle:"ONTAP"},
+ {type:"storage",name:"FlashArray",vendor:"Pure Storage",category:"storage",icon:"▱",subtitle:"All-flash"},
+ {type:"storage",name:"PowerScale",vendor:"Dell",category:"storage",icon:"▤",subtitle:"NAS scale-out"},
+ {type:"switch",name:"Switch SAN",vendor:"Generic",category:"network",icon:"▦",subtitle:"Fibre Channel"},
+ {type:"switch",name:"MDS",vendor:"Cisco",category:"network",icon:"▦",subtitle:"Fabric FC"},
+ {type:"switch",name:"Brocade",vendor:"Brocade",category:"network",icon:"▦",subtitle:"Fabric FC"},
+ {type:"cloud",name:"Cloud / S3",vendor:"AWS",category:"cloud",icon:"☁",subtitle:"Objet / archive"},
+ {type:"cloud",name:"S3 compatible",vendor:"Generic",category:"cloud",icon:"☁",subtitle:"Object storage"}
+];
+export const DEFAULTS = {
+ server:{w:150,h:74,title:"Serveur",subtitle:"Linux · Compute",fill:"#f0f7ff",stroke:"#7aa9e5"},
+ storage:{w:164,h:78,title:"Baie de stockage",subtitle:"Block / File",fill:"#effaf6",stroke:"#6bbda2"},
+ switch:{w:156,h:64,title:"Switch SAN",subtitle:"Fibre Channel",fill:"#fff7e9",stroke:"#e0b45e"},
+ cloud:{w:154,h:78,title:"Cloud / S3",subtitle:"Object storage",fill:"#f5f0ff",stroke:"#ad95e8"},
+ process:{w:155,h:75,fill:"#eaf5ff",stroke:"#4c91c9"},decision:{w:150,h:100,fill:"#fff4da",stroke:"#cc9a32"},terminator:{w:155,h:75,fill:"#e9f9ed",stroke:"#58a46b"},document:{w:155,h:85,fill:"#fff",stroke:"#6382b5"},database:{w:155,h:95,fill:"#e7f5fa",stroke:"#4d9cad"},person:{w:155,h:85,fill:"#fff4ed",stroke:"#c47f51"},department:{w:180,h:85,fill:"#f5edff",stroke:"#9570c1"},application:{w:160,h:80,fill:"#eef6ff",stroke:"#6d93c7"},api:{w:155,h:75,fill:"#f4f8ff",stroke:"#6988bf"},firewall:{w:155,h:80,fill:"#ffeded",stroke:"#c45c5c"},router:{w:155,h:75,fill:"#eaf8f5",stroke:"#579e91"},loadbalancer:{w:170,h:75,fill:"#eaf8f5",stroke:"#579e91"},container:{w:150,h:75,fill:"#f2f7ff",stroke:"#688fc5"},vm:{w:150,h:75,fill:"#f2f7ff",stroke:"#688fc5"},backup:{w:160,h:80,fill:"#eef9ed",stroke:"#65a263"},tape:{w:160,h:80,fill:"#f8f0e9",stroke:"#b48765"}
+};

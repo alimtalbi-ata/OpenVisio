@@ -1,0 +1,1 @@
+Comparer SHA256 de chaque fichier au manifeste files-sha256.json.

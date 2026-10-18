@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {overlayModel,overlaySvg} from '../src/topology-overlay.js';
+const n=(id,x=0,title=id)=>({id,x,y:10,w:100,h:50,title});const d=(nodes=[],edges=[])=>({nodes,edges});
+test('ajout affiché',()=>assert.equal(overlayModel(d(),d([n('a')])).nodes[0].status,'added'));
+test('suppression affichée depuis avant',()=>assert.equal(overlayModel(d([n('a')]),d()).nodes[0].source,'before'));
+test('modification superpose deux versions',()=>assert.equal(overlayModel(d([n('a',0)]),d([n('a',30)])).nodes.length,2));
+test('inchangé affiché une seule fois',()=>assert.equal(overlayModel(d([n('a')]),d([n('a')])).nodes.length,1));
+test('filtre ajouts',()=>{const m=overlayModel(d([n('a')]),d([n('a'),n('b')]));assert.match(overlaySvg(m,{filter:'added'}),/data-node-id="b"/);assert.doesNotMatch(overlaySvg(m,{filter:'added'}),/data-node-id="a"/);});
+test('focus noeud',()=>{const m=overlayModel(d(),d([n('a'),n('b')]));assert.doesNotMatch(overlaySvg(m,{focus:'a'}),/data-node-id="b"/);});
+test('échappement SVG',()=>assert.match(overlaySvg(overlayModel(d(),d([n('a',0,'<script>')]))),/&lt;script&gt;/));
+test('filtre inconnu rejeté',()=>assert.throws(()=>overlaySvg(overlayModel(d(),d()),{filter:'x'})));
+test('connexion ajoutée visible',()=>{const m=overlayModel(d([n('a'),n('b')]),d([n('a'),n('b')],[{id:'e',from:'a',to:'b'}]));assert.match(overlaySvg(m),/<line/);});

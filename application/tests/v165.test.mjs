@@ -1,0 +1,12 @@
+import test from "node:test";import assert from "node:assert/strict";import {distributeEndpointAnchors} from "../src/routing.js";
+const nodes=[{id:"a",x:0,y:0,w:100,h:100},{id:"b",x:300,y:0,w:100,h:100},{id:"c",x:300,y:160,w:100,h:100}];
+const edges=[{id:"e1",from:"a",to:"b"},{id:"e2",from:"a",to:"c"}];
+const mk=(a,b)=>({points:[a,b],path:"old"});
+const routes=new Map([["e1",mk({x:100,y:50},{x:300,y:50})],["e2",mk({x:100,y:50},{x:300,y:210})]]);
+test("fanout separates crowded source anchors",()=>{const r=distributeEndpointAnchors(edges,routes,nodes);assert.notEqual(r.get("e1").points[0].y,r.get("e2").points[0].y)});
+test("does not mutate original route",()=>{distributeEndpointAnchors(edges,routes,nodes);assert.equal(routes.get("e1").points[0].y,50)});
+test("respects manual waypoints",()=>{const r=distributeEndpointAnchors([{...edges[0],waypoints:[{x:200,y:30}]},edges[1]],routes,nodes);assert.equal(r.get("e1").path,"old")});
+test("respects explicit ports",()=>{const r=distributeEndpointAnchors([{...edges[0],fromPort:"right"},edges[1]],routes,nodes);assert.equal(r.get("e1").path,"old")});
+test("respects physical interfaces",()=>{const r=distributeEndpointAnchors([{...edges[0],sourceInterface:"eth0"},edges[1]],routes,nodes);assert.equal(r.get("e1").path,"old")});
+test("rejects invalid spacing",()=>assert.throws(()=>distributeEndpointAnchors(edges,routes,nodes,{minimumGap:0})));
+test("skips tiny shapes",()=>{const r=distributeEndpointAnchors(edges,routes,[{...nodes[0],h:20},...nodes.slice(1)]);assert.equal(r.get("e1").path,"old")});

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const js=readFileSync(new URL('../src/workspace-inspector-v337.js',import.meta.url),'utf8');
+const cmd=readFileSync(new URL('../Build-OpenVisio-Windows.cmd',import.meta.url),'utf8');
+test('advanced inspector command wired',()=>{assert.match(html,/id="inspectorExpandAll"/);assert.match(html,/workspace-inspector-v337\.js/)});
+test('advanced inspector expands, clears search, selects all',()=>{assert.match(js,/toggle\.click\(\)/);assert.match(js,/filter\.value = 'all'/);assert.match(js,/search\.value=''/)});
+test('build script accepts preinstalled ISCC in PATH',()=>assert.match(cmd,/where ISCC\.exe/));
+test('build removes stale installer before building',()=>{const v=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).version.replace(/\.0$/,'');assert.ok(cmd.includes(`OpenVisio-Setup-v${v}-x64.exe`));assert.match(cmd,/del \/q/);});

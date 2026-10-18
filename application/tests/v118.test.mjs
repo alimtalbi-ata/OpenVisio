@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {physicalPortMarkers,namedPortPosition,interfaceFamily,cableCompatibility,cableDiagnostics} from '../src/ports.js';
+const server={id:'a',x:100,y:200,w:120,h:70,ports:['FC0','eth0']};
+const sw={id:'b',x:300,y:200,w:120,h:70,ports:['Gi1/0/1','FC1']};
+test('physical port coordinates correspond to visual markers',()=>{const p=physicalPortMarkers(server)[0];assert.deepEqual(namedPortPosition(server,'FC0'),{x:server.x+p.x,y:server.y+p.y,name:'FC0'});});
+test('unknown physical port has no location',()=>assert.equal(namedPortPosition(server,'FC99'),null));
+test('FC interface classification',()=>assert.equal(interfaceFamily('FC0'),'fibre-channel'));
+test('Ethernet interface classification',()=>assert.equal(interfaceFamily('Gi1/0/1'),'ethernet'));
+test('Virtual interface classification',()=>assert.equal(interfaceFamily('vmnic0'),'virtual'));
+test('Compatible FC cabling',()=>assert.equal(cableCompatibility('FC0','FC1').status,'compatible'));
+test('Incompatible FC/Ethernet cabling',()=>assert.equal(cableCompatibility('FC0','Gi1/0/1').status,'incompatible'));
+test('Unknown interface does not falsely reject',()=>assert.equal(cableCompatibility('custom0','FC1').status,'unknown'));
+test('Diagnostic detects incompatible link',()=>assert.ok(cableDiagnostics([server,sw],[{id:'e',from:'a',to:'b',sourceInterface:'FC0',targetInterface:'Gi1/0/1'}]).some(f=>f.code==='interface-incompatible')));
+test('Diagnostic preserves compatible link',()=>assert.ok(!cableDiagnostics([server,sw],[{id:'e',from:'a',to:'b',sourceInterface:'FC0',targetInterface:'FC1'}]).some(f=>f.code==='interface-incompatible')));

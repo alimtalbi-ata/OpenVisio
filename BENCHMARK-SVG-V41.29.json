@@ -1,0 +1,948 @@
+{
+  "version": "41.29",
+  "scope": "Synthetic JS DOM only; excludes browser layout/paint and Windows",
+  "timeoutMs": 5000,
+  "node": "v22.16.0",
+  "results": [
+    {
+      "size": 10,
+      "status": "PASS",
+      "wallMs": 70.29,
+      "result": {
+        "nodes": 10,
+        "edges": 9,
+        "medianFirstRenderMs": 0.12024000000000257,
+        "medianSecondRenderMs": 0.09710599999999658,
+        "topLevelElements": 19,
+        "stable": true,
+        "coldStats": [
+          {
+            "nodesReused": 0,
+            "nodesUpdated": 10,
+            "edgesReused": 0,
+            "edgesUpdated": 9,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 19,
+              "removed": 0,
+              "reused": 0,
+              "total": 19,
+              "mutationRatio": 1
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "warmStats": [
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "phaseProfiles": [
+          {
+            "mutationReconciliation": 0.172,
+            "cableDiagnostics": 0.25,
+            "routingPipeline": 27.631,
+            "edgeDom": 0.311,
+            "nodeDom": 0.401,
+            "cleanup": 0.075,
+            "total": 28.846,
+            "routingStages": {
+              "routeCalculation": 15.171,
+              "parallelSeparation": 0.399,
+              "sharedSegmentHandling": 0.701,
+              "endpointDistribution": 10.956
+            }
+          },
+          {
+            "mutationReconciliation": 0.146,
+            "cableDiagnostics": 0.011,
+            "routingPipeline": 0.007,
+            "edgeDom": 0.011,
+            "nodeDom": 0.007,
+            "cleanup": 0.007,
+            "total": 0.191,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.074,
+            "cableDiagnostics": 0.01,
+            "routingPipeline": 0.006,
+            "edgeDom": 0.01,
+            "nodeDom": 0.007,
+            "cleanup": 0.005,
+            "total": 0.112,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.059,
+            "cableDiagnostics": 0.006,
+            "routingPipeline": 0.005,
+            "edgeDom": 0.008,
+            "nodeDom": 0.006,
+            "cleanup": 0.005,
+            "total": 0.09,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.082,
+            "cableDiagnostics": 0.007,
+            "routingPipeline": 0.006,
+            "edgeDom": 0.008,
+            "nodeDom": 0.006,
+            "cleanup": 0.009,
+            "total": 0.119,
+            "routingStages": {}
+          }
+        ],
+        "cache": {
+          "size": 15,
+          "hits": 3,
+          "misses": 15,
+          "evictions": 0,
+          "limit": 500,
+          "hitRate": 0.16666666666666666,
+          "indexedEdges": 9,
+          "indexedKeys": 15
+        }
+      },
+      "error": null
+    },
+    {
+      "size": 25,
+      "status": "PASS",
+      "wallMs": 170.8,
+      "result": {
+        "nodes": 25,
+        "edges": 24,
+        "medianFirstRenderMs": 0.25358099999999695,
+        "medianSecondRenderMs": 0.2809430000000077,
+        "topLevelElements": 49,
+        "stable": true,
+        "coldStats": [
+          {
+            "nodesReused": 0,
+            "nodesUpdated": 25,
+            "edgesReused": 0,
+            "edgesUpdated": 24,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 49,
+              "removed": 0,
+              "reused": 0,
+              "total": 49,
+              "mutationRatio": 1
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "warmStats": [
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "phaseProfiles": [
+          {
+            "mutationReconciliation": 0.226,
+            "cableDiagnostics": 0.375,
+            "routingPipeline": 122.984,
+            "edgeDom": 0.566,
+            "nodeDom": 0.664,
+            "cleanup": 0.079,
+            "total": 124.908,
+            "routingStages": {
+              "routeCalculation": 60.497,
+              "parallelSeparation": 0.454,
+              "sharedSegmentHandling": 0.828,
+              "endpointDistribution": 60.728
+            }
+          },
+          {
+            "mutationReconciliation": 0.173,
+            "cableDiagnostics": 0.017,
+            "routingPipeline": 0.013,
+            "edgeDom": 0.023,
+            "nodeDom": 0.016,
+            "cleanup": 0.009,
+            "total": 0.252,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.162,
+            "cableDiagnostics": 0.016,
+            "routingPipeline": 0.013,
+            "edgeDom": 0.023,
+            "nodeDom": 0.016,
+            "cleanup": 0.009,
+            "total": 0.24,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.211,
+            "cableDiagnostics": 0.054,
+            "routingPipeline": 0.014,
+            "edgeDom": 0.044,
+            "nodeDom": 0.016,
+            "cleanup": 0.011,
+            "total": 0.351,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.144,
+            "cableDiagnostics": 0.013,
+            "routingPipeline": 0.013,
+            "edgeDom": 0.021,
+            "nodeDom": 0.016,
+            "cleanup": 0.01,
+            "total": 0.217,
+            "routingStages": {}
+          }
+        ],
+        "cache": {
+          "size": 46,
+          "hits": 2,
+          "misses": 46,
+          "evictions": 0,
+          "limit": 500,
+          "hitRate": 0.041666666666666664,
+          "indexedEdges": 24,
+          "indexedKeys": 46
+        }
+      },
+      "error": null
+    },
+    {
+      "size": 50,
+      "status": "PASS",
+      "wallMs": 271.61,
+      "result": {
+        "nodes": 50,
+        "edges": 49,
+        "medianFirstRenderMs": 0.46909500000003845,
+        "medianSecondRenderMs": 0.5020950000000539,
+        "topLevelElements": 99,
+        "stable": true,
+        "coldStats": [
+          {
+            "nodesReused": 0,
+            "nodesUpdated": 50,
+            "edgesReused": 0,
+            "edgesUpdated": 49,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 99,
+              "removed": 0,
+              "reused": 0,
+              "total": 99,
+              "mutationRatio": 1
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "warmStats": [
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "phaseProfiles": [
+          {
+            "mutationReconciliation": 0.293,
+            "cableDiagnostics": 0.939,
+            "routingPipeline": 226.172,
+            "edgeDom": 0.814,
+            "nodeDom": 0.572,
+            "cleanup": 0.077,
+            "total": 228.88,
+            "routingStages": {
+              "routeCalculation": 103.464,
+              "parallelSeparation": 0.817,
+              "sharedSegmentHandling": 1.111,
+              "endpointDistribution": 120.129
+            }
+          },
+          {
+            "mutationReconciliation": 0.32,
+            "cableDiagnostics": 0.029,
+            "routingPipeline": 0.026,
+            "edgeDom": 0.072,
+            "nodeDom": 0.036,
+            "cleanup": 0.016,
+            "total": 0.499,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.284,
+            "cableDiagnostics": 0.026,
+            "routingPipeline": 0.025,
+            "edgeDom": 0.042,
+            "nodeDom": 0.031,
+            "cleanup": 0.013,
+            "total": 0.422,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.323,
+            "cableDiagnostics": 0.028,
+            "routingPipeline": 0.026,
+            "edgeDom": 0.044,
+            "nodeDom": 0.031,
+            "cleanup": 0.014,
+            "total": 0.467,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.289,
+            "cableDiagnostics": 0.053,
+            "routingPipeline": 0.027,
+            "edgeDom": 0.044,
+            "nodeDom": 0.03,
+            "cleanup": 0.017,
+            "total": 0.461,
+            "routingStages": {}
+          }
+        ],
+        "cache": {
+          "size": 96,
+          "hits": 2,
+          "misses": 96,
+          "evictions": 0,
+          "limit": 500,
+          "hitRate": 0.02040816326530612,
+          "indexedEdges": 49,
+          "indexedKeys": 96
+        }
+      },
+      "error": null
+    },
+    {
+      "size": 100,
+      "status": "PASS",
+      "wallMs": 759.47,
+      "result": {
+        "nodes": 100,
+        "edges": 99,
+        "medianFirstRenderMs": 0.9352350000000342,
+        "medianSecondRenderMs": 0.8942729999999983,
+        "topLevelElements": 199,
+        "stable": true,
+        "coldStats": [
+          {
+            "nodesReused": 0,
+            "nodesUpdated": 100,
+            "edgesReused": 0,
+            "edgesUpdated": 99,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 199,
+              "removed": 0,
+              "reused": 0,
+              "total": 199,
+              "mutationRatio": 1
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "warmStats": [
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "phaseProfiles": [
+          {
+            "mutationReconciliation": 1.008,
+            "cableDiagnostics": 0.402,
+            "routingPipeline": 706.518,
+            "edgeDom": 0.987,
+            "nodeDom": 0.992,
+            "cleanup": 0.089,
+            "total": 710.01,
+            "routingStages": {
+              "routeCalculation": 336.52,
+              "parallelSeparation": 0.736,
+              "sharedSegmentHandling": 0.875,
+              "endpointDistribution": 367.488
+            }
+          },
+          {
+            "mutationReconciliation": 0.64,
+            "cableDiagnostics": 0.056,
+            "routingPipeline": 0.051,
+            "edgeDom": 0.095,
+            "nodeDom": 0.066,
+            "cleanup": 0.025,
+            "total": 0.933,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.651,
+            "cableDiagnostics": 0.057,
+            "routingPipeline": 0.051,
+            "edgeDom": 0.093,
+            "nodeDom": 0.064,
+            "cleanup": 0.025,
+            "total": 0.942,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.588,
+            "cableDiagnostics": 0.05,
+            "routingPipeline": 0.051,
+            "edgeDom": 0.088,
+            "nodeDom": 0.063,
+            "cleanup": 0.023,
+            "total": 0.864,
+            "routingStages": {}
+          },
+          {
+            "mutationReconciliation": 0.634,
+            "cableDiagnostics": 0.053,
+            "routingPipeline": 0.05,
+            "edgeDom": 0.09,
+            "nodeDom": 0.064,
+            "cleanup": 0.025,
+            "total": 0.916,
+            "routingStages": {}
+          }
+        ],
+        "cache": {
+          "size": 196,
+          "hits": 2,
+          "misses": 196,
+          "evictions": 0,
+          "limit": 500,
+          "hitRate": 0.010101010101010102,
+          "indexedEdges": 99,
+          "indexedKeys": 196
+        }
+      },
+      "error": null
+    }
+  ]
+}

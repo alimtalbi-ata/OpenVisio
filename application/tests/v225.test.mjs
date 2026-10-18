@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {proposeRouteOffset,applyRouteOffset} from '../src/route-preview.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:100,y:80,w:20,h:20}];
+const edge={id:'e',from:'a',to:'b',style:'orthogonal'};
+const routes=new Map([['e',{points:[{x:20,y:10},{x:60,y:10},{x:100,y:10}]}],['other',{points:[{x:20,y:10},{x:100,y:10}]}]]);
+test('preview improves overlap without mutating edge',()=>{const p=proposeRouteOffset(edge,nodes,routes);assert.equal(p.status,'preview');assert.ok(p.after.score<p.before.score);assert.equal(edge.offset,undefined);});
+test('preview applies explicit offset',()=>{const p=proposeRouteOffset(edge,nodes,routes);const copy={...edge};applyRouteOffset(copy,p);assert.equal(copy.offset,p.offset);});
+test('manual route is protected',()=>assert.equal(proposeRouteOffset({...edge,waypoints:[{x:5,y:5}]},nodes,routes).status,'protected'));
+test('unsupported style protected',()=>assert.equal(proposeRouteOffset({...edge,style:'smart'},nodes,routes).status,'protected'));
+test('invalid proposal refused',()=>assert.throws(()=>applyRouteOffset({...edge},{status:'preview',edgeId:'wrong',offset:12})));
+test('missing rendered path unavailable',()=>assert.equal(proposeRouteOffset(edge,nodes,new Map()).status,'unavailable'));
+test('preview UI wired',()=>{assert.match(readFileSync(new URL('../index.html',import.meta.url),'utf8'),/wiringRoutePreview/);assert.match(readFileSync(new URL('../src/main.js',import.meta.url),'utf8'),/applyRouteOffset\(current,proposal\)/);});

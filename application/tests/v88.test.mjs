@@ -1,0 +1,12 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {parseWaypoints,serializeWaypoints,routeViaWaypoints} from "../src/routing.js";
+import {TEMPLATES,createTemplate} from "../src/templates.js";
+import {validateGraph} from "../src/model.js";
+test("points manuels analysés",()=>assert.deepEqual(parseWaypoints("20,30; 40,50"),[{x:20,y:30},{x:40,y:50}]));
+test("points manuels invalides rejetés",()=>assert.throws(()=>parseWaypoints("abc,5")));
+test("points manuels limités",()=>assert.throws(()=>parseWaypoints(Array(31).fill("1,2").join(";"))));
+test("points manuels sérialisés",()=>assert.equal(serializeWaypoints([{x:2,y:3}]),"2,3"));
+test("tracé avec points manuels",()=>assert.equal(routeViaWaypoints({x:0,y:0,w:50,h:50},{x:200,y:0,w:50,h:50},[{x:100,y:100}]).points.length,3));
+test("au moins trois modèles disponibles",()=>assert.ok(TEMPLATES.length>=3));
+for(const t of TEMPLATES)test("modèle valide "+t.id,()=>assert.equal(validateGraph(createTemplate(t.id)),true));
+test("modèle inconnu rejeté",()=>assert.throws(()=>createTemplate("inconnu")));

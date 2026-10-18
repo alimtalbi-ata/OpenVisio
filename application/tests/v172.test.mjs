@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {spatialRoutingImpact,routeBounds} from '../src/spatial-routing.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:100,y:0,w:20,h:20},{id:'c',x:300,y:300,w:20,h:20}];
+const edges=[{id:'ab',from:'a',to:'b'},{id:'bc',from:'b',to:'c'}];
+const state={nodes,edges};
+const routes=new Map([['ab',{points:[{x:20,y:10},{x:100,y:10}]}],['bc',{points:[{x:110,y:20},{x:310,y:310}]}]]);
+test('bounds for routes',()=>assert.deepEqual(routeBounds(routes.get('ab')),{left:20,top:10,right:100,bottom:10}));
+test('unchanged topology has no impact',()=>assert.equal(spatialRoutingImpact(state,state,routes).changedEdges.size,0));
+test('moving endpoint invalidates attached edges',()=>{const next={...state,nodes:nodes.map(n=>n.id==='a'?{...n,x:40}:n)};assert(spatialRoutingImpact(state,next,routes).changedEdges.has('ab'));});
+test('crossing path invalidated by obstacle',()=>{const next={...state,nodes:nodes.map(n=>n.id==='c'?{...n,x:60,y:0}:n)};assert(spatialRoutingImpact(state,next,routes).changedEdges.has('ab'));});
+test('visual-only changes do not invalidate',()=>{const next={...state,nodes:nodes.map(n=>({...n,color:'red'}))};assert.equal(spatialRoutingImpact(state,next,routes).changedEdges.size,0);});
+test('missing routes invalidate conservatively',()=>assert(spatialRoutingImpact(state,state,new Map()).changedEdges.has('ab')));
+test('changed connection invalidated',()=>{const next={...state,edges:edges.map(e=>e.id==='ab'?{...e,style:'smart'}:e)};assert(spatialRoutingImpact(state,next,routes).changedEdges.has('ab'));});
+test('invalid margin rejected',()=>assert.throws(()=>spatialRoutingImpact(state,state,routes,{margin:-1})));

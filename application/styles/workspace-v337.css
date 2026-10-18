@@ -1,0 +1,5 @@
+/* OpenVisio v33.7 — commande contextuelle explicite */
+#inspectorExpandAll{font:inherit;border:1px solid #b5c7db;border-radius:6px;padding:4px 9px;background:#f7fbff;color:#19334e;cursor:pointer}
+#inspectorExpandAll:hover{background:#e8f2ff}
+#inspectorExpandAll:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+@media(max-width:760px){#inspectorExpandAll{padding:7px 10px}}

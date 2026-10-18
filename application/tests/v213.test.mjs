@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {inspectRecovery} from '../src/recovery-diagnostics.js';
+import {encodeDocument,encodeBackup,DOCUMENT_KEY} from '../src/unified-storage.js';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+const deps={restoreGraph:JSON.parse,validateZones:x=>x,validateSanImport:x=>x};
+const doc=encodeDocument(JSON.stringify({nodes:[],edges:[]}),[],null);
+const storage=entries=>({getItem:k=>Object.hasOwn(entries,k)?entries[k]:null});
+test('v21.3 panneau accessible et contrôles présents',()=>{for(const id of ['recoveryStatusBtn','recoveryStatusDialog','recoveryStatusSummary','recoveryPrimaryStatus','recoveryBackupStatus','recoveryIssues','recoveryRefreshBtn','recoveryCloseBtn'])assert.match(html,new RegExp('id="'+id+'"'));});
+test('v21.3 panneau relit sans modifier',()=>{assert.match(main,/function refreshRecoveryStatus/);assert.match(main,/inspectRecovery\(localStorage,DOCUMENT_KEY/);assert.match(main,/recoveryStatusDialog'\)\.showModal/);});
+test('v21.3 diagnostic primaire valide',()=>{const x=inspectRecovery(storage({[DOCUMENT_KEY]:doc}),DOCUMENT_KEY,deps);assert.equal(x.primary,'valid');assert.equal(x.backup,'absent');});
+test('v21.3 diagnostic corruption et secours valide',()=>{const x=inspectRecovery(storage({[DOCUMENT_KEY]:'{bad',[DOCUMENT_KEY+'-backup']:encodeBackup(doc)}),DOCUMENT_KEY,deps);assert.equal(x.primary,'invalid');assert.equal(x.backup,'valid');assert.equal(x.recoverable,true);});

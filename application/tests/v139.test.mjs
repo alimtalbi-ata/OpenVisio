@@ -1,0 +1,17 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {buildSanImpactMatrix,sanImpactMatrixCsv,sanImpactMatrixHtml} from '../src/san-impact-matrix.js';
+const nodes=[{id:'s',type:'server',title:'Server'},{id:'w',type:'switch',title:'Fabric A',fabric:'A'},{id:'t',type:'storage',title:'Array'},{id:'a',type:'application',title:'ERP'}];
+const edges=[{id:'1',from:'s',to:'w',sourceInterface:'FC0',targetInterface:'FC1'},{id:'2',from:'w',to:'t',sourceInterface:'FC2',targetInterface:'FC0'},{id:'3',from:'a',to:'s'}];
+const before={nodes,edges},after={nodes,edges:[edges[2]]};
+const matrix=buildSanImpactMatrix(before,after);
+test('matrice comporte une paire serveur stockage',()=>assert.equal(matrix.rows.length,1));
+test('perte de chemin détectée',()=>assert.equal(matrix.rows[0].status,'degraded'));
+test('application associée par lien explicite',()=>assert.deepEqual(matrix.rows[0].applications,['ERP']));
+test('fabric perdue identifiée',()=>assert.deepEqual(matrix.rows[0].fabricBefore,['A']));
+test('aucune fabric après retrait',()=>assert.deepEqual(matrix.rows[0].fabricAfter,[]));
+test('résumé des impacts',()=>assert.equal(matrix.summary.high,1));
+test('CSV produit en-tête',()=>assert.match(sanImpactMatrixCsv(matrix),/Serveur,|"Serveur"/));
+test('HTML autonome',()=>assert.match(sanImpactMatrixHtml(matrix),/<!doctype html>/));
+test('CSV neutralise injection formule',()=>{const m=structuredClone(matrix);m.rows[0].server='=SUM(1,2)';assert.match(sanImpactMatrixCsv(m),/"'=SUM/)});
+test('HTML échappe les données',()=>{const m=structuredClone(matrix);m.rows[0].server='<script>';assert.ok(sanImpactMatrixHtml(m).includes('&lt;script&gt;'))});
+test('diagramme invalide rejeté',()=>assert.throws(()=>buildSanImpactMatrix({nodes:[],edges:[edges[0]]},after)));
+test('pas de dépendance inventée',()=>{const x=buildSanImpactMatrix({...before,edges:edges.slice(0,2)},after);assert.deepEqual(x.rows[0].applications,['ERP']);});

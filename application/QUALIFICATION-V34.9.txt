@@ -1,0 +1,1 @@
+Tests Node.js : 1491 réussis, 0 échec. Compilation native Windows non effectuée. Captures réelles indisponibles.

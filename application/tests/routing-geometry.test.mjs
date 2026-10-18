@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {projectOnSegment,nearestSegmentIndex,insertWaypoint} from "../src/routing.js";
+const a={id:"a",x:0,y:0,w:80,h:60},b={id:"b",x:400,y:0,w:80,h:60};
+test("projection bornée au segment",()=>assert.deepEqual(projectOnSegment({x:200,y:40},{x:0,y:0},{x:100,y:0}).point,{x:100,y:0}));
+test("projection sur segment vertical",()=>assert.deepEqual(projectOnSegment({x:50,y:30},{x:20,y:0},{x:20,y:100}).point,{x:20,y:30}));
+test("segment le plus proche",()=>assert.equal(nearestSegmentIndex([{x:0,y:0},{x:100,y:0},{x:100,y:100}],{x:90,y:70}),1));
+test("insertion au milieu des points manuels",()=>assert.deepEqual(insertWaypoint(a,b,[{x:150,y:30},{x:300,y:30}],{x:220,y:30}),[{x:150,y:30},{x:220,y:30},{x:300,y:30}]));
+test("insertion avant le premier point",()=>assert.deepEqual(insertWaypoint(a,b,[{x:200,y:30}],{x:100,y:30})[0],{x:100,y:30}));
+test("rejet de coordonnées invalides",()=>assert.throws(()=>insertWaypoint(a,b,[],{x:NaN,y:2})));
+test("limite de points respectée",()=>assert.throws(()=>insertWaypoint(a,b,Array(30).fill({x:1,y:1}),{x:2,y:2})));

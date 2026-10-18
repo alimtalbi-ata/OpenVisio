@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {incrementalRoutingPipeline} from '../src/renderer.js';
+const nodes=Array.from({length:202},(_,i)=>({id:`n${i}`,x:i*100,y:0,w:40,h:40}));
+const edges=Array.from({length:201},(_,i)=>({id:`e${i}`,from:`n${i}`,to:`n${i+1}`,style:'orthogonal'}));
+const state={nodes,edges};
+const routes=new Map(edges.map((e,i)=>[e.id,{points:[{x:i*100+40,y:20},{x:(i+1)*100,y:20}],path:`M ${i*100+40} 20 L ${(i+1)*100} 20`}]));
+const compute=()=>routes;
+test('initial routing computed',()=>{const p={};assert.equal(incrementalRoutingPipeline(state,p,compute),routes);});
+test('same geometry reuses routes',()=>{const p={};incrementalRoutingPipeline(state,p,compute);assert.equal(incrementalRoutingPipeline(state,p,()=>{throw Error('recomputed')}),routes);});
+test('one moved endpoint falls back globally when bundles are unverified',()=>{const p={};incrementalRoutingPipeline(state,p,compute);const changed={nodes:nodes.map((n,i)=>i===0?{...n,x:15}:n),edges};const result=incrementalRoutingPipeline(changed,p,compute);assert.equal(result,routes);});
+test('complex routing falls back globally',()=>{const p={};incrementalRoutingPipeline(state,p,compute);const changed={nodes:nodes.map((n,i)=>i===0?{...n,x:15}:n),edges:edges.map((e,i)=>i===0?{...e,style:'smart'}:e)};assert.equal(incrementalRoutingPipeline(changed,p,compute),routes);});
+test('snapshot detects in-place mutation and falls back globally',()=>{const p={};incrementalRoutingPipeline(state,p,compute);const n=nodes[0].x;nodes[0].x=30;try{const result=incrementalRoutingPipeline(state,p,compute);assert.equal(result,routes);}finally{nodes[0].x=n;}});

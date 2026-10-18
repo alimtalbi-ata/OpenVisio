@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {parseLunMasking,formatLunMasking,validateLunMasking} from '../src/lun-masking.js';
+const w='10:00:00:00:00:00:00:01';
+test('masking valide',()=>assert.deepEqual(parseLunMasking('LUN1 ; '+w,['LUN1']),[{lunId:'LUN1',initiatorWwpn:w}]));
+test('normalise WWPN',()=>assert.equal(parseLunMasking('LUN1;AA:BB:CC:DD:EE:FF:00:11')[0].initiatorWwpn,'aa:bb:cc:dd:ee:ff:00:11'));
+test('refuse WWPN invalide',()=>assert.throws(()=>parseLunMasking('LUN1;xx')));
+test('refuse LUN inconnue',()=>assert.throws(()=>parseLunMasking('LUN2;'+w,['LUN1'])));
+test('refuse doublon',()=>assert.throws(()=>parseLunMasking('LUN1;'+w+'\nLUN1;'+w)));
+test('refuse ligne malformée',()=>assert.throws(()=>parseLunMasking('LUN1')));
+test('refuse liste non tableau',()=>assert.throws(()=>validateLunMasking({})));
+test('roundtrip',()=>assert.deepEqual(parseLunMasking(formatLunMasking([{lunId:'L1',initiatorWwpn:w}])),[{lunId:'L1',initiatorWwpn:w}]));
+test('vide accepté',()=>assert.deepEqual(parseLunMasking('  '),[]));
+test('refuse plus de 512 lignes',()=>assert.throws(()=>parseLunMasking(('L1;'+w+'\n').repeat(513))));

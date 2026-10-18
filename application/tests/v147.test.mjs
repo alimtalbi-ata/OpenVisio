@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {failureTargets,simulateSanFailure,failureCsv,failureHtml} from '../src/san-failure-simulator.js';
+const doc={format:'openvisio-diagram',version:2,nodes:[{id:'s',type:'server',title:'Serveur'},{id:'t',type:'storage',title:'Baie'},{id:'w',type:'switch',title:'SAN'}],edges:[{id:'a',from:'s',to:'w',fabric:'A'},{id:'b',from:'w',to:'t',fabric:'A'}]};
+test('cibles équipements et connexions',()=>{const t=failureTargets(doc);assert(t.some(x=>x.kind==='node'&&x.id==='w'));assert(t.some(x=>x.kind==='edge'&&x.id==='a'));});
+test('cible Fabric A',()=>assert(failureTargets(doc).some(x=>x.kind==='fabric'&&x.id==='A')));
+test('panne switch ne modifie pas entrée',()=>{const before=JSON.stringify(doc);simulateSanFailure(doc,{kind:'node',id:'w'});assert.equal(JSON.stringify(doc),before);});
+test('panne lien reconnue',()=>assert.equal(simulateSanFailure(doc,{kind:'edge',id:'a'}).target.id,'a'));
+test('panne Fabric reconnue',()=>assert.equal(simulateSanFailure(doc,{kind:'fabric',id:'A'}).target.kind,'fabric'));
+test('cible absente rejetée',()=>assert.throws(()=>simulateSanFailure(doc,{kind:'node',id:'missing'})));
+test('type inconnu rejeté',()=>assert.throws(()=>simulateSanFailure(doc,{kind:'other',id:'s'})));
+test('CSV correctement formé',()=>assert.match(failureCsv(simulateSanFailure(doc,{kind:'node',id:'w'})),/Serveur/));
+test('rapport HTML autonome',()=>assert.match(failureHtml(simulateSanFailure(doc,{kind:'node',id:'w'})),/<!doctype html>/));

@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {anchor,routeEdge,edgeMidpoint} from "../src/routing.js";
+const a={x:0,y:0,w:100,h:60},b={x:250,y:0,w:100,h:60};
+test("ancrage sur le côté droit",()=>assert.equal(anchor(a,{x:300,y:30}).side,"right"));
+test("ancrage sur le côté gauche",()=>assert.equal(anchor(b,{x:50,y:30}).side,"left"));
+test("tracé orthogonal contient quatre points",()=>assert.equal(routeEdge(a,b).points.length,4));
+test("tracé direct contient deux points",()=>assert.equal(routeEdge(a,b,"straight").points.length,2));
+test("décalage de routage",()=>assert.notEqual(routeEdge(a,b,"orthogonal",20).path,routeEdge(a,b).path));
+test("milieu calculé",()=>assert.ok(Number.isFinite(edgeMidpoint(routeEdge(a,b).points).x)));
+test("extrémité manquante rejetée",()=>assert.throws(()=>routeEdge(null,b)));

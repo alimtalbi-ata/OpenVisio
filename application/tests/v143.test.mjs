@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {correlateSanZoning,zoningCorrelationCsv,zoningCorrelationHtml} from '../src/san-zoning-correlation.js';
+const w1='10:00:00:00:00:00:00:01',w2='20:00:00:00:00:00:00:02';
+const doc=()=>({format:'openvisio-diagram',version:2,nodes:[{id:'a',title:'Serveur'},{id:'b',title:'Baie'}],edges:[{id:'e',from:'a',to:'b',zoneName:'Z1',initiatorWwpn:w1,targetWwpn:w2}]});
+const cfg=()=>({vendor:'brocade',fabric:'A',aliases:{},zones:[{name:'Z1',fabric:'A',vsan:null,members:[w1,w2],initiators:[],targets:[]}],zonesets:[{name:'CFG',vsan:null,zones:['Z1']}],activeConfigurations:[{name:'CFG',vsan:null,source:'cfgenable'}],warnings:[],requiresRoleAssignment:true});
+test('correspondance complète',()=>{const r=correlateSanZoning(doc(),cfg());assert.equal(r.summary.matched,1)});
+test('zone absente',()=>{const d=doc();d.edges[0].zoneName='Z2';assert.ok(correlateSanZoning(d,cfg()).rows[0].issues.includes('ZONE_NOT_IN_IMPORT'))});
+test('initiateur absent de zone',()=>{const d=doc();d.edges[0].initiatorWwpn='30:00:00:00:00:00:00:03';assert.ok(correlateSanZoning(d,cfg()).rows[0].issues.includes('INITIATOR_NOT_IN_ZONE'))});
+test('cible absente de zone',()=>{const d=doc();d.edges[0].targetWwpn='30:00:00:00:00:00:00:03';assert.ok(correlateSanZoning(d,cfg()).rows[0].issues.includes('TARGET_NOT_IN_ZONE'))});
+test('activation non déclarée',()=>{const c=cfg();c.activeConfigurations=[];assert.ok(correlateSanZoning(doc(),c).rows[0].issues.includes('NO_DECLARED_ACTIVATION'))});
+test('zone hors zoneset',()=>{const c=cfg();c.zonesets=[];assert.ok(correlateSanZoning(doc(),c).rows[0].issues.includes('ZONE_NOT_IN_ZONESET'))});
+test('liens non renseignés ignorés',()=>{const d=doc();d.edges[0]={id:'e',from:'a',to:'b'};assert.equal(correlateSanZoning(d,cfg()).summary.total,0)});
+test('CSV protège formules',()=>{const d=doc();d.nodes[0].title='=SUM(1,2)';assert.match(zoningCorrelationCsv(correlateSanZoning(d,cfg())),/"'=SUM/)});
+test('HTML échappe injection',()=>{const d=doc();d.nodes[0].title='<script>';const h=zoningCorrelationHtml(correlateSanZoning(d,cfg()));assert.ok(h.includes('&lt;script&gt;'));assert.ok(!h.includes('<script>'))});
+test('refuse import absent',()=>assert.throws(()=>correlateSanZoning(doc(),null)));

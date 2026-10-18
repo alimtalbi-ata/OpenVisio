@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {inspectRecovery} from '../src/recovery-diagnostics.js';
+import {encodeDocument,encodeBackup} from '../src/unified-storage.js';
+const deps={restoreGraph:JSON.parse,validateZones:x=>x,validateSanImport:x=>x};
+const key='doc';const good=encodeDocument(JSON.stringify({nodes:[],edges:[]}),[],null);
+const store=obj=>({getItem:k=>Object.hasOwn(obj,k)?obj[k]:null});
+test('diagnostic sans document',()=>assert.deepEqual(inspectRecovery(store({}),key,deps),{primary:'absent',backup:'absent',recoverable:false,issues:[]}));
+test('diagnostic document valide',()=>assert.equal(inspectRecovery(store({doc:good}),key,deps).primary,'valid'));
+test('diagnostic secours récupérable',()=>{const x=inspectRecovery(store({doc:'{bad','doc-backup':encodeBackup(good)}),key,deps);assert.equal(x.backup,'valid');assert.equal(x.recoverable,true);assert.equal(x.primary,'invalid')});
+test('diagnostic secours altéré',()=>{const x=inspectRecovery(store({'doc-backup':encodeBackup(good).replace('checksum','broken')}),key,deps);assert.equal(x.backup,'invalid');assert.equal(x.recoverable,false)});

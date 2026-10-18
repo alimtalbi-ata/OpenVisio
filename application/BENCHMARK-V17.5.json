@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-15T15:13:31.525Z",
+  "node": "v22.16.0",
+  "platform": "linux",
+  "scope": "Synthetic Node.js geometry-only benchmark; excludes browser SVG, global routing heuristics, UI and cache serialization; timings vary by machine",
+  "rows": [
+    {
+      "nodes": 100,
+      "edges": 99,
+      "impacted": 3,
+      "localMeanMs": 0.332,
+      "fullMeanMs": 0.303,
+      "samples": 25
+    },
+    {
+      "nodes": 500,
+      "edges": 499,
+      "impacted": 3,
+      "localMeanMs": 1.388,
+      "fullMeanMs": 0.497,
+      "samples": 25
+    },
+    {
+      "nodes": 1000,
+      "edges": 999,
+      "impacted": 3,
+      "localMeanMs": 1.956,
+      "fullMeanMs": 0.685,
+      "samples": 25
+    }
+  ]
+}

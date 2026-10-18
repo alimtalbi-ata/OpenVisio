@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {routingGeometrySignature,cachedRoutingPipeline,affectedGraphElements} from "../src/renderer.js";
+const graph=()=>({nodes:[{id:"a",x:0,y:0,w:80,h:40,fill:"red"},{id:"b",x:200,y:0,w:80,h:40}],edges:[{id:"e",from:"a",to:"b",style:"smart",label:"old"}]});
+test("couleur sans invalidation du routage",()=>{const s=graph(),before=routingGeometrySignature(s);s.nodes[0].fill="blue";assert.equal(routingGeometrySignature(s),before);});
+test("texte du lien sans invalidation du routage",()=>{const s=graph(),before=routingGeometrySignature(s);s.edges[0].label="new";assert.equal(routingGeometrySignature(s),before);});
+test("nom du nœud sans invalidation du routage",()=>{const s=graph(),before=routingGeometrySignature(s);s.nodes[0].label="changed";assert.equal(routingGeometrySignature(s),before);});
+test("déplacement invalide le routage",()=>{const s=graph(),before=routingGeometrySignature(s);s.nodes[0].x=1;assert.notEqual(routingGeometrySignature(s),before);});
+test("port physique invalide le routage",()=>{const s=graph(),before=routingGeometrySignature(s);s.edges[0].sourceInterface="fc0";assert.notEqual(routingGeometrySignature(s),before);});
+test("modification esthétique conserve le résultat mis en cache",()=>{const s=graph(),cache={};let count=0;cachedRoutingPipeline(s,cache,()=>++count);s.nodes[0].fill="blue";s.edges[0].label="new";assert.equal(cachedRoutingPipeline(s,cache,()=>++count),1);});
+test("diagnostic isole la forme modifiée et son lien",()=>{const a=graph(),b=structuredClone(a);b.nodes[0].fill="blue";const d=affectedGraphElements(a,b);assert.deepEqual([...d.nodes],["a"]);assert.deepEqual([...d.edges],["e"]);assert.equal(d.geometryChanged,false);});
+test("diagnostic reconnaît ajout de connexion",()=>{const a=graph(),b=structuredClone(a);b.edges.push({id:"f",from:"a",to:"b"});const d=affectedGraphElements(a,b);assert.ok(d.edges.has("f"));assert.equal(d.geometryChanged,true);});

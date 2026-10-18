@@ -1,0 +1,41 @@
+{
+  "version": "23.9",
+  "environment": {
+    "runtime": "v22.16.0",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "method": "80 repetitions; mean elapsed milliseconds per call; synthetic SAN orthogonal routes; timings indicative, not Windows UI",
+  "results": [
+    {
+      "edges": 64,
+      "repeats": 80,
+      "equalityMs": 0.06156,
+      "divergenceMs": 0.0235,
+      "spatialQueryMs": 0.00177,
+      "spatialCandidates": 2,
+      "spatialExact": 1,
+      "divergences": 1
+    },
+    {
+      "edges": 256,
+      "repeats": 80,
+      "equalityMs": 0.08873,
+      "divergenceMs": 0.03543,
+      "spatialQueryMs": 0.00043,
+      "spatialCandidates": 2,
+      "spatialExact": 1,
+      "divergences": 1
+    },
+    {
+      "edges": 1024,
+      "repeats": 80,
+      "equalityMs": 0.15644,
+      "divergenceMs": 0.14891,
+      "spatialQueryMs": 0.00046,
+      "spatialCandidates": 2,
+      "spatialExact": 1,
+      "divergences": 1
+    }
+  ]
+}

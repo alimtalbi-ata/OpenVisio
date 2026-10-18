@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {prepareRouteBatch,commitRouteBatch} from '../src/route-batch.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:200,y:0,w:20,h:20}];
+const edges=[{id:'A1',from:'a',to:'b',style:'orthogonal',offset:0,fabric:'A'},{id:'B1',from:'a',to:'b',style:'orthogonal',offset:0,fabric:'B'}];
+const path={points:[{x:20,y:10},{x:110,y:10},{x:110,y:30},{x:200,y:30}]};
+const routes=new Map([['A1',path],['B1',path]]);
+test('v25.3 expose les conflits inter-fabrics',()=>{const b=prepareRouteBatch(edges,nodes,routes);assert.ok(Array.isArray(b.fabricWarnings));assert.equal(b.fabricWarnings.every(x=>x.crossFabric&&x.reason==='FABRIC_AB_INTERFERENCE'),true)});
+test('v25.3 refuse un lot dont les propositions inter-fabrics entrent en conflit',()=>{const b=prepareRouteBatch(edges,nodes,routes);if(b.fabricWarnings.length)assert.throws(()=>commitRouteBatch(edges,nodes,b,new Set(['A1','B1'])),/Conflit/);});
+test('v25.3 ne déduit pas une Fabric sans métadonnée',()=>{const b=prepareRouteBatch(edges.map(e=>({...e,fabric:''})),nodes,routes);assert.equal(b.fabricWarnings.length,0)});
+test('v25.3 identifie uniquement les couples A/B',()=>{const b=prepareRouteBatch(edges.map(e=>({...e,fabric:'A'})),nodes,routes);assert.equal(b.fabricWarnings.length,0)});

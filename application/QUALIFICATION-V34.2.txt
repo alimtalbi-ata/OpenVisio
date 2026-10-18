@@ -1,0 +1,5 @@
+OpenVisio v34.2 — Auteur Abdelhalim Talbi
+Tests Node.js : 1462 PASS / 0 FAIL.
+Archive CRC : vérification lors de l'empaquetage.
+Compilation .NET / installation Inno Setup / tests graphiques Windows : NON EFFECTUÉS.
+Le livrable est une archive source, pas un installateur EXE précompilé.

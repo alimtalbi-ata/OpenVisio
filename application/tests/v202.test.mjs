@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createHistory} from '../src/history-transaction.js';
+import {planEdgeProperty,applyEdgeProperty} from '../src/edge-property-transaction.js';
+const diagram=()=>({nodes:[{id:'a',ports:['FC0','FC1']},{id:'b',ports:['FC2']}],edges:[{id:'e',from:'a',to:'b',sourceInterface:'FC0',targetInterface:'FC2',offset:0}],selected:'e',groups:[],layers:[],guides:[]});
+test('historique: mutation de liaison puis annuler/rétablir',()=>{const h=createHistory(),s=diagram();h.checkpoint(s);applyEdgeProperty(s.edges[0],planEdgeProperty(s.edges[0],'offset',15,s.nodes));assert.equal(s.edges[0].offset,15);assert.equal(h.travel(s,h.undo,h.redo),true);assert.equal(s.edges[0].offset,0);assert.equal(h.travel(s,h.redo,h.undo),true);assert.equal(s.edges[0].offset,15);});
+test('historique: nouvelle mutation invalide redo',()=>{const h=createHistory(),s=diagram();h.checkpoint(s);s.edges[0].offset=1;h.travel(s,h.undo,h.redo);assert.equal(h.redo.length,1);h.checkpoint(s);assert.equal(h.redo.length,0);});
+test('historique: annulation geste restaure redo précédent',()=>{const h=createHistory(),s=diagram();h.checkpoint(s);s.edges[0].offset=1;h.travel(s,h.undo,h.redo);const previous=h.redo.slice();h.checkpoint(s);s.edges[0].offset=2;assert.equal(h.cancelCheckpoint(previous),true);s.edges[0].offset=0;assert.deepEqual(h.redo,previous);});
+test('historique: borne de capacité',()=>{const h=createHistory(3),s=diagram();for(let i=0;i<9;i++){h.checkpoint(s);s.edges[0].offset=i;}assert.equal(h.undo.length,3);});
+test('historique: navigation sur piles vides sans effet',()=>{const h=createHistory(),s=diagram();assert.equal(h.travel(s,h.undo,h.redo),false);assert.equal(h.cancelCheckpoint([]),false);});
+test('historique: restauration profonde des ports et connexions',()=>{const h=createHistory(),s=diagram();h.checkpoint(s);s.nodes[0].ports[0]='FC9';s.edges[0].sourceInterface='FC9';h.travel(s,h.undo,h.redo);assert.equal(s.nodes[0].ports[0],'FC0');assert.equal(s.edges[0].sourceInterface,'FC0');});
+test('historique: limite invalide refusée',()=>assert.throws(()=>createHistory(0)));

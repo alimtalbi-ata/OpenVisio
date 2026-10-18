@@ -1,0 +1,12 @@
+OpenVisio v34.9 — Qualification
+1..1486
+# tests 1486
+# suites 0
+# pass 1486
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5717.137762
+Compilation native Windows : non effectuée
+Captures Windows réelles : non effectuées

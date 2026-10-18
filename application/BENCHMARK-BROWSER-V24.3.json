@@ -1,0 +1,7 @@
+{
+  "scenario": "browser-san-performance",
+  "environment": "Chromium headless Linux; non représentatif des FPS Windows",
+  "utc": "2026-10-15T22:35:04.117857+00:00",
+  "status": "FAIL",
+  "error": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:18769/\nCall log:\n  - navigating to \"http://127.0.0.1:18769/\", waiting until \"load\"\n"
+}

@@ -1,0 +1,42 @@
+{
+  "kind": "synthetic-node-cache-microbenchmark",
+  "node": "v22.16.0",
+  "results": [
+    {
+      "routes": 100,
+      "fill_ms": 2.616,
+      "read_3x_ms": 7.864,
+      "invalidate_half_ms": 0.061,
+      "size": 50,
+      "hits": 300,
+      "misses": 0,
+      "evictions": 0,
+      "limit": 100,
+      "hitRate": 1
+    },
+    {
+      "routes": 500,
+      "fill_ms": 21.886,
+      "read_3x_ms": 22.759,
+      "invalidate_half_ms": 0.061,
+      "size": 250,
+      "hits": 1500,
+      "misses": 0,
+      "evictions": 0,
+      "limit": 500,
+      "hitRate": 1
+    },
+    {
+      "routes": 1000,
+      "fill_ms": 27.338,
+      "read_3x_ms": 33.72,
+      "invalidate_half_ms": 0.065,
+      "size": 500,
+      "hits": 3000,
+      "misses": 0,
+      "evictions": 0,
+      "limit": 1000,
+      "hitRate": 1
+    }
+  ]
+}

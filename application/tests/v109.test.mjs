@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import{readFileSync}from'node:fs';
+const source=readFileSync(new URL('../windows/native/Program.cs',import.meta.url),'utf8');
+const project=readFileSync(new URL('../windows/native/OpenVisio.csproj',import.meta.url),'utf8');
+const builder=readFileSync(new URL('../Build-Windows-EXE.cmd',import.meta.url),'utf8');
+test('Windows desktop uses WinForms',()=>{assert.match(source,/Application.Run/);assert.match(project,/<UseWindowsForms>true/)});
+test('Windows desktop uses embedded WebView2',()=>assert.match(source,/WebView2 view = new()/));
+test('Windows desktop maps packaged local assets',()=>assert.match(source,/SetVirtualHostNameToFolderMapping/));
+test('Windows desktop blocks external navigation',()=>assert.match(source,/NavigationStarting/));
+test('Windows native host assets packaged',()=>{assert.match(project,/wwwroot\/index.html/);assert.match(project,/wwwroot\/src/);assert.match(project,/wwwroot\/styles/)});
+test('Windows self contained build',()=>{assert.match(builder,/win-x64/);assert.match(builder,/--self-contained true/)});

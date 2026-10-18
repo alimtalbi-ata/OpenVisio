@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {resolveDiagnosticEdge} from '../src/wiring-diagnostics.js';
+const edges=[{id:'c1',from:'a',to:'b'},{id:'c2',from:'b',to:'c'}];
+test('localisation d’une connexion existante',()=>assert.equal(resolveDiagnosticEdge({edgeId:'c2'},edges),edges[1]));
+test('connexion absente : aucun raccourci',()=>assert.equal(resolveDiagnosticEdge({edgeId:'missing'},edges),null));
+test('diagnostic malformé : navigation impossible',()=>assert.equal(resolveDiagnosticEdge(null,edges),null));
+test('inventaire absent : navigation impossible',()=>assert.equal(resolveDiagnosticEdge({edgeId:'c1'},null),null));
+test('navigation câblage branchée sur sélection et dialogue',()=>{const s=readFileSync('src/main.js','utf8');assert.match(s,/wiringDialog\.close\(\);select\(edge\.id\)/);assert.match(s,/button\.addEventListener\('click'/);});
+test('style visible et focus accessible',()=>{const s=readFileSync('index.html','utf8');assert.match(s,/wiring-located/);assert.match(s,/wiring-locate:focus-visible/);});

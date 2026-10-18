@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {cachedCableDiagnostics,clearCableDiagnosticsCache} from '../src/renderer.js';
+const fresh=()=>({});
+test('v23.4 : une sélection ne recalcule pas le diagnostic',()=>{const svg=fresh(),nodes=[{id:'a',x:1}],edges=[];let calls=0;const fn=()=>{calls++;return []};cachedCableDiagnostics(svg,nodes,edges,fn);cachedCableDiagnostics(svg,nodes,edges,fn);assert.equal(calls,1)});
+test('v23.4 : mutation de port invalide le cache',()=>{const svg=fresh(),nodes=[{id:'a',ports:['p1']}],edges=[];let calls=0;const fn=()=>{calls++;return []};cachedCableDiagnostics(svg,nodes,edges,fn);nodes[0].ports[0]='p2';cachedCableDiagnostics(svg,nodes,edges,fn);assert.equal(calls,2)});
+test('v23.4 : mutation de câble invalide le cache',()=>{const svg=fresh(),nodes=[],edges=[{id:'e',label:'A'}];let calls=0;const fn=()=>{calls++;return []};cachedCableDiagnostics(svg,nodes,edges,fn);edges[0].label='B';cachedCableDiagnostics(svg,nodes,edges,fn);assert.equal(calls,2)});
+test('v23.4 : cache isolé par canevas',()=>{let calls=0;const fn=()=>{calls++;return []};cachedCableDiagnostics(fresh(),[],[],fn);cachedCableDiagnostics(fresh(),[],[],fn);assert.equal(calls,2)});
+test('v23.4 : invalidation explicite',()=>{const svg=fresh();let calls=0;const fn=()=>{calls++;return []};cachedCableDiagnostics(svg,[],[],fn);clearCableDiagnosticsCache(svg);cachedCableDiagnostics(svg,[],[],fn);assert.equal(calls,2)});
+test('v23.4 : invalidité des entrées et résultats rejetée',()=>{assert.throws(()=>cachedCableDiagnostics(null,[],[]),TypeError);assert.throws(()=>cachedCableDiagnostics({},null,[]),TypeError);assert.throws(()=>cachedCableDiagnostics({},[],[],()=>null),TypeError)});

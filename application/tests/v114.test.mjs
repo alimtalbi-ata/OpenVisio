@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {portAnchor,routeEdge,PORT_SIDES} from "../src/routing.js";
+const a={x:10,y:20,w:100,h:60},b={x:350,y:120,w:120,h:80};
+test("five anchor modes",()=>assert.deepEqual(PORT_SIDES,["auto","left","right","top","bottom"]));
+for(const [side,x,y] of [["left",10,50],["right",110,50],["top",60,20],["bottom",60,80]])test(`port ${side}`,()=>assert.deepEqual(portAnchor(a,side,{x:500,y:200}),{x,y,side}));
+test("invalid side refused",()=>assert.throws(()=>portAnchor(a,"diagonal",{x:1,y:2})));
+test("invalid geometry refused",()=>assert.throws(()=>portAnchor({...a,w:0},"left",{x:1,y:2})));
+test("source and target ports applied",()=>{const r=routeEdge(a,b,"orthogonal",0,"right","left");assert.deepEqual(r.points[0],{x:110,y:50,side:"right"});assert.deepEqual(r.points.at(-1),{x:350,y:160,side:"left"});});
+test("automatic default preserved",()=>assert.deepEqual(routeEdge(a,b).points,routeEdge(a,b,"orthogonal",0,"auto","auto").points));

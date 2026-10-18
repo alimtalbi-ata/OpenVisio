@@ -1,0 +1,16 @@
+{
+  "version": "41.26",
+  "scope": "Simulated JavaScript SVG DOM only; excludes browser layout, paint, GPU, Windows, obstacle collision",
+  "repetitions": 2,
+  "node": "v22.16.0",
+  "results": [
+    {
+      "nodes": 100,
+      "edges": 99,
+      "medianFirstRenderMs": 702.620652,
+      "medianSecondRenderMs": 1.5083060000000614,
+      "topLevelElements": 199,
+      "stable": true
+    }
+  ]
+}

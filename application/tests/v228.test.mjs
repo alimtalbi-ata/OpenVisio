@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {analyzeDenseRouteBundles} from '../src/routing.js';
+const r=(...points)=>({points:points.map(([x,y])=>({x,y}))});
+test('dense sweep detects orthogonal crossing',()=>{const x=analyzeDenseRouteBundles(new Map([['a',r([0,5],[10,5])],['b',r([5,0],[5,10])]]));assert.equal(x.issues[0].code,'route-crossing');assert.equal(x.complete,true)});
+test('dense sweep detects shared cable',()=>{const x=analyzeDenseRouteBundles(new Map([['a',r([0,5],[10,5])],['b',r([2,5],[8,5])]]));assert.equal(x.issues[0].code,'route-overlap')});
+test('spatially separated routes require no pair comparisons',()=>{const x=analyzeDenseRouteBundles(new Map(Array.from({length:400},(_,i)=>[String(i),r([i*30,0],[i*30+10,0])])));assert.equal(x.pairsChecked,0);assert.equal(x.complete,true)});
+test('invalid geometry reported',()=>{const x=analyzeDenseRouteBundles(new Map([['bad',r([0,0],[1,1])],['nan',r([0,0],[NaN,2])]]));assert.equal(x.invalidRoutes,2)});
+test('budget exhaustion explicitly reported',()=>{const x=analyzeDenseRouteBundles(new Map([['a',r([0,0],[10,0])],['b',r([0,0],[10,0])],['c',r([0,0],[10,0])]]),{maxPairs:1});assert.equal(x.pairLimit,true);assert.equal(x.complete,false)});
+test('input remains unchanged',()=>{const routes=new Map([['a',r([0,0],[10,0])]]);const before=JSON.stringify([...routes]);analyzeDenseRouteBundles(routes);assert.equal(JSON.stringify([...routes]),before)});

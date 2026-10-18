@@ -1,0 +1,72 @@
+name: Windows desktop build
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'windows/**'
+      - 'src/**'
+      - 'styles/**'
+      - 'assets/**'
+      - '*.html'
+      - '.github/workflows/windows-release.yml'
+  pull_request:
+    paths:
+      - 'windows/**'
+      - '.github/workflows/windows-release.yml'
+jobs:
+  windows-x64:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript regression suite
+        run: npm test
+      - name: Build application and installer with one entry point
+        shell: cmd
+        run: call Build-OpenVisio-Windows.cmd
+      - name: Native Windows startup smoke test
+        shell: pwsh
+        run: ./windows/Smoke-Test-Windows.ps1 -WaitSeconds 10
+      - name: Verify installer and bundled WebView2 prerequisite
+        shell: pwsh
+        run: |
+          $installer = 'dist/installer/OpenVisio-Setup-v34.5-x64.exe'
+          $webview = 'dist/prerequisites/MicrosoftEdgeWebView2RuntimeInstallerX64.exe'
+          foreach ($file in @($installer, $webview)) {
+            if (!(Test-Path $file) -or (Get-Item $file).Length -lt 1MB) { throw "Missing or undersized: $file" }
+          }
+          $signature = Get-AuthenticodeSignature $webview
+          if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.Subject -notmatch 'Microsoft') { throw 'WebView2 prerequisite signature invalid' }
+          Get-FileHash $installer -Algorithm SHA256 | Format-List
+      - name: Install, launch and uninstall on Windows runner
+        shell: pwsh
+        run: ./windows/Test-Installer-E2E.ps1 -StartupSeconds 12
+      - name: Upload installer qualification log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-Installer-Qualification
+          path: |
+            dist/qualification/*.log
+            dist/qualification/*.json
+          if-no-files-found: ignore
+      - name: Package application
+        shell: pwsh
+        run: Compress-Archive -Path dist/windows-x64/* -DestinationPath dist/OpenVisio-Windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-Windows-x64
+          path: dist/OpenVisio-Windows-x64.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-Installer-x64
+          path: dist/installer/OpenVisio-Setup-v34.5-x64.exe
+          if-no-files-found: error

@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {visualPortAnchor,optimizeConnectionOrder,routeEdge,routeSmart,countRouteCrossings} from '../src/routing.js';
+const a={id:'a',x:0,y:0,w:100,h:60},b={id:'b',x:300,y:0,w:100,h:60};
+test('rotation 90 changes right port to bottom',()=>{const p=visualPortAnchor({...a,rotation:90},'right',{x:300,y:30});assert.equal(p.x,50);assert.equal(p.y,80);});
+test('flip H mirrors right port',()=>assert.equal(visualPortAnchor({...a,flipH:true},'right',{x:300,y:30}).x,0));
+test('zero rotation preserves port',()=>assert.equal(visualPortAnchor(a,'right',{x:300,y:30}).x,100));
+test('route uses transformed anchors',()=>assert.equal(routeEdge({...a,rotation:90},b,'straight',0,'right','left').points[0].y,80));
+test('order optimizer retains manual route',()=>{const e=[{id:'m',from:'a',to:'b',waypoints:[{x:150,y:90}]}];const r=optimizeConnectionOrder(e,[a,b],()=>({points:[{x:100,y:30},{x:150,y:90},{x:300,y:30}]}));assert.equal(r.routes.size,1);});
+test('empty edges supported',()=>assert.equal(optimizeConnectionOrder([],[a,b],()=>({points:[]})).routes.size,0));
+test('invalid callback rejected',()=>assert.throws(()=>optimizeConnectionOrder([],[a,b],null)));
+test('deterministic optimization',()=>{const e=[{id:'e1',from:'a',to:'b'},{id:'e2',from:'b',to:'a'}];const f=(e,a,b)=>routeEdge(a,b,'orthogonal');assert.equal(optimizeConnectionOrder(e,[a,b],f).score,optimizeConnectionOrder(e,[a,b],f).score);});
+test('smart route returns endpoints',()=>assert.ok(routeSmart(a,b,[],[]).points.length>=2));
+test('crossing metric returns zero on parallel lines',()=>assert.equal(countRouteCrossings([{points:[{x:0,y:0},{x:100,y:0}]},{points:[{x:0,y:10},{x:100,y:10}]}]),0));

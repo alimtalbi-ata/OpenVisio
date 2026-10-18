@@ -1,0 +1,206 @@
+
+> openvisio-v8.8-connecteurs-templates@8.8.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: makeNode produit un identifiant et des coordonnées
+ok 1 - makeNode produit un identifiant et des coordonnées
+  ---
+  duration_ms: 1.109192
+  type: 'test'
+  ...
+# Subtest: validateGraph accepte une connexion valide
+ok 2 - validateGraph accepte une connexion valide
+  ---
+  duration_ms: 0.323906
+  type: 'test'
+  ...
+# Subtest: validateGraph rejette les extrémités inconnues
+ok 3 - validateGraph rejette les extrémités inconnues
+  ---
+  duration_ms: 0.19681
+  type: 'test'
+  ...
+# Subtest: restore résiste à une entrée invalide
+ok 4 - restore résiste à une entrée invalide
+  ---
+  duration_ms: 0.966943
+  type: 'test'
+  ...
+# Subtest: snapshot/restore préserve le graphe
+ok 5 - snapshot/restore préserve le graphe
+  ---
+  duration_ms: 0.434119
+  type: 'test'
+  ...
+# Subtest: validateGraph rejette les connexions vers soi-même
+ok 6 - validateGraph rejette les connexions vers soi-même
+  ---
+  duration_ms: 0.256857
+  type: 'test'
+  ...
+# Subtest: validateGraph accepte un graphe vide
+ok 7 - validateGraph accepte un graphe vide
+  ---
+  duration_ms: 0.248035
+  type: 'test'
+  ...
+# Subtest: grouper et dégrouper
+ok 8 - grouper et dégrouper
+  ---
+  duration_ms: 1.357808
+  type: 'test'
+  ...
+# Subtest: groupe nécessite deux objets
+ok 9 - groupe nécessite deux objets
+  ---
+  duration_ms: 0.178793
+  type: 'test'
+  ...
+# Subtest: calques visibilité et verrouillage
+ok 10 - calques visibilité et verrouillage
+  ---
+  duration_ms: 0.374511
+  type: 'test'
+  ...
+# Subtest: refuse un calque inexistant
+ok 11 - refuse un calque inexistant
+  ---
+  duration_ms: 0.345779
+  type: 'test'
+  ...
+# Subtest: segment traversant obstacle détecté
+ok 12 - segment traversant obstacle détecté
+  ---
+  duration_ms: 0.748662
+  type: 'test'
+  ...
+# Subtest: segment éloigné accepté
+ok 13 - segment éloigné accepté
+  ---
+  duration_ms: 0.117052
+  type: 'test'
+  ...
+# Subtest: routage d'évitement renvoie un chemin
+ok 14 - routage d'évitement renvoie un chemin
+  ---
+  duration_ms: 2.254207
+  type: 'test'
+  ...
+# Subtest: routage sans obstacle renvoie un chemin
+ok 15 - routage sans obstacle renvoie un chemin
+  ---
+  duration_ms: 1.085267
+  type: 'test'
+  ...
+# Subtest: ancrage sur le côté droit
+ok 16 - ancrage sur le côté droit
+  ---
+  duration_ms: 0.92387
+  type: 'test'
+  ...
+# Subtest: ancrage sur le côté gauche
+ok 17 - ancrage sur le côté gauche
+  ---
+  duration_ms: 1.196321
+  type: 'test'
+  ...
+# Subtest: tracé orthogonal contient quatre points
+ok 18 - tracé orthogonal contient quatre points
+  ---
+  duration_ms: 0.206073
+  type: 'test'
+  ...
+# Subtest: tracé direct contient deux points
+ok 19 - tracé direct contient deux points
+  ---
+  duration_ms: 0.150802
+  type: 'test'
+  ...
+# Subtest: décalage de routage
+ok 20 - décalage de routage
+  ---
+  duration_ms: 0.239963
+  type: 'test'
+  ...
+# Subtest: milieu calculé
+ok 21 - milieu calculé
+  ---
+  duration_ms: 0.34014
+  type: 'test'
+  ...
+# Subtest: extrémité manquante rejetée
+ok 22 - extrémité manquante rejetée
+  ---
+  duration_ms: 0.374401
+  type: 'test'
+  ...
+# Subtest: points manuels analysés
+ok 23 - points manuels analysés
+  ---
+  duration_ms: 1.502581
+  type: 'test'
+  ...
+# Subtest: points manuels invalides rejetés
+ok 24 - points manuels invalides rejetés
+  ---
+  duration_ms: 0.238772
+  type: 'test'
+  ...
+# Subtest: points manuels limités
+ok 25 - points manuels limités
+  ---
+  duration_ms: 0.23775
+  type: 'test'
+  ...
+# Subtest: points manuels sérialisés
+ok 26 - points manuels sérialisés
+  ---
+  duration_ms: 0.148068
+  type: 'test'
+  ...
+# Subtest: tracé avec points manuels
+ok 27 - tracé avec points manuels
+  ---
+  duration_ms: 0.238321
+  type: 'test'
+  ...
+# Subtest: trois modèles disponibles
+ok 28 - trois modèles disponibles
+  ---
+  duration_ms: 0.340461
+  type: 'test'
+  ...
+# Subtest: modèle valide san-dual
+ok 29 - modèle valide san-dual
+  ---
+  duration_ms: 0.479366
+  type: 'test'
+  ...
+# Subtest: modèle valide replication
+ok 30 - modèle valide replication
+  ---
+  duration_ms: 0.149279
+  type: 'test'
+  ...
+# Subtest: modèle valide backup
+ok 31 - modèle valide backup
+  ---
+  duration_ms: 0.406449
+  type: 'test'
+  ...
+# Subtest: modèle inconnu rejeté
+ok 32 - modèle inconnu rejeté
+  ---
+  duration_ms: 0.545232
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 153.836514

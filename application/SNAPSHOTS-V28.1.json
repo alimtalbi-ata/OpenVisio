@@ -1,0 +1,6 @@
+{
+  "version": "28.1",
+  "real_windows_captures": false,
+  "reason": "Environnement Windows graphique non disponible",
+  "static_mockups_are_not_captures": true
+}

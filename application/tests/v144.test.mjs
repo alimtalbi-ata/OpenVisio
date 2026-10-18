@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {auditSanAccess,sanAccessCsv,sanAccessHtml} from '../src/san-access-audit.js';
+const w='10:00:00:00:00:00:00:01',t='20:00:00:00:00:00:00:01';
+const doc=()=>({format:'openvisio-diagram',version:2,nodes:[{id:'s',title:'srv',type:'server',wwpns:[w],multipath:'MPIO'},{id:'d',title:'array',type:'storage',luns:['L1'],lunMasking:[{lunId:'L1',initiatorWwpn:w}]}],edges:[{id:'e',from:'s',to:'d',initiatorWwpn:w,targetWwpn:t,lunId:'L1',pathId:'p1',fabric:'A'}]});
+test('sans import zoning : avertissement explicite',()=>assert.ok(auditSanAccess(doc()).rows[0].issues.includes('ZONING_IMPORT_UNAVAILABLE')));
+test('masking absent',()=>{const d=doc();delete d.nodes[1].lunMasking;assert.ok(auditSanAccess(d).rows[0].issues.includes('MASKING_NOT_DOCUMENTED'));});
+test('paire masking incorrecte',()=>{const d=doc();d.nodes[1].lunMasking=[{lunId:'L2',initiatorWwpn:w}];assert.ok(auditSanAccess(d).rows[0].issues.includes('MASKING_PAIR_NOT_DECLARED'));});
+test('lun inconnue',()=>{const d=doc();d.edges[0].lunId='L2';assert.ok(auditSanAccess(d).rows[0].issues.includes('LUN_NOT_DECLARED_ON_TARGET'));});
+test('multipathing absent',()=>{const d=doc();delete d.nodes[0].multipath;assert.ok(auditSanAccess(d).rows[0].issues.includes('MULTIPATH_NOT_DOCUMENTED'));});
+test('chemins dupliqués',()=>{const d=doc();d.edges.push({...d.edges[0],id:'e2'});assert.ok(auditSanAccess(d).rows.every(r=>r.issues.includes('DUPLICATE_PATH_ID')));});
+test('redondance non démontrée',()=>{const d=doc();d.edges.push({...d.edges[0],id:'e2',pathId:'p2'});assert.ok(auditSanAccess(d).rows.every(r=>r.issues.includes('FABRIC_REDUNDANCY_NOT_DEMONSTRATED')));});
+test('export CSV neutralise formule',()=>{const d=doc();d.nodes[0].title='=CMD';assert.match(sanAccessCsv(auditSanAccess(d)),/"'=CMD"/);});
+test('export HTML échappe le contenu',()=>{const d=doc();d.nodes[0].title='<script>';const h=sanAccessHtml(auditSanAccess(d));assert.ok(h.includes('&lt;script&gt;'));assert.ok(!h.includes('<script>'));});
+test('diagramme sans liens SAN',()=>{const d=doc();d.edges=[];assert.equal(auditSanAccess(d).summary.total,0);});

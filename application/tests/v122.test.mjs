@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {reportHtml,escapeHtml,buildWiringReport} from '../src/wiring-report.js';
+const n=[{id:'s',type:'server',title:'Host <test>',ports:['FC0']},{id:'w',type:'switch',title:'SAN',fabric:'A',ports:['FC0','FC1']},{id:'a',type:'storage',title:'Array',ports:['FC1']}];
+const e=[{id:'e1',from:'s',to:'w',sourceInterface:'FC0',targetInterface:'FC0'},{id:'e2',from:'w',to:'a',sourceInterface:'FC1',targetInterface:'FC1'}];
+test('HTML document standalone',()=>assert.match(reportHtml(buildWiringReport(n,e)),/^<!doctype html>/));
+test('HTML contains printable stylesheet',()=>assert.match(reportHtml(buildWiringReport(n,e)),/@media print/));
+test('HTML escapes node names',()=>assert.match(reportHtml(buildWiringReport(n,e)),/Host &lt;test&gt;/));
+test('HTML does not leak unescaped node tags',()=>assert.doesNotMatch(reportHtml(buildWiringReport(n,e)),/Host <test>/));
+test('HTML escapes quotes and ampersands',()=>assert.equal(escapeHtml(`&"'<>`),'&amp;&quot;&#39;&lt;&gt;'));
+test('HTML includes author',()=>assert.match(reportHtml(buildWiringReport(n,e)),/Abdelhalim Talbi/));
+test('HTML reports path risk',()=>assert.match(reportHtml(buildWiringReport(n,e)),/at-risk/));
+test('HTML includes zoning section',()=>assert.match(reportHtml(buildWiringReport(n,e)),/Anomalies déclaratives/));

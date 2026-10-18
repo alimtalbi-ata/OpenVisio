@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {routeAvoidingObstacles,countRouteCrossings,routeSharedLength,routeWithFewerCrossings} from '../src/routing.js';
+import {routeAvoidingObstacles as legacy} from './routing-legacy-v265.mjs';
+const a={x:0,y:0,w:40,h:40},b={x:700,y:0,w:40,h:40};
+test('v26.7 : parité multiwall dense',()=>{const obs=Array.from({length:72},(_,i)=>({x:65+(i%18)*35,y:-145+Math.floor(i/18)*70,w:18,h:35}));assert.deepEqual(routeAvoidingObstacles(a,b,obs,10),legacy(a,b,obs,10));});
+test('v26.7 : croisement strict horizontal vertical',()=>assert.equal(countRouteCrossings([{points:[{x:0,y:50},{x:100,y:50}]},{points:[{x:50,y:0},{x:50,y:100}]}]),1));
+test('v26.7 : contact aux extrémités non comptabilisé',()=>assert.equal(countRouteCrossings([{points:[{x:0,y:50},{x:50,y:50}]},{points:[{x:50,y:0},{x:50,y:100}]}]),0));
+test('v26.7 : chevauchement colinéaire mesuré',()=>assert.equal(routeSharedLength({points:[{x:0,y:0},{x:100,y:0}]},{points:[{x:40,y:0},{x:140,y:0}]}),60));
+test('v26.7 : choix de décalage reproductible',()=>{const x={x:0,y:0,w:30,h:30},y={x:300,y:0,w:30,h:30},existing=[{points:[{x:165,y:-100},{x:165,y:120}]}];const one=routeWithFewerCrossings(x,y,existing);assert.deepEqual(one,routeWithFewerCrossings(x,y,existing));assert.equal(Number.isFinite(one.offset),true);});

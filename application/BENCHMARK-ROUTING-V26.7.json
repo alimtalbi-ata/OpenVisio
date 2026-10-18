@@ -1,0 +1,42 @@
+{
+  "version": "26.7",
+  "environment": "Node.js v22.16.0; synthetic; NOT Windows graphical",
+  "roundsPerVariant": 25,
+  "results": [
+    {
+      "fixture": "sparse",
+      "obstacles": 1,
+      "baselineMedianMs": 1.6415130000000033,
+      "optimizedMedianMs": 1.4636299999999949,
+      "baselineP95Ms": 4.5415530000000075,
+      "optimizedP95Ms": 3.7407519999999863,
+      "speedupMedian": 1.1215354973593115,
+      "geometryIdentical": true
+    },
+    {
+      "fixture": "multiwall",
+      "obstacles": 12,
+      "baselineMedianMs": 1.0050030000000163,
+      "optimizedMedianMs": 0.8669100000000185,
+      "baselineP95Ms": 1.8637259999999856,
+      "optimizedP95Ms": 1.2505560000000173,
+      "speedupMedian": 1.1592933522510929,
+      "geometryIdentical": true
+    },
+    {
+      "fixture": "dense",
+      "obstacles": 72,
+      "baselineMedianMs": 1.1696769999999788,
+      "optimizedMedianMs": 0.9931849999999827,
+      "baselineP95Ms": 1.4285679999999843,
+      "optimizedP95Ms": 5.983390999999983,
+      "speedupMedian": 1.177703046260263,
+      "geometryIdentical": true
+    }
+  ],
+  "crossingFixture": {
+    "crossings": 0,
+    "sharedLength": 0,
+    "offset": 0
+  }
+}

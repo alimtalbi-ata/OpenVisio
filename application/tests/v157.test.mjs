@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {normalizeGuides,snapToGuides,moveGuide} from '../src/custom-guides.js';
+test('guides vides',()=>assert.deepEqual(normalizeGuides([]),[]));
+test('repère vertical valide',()=>assert.equal(normalizeGuides([{axis:'x',position:20}])[0].position,20));
+test('axe invalide',()=>assert.throws(()=>normalizeGuides([{axis:'z',position:20}])));
+test('position invalide',()=>assert.throws(()=>normalizeGuides([{axis:'x',position:NaN}])));
+test('trop de repères',()=>assert.throws(()=>normalizeGuides(Array.from({length:101},()=>({axis:'x',position:1})))));
+test('accroche bord gauche',()=>assert.equal(snapToGuides({x:19,y:0,w:20,h:20},[{axis:'x',position:20}]).x,20));
+test('accroche centre',()=>assert.equal(snapToGuides({x:9,y:0,w:20,h:20},[{axis:'x',position:20}]).x,10));
+test('sans accroche lointaine',()=>assert.equal(snapToGuides({x:0,y:0,w:10,h:10},[{axis:'x',position:90}]).x,0));
+test('déplacement repère',()=>assert.equal(moveGuide([{axis:'y',position:10}],0,25)[0].position,25));
+test('index déplacement invalide',()=>assert.throws(()=>moveGuide([],0,25)));

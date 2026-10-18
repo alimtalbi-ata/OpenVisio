@@ -1,0 +1,1 @@
+Node.js npm test : 1226 réussis, 0 échec. Syntaxe JavaScript : PASS. Tests navigateur Windows et captures réelles : non exécutés.

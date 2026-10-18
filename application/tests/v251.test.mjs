@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {routeRevision,safeRouteCommit} from '../src/route-preview.js';
+const nodes=()=>[{id:'a',x:0,y:0,w:40,h:40},{id:'b',x:200,y:0,w:40,h:40},{id:'c',x:100,y:100,w:40,h:40}];
+const edge=()=>({id:'e',from:'a',to:'b',style:'orthogonal',offset:0});
+const proposal={status:'preview',edgeId:'e',offset:12};
+test('v25.1 valid preview can be applied',()=>{const e=edge(),n=nodes(),rev=routeRevision(e,n);safeRouteCommit(e,proposal,n,rev);assert.equal(e.offset,12);});
+test('v25.1 moving endpoint invalidates preview',()=>{const e=edge(),n=nodes(),rev=routeRevision(e,n);n[0].x=15;assert.throws(()=>safeRouteCommit(e,proposal,n,rev),/obsolète/);assert.equal(e.offset,0);});
+test('v25.1 moving obstacle invalidates preview',()=>{const e=edge(),n=nodes(),rev=routeRevision(e,n);n[2].y=99;assert.throws(()=>safeRouteCommit(e,proposal,n,rev),/obsolète/);});
+test('v25.1 modified offset invalidates preview',()=>{const e=edge(),n=nodes(),rev=routeRevision(e,n);e.offset=8;assert.throws(()=>safeRouteCommit(e,proposal,n,rev),/obsolète/);assert.equal(e.offset,8);});
+test('v25.1 manual waypoints invalidate preview',()=>{const e=edge(),n=nodes(),rev=routeRevision(e,n);e.waypoints=[{x:1,y:2}];assert.throws(()=>safeRouteCommit(e,proposal,n,rev),/obsolète/);});
+test('v25.1 revision is independent of obstacle ordering',()=>{const e=edge(),n=nodes();assert.equal(routeRevision(e,n),routeRevision(e,[n[2],n[1],n[0]]));});

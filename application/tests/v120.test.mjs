@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {buildWiringReport,reportCsv,toCsv} from '../src/wiring-report.js';
+const nodes=[{id:'host',title:'Serveur',type:'server',ports:['FC0','FC1']},{id:'a',title:'SAN A',type:'switch',fabric:'A',ports:['FC1']},{id:'b',title:'SAN B',type:'switch',fabric:'B',ports:['FC2']}];
+const edges=[{id:'e1',from:'host',to:'a',sourceInterface:'FC0',targetInterface:'FC1'},{id:'e2',from:'host',to:'b',sourceInterface:'FC1',targetInterface:'FC2'}];
+test('inventaire et occupation',()=>{const r=buildWiringReport(nodes,edges);assert.equal(r.inventory.length,4);assert.equal(r.counts.used,4);});
+test('matrice SAN double fabric',()=>{const r=buildWiringReport(nodes,edges);assert.equal(r.matrix.find(x=>x.nodeId==='host').redundant,true);});
+test('absence fabric B détectée',()=>{const r=buildWiringReport(nodes,edges.slice(0,1));assert.equal(r.matrix.find(x=>x.nodeId==='host').redundant,false);});
+test('export ports UTF-8 BOM',()=>assert.ok(reportCsv(buildWiringReport(nodes,edges),'ports').startsWith('\uFEFFEquipement')));
+test('export fabric A/B',()=>assert.match(reportCsv(buildWiringReport(nodes,edges),'fabric'),/Fabric A;Fabric B/));
+test('export anomalies',()=>assert.match(reportCsv(buildWiringReport(nodes,edges),'anomalies'),/Connexion;Code/));
+test('CSV protège les séparateurs',()=>assert.match(toCsv([{x:'a;b'}],[['x','x']]),/"a;b"/));
+test('CSV protège guillemets',()=>assert.ok(toCsv([{x:'a"b'}],[['x','x']]).includes('"a""b"')));
+test('rapport inconnu refusé',()=>assert.throws(()=>reportCsv(buildWiringReport([],[]),'foo')));
+test('rapport vide sans erreur',()=>{const r=buildWiringReport([],[]);assert.equal(r.inventory.length,0);assert.equal(r.matrix.length,0);});

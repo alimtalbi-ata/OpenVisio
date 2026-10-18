@@ -1,0 +1,7 @@
+OpenVisio v34.5 — Qualification
+Auteur : Abdelhalim Talbi
+node --test tests/*.test.mjs : 1474 PASS, 0 FAIL
+Tests historiques actualisés pour la progression des versions.
+Compilation native Windows : NON EFFECTUÉE.
+Installateur Windows compilé : NON DISPONIBLE.
+Captures Windows réelles : NON DISPONIBLES.

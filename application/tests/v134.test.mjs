@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {visualAuditModel,comparisonHtmlReport} from '../src/san-visual-audit.js';
+import {readFileSync} from 'node:fs';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('comparaison HTML autonome',()=>assert.match(comparisonHtmlReport([]),/<!doctype html>/));
+test('rapport affiche auteur',()=>assert.match(comparisonHtmlReport([]),/Abdelhalim Talbi/));
+test('rapport protège le filtre HTML',()=>assert.doesNotMatch(comparisonHtmlReport([],{fabric:'<script>'}),/<script>/));
+test('rapport précise les limites',()=>assert.match(comparisonHtmlReport([]),/déclarative hors ligne/));
+test('comparaison vide sans historique',()=>assert.equal(visualAuditModel([]).changes.length,0));
+test('interface export HTML',()=>assert.match(html,/id="sanVisualHtml"/));

@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {reorderShapes} from '../src/z-order.js';
+const base=()=>['a','b','c','d'].map(id=>({id}));const ids=a=>a.map(n=>n.id).join('');
+test('premier plan',()=>assert.equal(ids(reorderShapes(base(),['b'],'front')),'acdb'));
+test('arrière-plan',()=>assert.equal(ids(reorderShapes(base(),['c'],'back')),'cabd'));
+test('monter un cran',()=>assert.equal(ids(reorderShapes(base(),['b'],'forward')),'acbd'));
+test('descendre un cran',()=>assert.equal(ids(reorderShapes(base(),['c'],'backward')),'acbd'));
+test('multi sélection garde ordre relatif',()=>assert.equal(ids(reorderShapes(base(),['b','d'],'front')),'acbd'));
+test('multi monter ne traverse pas les éléments sélectionnés',()=>assert.equal(ids(reorderShapes(base(),['b','c'],'forward')),'adbc'));
+test('aucune sélection ne modifie rien',()=>assert.equal(ids(reorderShapes(base(),[],'front')),'abcd'));
+test('id inconnu ignoré',()=>assert.equal(ids(reorderShapes(base(),['z'],'back')),'abcd'));
+test('action inconnue refusée',()=>assert.throws(()=>reorderShapes(base(),['a'],'delete'),RangeError));
+test('liste invalide refusée',()=>assert.throws(()=>reorderShapes(null,[],'front'),TypeError));
+test('entrée originale non modifiée',()=>{const a=base();reorderShapes(a,['b'],'front');assert.equal(ids(a),'abcd')});

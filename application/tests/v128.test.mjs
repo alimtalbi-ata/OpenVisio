@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {parseSanConfig,auditSanZonesets} from '../src/san-config-import.js';import {reportHtml,zonesetAuditCsv} from '../src/wiring-report.js';
+const input='zone name Z vsan 10\n member pwwn 10:00:00:90:fa:12:34:56\nzoneset name PROD vsan 10\n member zone Z\nzoneset activate name PROD vsan 10';
+test('Cisco activation parsed (regression)',()=>{const p=parseSanConfig(input,'cisco');assert.equal(p.activeConfigurations.length,1)});
+test('zoneset comparison finds missing diagram zone',()=>{const a=auditSanZonesets(parseSanConfig(input,'cisco'));assert.equal(a.rows[0].status,'missing-in-diagram')});
+test('zoneset comparison matches VSAN',()=>{const p=parseSanConfig(input,'cisco');assert.equal(auditSanZonesets(p,[{fabric:'A',vsan:10,name:'Z'}]).rows[0].status,'present-in-diagram')});
+test('zoneset comparison rejects wrong VSAN',()=>{const p=parseSanConfig(input,'cisco');assert.equal(auditSanZonesets(p,[{fabric:'A',vsan:20,name:'Z'}]).summary.missing,1)});
+test('missing imported zone flagged',()=>{const p=parseSanConfig('zoneset name P vsan 10\n member zone M','cisco');assert.equal(auditSanZonesets(p).rows[0].status,'missing-in-import')});
+test('activation without zoneset flagged',()=>{const p=parseSanConfig('zoneset activate name P vsan 10','cisco');assert.equal(auditSanZonesets(p).findings[0].code,'activation-without-zoneset')});
+test('csv supports zoneset',()=>{const a=auditSanZonesets(parseSanConfig(input,'cisco'));assert.match(zonesetAuditCsv(a),/PROD;Z/) });
+test('html escapes zoneset names',()=>{const html=reportHtml({sanPaths:[],diagnostics:[],generatedAt:'now',zoning:{matrix:[],findings:[]},zonesetAudit:{rows:[{fabric:'A',vsan:10,zoneset:'<script>',zone:'Z',activationDeclared:true,status:'present'}]}});assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/)});

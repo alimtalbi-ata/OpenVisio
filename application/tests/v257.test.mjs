@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {checkExistingFabricRoutes} from '../src/route-batch.js';
+const edge={id:'a',fabric:'A'},other={id:'b',fabric:'B'};
+const horizontal=y=>[{x:0,y},{x:100,y}];
+const routes=(a,b)=>new Map([['a',{points:horizontal(a)}],['b',{points:horizontal(b)}]]);
+test('v25.7 bloque une nouvelle proximité Fabric A/B',()=>{const r=checkExistingFabricRoutes(edge,{points:horizontal(5)},routes(30,0),[edge,other]);assert.equal(r.safe,false);assert.equal(r.violations[0].reason,'FABRIC_AB_EXISTING_REGRESSION');});
+test('v25.7 autorise un éloignement',()=>{assert.equal(checkExistingFabricRoutes(edge,{points:horizontal(30)},routes(5,0),[edge,other]).safe,true);});
+test('v25.7 refuse une aggravation de proximité existante',()=>{assert.equal(checkExistingFabricRoutes(edge,{points:horizontal(3)},routes(5,0),[edge,other]).safe,false);});
+test('v25.7 autorise une amélioration partielle',()=>{assert.equal(checkExistingFabricRoutes(edge,{points:horizontal(6)},routes(5,0),[edge,other]).safe,true);});
+test('v25.7 refuse les routes opposées manquantes',()=>{assert.equal(checkExistingFabricRoutes(edge,{points:horizontal(10)},routes(5,0),[edge,other].concat({id:'c',fabric:'B'})).safe,false);});
+test('v25.7 ignore les autres Fabrics non renseignées',()=>{assert.equal(checkExistingFabricRoutes({id:'x'}, {points:horizontal(0)},new Map(),[edge,other]).safe,true);});

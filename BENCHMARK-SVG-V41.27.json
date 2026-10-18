@@ -1,0 +1,720 @@
+{
+  "version": "41.26",
+  "scope": "Synthetic JS DOM only; excludes browser layout/paint and Windows",
+  "timeoutMs": 5000,
+  "node": "v22.16.0",
+  "results": [
+    {
+      "size": 10,
+      "status": "PASS",
+      "wallMs": 80.98,
+      "result": {
+        "nodes": 10,
+        "edges": 9,
+        "medianFirstRenderMs": 0.14521900000001153,
+        "medianSecondRenderMs": 0.1353340000000003,
+        "topLevelElements": 19,
+        "stable": true,
+        "coldStats": [
+          {
+            "nodesReused": 0,
+            "nodesUpdated": 10,
+            "edgesReused": 0,
+            "edgesUpdated": 9,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 19,
+              "removed": 0,
+              "reused": 0,
+              "total": 19,
+              "mutationRatio": 1
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "warmStats": [
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 10,
+            "nodesUpdated": 0,
+            "edgesReused": 9,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 19,
+              "total": 19,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "cache": {
+          "size": 15,
+          "hits": 3,
+          "misses": 15,
+          "evictions": 0,
+          "limit": 500,
+          "hitRate": 0.16666666666666666,
+          "indexedEdges": 9,
+          "indexedKeys": 15
+        }
+      },
+      "error": null
+    },
+    {
+      "size": 25,
+      "status": "PASS",
+      "wallMs": 164.62,
+      "result": {
+        "nodes": 25,
+        "edges": 24,
+        "medianFirstRenderMs": 0.28698099999999727,
+        "medianSecondRenderMs": 0.22490799999999922,
+        "topLevelElements": 49,
+        "stable": true,
+        "coldStats": [
+          {
+            "nodesReused": 0,
+            "nodesUpdated": 25,
+            "edgesReused": 0,
+            "edgesUpdated": 24,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 49,
+              "removed": 0,
+              "reused": 0,
+              "total": 49,
+              "mutationRatio": 1
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "warmStats": [
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 25,
+            "nodesUpdated": 0,
+            "edgesReused": 24,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 49,
+              "total": 49,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "cache": {
+          "size": 46,
+          "hits": 2,
+          "misses": 46,
+          "evictions": 0,
+          "limit": 500,
+          "hitRate": 0.041666666666666664,
+          "indexedEdges": 24,
+          "indexedKeys": 46
+        }
+      },
+      "error": null
+    },
+    {
+      "size": 50,
+      "status": "PASS",
+      "wallMs": 286.35,
+      "result": {
+        "nodes": 50,
+        "edges": 49,
+        "medianFirstRenderMs": 0.46807400000000143,
+        "medianSecondRenderMs": 0.47056700000001683,
+        "topLevelElements": 99,
+        "stable": true,
+        "coldStats": [
+          {
+            "nodesReused": 0,
+            "nodesUpdated": 50,
+            "edgesReused": 0,
+            "edgesUpdated": 49,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 99,
+              "removed": 0,
+              "reused": 0,
+              "total": 99,
+              "mutationRatio": 1
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "warmStats": [
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 50,
+            "nodesUpdated": 0,
+            "edgesReused": 49,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 99,
+              "total": 99,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "cache": {
+          "size": 96,
+          "hits": 2,
+          "misses": 96,
+          "evictions": 0,
+          "limit": 500,
+          "hitRate": 0.02040816326530612,
+          "indexedEdges": 49,
+          "indexedKeys": 96
+        }
+      },
+      "error": null
+    },
+    {
+      "size": 100,
+      "status": "PASS",
+      "wallMs": 782.88,
+      "result": {
+        "nodes": 100,
+        "edges": 99,
+        "medianFirstRenderMs": 1.0526619999999411,
+        "medianSecondRenderMs": 0.8984800000000632,
+        "topLevelElements": 199,
+        "stable": true,
+        "coldStats": [
+          {
+            "nodesReused": 0,
+            "nodesUpdated": 100,
+            "edgesReused": 0,
+            "edgesUpdated": 99,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 199,
+              "removed": 0,
+              "reused": 0,
+              "total": 199,
+              "mutationRatio": 1
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "warmStats": [
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          },
+          {
+            "nodesReused": 100,
+            "nodesUpdated": 0,
+            "edgesReused": 99,
+            "edgesUpdated": 0,
+            "nodesRemoved": 0,
+            "edgesRemoved": 0,
+            "domMutations": {
+              "createdOrReplaced": 0,
+              "removed": 0,
+              "reused": 199,
+              "total": 199,
+              "mutationRatio": 0
+            }
+          }
+        ],
+        "cache": {
+          "size": 196,
+          "hits": 2,
+          "misses": 196,
+          "evictions": 0,
+          "limit": 500,
+          "hitRate": 0.010101010101010102,
+          "indexedEdges": 99,
+          "indexedKeys": 196
+        }
+      },
+      "error": null
+    }
+  ]
+}

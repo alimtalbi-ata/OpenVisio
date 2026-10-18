@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {portChangeImpact} from '../src/ports.js';
+const node={id:'a',ports:['FC0','FC1','eth0']};
+test('port utilisé supprimé : détecté sans modifier le graphe',()=>{const edges=[{id:'e',from:'a',to:'b',sourceInterface:'FC0'}];const snapshot=JSON.stringify([node,edges]);const result=portChangeImpact(node,['FC1','eth0'],edges);assert.equal(result.hasImpact,true);assert.deepEqual(result.affected,[{edgeId:'e',sides:[{side:'source',port:'FC0'}]}]);assert.equal(JSON.stringify([node,edges]),snapshot);});
+test('port libre supprimé : autorisé',()=>{assert.equal(portChangeImpact(node,['FC0'],[{id:'e',from:'a',to:'b',sourceInterface:'FC0'}]).hasImpact,false);});
+test('connexion côté cible : prise en compte',()=>{const r=portChangeImpact(node,['eth0'],[{id:'e',from:'b',to:'a',targetInterface:'FC1'}]);assert.deepEqual(r.affected[0].sides,[{side:'target',port:'FC1'}]);});
+test('boucle locale : les deux côtés sont identifiés une fois',()=>{const r=portChangeImpact(node,[],[{id:'loop',from:'a',to:'a',sourceInterface:'FC0',targetInterface:'FC1'}]);assert.equal(r.affected.length,1);assert.equal(r.affected[0].sides.length,2);});
+test('suppression sans connexions : aucun impact',()=>{const r=portChangeImpact(node,[],[]);assert.equal(r.hasImpact,false);assert.equal(r.removed.length,3);});
+test('autres équipements ignorés',()=>{assert.equal(portChangeImpact(node,[],[{id:'e',from:'b',to:'c',sourceInterface:'FC0'}]).hasImpact,false);});

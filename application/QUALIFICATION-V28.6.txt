@@ -1,0 +1,7534 @@
+
+> openvisio-windows@28.6.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: topologie 100 équipements
+ok 1 - topologie 100 équipements
+  ---
+  duration_ms: 3.065289
+  type: 'test'
+  ...
+# Subtest: calcul des routes 100
+ok 2 - calcul des routes 100
+  ---
+  duration_ms: 10.108893
+  type: 'test'
+  ...
+# Subtest: topologie 500 équipements
+ok 3 - topologie 500 équipements
+  ---
+  duration_ms: 0.286612
+  type: 'test'
+  ...
+# Subtest: calcul des routes 500
+ok 4 - calcul des routes 500
+  ---
+  duration_ms: 4.673572
+  type: 'test'
+  ...
+# Subtest: topologie 1000 équipements
+ok 5 - topologie 1000 équipements
+  ---
+  duration_ms: 0.907006
+  type: 'test'
+  ...
+# Subtest: calcul des routes 1000
+ok 6 - calcul des routes 1000
+  ---
+  duration_ms: 15.882022
+  type: 'test'
+  ...
+# Subtest: rejet d'un nombre d'équipements invalide
+ok 7 - rejet d'un nombre d'équipements invalide
+  ---
+  duration_ms: 1.051574
+  type: 'test'
+  ...
+# Subtest: recherche sans accents
+ok 8 - recherche sans accents
+  ---
+  duration_ms: 1.680422
+  type: 'test'
+  ...
+# Subtest: recherche par mots multiples
+ok 9 - recherche par mots multiples
+  ---
+  duration_ms: 2.675542
+  type: 'test'
+  ...
+# Subtest: filtre constructeur
+ok 10 - filtre constructeur
+  ---
+  duration_ms: 0.405981
+  type: 'test'
+  ...
+# Subtest: filtre famille
+ok 11 - filtre famille
+  ---
+  duration_ms: 0.485241
+  type: 'test'
+  ...
+# Subtest: ajout et retrait favoris
+ok 12 - ajout et retrait favoris
+  ---
+  duration_ms: 1.373219
+  type: 'test'
+  ...
+# Subtest: filtre favoris
+ok 13 - filtre favoris
+  ---
+  duration_ms: 0.296207
+  type: 'test'
+  ...
+# Subtest: favoris corrompus
+ok 14 - favoris corrompus
+  ---
+  duration_ms: 0.34523
+  type: 'test'
+  ...
+# Subtest: catégories disponibles
+ok 15 - catégories disponibles
+  ---
+  duration_ms: 0.367314
+  type: 'test'
+  ...
+# Subtest: makeNode produit un identifiant et des coordonnées
+ok 16 - makeNode produit un identifiant et des coordonnées
+  ---
+  duration_ms: 3.333143
+  type: 'test'
+  ...
+# Subtest: validateGraph accepte une connexion valide
+ok 17 - validateGraph accepte une connexion valide
+  ---
+  duration_ms: 0.343227
+  type: 'test'
+  ...
+# Subtest: validateGraph rejette les extrémités inconnues
+ok 18 - validateGraph rejette les extrémités inconnues
+  ---
+  duration_ms: 0.189856
+  type: 'test'
+  ...
+# Subtest: restore résiste à une entrée invalide
+ok 19 - restore résiste à une entrée invalide
+  ---
+  duration_ms: 1.076041
+  type: 'test'
+  ...
+# Subtest: snapshot/restore préserve le graphe
+ok 20 - snapshot/restore préserve le graphe
+  ---
+  duration_ms: 0.532102
+  type: 'test'
+  ...
+# Subtest: validateGraph rejette les connexions vers soi-même
+ok 21 - validateGraph rejette les connexions vers soi-même
+  ---
+  duration_ms: 0.19238
+  type: 'test'
+  ...
+# Subtest: validateGraph accepte un graphe vide
+ok 22 - validateGraph accepte un graphe vide
+  ---
+  duration_ms: 0.257378
+  type: 'test'
+  ...
+# Subtest: grouper et dégrouper
+ok 23 - grouper et dégrouper
+  ---
+  duration_ms: 1.233269
+  type: 'test'
+  ...
+# Subtest: groupe nécessite deux objets
+ok 24 - groupe nécessite deux objets
+  ---
+  duration_ms: 0.204208
+  type: 'test'
+  ...
+# Subtest: calques visibilité et verrouillage
+ok 25 - calques visibilité et verrouillage
+  ---
+  duration_ms: 0.313673
+  type: 'test'
+  ...
+# Subtest: refuse un calque inexistant
+ok 26 - refuse un calque inexistant
+  ---
+  duration_ms: 1.309463
+  type: 'test'
+  ...
+# Subtest: segment traversant obstacle détecté
+ok 27 - segment traversant obstacle détecté
+  ---
+  duration_ms: 2.72034
+  type: 'test'
+  ...
+# Subtest: segment éloigné accepté
+ok 28 - segment éloigné accepté
+  ---
+  duration_ms: 0.495557
+  type: 'test'
+  ...
+# Subtest: routage d'évitement renvoie un chemin
+ok 29 - routage d'évitement renvoie un chemin
+  ---
+  duration_ms: 4.498514
+  type: 'test'
+  ...
+# Subtest: routage sans obstacle renvoie un chemin
+ok 30 - routage sans obstacle renvoie un chemin
+  ---
+  duration_ms: 0.983833
+  type: 'test'
+  ...
+# Subtest: projection bornée au segment
+ok 31 - projection bornée au segment
+  ---
+  duration_ms: 3.924213
+  type: 'test'
+  ...
+# Subtest: projection sur segment vertical
+ok 32 - projection sur segment vertical
+  ---
+  duration_ms: 0.640124
+  type: 'test'
+  ...
+# Subtest: segment le plus proche
+ok 33 - segment le plus proche
+  ---
+  duration_ms: 0.402196
+  type: 'test'
+  ...
+# Subtest: insertion au milieu des points manuels
+ok 34 - insertion au milieu des points manuels
+  ---
+  duration_ms: 0.912735
+  type: 'test'
+  ...
+# Subtest: insertion avant le premier point
+ok 35 - insertion avant le premier point
+  ---
+  duration_ms: 1.189963
+  type: 'test'
+  ...
+# Subtest: rejet de coordonnées invalides
+ok 36 - rejet de coordonnées invalides
+  ---
+  duration_ms: 0.33898
+  type: 'test'
+  ...
+# Subtest: limite de points respectée
+ok 37 - limite de points respectée
+  ---
+  duration_ms: 0.392691
+  type: 'test'
+  ...
+# Subtest: ancrage sur le côté droit
+ok 38 - ancrage sur le côté droit
+  ---
+  duration_ms: 1.264015
+  type: 'test'
+  ...
+# Subtest: ancrage sur le côté gauche
+ok 39 - ancrage sur le côté gauche
+  ---
+  duration_ms: 0.204979
+  type: 'test'
+  ...
+# Subtest: tracé orthogonal contient quatre points
+ok 40 - tracé orthogonal contient quatre points
+  ---
+  duration_ms: 0.399142
+  type: 'test'
+  ...
+# Subtest: tracé direct contient deux points
+ok 41 - tracé direct contient deux points
+  ---
+  duration_ms: 0.150197
+  type: 'test'
+  ...
+# Subtest: décalage de routage
+ok 42 - décalage de routage
+  ---
+  duration_ms: 0.287743
+  type: 'test'
+  ...
+# Subtest: milieu calculé
+ok 43 - milieu calculé
+  ---
+  duration_ms: 0.605031
+  type: 'test'
+  ...
+# Subtest: extrémité manquante rejetée
+ok 44 - extrémité manquante rejetée
+  ---
+  duration_ms: 0.350428
+  type: 'test'
+  ...
+# Subtest: context includes corrections and FC peers
+ok 45 - context includes corrections and FC peers
+  ---
+  duration_ms: 1.603256
+  type: 'test'
+  ...
+# Subtest: unknown object is explicit
+ok 46 - unknown object is explicit
+  ---
+  duration_ms: 0.270227
+  type: 'test'
+  ...
+# Subtest: navigation deduplicates object ids
+ok 47 - navigation deduplicates object ids
+  ---
+  duration_ms: 1.571137
+  type: 'test'
+  ...
+# Subtest: input diagram is not modified
+ok 48 - input diagram is not modified
+  ---
+  duration_ms: 0.443178
+  type: 'test'
+  ...
+# Subtest: documented FC ports and WWPN displayed
+ok 49 - documented FC ports and WWPN displayed
+  ---
+  duration_ms: 1.471267
+  type: 'test'
+  ...
+# Subtest: invalid WWPN explicitly flagged
+ok 50 - invalid WWPN explicitly flagged
+  ---
+  duration_ms: 1.705269
+  type: 'test'
+  ...
+# Subtest: fabric A filter excludes unrelated lines
+ok 51 - fabric A filter excludes unrelated lines
+  ---
+  duration_ms: 1.079406
+  type: 'test'
+  ...
+# Subtest: no mutation of topology
+ok 52 - no mutation of topology
+  ---
+  duration_ms: 0.353633
+  type: 'test'
+  ...
+# Subtest: redondance documentée
+ok 53 - redondance documentée
+  ---
+  duration_ms: 1.784689
+  type: 'test'
+  ...
+# Subtest: fabric absente détectée
+ok 54 - fabric absente détectée
+  ---
+  duration_ms: 0.247633
+  type: 'test'
+  ...
+# Subtest: entrée vide
+ok 55 - entrée vide
+  ---
+  duration_ms: 0.180913
+  type: 'test'
+  ...
+# Subtest: lien inspectable
+ok 56 - lien inspectable
+  ---
+  duration_ms: 0.287744
+  type: 'test'
+  ...
+# Subtest: filtre A/B et informations communes
+ok 57 - filtre A/B et informations communes
+  ---
+  duration_ms: 2.889014
+  type: 'test'
+  ...
+# Subtest: filtre inconnu
+ok 58 - filtre inconnu
+  ---
+  duration_ms: 0.355887
+  type: 'test'
+  ...
+# Subtest: entrée invalide
+ok 59 - entrée invalide
+  ---
+  duration_ms: 1.218456
+  type: 'test'
+  ...
+# Subtest: clic après glisser non interprété comme sélection
+ok 60 - clic après glisser non interprété comme sélection
+  ---
+  duration_ms: 1.883699
+  type: 'test'
+  ...
+# Subtest: sélection multiple mise à jour au début du glisser
+ok 61 - sélection multiple mise à jour au début du glisser
+  ---
+  duration_ms: 2.247387
+  type: 'test'
+  ...
+# Subtest: rejet identifiants de noeuds en doublon
+ok 62 - rejet identifiants de noeuds en doublon
+  ---
+  duration_ms: 0.142925
+  type: 'test'
+  ...
+# Subtest: rejet identifiants de liens en doublon
+ok 63 - rejet identifiants de liens en doublon
+  ---
+  duration_ms: 0.162274
+  type: 'test'
+  ...
+# Subtest: titres de noeuds importés absents acceptés sans crash
+ok 64 - titres de noeuds importés absents acceptés sans crash
+  ---
+  duration_ms: 0.157728
+  type: 'test'
+  ...
+# Subtest: inspecteur annonce type d'objet
+ok 65 - inspecteur annonce type d'objet
+  ---
+  duration_ms: 2.493698
+  type: 'test'
+  ...
+# Subtest: inspecteur affiche nom d'objet
+ok 66 - inspecteur affiche nom d'objet
+  ---
+  duration_ms: 0.152009
+  type: 'test'
+  ...
+# Subtest: étiquettes accessibles dans inspecteur
+ok 67 - étiquettes accessibles dans inspecteur
+  ---
+  duration_ms: 0.131508
+  type: 'test'
+  ...
+# Subtest: raccourci de recherche Ctrl K
+ok 68 - raccourci de recherche Ctrl K
+  ---
+  duration_ms: 0.157277
+  type: 'test'
+  ...
+# Subtest: version actualisée dans interface
+ok 69 - version actualisée dans interface
+  ---
+  duration_ms: 0.324449
+  type: 'test'
+  ...
+# Subtest: au moins six modèles accessibles
+ok 70 - au moins six modèles accessibles
+  ---
+  duration_ms: 1.488132
+  type: 'test'
+  ...
+# Subtest: identifiants uniques
+ok 71 - identifiants uniques
+  ---
+  duration_ms: 0.469378
+  type: 'test'
+  ...
+# Subtest: modèle san-dual cohérent
+ok 72 - modèle san-dual cohérent
+  ---
+  duration_ms: 0.543048
+  type: 'test'
+  ...
+# Subtest: modèle replication cohérent
+ok 73 - modèle replication cohérent
+  ---
+  duration_ms: 0.217027
+  type: 'test'
+  ...
+# Subtest: modèle backup cohérent
+ok 74 - modèle backup cohérent
+  ---
+  duration_ms: 0.256797
+  type: 'test'
+  ...
+# Subtest: modèle three-tier cohérent
+ok 75 - modèle three-tier cohérent
+  ---
+  duration_ms: 0.285861
+  type: 'test'
+  ...
+# Subtest: modèle hybrid-cloud cohérent
+ok 76 - modèle hybrid-cloud cohérent
+  ---
+  duration_ms: 0.188364
+  type: 'test'
+  ...
+# Subtest: modèle disaster-recovery cohérent
+ok 77 - modèle disaster-recovery cohérent
+  ---
+  duration_ms: 0.123226
+  type: 'test'
+  ...
+# Subtest: modèle kubernetes cohérent
+ok 78 - modèle kubernetes cohérent
+  ---
+  duration_ms: 0.54428
+  type: 'test'
+  ...
+# Subtest: modèle zero-trust cohérent
+ok 79 - modèle zero-trust cohérent
+  ---
+  duration_ms: 0.757262
+  type: 'test'
+  ...
+# Subtest: modèle backup-321 cohérent
+ok 80 - modèle backup-321 cohérent
+  ---
+  duration_ms: 3.141133
+  type: 'test'
+  ...
+# Subtest: modèle observability cohérent
+ok 81 - modèle observability cohérent
+  ---
+  duration_ms: 0.189455
+  type: 'test'
+  ...
+# Subtest: modèle flowchart cohérent
+ok 82 - modèle flowchart cohérent
+  ---
+  duration_ms: 0.118168
+  type: 'test'
+  ...
+# Subtest: modèle orgchart cohérent
+ok 83 - modèle orgchart cohérent
+  ---
+  duration_ms: 0.124027
+  type: 'test'
+  ...
+# Subtest: modèle application-map cohérent
+ok 84 - modèle application-map cohérent
+  ---
+  duration_ms: 0.203126
+  type: 'test'
+  ...
+# Subtest: modèle inconnu refusé
+ok 85 - modèle inconnu refusé
+  ---
+  duration_ms: 0.336127
+  type: 'test'
+  ...
+# Subtest: dix modèles distincts
+ok 86 - dix modèles distincts
+  ---
+  duration_ms: 0.994558
+  type: 'test'
+  ...
+# Subtest: topologie kubernetes
+ok 87 - topologie kubernetes
+  ---
+  duration_ms: 0.52421
+  type: 'test'
+  ...
+# Subtest: topologie zero-trust
+ok 88 - topologie zero-trust
+  ---
+  duration_ms: 0.35162
+  type: 'test'
+  ...
+# Subtest: topologie backup-321
+ok 89 - topologie backup-321
+  ---
+  duration_ms: 0.27218
+  type: 'test'
+  ...
+# Subtest: topologie observability
+ok 90 - topologie observability
+  ---
+  duration_ms: 0.270447
+  type: 'test'
+  ...
+# Subtest: duplique seulement les noeuds sélectionnés
+ok 91 - duplique seulement les noeuds sélectionnés
+  ---
+  duration_ms: 1.132506
+  type: 'test'
+  ...
+# Subtest: préserve la connectivité interne
+ok 92 - préserve la connectivité interne
+  ---
+  duration_ms: 0.186591
+  type: 'test'
+  ...
+# Subtest: ignore les liens externes
+ok 93 - ignore les liens externes
+  ---
+  duration_ms: 1.808335
+  type: 'test'
+  ...
+# Subtest: IDs uniques même si factory produit des collisions
+ok 94 - IDs uniques même si factory produit des collisions
+  ---
+  duration_ms: 0.377589
+  type: 'test'
+  ...
+# Subtest: ne modifie pas les objets sources
+ok 95 - ne modifie pas les objets sources
+  ---
+  duration_ms: 0.501085
+  type: 'test'
+  ...
+# Subtest: alignement gauche
+ok 96 - alignement gauche
+  ---
+  duration_ms: 5.281499
+  type: 'test'
+  ...
+# Subtest: alignement haut
+ok 97 - alignement haut
+  ---
+  duration_ms: 0.30548
+  type: 'test'
+  ...
+# Subtest: centrage horizontal avec tailles différentes
+ok 98 - centrage horizontal avec tailles différentes
+  ---
+  duration_ms: 0.207142
+  type: 'test'
+  ...
+# Subtest: centrage vertical avec tailles différentes
+ok 99 - centrage vertical avec tailles différentes
+  ---
+  duration_ms: 0.20513
+  type: 'test'
+  ...
+# Subtest: distribution horizontale à espaces égaux
+ok 100 - distribution horizontale à espaces égaux
+  ---
+  duration_ms: 0.362416
+  type: 'test'
+  ...
+# Subtest: distribution verticale à espaces égaux
+ok 101 - distribution verticale à espaces égaux
+  ---
+  duration_ms: 0.183567
+  type: 'test'
+  ...
+# Subtest: empilement horizontal sans collision
+ok 102 - empilement horizontal sans collision
+  ---
+  duration_ms: 0.235254
+  type: 'test'
+  ...
+# Subtest: empilement vertical sans collision
+ok 103 - empilement vertical sans collision
+  ---
+  duration_ms: 0.548286
+  type: 'test'
+  ...
+# Subtest: grille magnétique sur les coordonnées
+ok 104 - grille magnétique sur les coordonnées
+  ---
+  duration_ms: 0.475056
+  type: 'test'
+  ...
+# Subtest: aucune mutation si distribution de deux formes
+ok 105 - aucune mutation si distribution de deux formes
+  ---
+  duration_ms: 0.456758
+  type: 'test'
+  ...
+# Subtest: mode inconnu refusé
+ok 106 - mode inconnu refusé
+  ---
+  duration_ms: 0.306903
+  type: 'test'
+  ...
+# Subtest: lanceur Windows sans Python
+ok 107 - lanceur Windows sans Python
+  ---
+  duration_ms: 1.097554
+  type: 'test'
+  ...
+# Subtest: liaison locale
+ok 108 - liaison locale
+  ---
+  duration_ms: 0.19922
+  type: 'test'
+  ...
+# Subtest: rejet des méthodes d'écriture
+ok 109 - rejet des méthodes d'écriture
+  ---
+  duration_ms: 1.946924
+  type: 'test'
+  ...
+# Subtest: restriction des chemins
+ok 110 - restriction des chemins
+  ---
+  duration_ms: 0.29189
+  type: 'test'
+  ...
+# Subtest: liste blanche extensions
+ok 111 - liste blanche extensions
+  ---
+  duration_ms: 0.173341
+  type: 'test'
+  ...
+# Subtest: interface disponible
+ok 112 - interface disponible
+  ---
+  duration_ms: 0.284458
+  type: 'test'
+  ...
+# Subtest: Windows native host loopback
+ok 113 - Windows native host loopback
+  ---
+  duration_ms: 1.450425
+  type: 'test'
+  ...
+# Subtest: Windows native host path traversal guard
+ok 114 - Windows native host path traversal guard
+  ---
+  duration_ms: 0.15928
+  type: 'test'
+  ...
+# Subtest: Windows native host HTTP method guard
+ok 115 - Windows native host HTTP method guard
+  ---
+  duration_ms: 1.592981
+  type: 'test'
+  ...
+# Subtest: Windows native host extension whitelist
+ok 116 - Windows native host extension whitelist
+  ---
+  duration_ms: 0.224749
+  type: 'test'
+  ...
+# Subtest: Windows native host assets packaged
+ok 117 - Windows native host assets packaged
+  ---
+  duration_ms: 0.248465
+  type: 'test'
+  ...
+# Subtest: Windows self contained build
+ok 118 - Windows self contained build
+  ---
+  duration_ms: 0.169506
+  type: 'test'
+  ...
+# Subtest: rejects encoded dot segments
+ok 119 - rejects encoded dot segments
+  ---
+  duration_ms: 3.280734
+  type: 'test'
+  ...
+# Subtest: rejects backslash in paths
+ok 120 - rejects backslash in paths
+  ---
+  duration_ms: 1.848275
+  type: 'test'
+  ...
+# Subtest: protects frame embedding
+ok 121 - protects frame embedding
+  ---
+  duration_ms: 0.196596
+  type: 'test'
+  ...
+# Subtest: publishes web assets
+ok 122 - publishes web assets
+  ---
+  duration_ms: 0.232721
+  type: 'test'
+  ...
+# Subtest: build verifies executable and assets
+ok 123 - build verifies executable and assets
+  ---
+  duration_ms: 0.211769
+  type: 'test'
+  ...
+# Subtest: build invokes Windows smoke test
+ok 124 - build invokes Windows smoke test
+  ---
+  duration_ms: 0.156416
+  type: 'test'
+  ...
+# Subtest: smoke test checks HTTP app routes
+ok 125 - smoke test checks HTTP app routes
+  ---
+  duration_ms: 0.250437
+  type: 'test'
+  ...
+# Subtest: invalid routing step rejected
+ok 126 - invalid routing step rejected
+  ---
+  duration_ms: 1.330054
+  type: 'test'
+  ...
+# Subtest: invalid obstacle rejected
+ok 127 - invalid obstacle rejected
+  ---
+  duration_ms: 0.354884
+  type: 'test'
+  ...
+# Subtest: invalid endpoint rejected
+ok 128 - invalid endpoint rejected
+  ---
+  duration_ms: 0.335405
+  type: 'test'
+  ...
+# Subtest: valid obstacle avoidance remains functional
+ok 129 - valid obstacle avoidance remains functional
+  ---
+  duration_ms: 4.352759
+  type: 'test'
+  ...
+# Subtest: Windows smoke validates security headers
+ok 130 - Windows smoke validates security headers
+  ---
+  duration_ms: 0.780115
+  type: 'test'
+  ...
+# Subtest: Windows smoke checks POST rejected
+ok 131 - Windows smoke checks POST rejected
+  ---
+  duration_ms: 0.218109
+  type: 'test'
+  ...
+# Subtest: Windows smoke checks missing asset
+ok 132 - Windows smoke checks missing asset
+  ---
+  duration_ms: 0.272511
+  type: 'test'
+  ...
+# Subtest: croisement strict orthogonal
+ok 133 - croisement strict orthogonal
+  ---
+  duration_ms: 1.224676
+  type: 'test'
+  ...
+# Subtest: contacts aux extrémités exclus
+ok 134 - contacts aux extrémités exclus
+  ---
+  duration_ms: 0.357529
+  type: 'test'
+  ...
+# Subtest: parallèles exclus
+ok 135 - parallèles exclus
+  ---
+  duration_ms: 0.207503
+  type: 'test'
+  ...
+# Subtest: plusieurs croisements comptés
+ok 136 - plusieurs croisements comptés
+  ---
+  duration_ms: 0.274163
+  type: 'test'
+  ...
+# Subtest: validation des routes
+ok 137 - validation des routes
+  ---
+  duration_ms: 0.422597
+  type: 'test'
+  ...
+# Subtest: choix du décalage sans croisements
+ok 138 - choix du décalage sans croisements
+  ---
+  duration_ms: 0.764402
+  type: 'test'
+  ...
+# Subtest: validation des décalages
+ok 139 - validation des décalages
+  ---
+  duration_ms: 0.23211
+  type: 'test'
+  ...
+# Subtest: renderer wires crossing-aware routing
+ok 140 - renderer wires crossing-aware routing
+  ---
+  duration_ms: 0.939085
+  type: 'test'
+  ...
+# Subtest: renderer invalidates SVG when computed path changes
+ok 141 - renderer invalidates SVG when computed path changes
+  ---
+  duration_ms: 0.175314
+  type: 'test'
+  ...
+# Subtest: renderer collects routes even when DOM is reused
+ok 142 - renderer collects routes even when DOM is reused
+  ---
+  duration_ms: 0.215385
+  type: 'test'
+  ...
+# Subtest: crossing optimizer does not mutate original nodes
+ok 143 - crossing optimizer does not mutate original nodes
+  ---
+  duration_ms: 1.265187
+  type: 'test'
+  ...
+# Subtest: crossing optimizer never worse than default for existing routes
+ok 144 - crossing optimizer never worse than default for existing routes
+  ---
+  duration_ms: 0.7965
+  type: 'test'
+  ...
+# Subtest: five anchor modes
+ok 145 - five anchor modes
+  ---
+  duration_ms: 1.702856
+  type: 'test'
+  ...
+# Subtest: port left
+ok 146 - port left
+  ---
+  duration_ms: 0.301865
+  type: 'test'
+  ...
+# Subtest: port right
+ok 147 - port right
+  ---
+  duration_ms: 0.223277
+  type: 'test'
+  ...
+# Subtest: port top
+ok 148 - port top
+  ---
+  duration_ms: 0.094102
+  type: 'test'
+  ...
+# Subtest: port bottom
+ok 149 - port bottom
+  ---
+  duration_ms: 0.173612
+  type: 'test'
+  ...
+# Subtest: invalid side refused
+ok 150 - invalid side refused
+  ---
+  duration_ms: 0.221144
+  type: 'test'
+  ...
+# Subtest: invalid geometry refused
+ok 151 - invalid geometry refused
+  ---
+  duration_ms: 0.200833
+  type: 'test'
+  ...
+# Subtest: source and target ports applied
+ok 152 - source and target ports applied
+  ---
+  duration_ms: 0.275194
+  type: 'test'
+  ...
+# Subtest: automatic default preserved
+ok 153 - automatic default preserved
+  ---
+  duration_ms: 0.400313
+  type: 'test'
+  ...
+# Subtest: waypoints respect explicit ports
+ok 154 - waypoints respect explicit ports
+  ---
+  duration_ms: 3.037336
+  type: 'test'
+  ...
+# Subtest: avoid mode respects explicit endpoints
+ok 155 - avoid mode respects explicit endpoints
+  ---
+  duration_ms: 4.349565
+  type: 'test'
+  ...
+# Subtest: avoid mode refuses invalid explicit port
+ok 156 - avoid mode refuses invalid explicit port
+  ---
+  duration_ms: 0.353062
+  type: 'test'
+  ...
+# Subtest: manual mode refuses invalid explicit port
+ok 157 - manual mode refuses invalid explicit port
+  ---
+  duration_ms: 0.401154
+  type: 'test'
+  ...
+# Subtest: selected edge shows port markers
+ok 158 - selected edge shows port markers
+  ---
+  duration_ms: 0.685032
+  type: 'test'
+  ...
+# Subtest: liste des ports
+ok 159 - liste des ports
+  ---
+  duration_ms: 4.759181
+  type: 'test'
+  ...
+# Subtest: ports dupliqués rejetés
+ok 160 - ports dupliqués rejetés
+  ---
+  duration_ms: 0.499002
+  type: 'test'
+  ...
+# Subtest: injection HTML rejetée
+ok 161 - injection HTML rejetée
+  ---
+  duration_ms: 0.187122
+  type: 'test'
+  ...
+# Subtest: limite 64 ports
+ok 162 - limite 64 ports
+  ---
+  duration_ms: 0.172179
+  type: 'test'
+  ...
+# Subtest: ports vides autorisés
+ok 163 - ports vides autorisés
+  ---
+  duration_ms: 0.107772
+  type: 'test'
+  ...
+# Subtest: association valide
+ok 164 - association valide
+  ---
+  duration_ms: 0.137267
+  type: 'test'
+  ...
+# Subtest: association inconnue rejetée
+ok 165 - association inconnue rejetée
+  ---
+  duration_ms: 0.151788
+  type: 'test'
+  ...
+# Subtest: interfaces par type
+ok 166 - interfaces par type
+  ---
+  duration_ms: 0.332401
+  type: 'test'
+  ...
+# Subtest: marqueurs dans le cadre
+ok 167 - marqueurs dans le cadre
+  ---
+  duration_ms: 1.196263
+  type: 'test'
+  ...
+# Subtest: marqueurs tronqués à 12
+ok 168 - marqueurs tronqués à 12
+  ---
+  duration_ms: 6.597282
+  type: 'test'
+  ...
+# Subtest: géométrie invalide sans marqueur
+ok 169 - géométrie invalide sans marqueur
+  ---
+  duration_ms: 0.887587
+  type: 'test'
+  ...
+# Subtest: câblage correct
+ok 170 - câblage correct
+  ---
+  duration_ms: 0.582698
+  type: 'test'
+  ...
+# Subtest: interface inconnue
+ok 171 - interface inconnue
+  ---
+  duration_ms: 0.302426
+  type: 'test'
+  ...
+# Subtest: port réutilisé
+ok 172 - port réutilisé
+  ---
+  duration_ms: 0.29878
+  type: 'test'
+  ...
+# Subtest: extrémité absente
+ok 173 - extrémité absente
+  ---
+  duration_ms: 0.312942
+  type: 'test'
+  ...
+# Subtest: physical port coordinates correspond to visual markers
+ok 174 - physical port coordinates correspond to visual markers
+  ---
+  duration_ms: 3.026391
+  type: 'test'
+  ...
+# Subtest: unknown physical port has no location
+ok 175 - unknown physical port has no location
+  ---
+  duration_ms: 0.273923
+  type: 'test'
+  ...
+# Subtest: FC interface classification
+ok 176 - FC interface classification
+  ---
+  duration_ms: 0.322456
+  type: 'test'
+  ...
+# Subtest: Ethernet interface classification
+ok 177 - Ethernet interface classification
+  ---
+  duration_ms: 0.287463
+  type: 'test'
+  ...
+# Subtest: Virtual interface classification
+ok 178 - Virtual interface classification
+  ---
+  duration_ms: 0.200683
+  type: 'test'
+  ...
+# Subtest: Compatible FC cabling
+ok 179 - Compatible FC cabling
+  ---
+  duration_ms: 0.241594
+  type: 'test'
+  ...
+# Subtest: Incompatible FC/Ethernet cabling
+ok 180 - Incompatible FC/Ethernet cabling
+  ---
+  duration_ms: 0.200331
+  type: 'test'
+  ...
+# Subtest: Unknown interface does not falsely reject
+ok 181 - Unknown interface does not falsely reject
+  ---
+  duration_ms: 0.174263
+  type: 'test'
+  ...
+# Subtest: Diagnostic detects incompatible link
+ok 182 - Diagnostic detects incompatible link
+  ---
+  duration_ms: 0.682218
+  type: 'test'
+  ...
+# Subtest: Diagnostic preserves compatible link
+ok 183 - Diagnostic preserves compatible link
+  ---
+  duration_ms: 0.547846
+  type: 'test'
+  ...
+# Subtest: inventaire ports libres
+ok 184 - inventaire ports libres
+  ---
+  duration_ms: 2.672046
+  type: 'test'
+  ...
+# Subtest: inventaire ports occupés
+ok 185 - inventaire ports occupés
+  ---
+  duration_ms: 0.461255
+  type: 'test'
+  ...
+# Subtest: occupation multiple détectée
+ok 186 - occupation multiple détectée
+  ---
+  duration_ms: 0.457149
+  type: 'test'
+  ...
+# Subtest: inventaire inclut famille FC
+ok 187 - inventaire inclut famille FC
+  ---
+  duration_ms: 0.270277
+  type: 'test'
+  ...
+# Subtest: mismatch fabric détecté
+ok 188 - mismatch fabric détecté
+  ---
+  duration_ms: 0.343378
+  type: 'test'
+  ...
+# Subtest: fabric SHARED ne déclenche pas anomalie
+ok 189 - fabric SHARED ne déclenche pas anomalie
+  ---
+  duration_ms: 0.164968
+  type: 'test'
+  ...
+# Subtest: double fabric A/B détectée
+ok 190 - double fabric A/B détectée
+  ---
+  duration_ms: 0.548477
+  type: 'test'
+  ...
+# Subtest: un seul fabric ne prouve pas redondance
+ok 191 - un seul fabric ne prouve pas redondance
+  ---
+  duration_ms: 0.182716
+  type: 'test'
+  ...
+# Subtest: lien sans équipement ne provoque pas erreur
+ok 192 - lien sans équipement ne provoque pas erreur
+  ---
+  duration_ms: 1.355883
+  type: 'test'
+  ...
+# Subtest: inventaire et occupation
+ok 193 - inventaire et occupation
+  ---
+  duration_ms: 4.260771
+  type: 'test'
+  ...
+# Subtest: matrice SAN double fabric
+ok 194 - matrice SAN double fabric
+  ---
+  duration_ms: 0.465341
+  type: 'test'
+  ...
+# Subtest: absence fabric B détectée
+ok 195 - absence fabric B détectée
+  ---
+  duration_ms: 0.424359
+  type: 'test'
+  ...
+# Subtest: export ports UTF-8 BOM
+ok 196 - export ports UTF-8 BOM
+  ---
+  duration_ms: 2.511785
+  type: 'test'
+  ...
+# Subtest: export fabric A/B
+ok 197 - export fabric A/B
+  ---
+  duration_ms: 0.545171
+  type: 'test'
+  ...
+# Subtest: export anomalies
+ok 198 - export anomalies
+  ---
+  duration_ms: 0.361024
+  type: 'test'
+  ...
+# Subtest: CSV protège les séparateurs
+ok 199 - CSV protège les séparateurs
+  ---
+  duration_ms: 0.160622
+  type: 'test'
+  ...
+# Subtest: CSV protège guillemets
+ok 200 - CSV protège guillemets
+  ---
+  duration_ms: 0.138408
+  type: 'test'
+  ...
+# Subtest: rapport inconnu refusé
+ok 201 - rapport inconnu refusé
+  ---
+  duration_ms: 1.668805
+  type: 'test'
+  ...
+# Subtest: rapport vide sans erreur
+ok 202 - rapport vide sans erreur
+  ---
+  duration_ms: 0.459812
+  type: 'test'
+  ...
+# Subtest: independent A/B paths
+ok 203 - independent A/B paths
+  ---
+  duration_ms: 1.658088
+  type: 'test'
+  ...
+# Subtest: single fabric risk
+ok 204 - single fabric risk
+  ---
+  duration_ms: 0.523449
+  type: 'test'
+  ...
+# Subtest: unreachable storage
+ok 205 - unreachable storage
+  ---
+  duration_ms: 0.165139
+  type: 'test'
+  ...
+# Subtest: shared switch is not independent
+ok 206 - shared switch is not independent
+  ---
+  duration_ms: 0.170777
+  type: 'test'
+  ...
+# Subtest: zoning review direct FC
+ok 207 - zoning review direct FC
+  ---
+  duration_ms: 0.259641
+  type: 'test'
+  ...
+# Subtest: zoning review cross fabric
+ok 208 - zoning review cross fabric
+  ---
+  duration_ms: 0.219451
+  type: 'test'
+  ...
+# Subtest: non FC edge ignored
+ok 209 - non FC edge ignored
+  ---
+  duration_ms: 0.454866
+  type: 'test'
+  ...
+# Subtest: CSV paths export
+ok 210 - CSV paths export
+  ---
+  duration_ms: 2.321528
+  type: 'test'
+  ...
+# Subtest: no false positive zoning
+ok 211 - no false positive zoning
+  ---
+  duration_ms: 0.301464
+  type: 'test'
+  ...
+# Subtest: HTML document standalone
+ok 212 - HTML document standalone
+  ---
+  duration_ms: 4.702055
+  type: 'test'
+  ...
+# Subtest: HTML contains printable stylesheet
+ok 213 - HTML contains printable stylesheet
+  ---
+  duration_ms: 0.660175
+  type: 'test'
+  ...
+# Subtest: HTML escapes node names
+ok 214 - HTML escapes node names
+  ---
+  duration_ms: 0.51758
+  type: 'test'
+  ...
+# Subtest: HTML does not leak unescaped node tags
+ok 215 - HTML does not leak unescaped node tags
+  ---
+  duration_ms: 0.632022
+  type: 'test'
+  ...
+# Subtest: HTML escapes quotes and ampersands
+ok 216 - HTML escapes quotes and ampersands
+  ---
+  duration_ms: 0.300694
+  type: 'test'
+  ...
+# Subtest: HTML includes author
+ok 217 - HTML includes author
+  ---
+  duration_ms: 0.425932
+  type: 'test'
+  ...
+# Subtest: HTML reports path risk
+ok 218 - HTML reports path risk
+  ---
+  duration_ms: 1.429554
+  type: 'test'
+  ...
+# Subtest: HTML includes zoning section
+ok 219 - HTML includes zoning section
+  ---
+  duration_ms: 0.456878
+  type: 'test'
+  ...
+# Subtest: normalisation WWPN
+ok 220 - normalisation WWPN
+  ---
+  duration_ms: 2.055237
+  type: 'test'
+  ...
+# Subtest: WWPN mal formé rejeté
+ok 221 - WWPN mal formé rejeté
+  ---
+  duration_ms: 0.256807
+  type: 'test'
+  ...
+# Subtest: zone déclarée produit une paire
+ok 222 - zone déclarée produit une paire
+  ---
+  duration_ms: 0.45825
+  type: 'test'
+  ...
+# Subtest: zones incomplètes signalées
+ok 223 - zones incomplètes signalées
+  ---
+  duration_ms: 0.425882
+  type: 'test'
+  ...
+# Subtest: zones dupliquées signalées
+ok 224 - zones dupliquées signalées
+  ---
+  duration_ms: 0.17952
+  type: 'test'
+  ...
+# Subtest: membres dupliqués signalés
+ok 225 - membres dupliqués signalés
+  ---
+  duration_ms: 0.479593
+  type: 'test'
+  ...
+# Subtest: chemin physique non confirmé signalé
+ok 226 - chemin physique non confirmé signalé
+  ---
+  duration_ms: 0.158889
+  type: 'test'
+  ...
+# Subtest: export CSV zoning
+ok 227 - export CSV zoning
+  ---
+  duration_ms: 1.920494
+  type: 'test'
+  ...
+# Subtest: rapport HTML inclut zoning
+ok 228 - rapport HTML inclut zoning
+  ---
+  duration_ms: 0.522587
+  type: 'test'
+  ...
+# Subtest: roundtrip zoning v2
+ok 229 - roundtrip zoning v2
+  ---
+  duration_ms: 1.87099
+  type: 'test'
+  ...
+# Subtest: legacy diagram imports empty zoning
+ok 230 - legacy diagram imports empty zoning
+  ---
+  duration_ms: 0.169184
+  type: 'test'
+  ...
+# Subtest: reject duplicate zone same fabric
+ok 231 - reject duplicate zone same fabric
+  ---
+  duration_ms: 0.352932
+  type: 'test'
+  ...
+# Subtest: accept same zone in other fabric
+ok 232 - accept same zone in other fabric
+  ---
+  duration_ms: 0.155134
+  type: 'test'
+  ...
+# Subtest: reject missing fabric
+ok 233 - reject missing fabric
+  ---
+  duration_ms: 0.24561
+  type: 'test'
+  ...
+# Subtest: reject non-array
+ok 234 - reject non-array
+  ---
+  duration_ms: 0.139641
+  type: 'test'
+  ...
+# Subtest: reject oversized member array
+ok 235 - reject oversized member array
+  ---
+  duration_ms: 0.16615
+  type: 'test'
+  ...
+# Subtest: reject oversized name
+ok 236 - reject oversized name
+  ---
+  duration_ms: 0.204078
+  type: 'test'
+  ...
+# Subtest: normalize fabric case
+ok 237 - normalize fabric case
+  ---
+  duration_ms: 0.366753
+  type: 'test'
+  ...
+# Subtest: Brocade alias and zone
+ok 238 - Brocade alias and zone
+  ---
+  duration_ms: 2.351734
+  type: 'test'
+  ...
+# Subtest: Brocade zoneadd
+ok 239 - Brocade zoneadd
+  ---
+  duration_ms: 0.540495
+  type: 'test'
+  ...
+# Subtest: Cisco zone members
+ok 240 - Cisco zone members
+  ---
+  duration_ms: 0.80309
+  type: 'test'
+  ...
+# Subtest: Cisco device aliases
+ok 241 - Cisco device aliases
+  ---
+  duration_ms: 0.328094
+  type: 'test'
+  ...
+# Subtest: Unknown alias warned
+ok 242 - Unknown alias warned
+  ---
+  duration_ms: 0.369978
+  type: 'test'
+  ...
+# Subtest: Roles not fabricated
+ok 243 - Roles not fabricated
+  ---
+  duration_ms: 0.384679
+  type: 'test'
+  ...
+# Subtest: Role assignment
+ok 244 - Role assignment
+  ---
+  duration_ms: 0.338621
+  type: 'test'
+  ...
+# Subtest: Reject excessive input
+ok 245 - Reject excessive input
+  ---
+  duration_ms: 0.235595
+  type: 'test'
+  ...
+# Subtest: Reject fabric
+ok 246 - Reject fabric
+  ---
+  duration_ms: 0.255836
+  type: 'test'
+  ...
+# Subtest: comparaison zone nouvelle
+ok 247 - comparaison zone nouvelle
+  ---
+  duration_ms: 0.932756
+  type: 'test'
+  ...
+# Subtest: comparaison identique
+ok 248 - comparaison identique
+  ---
+  duration_ms: 0.200883
+  type: 'test'
+  ...
+# Subtest: comparaison modifiée
+ok 249 - comparaison modifiée
+  ---
+  duration_ms: 0.260262
+  type: 'test'
+  ...
+# Subtest: Fabric distincte
+ok 250 - Fabric distincte
+  ---
+  duration_ms: 0.113741
+  type: 'test'
+  ...
+# Subtest: import et attribution explicite
+ok 251 - import et attribution explicite
+  ---
+  duration_ms: 1.542314
+  type: 'test'
+  ...
+# Subtest: Brocade cfgcreate et cfgenable
+ok 252 - Brocade cfgcreate et cfgenable
+  ---
+  duration_ms: 2.666609
+  type: 'test'
+  ...
+# Subtest: Brocade cfgadd
+ok 253 - Brocade cfgadd
+  ---
+  duration_ms: 1.095882
+  type: 'test'
+  ...
+# Subtest: Cisco zoneset et VSAN
+ok 254 - Cisco zoneset et VSAN
+  ---
+  duration_ms: 0.811343
+  type: 'test'
+  ...
+# Subtest: Cisco VSAN distincts
+ok 255 - Cisco VSAN distincts
+  ---
+  duration_ms: 0.140211
+  type: 'test'
+  ...
+# Subtest: Zone manquante avertissement
+ok 256 - Zone manquante avertissement
+  ---
+  duration_ms: 0.223357
+  type: 'test'
+  ...
+# Subtest: Activation sans définition avertissement
+ok 257 - Activation sans définition avertissement
+  ---
+  duration_ms: 0.24535
+  type: 'test'
+  ...
+# Subtest: Zonesets absents restent vides
+ok 258 - Zonesets absents restent vides
+  ---
+  duration_ms: 0.298419
+  type: 'test'
+  ...
+# Subtest: Activation non déclarée ne présume pas active
+ok 259 - Activation non déclarée ne présume pas active
+  ---
+  duration_ms: 0.189135
+  type: 'test'
+  ...
+# Subtest: Cisco activation parsed (regression)
+ok 260 - Cisco activation parsed (regression)
+  ---
+  duration_ms: 2.352285
+  type: 'test'
+  ...
+# Subtest: zoneset comparison finds missing diagram zone
+ok 261 - zoneset comparison finds missing diagram zone
+  ---
+  duration_ms: 0.649669
+  type: 'test'
+  ...
+# Subtest: zoneset comparison matches VSAN
+ok 262 - zoneset comparison matches VSAN
+  ---
+  duration_ms: 0.18574
+  type: 'test'
+  ...
+# Subtest: zoneset comparison rejects wrong VSAN
+ok 263 - zoneset comparison rejects wrong VSAN
+  ---
+  duration_ms: 0.13892
+  type: 'test'
+  ...
+# Subtest: missing imported zone flagged
+ok 264 - missing imported zone flagged
+  ---
+  duration_ms: 0.119571
+  type: 'test'
+  ...
+# Subtest: activation without zoneset flagged
+ok 265 - activation without zoneset flagged
+  ---
+  duration_ms: 0.154984
+  type: 'test'
+  ...
+# Subtest: csv supports zoneset
+ok 266 - csv supports zoneset
+  ---
+  duration_ms: 0.380704
+  type: 'test'
+  ...
+# Subtest: html escapes zoneset names
+ok 267 - html escapes zoneset names
+  ---
+  duration_ms: 1.417486
+  type: 'test'
+  ...
+# Subtest: roundtrip sanitized
+ok 268 - roundtrip sanitized
+  ---
+  duration_ms: 3.415006
+  type: 'test'
+  ...
+# Subtest: null legacy
+ok 269 - null legacy
+  ---
+  duration_ms: 0.184999
+  type: 'test'
+  ...
+# Subtest: invalid vendor
+ok 270 - invalid vendor
+  ---
+  duration_ms: 0.430018
+  type: 'test'
+  ...
+# Subtest: invalid vsan
+ok 271 - invalid vsan
+  ---
+  duration_ms: 0.186932
+  type: 'test'
+  ...
+# Subtest: added zone set
+ok 272 - added zone set
+  ---
+  duration_ms: 0.38471
+  type: 'test'
+  ...
+# Subtest: removed zone set
+ok 273 - removed zone set
+  ---
+  duration_ms: 0.151127
+  type: 'test'
+  ...
+# Subtest: changed zone set
+ok 274 - changed zone set
+  ---
+  duration_ms: 0.281884
+  type: 'test'
+  ...
+# Subtest: same members reordered
+ok 275 - same members reordered
+  ---
+  duration_ms: 0.1923
+  type: 'test'
+  ...
+# Subtest: csv with header
+ok 276 - csv with header
+  ---
+  duration_ms: 0.742259
+  type: 'test'
+  ...
+# Subtest: snapshot SAN ajouté
+ok 277 - snapshot SAN ajouté
+  ---
+  duration_ms: 5.134142
+  type: 'test'
+  ...
+# Subtest: historique SAN invalidé si non tableau
+ok 278 - historique SAN invalidé si non tableau
+  ---
+  duration_ms: 0.468076
+  type: 'test'
+  ...
+# Subtest: historique SAN invalidé si date incorrecte
+ok 279 - historique SAN invalidé si date incorrecte
+  ---
+  duration_ms: 0.711482
+  type: 'test'
+  ...
+# Subtest: résumé fabrics A/B
+ok 280 - résumé fabrics A/B
+  ---
+  duration_ms: 1.7516
+  type: 'test'
+  ...
+# Subtest: détecte zone absente
+ok 281 - détecte zone absente
+  ---
+  duration_ms: 1.266208
+  type: 'test'
+  ...
+# Subtest: CSV possède entête et BOM
+ok 282 - CSV possède entête et BOM
+  ---
+  duration_ms: 0.58401
+  type: 'test'
+  ...
+# Subtest: historique limité à 30
+ok 283 - historique limité à 30
+  ---
+  duration_ms: 7.128381
+  type: 'test'
+  ...
+# Subtest: différences de zonesets entre imports
+ok 284 - différences de zonesets entre imports
+  ---
+  duration_ms: 0.322376
+  type: 'test'
+  ...
+# Subtest: empty history score 0
+ok 285 - empty history score 0
+  ---
+  duration_ms: 1.266999
+  type: 'test'
+  ...
+# Subtest: missing fabrics flagged
+ok 286 - missing fabrics flagged
+  ---
+  duration_ms: 0.27868
+  type: 'test'
+  ...
+# Subtest: one fabric flagged
+ok 287 - one fabric flagged
+  ---
+  duration_ms: 0.47172
+  type: 'test'
+  ...
+# Subtest: both fabrics no missing
+ok 288 - both fabrics no missing
+  ---
+  duration_ms: 0.436597
+  type: 'test'
+  ...
+# Subtest: missing fabric rule disabled
+ok 289 - missing fabric rule disabled
+  ---
+  duration_ms: 0.334043
+  type: 'test'
+  ...
+# Subtest: stale snapshot flagged
+ok 290 - stale snapshot flagged
+  ---
+  duration_ms: 0.276527
+  type: 'test'
+  ...
+# Subtest: zoneset missing zone flagged
+ok 291 - zoneset missing zone flagged
+  ---
+  duration_ms: 0.47806
+  type: 'test'
+  ...
+# Subtest: CSV has BOM and header
+ok 292 - CSV has BOM and header
+  ---
+  duration_ms: 0.316196
+  type: 'test'
+  ...
+# Subtest: rapport HTML autonome et échappement
+ok 293 - rapport HTML autonome et échappement
+  ---
+  duration_ms: 1.415863
+  type: 'test'
+  ...
+# Subtest: aucun import : historique vide
+ok 294 - aucun import : historique vide
+  ---
+  duration_ms: 0.947728
+  type: 'test'
+  ...
+# Subtest: recommandation Fabric absente
+ok 295 - recommandation Fabric absente
+  ---
+  duration_ms: 0.127402
+  type: 'test'
+  ...
+# Subtest: recommandation import périmé
+ok 296 - recommandation import périmé
+  ---
+  duration_ms: 0.183286
+  type: 'test'
+  ...
+# Subtest: recommandation zone absente
+ok 297 - recommandation zone absente
+  ---
+  duration_ms: 0.112639
+  type: 'test'
+  ...
+# Subtest: recommandation code inconnu
+ok 298 - recommandation code inconnu
+  ---
+  duration_ms: 0.168584
+  type: 'test'
+  ...
+# Subtest: rapport sans scripts distants
+ok 299 - rapport sans scripts distants
+  ---
+  duration_ms: 0.254864
+  type: 'test'
+  ...
+# Subtest: rapport explique la limite déclarative
+ok 300 - rapport explique la limite déclarative
+  ---
+  duration_ms: 0.184378
+  type: 'test'
+  ...
+# Subtest: sparkline vide
+ok 301 - sparkline vide
+  ---
+  duration_ms: 1.317045
+  type: 'test'
+  ...
+# Subtest: sparkline valeur unique
+ok 302 - sparkline valeur unique
+  ---
+  duration_ms: 0.436227
+  type: 'test'
+  ...
+# Subtest: sparkline bornes
+ok 303 - sparkline bornes
+  ---
+  duration_ms: 0.252441
+  type: 'test'
+  ...
+# Subtest: modèle vide
+ok 304 - modèle vide
+  ---
+  duration_ms: 0.399502
+  type: 'test'
+  ...
+# Subtest: filtre fabric vide
+ok 305 - filtre fabric vide
+  ---
+  duration_ms: 1.048329
+  type: 'test'
+  ...
+# Subtest: comparaison HTML autonome
+ok 306 - comparaison HTML autonome
+  ---
+  duration_ms: 1.99064
+  type: 'test'
+  ...
+# Subtest: rapport affiche auteur
+ok 307 - rapport affiche auteur
+  ---
+  duration_ms: 0.59033
+  type: 'test'
+  ...
+# Subtest: rapport protège le filtre HTML
+ok 308 - rapport protège le filtre HTML
+  ---
+  duration_ms: 0.220592
+  type: 'test'
+  ...
+# Subtest: rapport précise les limites
+ok 309 - rapport précise les limites
+  ---
+  duration_ms: 0.155294
+  type: 'test'
+  ...
+# Subtest: comparaison vide sans historique
+ok 310 - comparaison vide sans historique
+  ---
+  duration_ms: 0.481806
+  type: 'test'
+  ...
+# Subtest: interface export HTML
+ok 311 - interface export HTML
+  ---
+  duration_ms: 0.169215
+  type: 'test'
+  ...
+# Subtest: ajout noeud
+ok 312 - ajout noeud
+  ---
+  duration_ms: 1.275122
+  type: 'test'
+  ...
+# Subtest: suppression noeud
+ok 313 - suppression noeud
+  ---
+  duration_ms: 1.013407
+  type: 'test'
+  ...
+# Subtest: modification titre
+ok 314 - modification titre
+  ---
+  duration_ms: 0.976722
+  type: 'test'
+  ...
+# Subtest: inchangé
+ok 315 - inchangé
+  ---
+  duration_ms: 0.318159
+  type: 'test'
+  ...
+# Subtest: ajout connexion
+ok 316 - ajout connexion
+  ---
+  duration_ms: 0.227553
+  type: 'test'
+  ...
+# Subtest: connexion orpheline rejetée
+ok 317 - connexion orpheline rejetée
+  ---
+  duration_ms: 0.22563
+  type: 'test'
+  ...
+# Subtest: doublon rejeté
+ok 318 - doublon rejeté
+  ---
+  duration_ms: 0.160822
+  type: 'test'
+  ...
+# Subtest: HTML échappé
+ok 319 - HTML échappé
+  ---
+  duration_ms: 0.403618
+  type: 'test'
+  ...
+# Subtest: ajout affiché
+ok 320 - ajout affiché
+  ---
+  duration_ms: 3.724563
+  type: 'test'
+  ...
+# Subtest: suppression affichée depuis avant
+ok 321 - suppression affichée depuis avant
+  ---
+  duration_ms: 0.313472
+  type: 'test'
+  ...
+# Subtest: modification superpose deux versions
+ok 322 - modification superpose deux versions
+  ---
+  duration_ms: 0.839355
+  type: 'test'
+  ...
+# Subtest: inchangé affiché une seule fois
+ok 323 - inchangé affiché une seule fois
+  ---
+  duration_ms: 0.329907
+  type: 'test'
+  ...
+# Subtest: filtre ajouts
+ok 324 - filtre ajouts
+  ---
+  duration_ms: 1.149953
+  type: 'test'
+  ...
+# Subtest: focus noeud
+ok 325 - focus noeud
+  ---
+  duration_ms: 11.717047
+  type: 'test'
+  ...
+# Subtest: échappement SVG
+ok 326 - échappement SVG
+  ---
+  duration_ms: 0.521085
+  type: 'test'
+  ...
+# Subtest: filtre inconnu rejeté
+ok 327 - filtre inconnu rejeté
+  ---
+  duration_ms: 0.584591
+  type: 'test'
+  ...
+# Subtest: connexion ajoutée visible
+ok 328 - connexion ajoutée visible
+  ---
+  duration_ms: 0.839285
+  type: 'test'
+  ...
+# Subtest: suppression Fabric B dégrade la redondance
+ok 329 - suppression Fabric B dégrade la redondance
+  ---
+  duration_ms: 13.607014
+  type: 'test'
+  ...
+# Subtest: ajout Fabric B améliore
+ok 330 - ajout Fabric B améliore
+  ---
+  duration_ms: 1.162242
+  type: 'test'
+  ...
+# Subtest: configuration inchangée stable
+ok 331 - configuration inchangée stable
+  ---
+  duration_ms: 0.408586
+  type: 'test'
+  ...
+# Subtest: aucune paire si absence de stockage
+ok 332 - aucune paire si absence de stockage
+  ---
+  duration_ms: 0.15298
+  type: 'test'
+  ...
+# Subtest: suppression de la baie retire la paire
+ok 333 - suppression de la baie retire la paire
+  ---
+  duration_ms: 0.511701
+  type: 'test'
+  ...
+# Subtest: identifiant de liaison dupliqué refusé
+ok 334 - identifiant de liaison dupliqué refusé
+  ---
+  duration_ms: 1.292778
+  type: 'test'
+  ...
+# Subtest: connexion orpheline refusée
+ok 335 - connexion orpheline refusée
+  ---
+  duration_ms: 0.369627
+  type: 'test'
+  ...
+# Subtest: rapport HTML protège les noms
+ok 336 - rapport HTML protège les noms
+  ---
+  duration_ms: 1.947931
+  type: 'test'
+  ...
+# Subtest: inventaire ports FC
+ok 337 - inventaire ports FC
+  ---
+  duration_ms: 12.285503
+  type: 'test'
+  ...
+# Subtest: liens non FC ignorés
+ok 338 - liens non FC ignorés
+  ---
+  duration_ms: 0.92907
+  type: 'test'
+  ...
+# Subtest: port supprimé
+ok 339 - port supprimé
+  ---
+  duration_ms: 0.668507
+  type: 'test'
+  ...
+# Subtest: port avec moins de liens
+ok 340 - port avec moins de liens
+  ---
+  duration_ms: 0.536097
+  type: 'test'
+  ...
+# Subtest: ajout détecté
+ok 341 - ajout détecté
+  ---
+  duration_ms: 0.384059
+  type: 'test'
+  ...
+# Subtest: dépendance applicative explicite
+ok 342 - dépendance applicative explicite
+  ---
+  duration_ms: 2.524304
+  type: 'test'
+  ...
+# Subtest: pas de dépendance inventée
+ok 343 - pas de dépendance inventée
+  ---
+  duration_ms: 2.361979
+  type: 'test'
+  ...
+# Subtest: export HTML échappé
+ok 344 - export HTML échappé
+  ---
+  duration_ms: 0.469347
+  type: 'test'
+  ...
+# Subtest: validation des arêtes orphelines
+ok 345 - validation des arêtes orphelines
+  ---
+  duration_ms: 0.628557
+  type: 'test'
+  ...
+# Subtest: matrice comporte une paire serveur stockage
+ok 346 - matrice comporte une paire serveur stockage
+  ---
+  duration_ms: 1.158867
+  type: 'test'
+  ...
+# Subtest: perte de chemin détectée
+ok 347 - perte de chemin détectée
+  ---
+  duration_ms: 0.181433
+  type: 'test'
+  ...
+# Subtest: application associée par lien explicite
+ok 348 - application associée par lien explicite
+  ---
+  duration_ms: 0.941238
+  type: 'test'
+  ...
+# Subtest: fabric perdue identifiée
+ok 349 - fabric perdue identifiée
+  ---
+  duration_ms: 0.16593
+  type: 'test'
+  ...
+# Subtest: aucune fabric après retrait
+ok 350 - aucune fabric après retrait
+  ---
+  duration_ms: 0.186311
+  type: 'test'
+  ...
+# Subtest: résumé des impacts
+ok 351 - résumé des impacts
+  ---
+  duration_ms: 1.329313
+  type: 'test'
+  ...
+# Subtest: CSV produit en-tête
+ok 352 - CSV produit en-tête
+  ---
+  duration_ms: 0.573013
+  type: 'test'
+  ...
+# Subtest: HTML autonome
+ok 353 - HTML autonome
+  ---
+  duration_ms: 0.315135
+  type: 'test'
+  ...
+# Subtest: CSV neutralise injection formule
+ok 354 - CSV neutralise injection formule
+  ---
+  duration_ms: 0.585843
+  type: 'test'
+  ...
+# Subtest: HTML échappe les données
+ok 355 - HTML échappe les données
+  ---
+  duration_ms: 0.565753
+  type: 'test'
+  ...
+# Subtest: diagramme invalide rejeté
+ok 356 - diagramme invalide rejeté
+  ---
+  duration_ms: 0.414255
+  type: 'test'
+  ...
+# Subtest: pas de dépendance inventée
+ok 357 - pas de dépendance inventée
+  ---
+  duration_ms: 0.730531
+  type: 'test'
+  ...
+# Subtest: chaîne serveur stockage
+ok 358 - chaîne serveur stockage
+  ---
+  duration_ms: 3.209136
+  type: 'test'
+  ...
+# Subtest: inventaire HBA
+ok 359 - inventaire HBA
+  ---
+  duration_ms: 1.607763
+  type: 'test'
+  ...
+# Subtest: WWPN déclaré
+ok 360 - WWPN déclaré
+  ---
+  duration_ms: 0.464911
+  type: 'test'
+  ...
+# Subtest: LUN déclarée
+ok 361 - LUN déclarée
+  ---
+  duration_ms: 0.440183
+  type: 'test'
+  ...
+# Subtest: application explicite
+ok 362 - application explicite
+  ---
+  duration_ms: 0.310197
+  type: 'test'
+  ...
+# Subtest: complétude documentaire
+ok 363 - complétude documentaire
+  ---
+  duration_ms: 0.358059
+  type: 'test'
+  ...
+# Subtest: chaîne sans chemin après rupture
+ok 364 - chaîne sans chemin après rupture
+  ---
+  duration_ms: 0.130096
+  type: 'test'
+  ...
+# Subtest: dégradation identifiée
+ok 365 - dégradation identifiée
+  ---
+  duration_ms: 3.315787
+  type: 'test'
+  ...
+# Subtest: risque de suppression
+ok 366 - risque de suppression
+  ---
+  duration_ms: 1.833363
+  type: 'test'
+  ...
+# Subtest: comparaison stable
+ok 367 - comparaison stable
+  ---
+  duration_ms: 1.049652
+  type: 'test'
+  ...
+# Subtest: champs manquants visibles
+ok 368 - champs manquants visibles
+  ---
+  duration_ms: 0.469417
+  type: 'test'
+  ...
+# Subtest: CSV neutralise les formules
+ok 369 - CSV neutralise les formules
+  ---
+  duration_ms: 0.534786
+  type: 'test'
+  ...
+# Subtest: HTML échappe le texte
+ok 370 - HTML échappe le texte
+  ---
+  duration_ms: 0.538752
+  type: 'test'
+  ...
+# Subtest: document invalide rejeté
+ok 371 - document invalide rejeté
+  ---
+  duration_ms: 0.284739
+  type: 'test'
+  ...
+# Subtest: HBA : dédoublonnage et normalisation
+ok 372 - HBA : dédoublonnage et normalisation
+  ---
+  duration_ms: 2.884116
+  type: 'test'
+  ...
+# Subtest: WWPN : validation
+ok 373 - WWPN : validation
+  ---
+  duration_ms: 0.327293
+  type: 'test'
+  ...
+# Subtest: WWPN invalide rejeté
+ok 374 - WWPN invalide rejeté
+  ---
+  duration_ms: 0.501796
+  type: 'test'
+  ...
+# Subtest: LUN : liste séparée par retour ligne
+ok 375 - LUN : liste séparée par retour ligne
+  ---
+  duration_ms: 0.180822
+  type: 'test'
+  ...
+# Subtest: Limite de volume
+ok 376 - Limite de volume
+  ---
+  duration_ms: 0.221494
+  type: 'test'
+  ...
+# Subtest: Champ inconnu refusé
+ok 377 - Champ inconnu refusé
+  ---
+  duration_ms: 0.179911
+  type: 'test'
+  ...
+# Subtest: MPIO conservé en texte
+ok 378 - MPIO conservé en texte
+  ---
+  duration_ms: 0.185259
+  type: 'test'
+  ...
+# Subtest: Serveur : champs SAN
+ok 379 - Serveur : champs SAN
+  ---
+  duration_ms: 0.150537
+  type: 'test'
+  ...
+# Subtest: Stockage : LUN
+ok 380 - Stockage : LUN
+  ---
+  duration_ms: 0.407353
+  type: 'test'
+  ...
+# Subtest: Autres équipements : aucun champ spécifique
+ok 381 - Autres équipements : aucun champ spécifique
+  ---
+  duration_ms: 0.49101
+  type: 'test'
+  ...
+# Subtest: valid WWPN
+ok 382 - valid WWPN
+  ---
+  duration_ms: 2.464814
+  type: 'test'
+  ...
+# Subtest: reject malformed WWPN
+ok 383 - reject malformed WWPN
+  ---
+  duration_ms: 0.367994
+  type: 'test'
+  ...
+# Subtest: reject unknown key
+ok 384 - reject unknown key
+  ---
+  duration_ms: 0.191729
+  type: 'test'
+  ...
+# Subtest: reject controls
+ok 385 - reject controls
+  ---
+  duration_ms: 0.169245
+  type: 'test'
+  ...
+# Subtest: healthy relation
+ok 386 - healthy relation
+  ---
+  duration_ms: 0.49746
+  type: 'test'
+  ...
+# Subtest: mismatched initiator
+ok 387 - mismatched initiator
+  ---
+  duration_ms: 0.293742
+  type: 'test'
+  ...
+# Subtest: mismatched LUN
+ok 388 - mismatched LUN
+  ---
+  duration_ms: 0.419422
+  type: 'test'
+  ...
+# Subtest: missing zone
+ok 389 - missing zone
+  ---
+  duration_ms: 0.194513
+  type: 'test'
+  ...
+# Subtest: csv escaping
+ok 390 - csv escaping
+  ---
+  duration_ms: 0.764782
+  type: 'test'
+  ...
+# Subtest: html escaping
+ok 391 - html escaping
+  ---
+  duration_ms: 0.908539
+  type: 'test'
+  ...
+# Subtest: correspondance complète
+ok 392 - correspondance complète
+  ---
+  duration_ms: 2.147336
+  type: 'test'
+  ...
+# Subtest: zone absente
+ok 393 - zone absente
+  ---
+  duration_ms: 0.495707
+  type: 'test'
+  ...
+# Subtest: initiateur absent de zone
+ok 394 - initiateur absent de zone
+  ---
+  duration_ms: 0.205059
+  type: 'test'
+  ...
+# Subtest: cible absente de zone
+ok 395 - cible absente de zone
+  ---
+  duration_ms: 0.322025
+  type: 'test'
+  ...
+# Subtest: activation non déclarée
+ok 396 - activation non déclarée
+  ---
+  duration_ms: 0.592292
+  type: 'test'
+  ...
+# Subtest: zone hors zoneset
+ok 397 - zone hors zoneset
+  ---
+  duration_ms: 0.566804
+  type: 'test'
+  ...
+# Subtest: liens non renseignés ignorés
+ok 398 - liens non renseignés ignorés
+  ---
+  duration_ms: 0.372552
+  type: 'test'
+  ...
+# Subtest: CSV protège formules
+ok 399 - CSV protège formules
+  ---
+  duration_ms: 0.414805
+  type: 'test'
+  ...
+# Subtest: HTML échappe injection
+ok 400 - HTML échappe injection
+  ---
+  duration_ms: 0.784552
+  type: 'test'
+  ...
+# Subtest: refuse import absent
+ok 401 - refuse import absent
+  ---
+  duration_ms: 0.558612
+  type: 'test'
+  ...
+# Subtest: sans import zoning : avertissement explicite
+ok 402 - sans import zoning : avertissement explicite
+  ---
+  duration_ms: 1.834185
+  type: 'test'
+  ...
+# Subtest: masking absent
+ok 403 - masking absent
+  ---
+  duration_ms: 0.208594
+  type: 'test'
+  ...
+# Subtest: paire masking incorrecte
+ok 404 - paire masking incorrecte
+  ---
+  duration_ms: 0.199681
+  type: 'test'
+  ...
+# Subtest: lun inconnue
+ok 405 - lun inconnue
+  ---
+  duration_ms: 0.129736
+  type: 'test'
+  ...
+# Subtest: multipathing absent
+ok 406 - multipathing absent
+  ---
+  duration_ms: 0.558222
+  type: 'test'
+  ...
+# Subtest: chemins dupliqués
+ok 407 - chemins dupliqués
+  ---
+  duration_ms: 0.207423
+  type: 'test'
+  ...
+# Subtest: redondance non démontrée
+ok 408 - redondance non démontrée
+  ---
+  duration_ms: 0.305711
+  type: 'test'
+  ...
+# Subtest: export CSV neutralise formule
+ok 409 - export CSV neutralise formule
+  ---
+  duration_ms: 0.530089
+  type: 'test'
+  ...
+# Subtest: export HTML échappe le contenu
+ok 410 - export HTML échappe le contenu
+  ---
+  duration_ms: 0.820427
+  type: 'test'
+  ...
+# Subtest: diagramme sans liens SAN
+ok 411 - diagramme sans liens SAN
+  ---
+  duration_ms: 0.51108
+  type: 'test'
+  ...
+# Subtest: masking valide
+ok 412 - masking valide
+  ---
+  duration_ms: 4.012617
+  type: 'test'
+  ...
+# Subtest: normalise WWPN
+ok 413 - normalise WWPN
+  ---
+  duration_ms: 0.268655
+  type: 'test'
+  ...
+# Subtest: refuse WWPN invalide
+ok 414 - refuse WWPN invalide
+  ---
+  duration_ms: 0.827107
+  type: 'test'
+  ...
+# Subtest: refuse LUN inconnue
+ok 415 - refuse LUN inconnue
+  ---
+  duration_ms: 0.212881
+  type: 'test'
+  ...
+# Subtest: refuse doublon
+ok 416 - refuse doublon
+  ---
+  duration_ms: 0.301223
+  type: 'test'
+  ...
+# Subtest: refuse ligne malformée
+ok 417 - refuse ligne malformée
+  ---
+  duration_ms: 0.381635
+  type: 'test'
+  ...
+# Subtest: refuse liste non tableau
+ok 418 - refuse liste non tableau
+  ---
+  duration_ms: 0.234984
+  type: 'test'
+  ...
+# Subtest: roundtrip
+ok 419 - roundtrip
+  ---
+  duration_ms: 0.176186
+  type: 'test'
+  ...
+# Subtest: vide accepté
+ok 420 - vide accepté
+  ---
+  duration_ms: 0.406132
+  type: 'test'
+  ...
+# Subtest: refuse plus de 512 lignes
+ok 421 - refuse plus de 512 lignes
+  ---
+  duration_ms: 0.555447
+  type: 'test'
+  ...
+# Subtest: consolidated summary
+ok 422 - consolidated summary
+  ---
+  duration_ms: 2.006103
+  type: 'test'
+  ...
+# Subtest: missing fabric redundancy
+ok 423 - missing fabric redundancy
+  ---
+  duration_ms: 0.483428
+  type: 'test'
+  ...
+# Subtest: CSV header
+ok 424 - CSV header
+  ---
+  duration_ms: 0.610269
+  type: 'test'
+  ...
+# Subtest: HTML scope
+ok 425 - HTML scope
+  ---
+  duration_ms: 0.429137
+  type: 'test'
+  ...
+# Subtest: HTML escaping
+ok 426 - HTML escaping
+  ---
+  duration_ms: 0.522307
+  type: 'test'
+  ...
+# Subtest: empty topology
+ok 427 - empty topology
+  ---
+  duration_ms: 0.158259
+  type: 'test'
+  ...
+# Subtest: cibles équipements et connexions
+ok 428 - cibles équipements et connexions
+  ---
+  duration_ms: 1.168391
+  type: 'test'
+  ...
+# Subtest: cible Fabric A
+ok 429 - cible Fabric A
+  ---
+  duration_ms: 0.19911
+  type: 'test'
+  ...
+# Subtest: panne switch ne modifie pas entrée
+ok 430 - panne switch ne modifie pas entrée
+  ---
+  duration_ms: 14.618585
+  type: 'test'
+  ...
+# Subtest: panne lien reconnue
+ok 431 - panne lien reconnue
+  ---
+  duration_ms: 0.715308
+  type: 'test'
+  ...
+# Subtest: panne Fabric reconnue
+ok 432 - panne Fabric reconnue
+  ---
+  duration_ms: 1.436885
+  type: 'test'
+  ...
+# Subtest: cible absente rejetée
+ok 433 - cible absente rejetée
+  ---
+  duration_ms: 0.52404
+  type: 'test'
+  ...
+# Subtest: type inconnu rejeté
+ok 434 - type inconnu rejeté
+  ---
+  duration_ms: 0.239841
+  type: 'test'
+  ...
+# Subtest: CSV correctement formé
+ok 435 - CSV correctement formé
+  ---
+  duration_ms: 0.674407
+  type: 'test'
+  ...
+# Subtest: rapport HTML autonome
+ok 436 - rapport HTML autonome
+  ---
+  duration_ms: 0.797622
+  type: 'test'
+  ...
+# Subtest: scénario combiné non destructif
+ok 437 - scénario combiné non destructif
+  ---
+  duration_ms: 14.362834
+  type: 'test'
+  ...
+# Subtest: perte des deux fabrics
+ok 438 - perte des deux fabrics
+  ---
+  duration_ms: 0.919045
+  type: 'test'
+  ...
+# Subtest: une seule fabric dégrade
+ok 439 - une seule fabric dégrade
+  ---
+  duration_ms: 4.760449
+  type: 'test'
+  ...
+# Subtest: déduplication des pannes
+ok 440 - déduplication des pannes
+  ---
+  duration_ms: 0.881668
+  type: 'test'
+  ...
+# Subtest: liste vide rejetée
+ok 441 - liste vide rejetée
+  ---
+  duration_ms: 0.353713
+  type: 'test'
+  ...
+# Subtest: cible inexistante rejetée
+ok 442 - cible inexistante rejetée
+  ---
+  duration_ms: 0.303227
+  type: 'test'
+  ...
+# Subtest: taille limitée
+ok 443 - taille limitée
+  ---
+  duration_ms: 0.14619
+  type: 'test'
+  ...
+# Subtest: CSV du scénario
+ok 444 - CSV du scénario
+  ---
+  duration_ms: 1.547111
+  type: 'test'
+  ...
+# Subtest: HTML du scénario
+ok 445 - HTML du scénario
+  ---
+  duration_ms: 2.019353
+  type: 'test'
+  ...
+# Subtest: campaign returns sorted scenarios
+ok 446 - campaign returns sorted scenarios
+  ---
+  duration_ms: 14.554823
+  type: 'test'
+  ...
+# Subtest: campaign preserves input
+ok 447 - campaign preserves input
+  ---
+  duration_ms: 1.963298
+  type: 'test'
+  ...
+# Subtest: campaign rejects empty
+ok 448 - campaign rejects empty
+  ---
+  duration_ms: 0.48437
+  type: 'test'
+  ...
+# Subtest: campaign rejects duplicate IDs
+ok 449 - campaign rejects duplicate IDs
+  ---
+  duration_ms: 0.379172
+  type: 'test'
+  ...
+# Subtest: campaign rejects unknown targets
+ok 450 - campaign rejects unknown targets
+  ---
+  duration_ms: 0.182515
+  type: 'test'
+  ...
+# Subtest: campaign rejects missing failures
+ok 451 - campaign rejects missing failures
+  ---
+  duration_ms: 0.171649
+  type: 'test'
+  ...
+# Subtest: campaign produces equipment frequency
+ok 452 - campaign produces equipment frequency
+  ---
+  duration_ms: 0.699134
+  type: 'test'
+  ...
+# Subtest: campaign CSV contains columns
+ok 453 - campaign CSV contains columns
+  ---
+  duration_ms: 1.105706
+  type: 'test'
+  ...
+# Subtest: campaign HTML escapes scenario names
+ok 454 - campaign HTML escapes scenario names
+  ---
+  duration_ms: 0.953848
+  type: 'test'
+  ...
+# Subtest: campaign rejects more than 100 scenarios
+ok 455 - campaign rejects more than 100 scenarios
+  ---
+  duration_ms: 0.907016
+  type: 'test'
+  ...
+# Subtest: analyse retourne les cibles
+ok 456 - analyse retourne les cibles
+  ---
+  duration_ms: 22.8584
+  type: 'test'
+  ...
+# Subtest: aucune mutation du document
+ok 457 - aucune mutation du document
+  ---
+  duration_ms: 2.492555
+  type: 'test'
+  ...
+# Subtest: limite de cibles
+ok 458 - limite de cibles
+  ---
+  duration_ms: 0.77605
+  type: 'test'
+  ...
+# Subtest: CSV possède un en-tête
+ok 459 - CSV possède un en-tête
+  ---
+  duration_ms: 1.354541
+  type: 'test'
+  ...
+# Subtest: HTML possède un titre
+ok 460 - HTML possède un titre
+  ---
+  duration_ms: 1.082511
+  type: 'test'
+  ...
+# Subtest: HTML échappe le nom
+ok 461 - HTML échappe le nom
+  ---
+  duration_ms: 0.952215
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle process
+ok 462 - Forme vectorielle process
+  ---
+  duration_ms: 1.196944
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle decision
+ok 463 - Forme vectorielle decision
+  ---
+  duration_ms: 0.225259
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle terminator
+ok 464 - Forme vectorielle terminator
+  ---
+  duration_ms: 0.096976
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle document
+ok 465 - Forme vectorielle document
+  ---
+  duration_ms: 0.102946
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle database
+ok 466 - Forme vectorielle database
+  ---
+  duration_ms: 0.168985
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle person
+ok 467 - Forme vectorielle person
+  ---
+  duration_ms: 0.201644
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle department
+ok 468 - Forme vectorielle department
+  ---
+  duration_ms: 0.167172
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle application
+ok 469 - Forme vectorielle application
+  ---
+  duration_ms: 0.091999
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle api
+ok 470 - Forme vectorielle api
+  ---
+  duration_ms: 0.278951
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle firewall
+ok 471 - Forme vectorielle firewall
+  ---
+  duration_ms: 1.787234
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle router
+ok 472 - Forme vectorielle router
+  ---
+  duration_ms: 0.206371
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle loadbalancer
+ok 473 - Forme vectorielle loadbalancer
+  ---
+  duration_ms: 0.113662
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle container
+ok 474 - Forme vectorielle container
+  ---
+  duration_ms: 0.068604
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle vm
+ok 475 - Forme vectorielle vm
+  ---
+  duration_ms: 0.068524
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle backup
+ok 476 - Forme vectorielle backup
+  ---
+  duration_ms: 0.062535
+  type: 'test'
+  ...
+# Subtest: Forme vectorielle tape
+ok 477 - Forme vectorielle tape
+  ---
+  duration_ms: 0.054993
+  type: 'test'
+  ...
+# Subtest: Modèle flowchart
+ok 478 - Modèle flowchart
+  ---
+  duration_ms: 0.459303
+  type: 'test'
+  ...
+# Subtest: Modèle orgchart
+ok 479 - Modèle orgchart
+  ---
+  duration_ms: 0.220603
+  type: 'test'
+  ...
+# Subtest: Modèle application-map
+ok 480 - Modèle application-map
+  ---
+  duration_ms: 0.189356
+  type: 'test'
+  ...
+# Subtest: Les modèles sont accessibles dans la bibliothèque
+ok 481 - Les modèles sont accessibles dans la bibliothèque
+  ---
+  duration_ms: 0.088573
+  type: 'test'
+  ...
+# Subtest: premier plan
+ok 482 - premier plan
+  ---
+  duration_ms: 4.005516
+  type: 'test'
+  ...
+# Subtest: arrière-plan
+ok 483 - arrière-plan
+  ---
+  duration_ms: 0.376547
+  type: 'test'
+  ...
+# Subtest: monter un cran
+ok 484 - monter un cran
+  ---
+  duration_ms: 0.189856
+  type: 'test'
+  ...
+# Subtest: descendre un cran
+ok 485 - descendre un cran
+  ---
+  duration_ms: 0.224127
+  type: 'test'
+  ...
+# Subtest: multi sélection garde ordre relatif
+ok 486 - multi sélection garde ordre relatif
+  ---
+  duration_ms: 0.247573
+  type: 'test'
+  ...
+# Subtest: multi monter ne traverse pas les éléments sélectionnés
+ok 487 - multi monter ne traverse pas les éléments sélectionnés
+  ---
+  duration_ms: 0.159491
+  type: 'test'
+  ...
+# Subtest: aucune sélection ne modifie rien
+ok 488 - aucune sélection ne modifie rien
+  ---
+  duration_ms: 0.155745
+  type: 'test'
+  ...
+# Subtest: id inconnu ignoré
+ok 489 - id inconnu ignoré
+  ---
+  duration_ms: 0.233321
+  type: 'test'
+  ...
+# Subtest: action inconnue refusée
+ok 490 - action inconnue refusée
+  ---
+  duration_ms: 0.820486
+  type: 'test'
+  ...
+# Subtest: liste invalide refusée
+ok 491 - liste invalide refusée
+  ---
+  duration_ms: 0.594496
+  type: 'test'
+  ...
+# Subtest: entrée originale non modifiée
+ok 492 - entrée originale non modifiée
+  ---
+  duration_ms: 0.243477
+  type: 'test'
+  ...
+# Subtest: smart route generates anchored endpoints
+ok 493 - smart route generates anchored endpoints
+  ---
+  duration_ms: 23.277307
+  type: 'test'
+  ...
+# Subtest: smart route deterministic
+ok 494 - smart route deterministic
+  ---
+  duration_ms: 19.491623
+  type: 'test'
+  ...
+# Subtest: smart route supports obstacle
+ok 495 - smart route supports obstacle
+  ---
+  duration_ms: 17.962137
+  type: 'test'
+  ...
+# Subtest: smart route reacts to moved node
+ok 496 - smart route reacts to moved node
+  ---
+  duration_ms: 25.843003
+  type: 'test'
+  ...
+# Subtest: smart route rejects absent endpoints
+ok 497 - smart route rejects absent endpoints
+  ---
+  duration_ms: 0.415146
+  type: 'test'
+  ...
+# Subtest: smart route avoids obstacles in core segments
+ok 498 - smart route avoids obstacles in core segments
+  ---
+  duration_ms: 12.955323
+  type: 'test'
+  ...
+# Subtest: snap center X
+ok 499 - snap center X
+  ---
+  duration_ms: 16.036566
+  type: 'test'
+  ...
+# Subtest: snap top
+ok 500 - snap top
+  ---
+  duration_ms: 0.448906
+  type: 'test'
+  ...
+# Subtest: outside threshold no snap
+ok 501 - outside threshold no snap
+  ---
+  duration_ms: 0.225861
+  type: 'test'
+  ...
+# Subtest: ignore self
+ok 502 - ignore self
+  ---
+  duration_ms: 0.190828
+  type: 'test'
+  ...
+# Subtest: grid fallback
+ok 503 - grid fallback
+  ---
+  duration_ms: 0.917122
+  type: 'test'
+  ...
+# Subtest: right align
+ok 504 - right align
+  ---
+  duration_ms: 0.251429
+  type: 'test'
+  ...
+# Subtest: bottom align
+ok 505 - bottom align
+  ---
+  duration_ms: 0.234884
+  type: 'test'
+  ...
+# Subtest: center align
+ok 506 - center align
+  ---
+  duration_ms: 0.155345
+  type: 'test'
+  ...
+# Subtest: unknown reference unchanged
+ok 507 - unknown reference unchanged
+  ---
+  duration_ms: 0.358661
+  type: 'test'
+  ...
+# Subtest: invalid axis rejected
+ok 508 - invalid axis rejected
+  ---
+  duration_ms: 0.637761
+  type: 'test'
+  ...
+# Subtest: largeur uniforme
+ok 509 - largeur uniforme
+  ---
+  duration_ms: 4.421132
+  type: 'test'
+  ...
+# Subtest: hauteur uniforme
+ok 510 - hauteur uniforme
+  ---
+  duration_ms: 0.388806
+  type: 'test'
+  ...
+# Subtest: taille uniforme
+ok 511 - taille uniforme
+  ---
+  duration_ms: 0.242144
+  type: 'test'
+  ...
+# Subtest: référence absente
+ok 512 - référence absente
+  ---
+  duration_ms: 0.208885
+  type: 'test'
+  ...
+# Subtest: mode incorrect
+ok 513 - mode incorrect
+  ---
+  duration_ms: 0.461305
+  type: 'test'
+  ...
+# Subtest: dimension invalide
+ok 514 - dimension invalide
+  ---
+  duration_ms: 0.242606
+  type: 'test'
+  ...
+# Subtest: guide vertical sur bord gauche
+ok 515 - guide vertical sur bord gauche
+  ---
+  duration_ms: 12.284522
+  type: 'test'
+  ...
+# Subtest: guide horizontal sur centre
+ok 516 - guide horizontal sur centre
+  ---
+  duration_ms: 0.76978
+  type: 'test'
+  ...
+# Subtest: agrandissement
+ok 517 - agrandissement
+  ---
+  duration_ms: 1.709546
+  type: 'test'
+  ...
+# Subtest: dimensions minimales
+ok 518 - dimensions minimales
+  ---
+  duration_ms: 0.193882
+  type: 'test'
+  ...
+# Subtest: grille
+ok 519 - grille
+  ---
+  duration_ms: 0.221534
+  type: 'test'
+  ...
+# Subtest: proportions largeur
+ok 520 - proportions largeur
+  ---
+  duration_ms: 0.220843
+  type: 'test'
+  ...
+# Subtest: proportions hauteur
+ok 521 - proportions hauteur
+  ---
+  duration_ms: 0.160962
+  type: 'test'
+  ...
+# Subtest: invalide
+ok 522 - invalide
+  ---
+  duration_ms: 0.309577
+  type: 'test'
+  ...
+# Subtest: graduations
+ok 523 - graduations
+  ---
+  duration_ms: 0.299752
+  type: 'test'
+  ...
+# Subtest: graduations décalées
+ok 524 - graduations décalées
+  ---
+  duration_ms: 0.139911
+  type: 'test'
+  ...
+# Subtest: pas invalide
+ok 525 - pas invalide
+  ---
+  duration_ms: 0.394625
+  type: 'test'
+  ...
+# Subtest: guides vides
+ok 526 - guides vides
+  ---
+  duration_ms: 3.299292
+  type: 'test'
+  ...
+# Subtest: repère vertical valide
+ok 527 - repère vertical valide
+  ---
+  duration_ms: 0.287222
+  type: 'test'
+  ...
+# Subtest: axe invalide
+ok 528 - axe invalide
+  ---
+  duration_ms: 0.378871
+  type: 'test'
+  ...
+# Subtest: position invalide
+ok 529 - position invalide
+  ---
+  duration_ms: 0.134122
+  type: 'test'
+  ...
+# Subtest: trop de repères
+ok 530 - trop de repères
+  ---
+  duration_ms: 0.200332
+  type: 'test'
+  ...
+# Subtest: accroche bord gauche
+ok 531 - accroche bord gauche
+  ---
+  duration_ms: 0.206571
+  type: 'test'
+  ...
+# Subtest: accroche centre
+ok 532 - accroche centre
+  ---
+  duration_ms: 0.098398
+  type: 'test'
+  ...
+# Subtest: sans accroche lointaine
+ok 533 - sans accroche lointaine
+  ---
+  duration_ms: 0.162605
+  type: 'test'
+  ...
+# Subtest: déplacement repère
+ok 534 - déplacement repère
+  ---
+  duration_ms: 0.394184
+  type: 'test'
+  ...
+# Subtest: index déplacement invalide
+ok 535 - index déplacement invalide
+  ---
+  duration_ms: 0.313612
+  type: 'test'
+  ...
+# Subtest: normalisation des repères hérités
+ok 536 - normalisation des repères hérités
+  ---
+  duration_ms: 2.202154
+  type: 'test'
+  ...
+# Subtest: verrouillage
+ok 537 - verrouillage
+  ---
+  duration_ms: 0.219391
+  type: 'test'
+  ...
+# Subtest: déverrouillage
+ok 538 - déverrouillage
+  ---
+  duration_ms: 0.097127
+  type: 'test'
+  ...
+# Subtest: déplacement verrouillé refusé
+ok 539 - déplacement verrouillé refusé
+  ---
+  duration_ms: 0.639764
+  type: 'test'
+  ...
+# Subtest: déplacement libre
+ok 540 - déplacement libre
+  ---
+  duration_ms: 0.148183
+  type: 'test'
+  ...
+# Subtest: repères sauvegardés dans snapshot
+ok 541 - repères sauvegardés dans snapshot
+  ---
+  duration_ms: 0.82937
+  type: 'test'
+  ...
+# Subtest: ancien document sans repères
+ok 542 - ancien document sans repères
+  ---
+  duration_ms: 0.416207
+  type: 'test'
+  ...
+# Subtest: accrochage sur repère verrouillé
+ok 543 - accrochage sur repère verrouillé
+  ---
+  duration_ms: 0.21958
+  type: 'test'
+  ...
+# Subtest: indice de verrouillage invalide
+ok 544 - indice de verrouillage invalide
+  ---
+  duration_ms: 0.267673
+  type: 'test'
+  ...
+# Subtest: angle normalisé
+ok 545 - angle normalisé
+  ---
+  duration_ms: 2.391404
+  type: 'test'
+  ...
+# Subtest: angle complet
+ok 546 - angle complet
+  ---
+  duration_ms: 0.20577
+  type: 'test'
+  ...
+# Subtest: angle invalide
+ok 547 - angle invalide
+  ---
+  duration_ms: 0.32495
+  type: 'test'
+  ...
+# Subtest: rotation
+ok 548 - rotation
+  ---
+  duration_ms: 0.229545
+  type: 'test'
+  ...
+# Subtest: rotation cumulative
+ok 549 - rotation cumulative
+  ---
+  duration_ms: 0.149325
+  type: 'test'
+  ...
+# Subtest: symétrie horizontale
+ok 550 - symétrie horizontale
+  ---
+  duration_ms: 0.206421
+  type: 'test'
+  ...
+# Subtest: symétrie involutive
+ok 551 - symétrie involutive
+  ---
+  duration_ms: 0.135454
+  type: 'test'
+  ...
+# Subtest: symétrie verticale
+ok 552 - symétrie verticale
+  ---
+  duration_ms: 0.12631
+  type: 'test'
+  ...
+# Subtest: réinitialisation
+ok 553 - réinitialisation
+  ---
+  duration_ms: 1.033828
+  type: 'test'
+  ...
+# Subtest: source immuable
+ok 554 - source immuable
+  ---
+  duration_ms: 0.533934
+  type: 'test'
+  ...
+# Subtest: sélection vide
+ok 555 - sélection vide
+  ---
+  duration_ms: 0.213491
+  type: 'test'
+  ...
+# Subtest: opération inconnue
+ok 556 - opération inconnue
+  ---
+  duration_ms: 0.157707
+  type: 'test'
+  ...
+# Subtest: SVG rotation et miroirs
+ok 557 - SVG rotation et miroirs
+  ---
+  duration_ms: 0.23863
+  type: 'test'
+  ...
+# Subtest: géométrie invalide
+ok 558 - géométrie invalide
+  ---
+  duration_ms: 0.183496
+  type: 'test'
+  ...
+# Subtest: rotation 90 changes right port to bottom
+ok 559 - rotation 90 changes right port to bottom
+  ---
+  duration_ms: 1.084585
+  type: 'test'
+  ...
+# Subtest: flip H mirrors right port
+ok 560 - flip H mirrors right port
+  ---
+  duration_ms: 0.419843
+  type: 'test'
+  ...
+# Subtest: zero rotation preserves port
+ok 561 - zero rotation preserves port
+  ---
+  duration_ms: 0.123035
+  type: 'test'
+  ...
+# Subtest: route uses transformed anchors
+ok 562 - route uses transformed anchors
+  ---
+  duration_ms: 0.185199
+  type: 'test'
+  ...
+# Subtest: order optimizer retains manual route
+ok 563 - order optimizer retains manual route
+  ---
+  duration_ms: 0.7361
+  type: 'test'
+  ...
+# Subtest: empty edges supported
+ok 564 - empty edges supported
+  ---
+  duration_ms: 0.155234
+  type: 'test'
+  ...
+# Subtest: invalid callback rejected
+ok 565 - invalid callback rejected
+  ---
+  duration_ms: 0.301834
+  type: 'test'
+  ...
+# Subtest: deterministic optimization
+ok 566 - deterministic optimization
+  ---
+  duration_ms: 8.153196
+  type: 'test'
+  ...
+# Subtest: smart route returns endpoints
+ok 567 - smart route returns endpoints
+  ---
+  duration_ms: 12.239485
+  type: 'test'
+  ...
+# Subtest: crossing metric returns zero on parallel lines
+ok 568 - crossing metric returns zero on parallel lines
+  ---
+  duration_ms: 0.721347
+  type: 'test'
+  ...
+# Subtest: parallel routes are separated
+ok 569 - parallel routes are separated
+  ---
+  duration_ms: 10.940356
+  type: 'test'
+  ...
+# Subtest: endpoints remain unchanged
+ok 570 - endpoints remain unchanged
+  ---
+  duration_ms: 0.860517
+  type: 'test'
+  ...
+# Subtest: manual waypoints untouched
+ok 571 - manual waypoints untouched
+  ---
+  duration_ms: 0.253882
+  type: 'test'
+  ...
+# Subtest: vertical links separated
+ok 572 - vertical links separated
+  ---
+  duration_ms: 0.523869
+  type: 'test'
+  ...
+# Subtest: unrelated links unchanged
+ok 573 - unrelated links unchanged
+  ---
+  duration_ms: 0.261674
+  type: 'test'
+  ...
+# Subtest: invalid spacing rejected
+ok 574 - invalid spacing rejected
+  ---
+  duration_ms: 0.3983
+  type: 'test'
+  ...
+# Subtest: does not mutate source routes
+ok 575 - does not mutate source routes
+  ---
+  duration_ms: 0.330989
+  type: 'test'
+  ...
+# Subtest: multi-segment bundles get distinct lanes
+ok 576 - multi-segment bundles get distinct lanes
+  ---
+  duration_ms: 9.511712
+  type: 'test'
+  ...
+# Subtest: middle lane stays original
+ok 577 - middle lane stays original
+  ---
+  duration_ms: 0.706595
+  type: 'test'
+  ...
+# Subtest: endpoints are preserved
+ok 578 - endpoints are preserved
+  ---
+  duration_ms: 0.622308
+  type: 'test'
+  ...
+# Subtest: manual paths remain untouched
+ok 579 - manual paths remain untouched
+  ---
+  duration_ms: 0.133411
+  type: 'test'
+  ...
+# Subtest: obstacle crossing rejects displaced lane
+ok 580 - obstacle crossing rejects displaced lane
+  ---
+  duration_ms: 0.348525
+  type: 'test'
+  ...
+# Subtest: non-orthogonal paths are not changed
+ok 581 - non-orthogonal paths are not changed
+  ---
+  duration_ms: 0.13955
+  type: 'test'
+  ...
+# Subtest: input is immutable
+ok 582 - input is immutable
+  ---
+  duration_ms: 0.17921
+  type: 'test'
+  ...
+# Subtest: separates common internal segments of otherwise different routes
+ok 583 - separates common internal segments of otherwise different routes
+  ---
+  duration_ms: 10.768061
+  type: 'test'
+  ...
+# Subtest: manual routes remain unchanged
+ok 584 - manual routes remain unchanged
+  ---
+  duration_ms: 0.269937
+  type: 'test'
+  ...
+# Subtest: single route remains unchanged
+ok 585 - single route remains unchanged
+  ---
+  duration_ms: 0.175865
+  type: 'test'
+  ...
+# Subtest: invalid spacing rejected
+ok 586 - invalid spacing rejected
+  ---
+  duration_ms: 0.337539
+  type: 'test'
+  ...
+# Subtest: obstacle blocks detour
+ok 587 - obstacle blocks detour
+  ---
+  duration_ms: 0.402396
+  type: 'test'
+  ...
+# Subtest: results deterministic
+ok 588 - results deterministic
+  ---
+  duration_ms: 0.348445
+  type: 'test'
+  ...
+# Subtest: detects partially overlapping segments with unequal endpoints
+ok 589 - detects partially overlapping segments with unequal endpoints
+  ---
+  duration_ms: 1.252587
+  type: 'test'
+  ...
+# Subtest: separates partial overlap
+ok 590 - separates partial overlap
+  ---
+  duration_ms: 0.629739
+  type: 'test'
+  ...
+# Subtest: preserves first and last anchors
+ok 591 - preserves first and last anchors
+  ---
+  duration_ms: 1.060018
+  type: 'test'
+  ...
+# Subtest: manual links excluded
+ok 592 - manual links excluded
+  ---
+  duration_ms: 0.189306
+  type: 'test'
+  ...
+# Subtest: obstacle blocks detours
+ok 593 - obstacle blocks detours
+  ---
+  duration_ms: 0.330958
+  type: 'test'
+  ...
+# Subtest: different coordinates do not overlap
+ok 594 - different coordinates do not overlap
+  ---
+  duration_ms: 0.227132
+  type: 'test'
+  ...
+# Subtest: invalid settings rejected
+ok 595 - invalid settings rejected
+  ---
+  duration_ms: 0.317489
+  type: 'test'
+  ...
+# Subtest: deterministic routing
+ok 596 - deterministic routing
+  ---
+  duration_ms: 0.407114
+  type: 'test'
+  ...
+# Subtest: fanout separates crowded source anchors
+ok 597 - fanout separates crowded source anchors
+  ---
+  duration_ms: 2.046764
+  type: 'test'
+  ...
+# Subtest: does not mutate original route
+ok 598 - does not mutate original route
+  ---
+  duration_ms: 0.421655
+  type: 'test'
+  ...
+# Subtest: respects manual waypoints
+ok 599 - respects manual waypoints
+  ---
+  duration_ms: 0.267083
+  type: 'test'
+  ...
+# Subtest: respects explicit ports
+ok 600 - respects explicit ports
+  ---
+  duration_ms: 0.196937
+  type: 'test'
+  ...
+# Subtest: respects physical interfaces
+ok 601 - respects physical interfaces
+  ---
+  duration_ms: 0.198359
+  type: 'test'
+  ...
+# Subtest: rejects invalid spacing
+ok 602 - rejects invalid spacing
+  ---
+  duration_ms: 0.388445
+  type: 'test'
+  ...
+# Subtest: skips tiny shapes
+ok 603 - skips tiny shapes
+  ---
+  duration_ms: 0.198729
+  type: 'test'
+  ...
+# Subtest: orthogonal fan-out creates an outward source stub
+ok 604 - orthogonal fan-out creates an outward source stub
+  ---
+  duration_ms: 1.381331
+  type: 'test'
+  ...
+# Subtest: fan-out segments remain orthogonal
+ok 605 - fan-out segments remain orthogonal
+  ---
+  duration_ms: 0.301324
+  type: 'test'
+  ...
+# Subtest: explicit source port is preserved
+ok 606 - explicit source port is preserved
+  ---
+  duration_ms: 0.337899
+  type: 'test'
+  ...
+# Subtest: manual waypoints preserve route
+ok 607 - manual waypoints preserve route
+  ---
+  duration_ms: 0.169635
+  type: 'test'
+  ...
+# Subtest: physical interfaces preserve route
+ok 608 - physical interfaces preserve route
+  ---
+  duration_ms: 0.206721
+  type: 'test'
+  ...
+# Subtest: reject invalid stub
+ok 609 - reject invalid stub
+  ---
+  duration_ms: 0.36518
+  type: 'test'
+  ...
+# Subtest: obstacle blocks fan-out
+ok 610 - obstacle blocks fan-out
+  ---
+  duration_ms: 0.282896
+  type: 'test'
+  ...
+# Subtest: input validation
+ok 611 - input validation
+  ---
+  duration_ms: 1.42055
+  type: 'test'
+  ...
+# Subtest: empty graph
+ok 612 - empty graph
+  ---
+  duration_ms: 0.191519
+  type: 'test'
+  ...
+# Subtest: manual routes are not changed
+ok 613 - manual routes are not changed
+  ---
+  duration_ms: 0.183316
+  type: 'test'
+  ...
+# Subtest: physical ports are protected
+ok 614 - physical ports are protected
+  ---
+  duration_ms: 0.138389
+  type: 'test'
+  ...
+# Subtest: budget protects large graphs
+ok 615 - budget protects large graphs
+  ---
+  duration_ms: 0.857252
+  type: 'test'
+  ...
+# Subtest: route endpoints remain unchanged
+ok 616 - route endpoints remain unchanged
+  ---
+  duration_ms: 0.890371
+  type: 'test'
+  ...
+# Subtest: deterministic
+ok 617 - deterministic
+  ---
+  duration_ms: 0.463489
+  type: 'test'
+  ...
+# Subtest: signature géométrique stable
+ok 618 - signature géométrique stable
+  ---
+  duration_ms: 1.100569
+  type: 'test'
+  ...
+# Subtest: sélection ne relance pas le routage
+ok 619 - sélection ne relance pas le routage
+  ---
+  duration_ms: 0.163927
+  type: 'test'
+  ...
+# Subtest: déplacement invalide le cache
+ok 620 - déplacement invalide le cache
+  ---
+  duration_ms: 0.177318
+  type: 'test'
+  ...
+# Subtest: modification de port invalide le cache
+ok 621 - modification de port invalide le cache
+  ---
+  duration_ms: 0.16629
+  type: 'test'
+  ...
+# Subtest: waypoint invalide le cache
+ok 622 - waypoint invalide le cache
+  ---
+  duration_ms: 0.291599
+  type: 'test'
+  ...
+# Subtest: aucune réutilisation entre canevas
+ok 623 - aucune réutilisation entre canevas
+  ---
+  duration_ms: 0.164929
+  type: 'test'
+  ...
+# Subtest: une nouvelle géométrie remplace le résultat précédent
+ok 624 - une nouvelle géométrie remplace le résultat précédent
+  ---
+  duration_ms: 0.254524
+  type: 'test'
+  ...
+# Subtest: large diagram 100: deterministic routes and complete coverage
+ok 625 - large diagram 100: deterministic routes and complete coverage
+  ---
+  duration_ms: 87.331882
+  type: 'test'
+  ...
+# Subtest: large diagram 500: deterministic routes and complete coverage
+ok 626 - large diagram 500: deterministic routes and complete coverage
+  ---
+  duration_ms: 4.337466
+  type: 'test'
+  ...
+# Subtest: large diagram 1000: deterministic routes and complete coverage
+ok 627 - large diagram 1000: deterministic routes and complete coverage
+  ---
+  duration_ms: 8.185144
+  type: 'test'
+  ...
+# Subtest: manual waypoints are routed first on large diagrams
+ok 628 - manual waypoints are routed first on large diagrams
+  ---
+  duration_ms: 1.306319
+  type: 'test'
+  ...
+# Subtest: small diagrams retain two routing passes
+ok 629 - small diagrams retain two routing passes
+  ---
+  duration_ms: 0.607836
+  type: 'test'
+  ...
+# Subtest: fast smart routing remains anchored
+ok 630 - fast smart routing remains anchored
+  ---
+  duration_ms: 10.283752
+  type: 'test'
+  ...
+# Subtest: fast smart routing deterministic
+ok 631 - fast smart routing deterministic
+  ---
+  duration_ms: 11.780067
+  type: 'test'
+  ...
+# Subtest: fast smart routing accepts obstacles
+ok 632 - fast smart routing accepts obstacles
+  ---
+  duration_ms: 5.654641
+  type: 'test'
+  ...
+# Subtest: standard smart routing preserved
+ok 633 - standard smart routing preserved
+  ---
+  duration_ms: 7.727404
+  type: 'test'
+  ...
+# Subtest: couleur sans invalidation du routage
+ok 634 - couleur sans invalidation du routage
+  ---
+  duration_ms: 1.149703
+  type: 'test'
+  ...
+# Subtest: texte du lien sans invalidation du routage
+ok 635 - texte du lien sans invalidation du routage
+  ---
+  duration_ms: 0.360674
+  type: 'test'
+  ...
+# Subtest: nom du nœud sans invalidation du routage
+ok 636 - nom du nœud sans invalidation du routage
+  ---
+  duration_ms: 0.182335
+  type: 'test'
+  ...
+# Subtest: déplacement invalide le routage
+ok 637 - déplacement invalide le routage
+  ---
+  duration_ms: 0.456218
+  type: 'test'
+  ...
+# Subtest: port physique invalide le routage
+ok 638 - port physique invalide le routage
+  ---
+  duration_ms: 0.27157
+  type: 'test'
+  ...
+# Subtest: modification esthétique conserve le résultat mis en cache
+ok 639 - modification esthétique conserve le résultat mis en cache
+  ---
+  duration_ms: 0.201103
+  type: 'test'
+  ...
+# Subtest: diagnostic isole la forme modifiée et son lien
+ok 640 - diagnostic isole la forme modifiée et son lien
+  ---
+  duration_ms: 2.324553
+  type: 'test'
+  ...
+# Subtest: diagnostic reconnaît ajout de connexion
+ok 641 - diagnostic reconnaît ajout de connexion
+  ---
+  duration_ms: 0.313963
+  type: 'test'
+  ...
+# Subtest: bounds for routes
+ok 642 - bounds for routes
+  ---
+  duration_ms: 3.094984
+  type: 'test'
+  ...
+# Subtest: unchanged topology has no impact
+ok 643 - unchanged topology has no impact
+  ---
+  duration_ms: 0.4249
+  type: 'test'
+  ...
+# Subtest: moving endpoint invalidates attached edges
+ok 644 - moving endpoint invalidates attached edges
+  ---
+  duration_ms: 0.781328
+  type: 'test'
+  ...
+# Subtest: crossing path invalidated by obstacle
+ok 645 - crossing path invalidated by obstacle
+  ---
+  duration_ms: 0.890893
+  type: 'test'
+  ...
+# Subtest: visual-only changes do not invalidate
+ok 646 - visual-only changes do not invalidate
+  ---
+  duration_ms: 0.598702
+  type: 'test'
+  ...
+# Subtest: missing routes invalidate conservatively
+ok 647 - missing routes invalidate conservatively
+  ---
+  duration_ms: 0.147433
+  type: 'test'
+  ...
+# Subtest: changed connection invalidated
+ok 648 - changed connection invalidated
+  ---
+  duration_ms: 0.242836
+  type: 'test'
+  ...
+# Subtest: invalid margin rejected
+ok 649 - invalid margin rejected
+  ---
+  duration_ms: 0.482557
+  type: 'test'
+  ...
+# Subtest: initial routing computed
+ok 650 - initial routing computed
+  ---
+  duration_ms: 4.207931
+  type: 'test'
+  ...
+# Subtest: same geometry reuses routes
+ok 651 - same geometry reuses routes
+  ---
+  duration_ms: 2.735782
+  type: 'test'
+  ...
+# Subtest: one moved endpoint falls back globally when bundles are unverified
+ok 652 - one moved endpoint falls back globally when bundles are unverified
+  ---
+  duration_ms: 6.678223
+  type: 'test'
+  ...
+# Subtest: complex routing falls back globally
+ok 653 - complex routing falls back globally
+  ---
+  duration_ms: 2.288619
+  type: 'test'
+  ...
+# Subtest: snapshot detects in-place mutation and falls back globally
+ok 654 - snapshot detects in-place mutation and falls back globally
+  ---
+  duration_ms: 6.307615
+  type: 'test'
+  ...
+# Subtest: avoid routes use global fallback for unverified bundles
+ok 655 - avoid routes use global fallback for unverified bundles
+  ---
+  duration_ms: 9.876973
+  type: 'test'
+  ...
+# Subtest: avoid routes globally invalidate when obstacle moves
+ok 656 - avoid routes globally invalidate when obstacle moves
+  ---
+  duration_ms: 6.902752
+  type: 'test'
+  ...
+# Subtest: smart routes retain global fallback
+ok 657 - smart routes retain global fallback
+  ---
+  duration_ms: 3.307684
+  type: 'test'
+  ...
+# Subtest: L-shaped route does not collide with empty bounding box
+ok 658 - L-shaped route does not collide with empty bounding box
+  ---
+  duration_ms: 1.027899
+  type: 'test'
+  ...
+# Subtest: horizontal segment intersects zone
+ok 659 - horizontal segment intersects zone
+  ---
+  duration_ms: 1.781284
+  type: 'test'
+  ...
+# Subtest: diagonal segment intersects zone
+ok 660 - diagonal segment intersects zone
+  ---
+  duration_ms: 0.163577
+  type: 'test'
+  ...
+# Subtest: parallel segment misses zone
+ok 661 - parallel segment misses zone
+  ---
+  duration_ms: 0.217327
+  type: 'test'
+  ...
+# Subtest: empty route invalidates conservatively
+ok 662 - empty route invalidates conservatively
+  ---
+  duration_ms: 0.123987
+  type: 'test'
+  ...
+# Subtest: spatial impact avoids false-positive bounding box
+ok 663 - spatial impact avoids false-positive bounding box
+  ---
+  duration_ms: 0.928649
+  type: 'test'
+  ...
+# Subtest: spatial impact invalidates crossing segment
+ok 664 - spatial impact invalidates crossing segment
+  ---
+  duration_ms: 0.402026
+  type: 'test'
+  ...
+# Subtest: spatial grid selects local routes
+ok 665 - spatial grid selects local routes
+  ---
+  duration_ms: 4.290771
+  type: 'test'
+  ...
+# Subtest: unknown route conservatively selected
+ok 666 - unknown route conservatively selected
+  ---
+  duration_ms: 0.204048
+  type: 'test'
+  ...
+# Subtest: negative coordinates are indexed
+ok 667 - negative coordinates are indexed
+  ---
+  duration_ms: 0.240242
+  type: 'test'
+  ...
+# Subtest: invalid cell size rejected
+ok 668 - invalid cell size rejected
+  ---
+  duration_ms: 0.392712
+  type: 'test'
+  ...
+# Subtest: spatial index preserves remote edge on move
+ok 669 - spatial index preserves remote edge on move
+  ---
+  duration_ms: 0.88294
+  type: 'test'
+  ...
+# Subtest: coalesces multiple requests into one frame
+ok 670 - coalesces multiple requests into one frame
+  ---
+  duration_ms: 1.243093
+  type: 'test'
+  ...
+# Subtest: flush cancels queued callback and draws immediately
+ok 671 - flush cancels queued callback and draws immediately
+  ---
+  duration_ms: 0.267022
+  type: 'test'
+  ...
+# Subtest: cancel drops pending redraw
+ok 672 - cancel drops pending redraw
+  ---
+  duration_ms: 2.016258
+  type: 'test'
+  ...
+# Subtest: dispose prevents future redraw
+ok 673 - dispose prevents future redraw
+  ---
+  duration_ms: 0.263417
+  type: 'test'
+  ...
+# Subtest: schedule works again after completed frame
+ok 674 - schedule works again after completed frame
+  ---
+  duration_ms: 0.191759
+  type: 'test'
+  ...
+# Subtest: empty metrics are zero
+ok 675 - empty metrics are zero
+  ---
+  duration_ms: 2.569702
+  type: 'test'
+  ...
+# Subtest: rolling window discards oldest sample
+ok 676 - rolling window discards oldest sample
+  ---
+  duration_ms: 1.256113
+  type: 'test'
+  ...
+# Subtest: percentiles and frame budget
+ok 677 - percentiles and frame budget
+  ---
+  duration_ms: 3.313523
+  type: 'test'
+  ...
+# Subtest: invalid samples ignored
+ok 678 - invalid samples ignored
+  ---
+  duration_ms: 0.287323
+  type: 'test'
+  ...
+# Subtest: reset clears measurements
+ok 679 - reset clears measurements
+  ---
+  duration_ms: 0.520935
+  type: 'test'
+  ...
+# Subtest: invalid capacity rejected
+ok 680 - invalid capacity rejected
+  ---
+  duration_ms: 0.852325
+  type: 'test'
+  ...
+# Subtest: diagnostic accessible et fermé initialement
+ok 681 - diagnostic accessible et fermé initialement
+  ---
+  duration_ms: 0.923151
+  type: 'test'
+  ...
+# Subtest: diagnostic montre les percentiles sans telemetry externe
+ok 682 - diagnostic montre les percentiles sans telemetry externe
+  ---
+  duration_ms: 0.262155
+  type: 'test'
+  ...
+# Subtest: bouton de remise à zéro des mesures
+ok 683 - bouton de remise à zéro des mesures
+  ---
+  duration_ms: 0.189195
+  type: 'test'
+  ...
+# Subtest: v18.0 visible version matches package
+ok 684 - v18.0 visible version matches package
+  ---
+  duration_ms: 2.391604
+  type: 'test'
+  ...
+# Subtest: v18.0 main canvas and layers exist
+ok 685 - v18.0 main canvas and layers exist
+  ---
+  duration_ms: 0.357608
+  type: 'test'
+  ...
+# Subtest: v18.0 core editing commands exist
+ok 686 - v18.0 core editing commands exist
+  ---
+  duration_ms: 0.257238
+  type: 'test'
+  ...
+# Subtest: v18.0 diagnostic controls and accessible toggle exist
+ok 687 - v18.0 diagnostic controls and accessible toggle exist
+  ---
+  duration_ms: 0.27174
+  type: 'test'
+  ...
+# Subtest: v18.0 Windows build and validation scripts are packaged
+ok 688 - v18.0 Windows build and validation scripts are packaged
+  ---
+  duration_ms: 0.322315
+  type: 'test'
+  ...
+# Subtest: Windows launcher shows current version
+ok 689 - Windows launcher shows current version
+  ---
+  duration_ms: 1.274981
+  type: 'test'
+  ...
+# Subtest: Windows launcher prevents iframe embedding
+ok 690 - Windows launcher prevents iframe embedding
+  ---
+  duration_ms: 0.425271
+  type: 'test'
+  ...
+# Subtest: Windows launcher restricts serving to loopback
+ok 691 - Windows launcher restricts serving to loopback
+  ---
+  duration_ms: 2.181057
+  type: 'test'
+  ...
+# Subtest: UI and package use current version
+ok 692 - UI and package use current version
+  ---
+  duration_ms: 0.684742
+  type: 'test'
+  ...
+# Subtest: Windows native smoke test validates frame protection
+ok 693 - Windows native smoke test validates frame protection
+  ---
+  duration_ms: 0.297468
+  type: 'test'
+  ...
+# Subtest: menu Aligner et répartir
+ok 694 - menu Aligner et répartir
+  ---
+  duration_ms: 1.000618
+  type: 'test'
+  ...
+# Subtest: menu Transformer
+ok 695 - menu Transformer
+  ---
+  duration_ms: 0.131669
+  type: 'test'
+  ...
+# Subtest: menu Repères et grille
+ok 696 - menu Repères et grille
+  ---
+  duration_ms: 0.11277
+  type: 'test'
+  ...
+# Subtest: menu Superposition
+ok 697 - menu Superposition
+  ---
+  duration_ms: 0.190688
+  type: 'test'
+  ...
+# Subtest: all original critical controls preserved
+ok 698 - all original critical controls preserved
+  ---
+  duration_ms: 0.33197
+  type: 'test'
+  ...
+# Subtest: menu accessible native HTML
+ok 699 - menu accessible native HTML
+  ---
+  duration_ms: 0.23219
+  type: 'test'
+  ...
+# Subtest: opening second menu closes first
+ok 700 - opening second menu closes first
+  ---
+  duration_ms: 2.283922
+  type: 'test'
+  ...
+# Subtest: outside pointer closes all
+ok 701 - outside pointer closes all
+  ---
+  duration_ms: 0.619353
+  type: 'test'
+  ...
+# Subtest: inside pointer preserves open menu
+ok 702 - inside pointer preserves open menu
+  ---
+  duration_ms: 0.21219
+  type: 'test'
+  ...
+# Subtest: Escape dismisses open menus
+ok 703 - Escape dismisses open menus
+  ---
+  duration_ms: 0.31877
+  type: 'test'
+  ...
+# Subtest: cleanup detaches event handlers
+ok 704 - cleanup detaches event handlers
+  ---
+  duration_ms: 0.635558
+  type: 'test'
+  ...
+# Subtest: closed popups hidden and narrow z-order visible
+ok 705 - closed popups hidden and narrow z-order visible
+  ---
+  duration_ms: 3.469233
+  type: 'test'
+  ...
+# Subtest: ArrowDown advances focus inside an open menu
+ok 706 - ArrowDown advances focus inside an open menu
+  ---
+  duration_ms: 1.568724
+  type: 'test'
+  ...
+# Subtest: ArrowUp wraps from first to last control
+ok 707 - ArrowUp wraps from first to last control
+  ---
+  duration_ms: 0.220963
+  type: 'test'
+  ...
+# Subtest: Home and End move to first and last
+ok 708 - Home and End move to first and last
+  ---
+  duration_ms: 2.007726
+  type: 'test'
+  ...
+# Subtest: Escape closes and returns focus to summary
+ok 709 - Escape closes and returns focus to summary
+  ---
+  duration_ms: 0.356106
+  type: 'test'
+  ...
+# Subtest: keyboard handler is removed by cleanup
+ok 710 - keyboard handler is removed by cleanup
+  ---
+  duration_ms: 0.275415
+  type: 'test'
+  ...
+# Subtest: valid A/B FC wiring has no cable anomaly
+ok 711 - valid A/B FC wiring has no cable anomaly
+  ---
+  duration_ms: 2.145634
+  type: 'test'
+  ...
+# Subtest: fabric redundancy accepts trimmed and lowercase labels
+ok 712 - fabric redundancy accepts trimmed and lowercase labels
+  ---
+  duration_ms: 1.879302
+  type: 'test'
+  ...
+# Subtest: duplicate usage across different cables is reported
+ok 713 - duplicate usage across different cables is reported
+  ---
+  duration_ms: 0.545391
+  type: 'test'
+  ...
+# Subtest: unknown port does not create a false port-reused finding
+ok 714 - unknown port does not create a false port-reused finding
+  ---
+  duration_ms: 0.686184
+  type: 'test'
+  ...
+# Subtest: self-loop using one port is not counted as two distinct cables
+ok 715 - self-loop using one port is not counted as two distinct cables
+  ---
+  duration_ms: 0.251139
+  type: 'test'
+  ...
+# Subtest: inventory flags genuinely shared physical port as conflict
+ok 716 - inventory flags genuinely shared physical port as conflict
+  ---
+  duration_ms: 0.47781
+  type: 'test'
+  ...
+# Subtest: priorité critique pour conflit de port
+ok 717 - priorité critique pour conflit de port
+  ---
+  duration_ms: 1.218255
+  type: 'test'
+  ...
+# Subtest: priorité avertissement pour port inconnu
+ok 718 - priorité avertissement pour port inconnu
+  ---
+  duration_ms: 0.148243
+  type: 'test'
+  ...
+# Subtest: code inconnu conservé en information
+ok 719 - code inconnu conservé en information
+  ---
+  duration_ms: 0.216626
+  type: 'test'
+  ...
+# Subtest: comptage stable et non destructif
+ok 720 - comptage stable et non destructif
+  ---
+  duration_ms: 0.881609
+  type: 'test'
+  ...
+# Subtest: filtrage conserve ordre et source
+ok 721 - filtrage conserve ordre et source
+  ---
+  duration_ms: 0.211539
+  type: 'test'
+  ...
+# Subtest: filtre invalide rejeté
+ok 722 - filtre invalide rejeté
+  ---
+  duration_ms: 0.476037
+  type: 'test'
+  ...
+# Subtest: description compréhensible et repli
+ok 723 - description compréhensible et repli
+  ---
+  duration_ms: 0.276507
+  type: 'test'
+  ...
+# Subtest: localisation d’une connexion existante
+ok 724 - localisation d’une connexion existante
+  ---
+  duration_ms: 0.819826
+  type: 'test'
+  ...
+# Subtest: connexion absente : aucun raccourci
+ok 725 - connexion absente : aucun raccourci
+  ---
+  duration_ms: 1.320279
+  type: 'test'
+  ...
+# Subtest: diagnostic malformé : navigation impossible
+ok 726 - diagnostic malformé : navigation impossible
+  ---
+  duration_ms: 0.12645
+  type: 'test'
+  ...
+# Subtest: inventaire absent : navigation impossible
+ok 727 - inventaire absent : navigation impossible
+  ---
+  duration_ms: 0.125539
+  type: 'test'
+  ...
+# Subtest: navigation câblage branchée sur sélection et dialogue
+ok 728 - navigation câblage branchée sur sélection et dialogue
+  ---
+  duration_ms: 0.825144
+  type: 'test'
+  ...
+# Subtest: style visible et focus accessible
+ok 729 - style visible et focus accessible
+  ---
+  duration_ms: 0.337168
+  type: 'test'
+  ...
+# Subtest: navigation circulaire avant et arrière
+ok 730 - navigation circulaire avant et arrière
+  ---
+  duration_ms: 0.919115
+  type: 'test'
+  ...
+# Subtest: navigation sans anomalie
+ok 731 - navigation sans anomalie
+  ---
+  duration_ms: 1.265116
+  type: 'test'
+  ...
+# Subtest: centrage dans viewport défilant
+ok 732 - centrage dans viewport défilant
+  ---
+  duration_ms: 0.813576
+  type: 'test'
+  ...
+# Subtest: centrage borné à zéro
+ok 733 - centrage borné à zéro
+  ---
+  duration_ms: 0.116966
+  type: 'test'
+  ...
+# Subtest: contrôles de navigation présents
+ok 734 - contrôles de navigation présents
+  ---
+  duration_ms: 0.321174
+  type: 'test'
+  ...
+# Subtest: navigation et recentrage raccordés
+ok 735 - navigation et recentrage raccordés
+  ---
+  duration_ms: 0.601666
+  type: 'test'
+  ...
+# Subtest: centre du symbole
+ok 736 - centre du symbole
+  ---
+  duration_ms: 1.709707
+  type: 'test'
+  ...
+# Subtest: croisement strict
+ok 737 - croisement strict
+  ---
+  duration_ms: 0.316496
+  type: 'test'
+  ...
+# Subtest: contacts et segments colinéaires ignorés
+ok 738 - contacts et segments colinéaires ignorés
+  ---
+  duration_ms: 0.236467
+  type: 'test'
+  ...
+# Subtest: détection croisement entre câbles indépendants
+ok 739 - détection croisement entre câbles indépendants
+  ---
+  duration_ms: 0.753475
+  type: 'test'
+  ...
+# Subtest: pas de faux croisement au nœud partagé
+ok 740 - pas de faux croisement au nœud partagé
+  ---
+  duration_ms: 0.354004
+  type: 'test'
+  ...
+# Subtest: noeuds absents et coordonnées invalides ignorés
+ok 741 - noeuds absents et coordonnées invalides ignorés
+  ---
+  duration_ms: 0.314985
+  type: 'test'
+  ...
+# Subtest: diagnostic visible et raccordé au panneau
+ok 742 - diagnostic visible et raccordé au panneau
+  ---
+  duration_ms: 0.8823
+  type: 'test'
+  ...
+# Subtest: segments orthogonaux: croisement réel
+ok 743 - segments orthogonaux: croisement réel
+  ---
+  duration_ms: 1.899372
+  type: 'test'
+  ...
+# Subtest: les points de passage modifient le diagnostic
+ok 744 - les points de passage modifient le diagnostic
+  ---
+  duration_ms: 0.456057
+  type: 'test'
+  ...
+# Subtest: segments colinéaires ne sont pas des croisements stricts
+ok 745 - segments colinéaires ne sont pas des croisements stricts
+  ---
+  duration_ms: 0.154834
+  type: 'test'
+  ...
+# Subtest: liaisons partageant un noeud ignorées
+ok 746 - liaisons partageant un noeud ignorées
+  ---
+  duration_ms: 1.039937
+  type: 'test'
+  ...
+# Subtest: géométrie invalide sans crash
+ok 747 - géométrie invalide sans crash
+  ---
+  duration_ms: 0.221094
+  type: 'test'
+  ...
+# Subtest: SVG M/L absolute interpreted
+ok 748 - SVG M/L absolute interpreted
+  ---
+  duration_ms: 2.284172
+  type: 'test'
+  ...
+# Subtest: SVG implicit L and exponents
+ok 749 - SVG implicit L and exponents
+  ---
+  duration_ms: 0.375495
+  type: 'test'
+  ...
+# Subtest: SVG unsupported curves safely fall back
+ok 750 - SVG unsupported curves safely fall back
+  ---
+  duration_ms: 0.250077
+  type: 'test'
+  ...
+# Subtest: SVG malformed input safely rejected
+ok 751 - SVG malformed input safely rejected
+  ---
+  duration_ms: 0.209446
+  type: 'test'
+  ...
+# Subtest: rendered routes extracted from SVG-like DOM
+ok 752 - rendered routes extracted from SVG-like DOM
+  ---
+  duration_ms: 0.334193
+  type: 'test'
+  ...
+# Subtest: rendered paths override geometric approximation
+ok 753 - rendered paths override geometric approximation
+  ---
+  duration_ms: 0.394685
+  type: 'test'
+  ...
+# Subtest: crossings on rendered paths detected
+ok 754 - crossings on rendered paths detected
+  ---
+  duration_ms: 0.409847
+  type: 'test'
+  ...
+# Subtest: reject malformed SVG separators
+ok 755 - reject malformed SVG separators
+  ---
+  duration_ms: 1.015801
+  type: 'test'
+  ...
+# Subtest: reject unsupported SVG relative path
+ok 756 - reject unsupported SVG relative path
+  ---
+  duration_ms: 0.27873
+  type: 'test'
+  ...
+# Subtest: reject broken exponent
+ok 757 - reject broken exponent
+  ---
+  duration_ms: 0.133592
+  type: 'test'
+  ...
+# Subtest: reject huge SVG input
+ok 758 - reject huge SVG input
+  ---
+  duration_ms: 0.133151
+  type: 'test'
+  ...
+# Subtest: accept commas and negative coordinates
+ok 759 - accept commas and negative coordinates
+  ---
+  duration_ms: 0.934898
+  type: 'test'
+  ...
+# Subtest: reject tangential bounding boxes
+ok 760 - reject tangential bounding boxes
+  ---
+  duration_ms: 0.687826
+  type: 'test'
+  ...
+# Subtest: 500 disjoint cables have no crossings
+ok 761 - 500 disjoint cables have no crossings
+  ---
+  duration_ms: 4.960836
+  type: 'test'
+  ...
+# Subtest: sweep catches crossed rendered routes
+ok 762 - sweep catches crossed rendered routes
+  ---
+  duration_ms: 0.456238
+  type: 'test'
+  ...
+# Subtest: sweep excludes endpoint contacts
+ok 763 - sweep excludes endpoint contacts
+  ---
+  duration_ms: 0.280312
+  type: 'test'
+  ...
+# Subtest: SVG parser rejects unsupported curves
+ok 764 - SVG parser rejects unsupported curves
+  ---
+  duration_ms: 0.513073
+  type: 'test'
+  ...
+# Subtest: v19.4 exposes a disabled redo button
+ok 765 - v19.4 exposes a disabled redo button
+  ---
+  duration_ms: 3.502678
+  type: 'test'
+  ...
+# Subtest: v19.4 undo retains previous state for redo
+ok 766 - v19.4 undo retains previous state for redo
+  ---
+  duration_ms: 0.394729
+  type: 'test'
+  ...
+# Subtest: v19.4 new changes invalidate redo
+ok 767 - v19.4 new changes invalidate redo
+  ---
+  duration_ms: 0.16625
+  type: 'test'
+  ...
+# Subtest: v19.4 caps both history directions
+ok 768 - v19.4 caps both history directions
+  ---
+  duration_ms: 5.965815
+  type: 'test'
+  ...
+# Subtest: v19.4 keyboard supports redo variants
+ok 769 - v19.4 keyboard supports redo variants
+  ---
+  duration_ms: 0.330357
+  type: 'test'
+  ...
+# Subtest: v19.4 version label
+ok 770 - v19.4 version label
+  ---
+  duration_ms: 0.629479
+  type: 'test'
+  ...
+# Subtest: déplacement multiple conserve exactement les écarts
+ok 771 - déplacement multiple conserve exactement les écarts
+  ---
+  duration_ms: 1.80532
+  type: 'test'
+  ...
+# Subtest: déplacement multiple positif
+ok 772 - déplacement multiple positif
+  ---
+  duration_ms: 0.313282
+  type: 'test'
+  ...
+# Subtest: alignement grille commun à la sélection
+ok 773 - alignement grille commun à la sélection
+  ---
+  duration_ms: 1.902107
+  type: 'test'
+  ...
+# Subtest: aucune mutation des coordonnées initiales
+ok 774 - aucune mutation des coordonnées initiales
+  ---
+  duration_ms: 0.287343
+  type: 'test'
+  ...
+# Subtest: rejet des déplacements non finis
+ok 775 - rejet des déplacements non finis
+  ---
+  duration_ms: 0.191909
+  type: 'test'
+  ...
+# Subtest: sélection vide sans erreur
+ok 776 - sélection vide sans erreur
+  ---
+  duration_ms: 0.147703
+  type: 'test'
+  ...
+# Subtest: v19.6 cancellation restores redo history
+ok 777 - v19.6 cancellation restores redo history
+  ---
+  duration_ms: 0.925725
+  type: 'test'
+  ...
+# Subtest: v19.6 cancellation discards provisional undo
+ok 778 - v19.6 cancellation discards provisional undo
+  ---
+  duration_ms: 0.295475
+  type: 'test'
+  ...
+# Subtest: v19.6 move cancellation restores original coordinates
+ok 779 - v19.6 move cancellation restores original coordinates
+  ---
+  duration_ms: 0.359252
+  type: 'test'
+  ...
+# Subtest: v19.6 waypoint cancellation restores original point
+ok 780 - v19.6 waypoint cancellation restores original point
+  ---
+  duration_ms: 0.220142
+  type: 'test'
+  ...
+# Subtest: v19.6 resize cancellation restores dimensions
+ok 781 - v19.6 resize cancellation restores dimensions
+  ---
+  duration_ms: 0.304889
+  type: 'test'
+  ...
+# Subtest: inventaire SAN : ports libres et utilisés
+ok 782 - inventaire SAN : ports libres et utilisés
+  ---
+  duration_ms: 2.210982
+  type: 'test'
+  ...
+# Subtest: inventaire SAN : conflits de ports détectés
+ok 783 - inventaire SAN : conflits de ports détectés
+  ---
+  duration_ms: 2.230732
+  type: 'test'
+  ...
+# Subtest: inventaire SAN : lien réflexif non doublé
+ok 784 - inventaire SAN : lien réflexif non doublé
+  ---
+  duration_ms: 0.429227
+  type: 'test'
+  ...
+# Subtest: inventaire SAN : préserve les anomalies de câblage
+ok 785 - inventaire SAN : préserve les anomalies de câblage
+  ---
+  duration_ms: 0.600635
+  type: 'test'
+  ...
+# Subtest: inventaire SAN : grand nombre de ports et connexions
+ok 786 - inventaire SAN : grand nombre de ports et connexions
+  ---
+  duration_ms: 28.107016
+  type: 'test'
+  ...
+# Subtest: port utilisé supprimé : détecté sans modifier le graphe
+ok 787 - port utilisé supprimé : détecté sans modifier le graphe
+  ---
+  duration_ms: 5.542202
+  type: 'test'
+  ...
+# Subtest: port libre supprimé : autorisé
+ok 788 - port libre supprimé : autorisé
+  ---
+  duration_ms: 3.379287
+  type: 'test'
+  ...
+# Subtest: connexion côté cible : prise en compte
+ok 789 - connexion côté cible : prise en compte
+  ---
+  duration_ms: 5.727231
+  type: 'test'
+  ...
+# Subtest: boucle locale : les deux côtés sont identifiés une fois
+ok 790 - boucle locale : les deux côtés sont identifiés une fois
+  ---
+  duration_ms: 0.927237
+  type: 'test'
+  ...
+# Subtest: suppression sans connexions : aucun impact
+ok 791 - suppression sans connexions : aucun impact
+  ---
+  duration_ms: 1.938471
+  type: 'test'
+  ...
+# Subtest: autres équipements ignorés
+ok 792 - autres équipements ignorés
+  ---
+  duration_ms: 0.235806
+  type: 'test'
+  ...
+# Subtest: prévisualisation sans mutation
+ok 793 - prévisualisation sans mutation
+  ---
+  duration_ms: 2.897156
+  type: 'test'
+  ...
+# Subtest: réaffectation des deux extrémités, métadonnées intactes
+ok 794 - réaffectation des deux extrémités, métadonnées intactes
+  ---
+  duration_ms: 3.558712
+  type: 'test'
+  ...
+# Subtest: collision de nom refusée
+ok 795 - collision de nom refusée
+  ---
+  duration_ms: 0.587306
+  type: 'test'
+  ...
+# Subtest: port absent refusé
+ok 796 - port absent refusé
+  ---
+  duration_ms: 0.18583
+  type: 'test'
+  ...
+# Subtest: plan périmé refusé avant toute mutation
+ok 797 - plan périmé refusé avant toute mutation
+  ---
+  duration_ms: 0.379642
+  type: 'test'
+  ...
+# Subtest: renommage identique sans effet
+ok 798 - renommage identique sans effet
+  ---
+  duration_ms: 0.240713
+  type: 'test'
+  ...
+# Subtest: transaction : refus de supprimer un port connecté sans mutation
+ok 799 - transaction : refus de supprimer un port connecté sans mutation
+  ---
+  duration_ms: 2.078442
+  type: 'test'
+  ...
+# Subtest: transaction : validation puis application atomique
+ok 800 - transaction : validation puis application atomique
+  ---
+  duration_ms: 0.480003
+  type: 'test'
+  ...
+# Subtest: transaction : modification identique sans entrée historique
+ok 801 - transaction : modification identique sans entrée historique
+  ---
+  duration_ms: 0.190988
+  type: 'test'
+  ...
+# Subtest: transaction : saisie invalide rejetée avant mutation
+ok 802 - transaction : saisie invalide rejetée avant mutation
+  ---
+  duration_ms: 0.499823
+  type: 'test'
+  ...
+# Subtest: transaction : propriété simple sans mutation avant validation
+ok 803 - transaction : propriété simple sans mutation avant validation
+  ---
+  duration_ms: 0.148103
+  type: 'test'
+  ...
+# Subtest: transaction : plan refusé non applicable
+ok 804 - transaction : plan refusé non applicable
+  ---
+  duration_ms: 0.105779
+  type: 'test'
+  ...
+# Subtest: offset non numérique refusé sans mutation
+ok 805 - offset non numérique refusé sans mutation
+  ---
+  duration_ms: 1.338537
+  type: 'test'
+  ...
+# Subtest: offset vide refusé
+ok 806 - offset vide refusé
+  ---
+  duration_ms: 0.254513
+  type: 'test'
+  ...
+# Subtest: offset valide et atomique
+ok 807 - offset valide et atomique
+  ---
+  duration_ms: 0.264739
+  type: 'test'
+  ...
+# Subtest: interface absente refusée
+ok 808 - interface absente refusée
+  ---
+  duration_ms: 0.18592
+  type: 'test'
+  ...
+# Subtest: interface de destination valide
+ok 809 - interface de destination valide
+  ---
+  duration_ms: 0.182975
+  type: 'test'
+  ...
+# Subtest: aucune modification identique
+ok 810 - aucune modification identique
+  ---
+  duration_ms: 0.168314
+  type: 'test'
+  ...
+# Subtest: application de plan invalide refusée
+ok 811 - application de plan invalide refusée
+  ---
+  duration_ms: 0.158849
+  type: 'test'
+  ...
+# Subtest: historique: mutation de liaison puis annuler/rétablir
+ok 812 - historique: mutation de liaison puis annuler/rétablir
+  ---
+  duration_ms: 1.794935
+  type: 'test'
+  ...
+# Subtest: historique: nouvelle mutation invalide redo
+ok 813 - historique: nouvelle mutation invalide redo
+  ---
+  duration_ms: 0.245691
+  type: 'test'
+  ...
+# Subtest: historique: annulation geste restaure redo précédent
+ok 814 - historique: annulation geste restaure redo précédent
+  ---
+  duration_ms: 1.096001
+  type: 'test'
+  ...
+# Subtest: historique: borne de capacité
+ok 815 - historique: borne de capacité
+  ---
+  duration_ms: 0.253462
+  type: 'test'
+  ...
+# Subtest: historique: navigation sur piles vides sans effet
+ok 816 - historique: navigation sur piles vides sans effet
+  ---
+  duration_ms: 0.227192
+  type: 'test'
+  ...
+# Subtest: historique: restauration profonde des ports et connexions
+ok 817 - historique: restauration profonde des ports et connexions
+  ---
+  duration_ms: 0.242225
+  type: 'test'
+  ...
+# Subtest: historique: limite invalide refusée
+ok 818 - historique: limite invalide refusée
+  ---
+  duration_ms: 0.382116
+  type: 'test'
+  ...
+# Subtest: restauration historique atomique si snapshot endommagé
+ok 819 - restauration historique atomique si snapshot endommagé
+  ---
+  duration_ms: 2.556673
+  type: 'test'
+  ...
+# Subtest: refuse navigation historique dans la même pile
+ok 820 - refuse navigation historique dans la même pile
+  ---
+  duration_ms: 0.390759
+  type: 'test'
+  ...
+# Subtest: refuse une pile étrangère
+ok 821 - refuse une pile étrangère
+  ---
+  duration_ms: 0.243547
+  type: 'test'
+  ...
+# Subtest: refuse annulation geste avec redo non valide
+ok 822 - refuse annulation geste avec redo non valide
+  ---
+  duration_ms: 0.148754
+  type: 'test'
+  ...
+# Subtest: restaure la sélection et le graphe après annulation
+ok 823 - restaure la sélection et le graphe après annulation
+  ---
+  duration_ms: 0.906176
+  type: 'test'
+  ...
+# Subtest: SAN extras restored with diagram on undo
+ok 824 - SAN extras restored with diagram on undo
+  ---
+  duration_ms: 2.09057
+  type: 'test'
+  ...
+# Subtest: invalid SAN extras refuse undo without consuming history
+ok 825 - invalid SAN extras refuse undo without consuming history
+  ---
+  duration_ms: 0.655528
+  type: 'test'
+  ...
+# Subtest: legacy history snapshots remain readable
+ok 826 - legacy history snapshots remain readable
+  ---
+  duration_ms: 0.216406
+  type: 'test'
+  ...
+# Subtest: zoning: changement validé avant checkpoint
+ok 827 - zoning: changement validé avant checkpoint
+  ---
+  duration_ms: 1.235722
+  type: 'test'
+  ...
+# Subtest: zoning: aucune entrée pour valeur identique
+ok 828 - zoning: aucune entrée pour valeur identique
+  ---
+  duration_ms: 0.205189
+  type: 'test'
+  ...
+# Subtest: zoning: entrée invalide sans mutation
+ok 829 - zoning: entrée invalide sans mutation
+  ---
+  duration_ms: 0.320292
+  type: 'test'
+  ...
+# Subtest: zoning: plan ne modifie pas la source
+ok 830 - zoning: plan ne modifie pas la source
+  ---
+  duration_ms: 0.910202
+  type: 'test'
+  ...
+# Subtest: clé de document dédiée
+ok 831 - clé de document dédiée
+  ---
+  duration_ms: 1.010112
+  type: 'test'
+  ...
+# Subtest: aller-retour atomique diagramme et SAN
+ok 832 - aller-retour atomique diagramme et SAN
+  ---
+  duration_ms: 1.890108
+  type: 'test'
+  ...
+# Subtest: écriture unique en stockage
+ok 833 - écriture unique en stockage
+  ---
+  duration_ms: 0.216847
+  type: 'test'
+  ...
+# Subtest: échec stockage sans écriture secondaire
+ok 834 - échec stockage sans écriture secondaire
+  ---
+  duration_ms: 0.53745
+  type: 'test'
+  ...
+# Subtest: rejet document altéré
+ok 835 - rejet document altéré
+  ---
+  duration_ms: 0.211709
+  type: 'test'
+  ...
+# Subtest: rejet graphe invalide avant stockage
+ok 836 - rejet graphe invalide avant stockage
+  ---
+  duration_ms: 0.160401
+  type: 'test'
+  ...
+# Subtest: rejet zoning invalide avant stockage
+ok 837 - rejet zoning invalide avant stockage
+  ---
+  duration_ms: 0.262986
+  type: 'test'
+  ...
+# Subtest: validation du zoning avant restauration
+ok 838 - validation du zoning avant restauration
+  ---
+  duration_ms: 0.246932
+  type: 'test'
+  ...
+# Subtest: empreinte stable
+ok 839 - empreinte stable
+  ---
+  duration_ms: 1.431246
+  type: 'test'
+  ...
+# Subtest: sauvegarde vérifiable
+ok 840 - sauvegarde vérifiable
+  ---
+  duration_ms: 0.529368
+  type: 'test'
+  ...
+# Subtest: altération de secours refusée
+ok 841 - altération de secours refusée
+  ---
+  duration_ms: 0.530429
+  type: 'test'
+  ...
+# Subtest: première sauvegarde sans backup
+ok 842 - première sauvegarde sans backup
+  ---
+  duration_ms: 1.771239
+  type: 'test'
+  ...
+# Subtest: deuxième sauvegarde conserve état précédent
+ok 843 - deuxième sauvegarde conserve état précédent
+  ---
+  duration_ms: 0.356968
+  type: 'test'
+  ...
+# Subtest: document primaire invalide non promu en secours
+ok 844 - document primaire invalide non promu en secours
+  ---
+  duration_ms: 0.24542
+  type: 'test'
+  ...
+# Subtest: copie absente retourne null
+ok 845 - copie absente retourne null
+  ---
+  duration_ms: 0.145229
+  type: 'test'
+  ...
+# Subtest: récupération rejette un document interne invalide
+ok 846 - récupération rejette un document interne invalide
+  ---
+  duration_ms: 0.178809
+  type: 'test'
+  ...
+# Subtest: échec écriture du backup laisse primaire intact
+ok 847 - échec écriture du backup laisse primaire intact
+  ---
+  duration_ms: 0.528046
+  type: 'test'
+  ...
+# Subtest: SHA-256 vecteur standard
+ok 848 - SHA-256 vecteur standard
+  ---
+  duration_ms: 8.487489
+  type: 'test'
+  ...
+# Subtest: export portable SHA-256 round-trip diagramme et zoning
+ok 849 - export portable SHA-256 round-trip diagramme et zoning
+  ---
+  duration_ms: 1.494672
+  type: 'test'
+  ...
+# Subtest: corruption document rejetée
+ok 850 - corruption document rejetée
+  ---
+  duration_ms: 3.069461
+  type: 'test'
+  ...
+# Subtest: format étranger rejeté
+ok 851 - format étranger rejeté
+  ---
+  duration_ms: 0.229716
+  type: 'test'
+  ...
+# Subtest: empreinte manquante rejetée
+ok 852 - empreinte manquante rejetée
+  ---
+  duration_ms: 0.727326
+  type: 'test'
+  ...
+# Subtest: limite taille fichier appliquée
+ok 853 - limite taille fichier appliquée
+  ---
+  duration_ms: 0.180582
+  type: 'test'
+  ...
+# Subtest: restauration et sauvegarde de l’ancien document
+ok 854 - restauration et sauvegarde de l’ancien document
+  ---
+  duration_ms: 7.160094
+  type: 'test'
+  ...
+# Subtest: document identique ne génère pas de sauvegarde
+ok 855 - document identique ne génère pas de sauvegarde
+  ---
+  duration_ms: 2.028797
+  type: 'test'
+  ...
+# Subtest: ancien primaire corrompu bloque remplacement
+ok 856 - ancien primaire corrompu bloque remplacement
+  ---
+  duration_ms: 1.234269
+  type: 'test'
+  ...
+# Subtest: échec écriture secours conserve primaire
+ok 857 - échec écriture secours conserve primaire
+  ---
+  duration_ms: 1.348352
+  type: 'test'
+  ...
+# Subtest: compatibilité sauvegarde portable v1
+ok 858 - compatibilité sauvegarde portable v1
+  ---
+  duration_ms: 0.801919
+  type: 'test'
+  ...
+# Subtest: échec de remplacement restaure la sauvegarde précédente
+ok 859 - échec de remplacement restaure la sauvegarde précédente
+  ---
+  duration_ms: 1.626732
+  type: 'test'
+  ...
+# Subtest: échec première mise à jour supprime la sauvegarde provisoire
+ok 860 - échec première mise à jour supprime la sauvegarde provisoire
+  ---
+  duration_ms: 0.283517
+  type: 'test'
+  ...
+# Subtest: écriture effective suivie d’une exception conserve le secours récupérable
+ok 861 - écriture effective suivie d’une exception conserve le secours récupérable
+  ---
+  duration_ms: 1.693232
+  type: 'test'
+  ...
+# Subtest: diagnostic sans document
+ok 862 - diagnostic sans document
+  ---
+  duration_ms: 3.739575
+  type: 'test'
+  ...
+# Subtest: diagnostic document valide
+ok 863 - diagnostic document valide
+  ---
+  duration_ms: 0.40473
+  type: 'test'
+  ...
+# Subtest: diagnostic secours récupérable
+ok 864 - diagnostic secours récupérable
+  ---
+  duration_ms: 0.354103
+  type: 'test'
+  ...
+# Subtest: diagnostic secours altéré
+ok 865 - diagnostic secours altéré
+  ---
+  duration_ms: 0.34477
+  type: 'test'
+  ...
+# Subtest: v21.3 panneau accessible et contrôles présents
+ok 866 - v21.3 panneau accessible et contrôles présents
+  ---
+  duration_ms: 1.269193
+  type: 'test'
+  ...
+# Subtest: v21.3 panneau relit sans modifier
+ok 867 - v21.3 panneau relit sans modifier
+  ---
+  duration_ms: 0.653485
+  type: 'test'
+  ...
+# Subtest: v21.3 diagnostic primaire valide
+ok 868 - v21.3 diagnostic primaire valide
+  ---
+  duration_ms: 0.571992
+  type: 'test'
+  ...
+# Subtest: v21.3 diagnostic corruption et secours valide
+ok 869 - v21.3 diagnostic corruption et secours valide
+  ---
+  duration_ms: 0.410939
+  type: 'test'
+  ...
+# Subtest: bouton canevas seul accessible et non soumis
+ok 870 - bouton canevas seul accessible et non soumis
+  ---
+  duration_ms: 0.805794
+  type: 'test'
+  ...
+# Subtest: panneaux associés à leur commande ARIA
+ok 871 - panneaux associés à leur commande ARIA
+  ---
+  duration_ms: 0.125449
+  type: 'test'
+  ...
+# Subtest: canevas agrandi lorsque les deux panneaux sont masqués
+ok 872 - canevas agrandi lorsque les deux panneaux sont masqués
+  ---
+  duration_ms: 0.092789
+  type: 'test'
+  ...
+# Subtest: raccourci clavier et synchronisation des panneaux
+ok 873 - raccourci clavier et synchronisation des panneaux
+  ---
+  duration_ms: 0.346682
+  type: 'test'
+  ...
+# Subtest: palette de commandes accessible depuis le ruban
+ok 874 - palette de commandes accessible depuis le ruban
+  ---
+  duration_ms: 1.013958
+  type: 'test'
+  ...
+# Subtest: recherche de commandes et execution par clic
+ok 875 - recherche de commandes et execution par clic
+  ---
+  duration_ms: 0.321204
+  type: 'test'
+  ...
+# Subtest: raccourcis de recherche et inspecteur
+ok 876 - raccourcis de recherche et inspecteur
+  ---
+  duration_ms: 0.585903
+  type: 'test'
+  ...
+# Subtest: palette adaptative avec focus visible
+ok 877 - palette adaptative avec focus visible
+  ---
+  duration_ms: 0.215305
+  type: 'test'
+  ...
+# Subtest: valeur commune et valeur mixte
+ok 878 - valeur commune et valeur mixte
+  ---
+  duration_ms: 2.872519
+  type: 'test'
+  ...
+# Subtest: selection vide et valeurs manquantes
+ok 879 - selection vide et valeurs manquantes
+  ---
+  duration_ms: 0.271239
+  type: 'test'
+  ...
+# Subtest: bornes geometriques sans mutation
+ok 880 - bornes geometriques sans mutation
+  ---
+  duration_ms: 0.412582
+  type: 'test'
+  ...
+# Subtest: geometrie invalide refusee
+ok 881 - geometrie invalide refusee
+  ---
+  duration_ms: 0.151017
+  type: 'test'
+  ...
+# Subtest: types distincts tries
+ok 882 - types distincts tries
+  ---
+  duration_ms: 0.248585
+  type: 'test'
+  ...
+# Subtest: inspecteur multi applique uniquement aux formes editables
+ok 883 - inspecteur multi applique uniquement aux formes editables
+  ---
+  duration_ms: 1.171235
+  type: 'test'
+  ...
+# Subtest: espacement horizontal intelligent sans chevauchement
+ok 884 - espacement horizontal intelligent sans chevauchement
+  ---
+  duration_ms: 1.436845
+  type: 'test'
+  ...
+# Subtest: espacement vertical intelligent sans chevauchement
+ok 885 - espacement vertical intelligent sans chevauchement
+  ---
+  duration_ms: 3.964364
+  type: 'test'
+  ...
+# Subtest: espacement avec grille ne crée pas de recouvrement
+ok 886 - espacement avec grille ne crée pas de recouvrement
+  ---
+  duration_ms: 0.638452
+  type: 'test'
+  ...
+# Subtest: sélection insuffisante ne modifie pas le document
+ok 887 - sélection insuffisante ne modifie pas le document
+  ---
+  duration_ms: 0.335376
+  type: 'test'
+  ...
+# Subtest: commandes intelligentes présentes dans UI et contrôleur
+ok 888 - commandes intelligentes présentes dans UI et contrôleur
+  ---
+  duration_ms: 1.637227
+  type: 'test'
+  ...
+# Subtest: shared horizontal overlap counts length, not endpoints
+ok 889 - shared horizontal overlap counts length, not endpoints
+  ---
+  duration_ms: 1.933644
+  type: 'test'
+  ...
+# Subtest: shared vertical overlap counts length
+ok 890 - shared vertical overlap counts length
+  ---
+  duration_ms: 0.877432
+  type: 'test'
+  ...
+# Subtest: perpendicular crossings do not count as overlap
+ok 891 - perpendicular crossings do not count as overlap
+  ---
+  duration_ms: 0.214674
+  type: 'test'
+  ...
+# Subtest: total shared length excludes self pairs
+ok 892 - total shared length excludes self pairs
+  ---
+  duration_ms: 0.533634
+  type: 'test'
+  ...
+# Subtest: invalid routes fail explicitly
+ok 893 - invalid routes fail explicitly
+  ---
+  duration_ms: 0.895961
+  type: 'test'
+  ...
+# Subtest: candidate routes remain valid with overlap penalty
+ok 894 - candidate routes remain valid with overlap penalty
+  ---
+  duration_ms: 1.437526
+  type: 'test'
+  ...
+# Subtest: SAN lane order stable across input permutations
+ok 895 - SAN lane order stable across input permutations
+  ---
+  duration_ms: 14.187289
+  type: 'test'
+  ...
+# Subtest: SAN lane offsets symmetrical
+ok 896 - SAN lane offsets symmetrical
+  ---
+  duration_ms: 0.346592
+  type: 'test'
+  ...
+# Subtest: SAN lanes deduplicate edge IDs
+ok 897 - SAN lanes deduplicate edge IDs
+  ---
+  duration_ms: 0.155244
+  type: 'test'
+  ...
+# Subtest: SAN lanes respect maximum
+ok 898 - SAN lanes respect maximum
+  ---
+  duration_ms: 0.280744
+  type: 'test'
+  ...
+# Subtest: SAN lane configuration validated
+ok 899 - SAN lane configuration validated
+  ---
+  duration_ms: 0.508616
+  type: 'test'
+  ...
+# Subtest: shared segment routing deterministic despite edge ordering
+ok 900 - shared segment routing deterministic despite edge ordering
+  ---
+  duration_ms: 1.197494
+  type: 'test'
+  ...
+# Subtest: parallel SAN lanes are stable under reordered edges
+ok 901 - parallel SAN lanes are stable under reordered edges
+  ---
+  duration_ms: 12.213414
+  type: 'test'
+  ...
+# Subtest: parallel SAN lanes respect locked manual waypoints
+ok 902 - parallel SAN lanes respect locked manual waypoints
+  ---
+  duration_ms: 0.22566
+  type: 'test'
+  ...
+# Subtest: parallel SAN lanes do not cross obstacles
+ok 903 - parallel SAN lanes do not cross obstacles
+  ---
+  duration_ms: 0.337679
+  type: 'test'
+  ...
+# Subtest: parallel SAN lanes obey cap independent of input order
+ok 904 - parallel SAN lanes obey cap independent of input order
+  ---
+  duration_ms: 0.16541
+  type: 'test'
+  ...
+# Subtest: diagnostic detects strict interior crossing
+ok 905 - diagnostic detects strict interior crossing
+  ---
+  duration_ms: 2.60414
+  type: 'test'
+  ...
+# Subtest: diagnostic counts overlapping segments
+ok 906 - diagnostic counts overlapping segments
+  ---
+  duration_ms: 0.292771
+  type: 'test'
+  ...
+# Subtest: diagnostic counts obstacle collisions and does not mutate
+ok 907 - diagnostic counts obstacle collisions and does not mutate
+  ---
+  duration_ms: 0.381575
+  type: 'test'
+  ...
+# Subtest: diagnostic truncates and skips quadratic pairs
+ok 908 - diagnostic truncates and skips quadratic pairs
+  ---
+  duration_ms: 0.451921
+  type: 'test'
+  ...
+# Subtest: diagnostic ignores invalid paths safely
+ok 909 - diagnostic ignores invalid paths safely
+  ---
+  duration_ms: 0.238098
+  type: 'test'
+  ...
+# Subtest: panneau expose le résumé du diagnostic
+ok 910 - panneau expose le résumé du diagnostic
+  ---
+  duration_ms: 1.054579
+  type: 'test'
+  ...
+# Subtest: interface branche le moteur sur les tracés SVG
+ok 911 - interface branche le moteur sur les tracés SVG
+  ---
+  duration_ms: 0.197898
+  type: 'test'
+  ...
+# Subtest: diagnostic ne modifie pas les chemins
+ok 912 - diagnostic ne modifie pas les chemins
+  ---
+  duration_ms: 0.469838
+  type: 'test'
+  ...
+# Subtest: chevauchements du panneau : résultat mesurable
+ok 913 - chevauchements du panneau : résultat mesurable
+  ---
+  duration_ms: 0.294654
+  type: 'test'
+  ...
+# Subtest: detect overlapping paths and link both edges
+ok 914 - detect overlapping paths and link both edges
+  ---
+  duration_ms: 1.495995
+  type: 'test'
+  ...
+# Subtest: detect crossing
+ok 915 - detect crossing
+  ---
+  duration_ms: 0.200672
+  type: 'test'
+  ...
+# Subtest: invalid diagonal is flagged
+ok 916 - invalid diagonal is flagged
+  ---
+  duration_ms: 0.221974
+  type: 'test'
+  ...
+# Subtest: shared endpoints are not counted as crossings
+ok 917 - shared endpoints are not counted as crossings
+  ---
+  duration_ms: 0.137467
+  type: 'test'
+  ...
+# Subtest: bounded scan reports truncation
+ok 918 - bounded scan reports truncation
+  ---
+  duration_ms: 0.137658
+  type: 'test'
+  ...
+# Subtest: UI includes navigation list
+ok 919 - UI includes navigation list
+  ---
+  duration_ms: 0.903591
+  type: 'test'
+  ...
+# Subtest: preview improves overlap without mutating edge
+ok 920 - preview improves overlap without mutating edge
+  ---
+  duration_ms: 3.132501
+  type: 'test'
+  ...
+# Subtest: preview applies explicit offset
+ok 921 - preview applies explicit offset
+  ---
+  duration_ms: 1.821746
+  type: 'test'
+  ...
+# Subtest: manual route is protected
+ok 922 - manual route is protected
+  ---
+  duration_ms: 0.197388
+  type: 'test'
+  ...
+# Subtest: unsupported style protected
+ok 923 - unsupported style protected
+  ---
+  duration_ms: 0.147693
+  type: 'test'
+  ...
+# Subtest: invalid proposal refused
+ok 924 - invalid proposal refused
+  ---
+  duration_ms: 0.317889
+  type: 'test'
+  ...
+# Subtest: missing rendered path unavailable
+ok 925 - missing rendered path unavailable
+  ---
+  duration_ms: 0.239421
+  type: 'test'
+  ...
+# Subtest: preview UI wired
+ok 926 - preview UI wired
+  ---
+  duration_ms: 1.218796
+  type: 'test'
+  ...
+# Subtest: path serialization
+ok 927 - path serialization
+  ---
+  duration_ms: 1.16776
+  type: 'test'
+  ...
+# Subtest: rejects non finite coordinates
+ok 928 - rejects non finite coordinates
+  ---
+  duration_ms: 0.475326
+  type: 'test'
+  ...
+# Subtest: rejects empty paths
+ok 929 - rejects empty paths
+  ---
+  duration_ms: 0.266081
+  type: 'test'
+  ...
+# Subtest: preview geometry is independent of input
+ok 930 - preview geometry is independent of input
+  ---
+  duration_ms: 0.171349
+  type: 'test'
+  ...
+# Subtest: invalid preview rejected
+ok 931 - invalid preview rejected
+  ---
+  duration_ms: 0.113921
+  type: 'test'
+  ...
+# Subtest: overlay mounted and cleaned on cancel
+ok 932 - overlay mounted and cleaned on cancel
+  ---
+  duration_ms: 3.399424
+  type: 'test'
+  ...
+# Subtest: bounding boxes of orthogonal paths
+ok 933 - bounding boxes of orthogonal paths
+  ---
+  duration_ms: 1.655886
+  type: 'test'
+  ...
+# Subtest: invalid paths conservatively rejected
+ok 934 - invalid paths conservatively rejected
+  ---
+  duration_ms: 0.246391
+  type: 'test'
+  ...
+# Subtest: separated bounding boxes skip expensive intersection
+ok 935 - separated bounding boxes skip expensive intersection
+  ---
+  duration_ms: 0.181984
+  type: 'test'
+  ...
+# Subtest: touching boxes retained conservatively
+ok 936 - touching boxes retained conservatively
+  ---
+  duration_ms: 0.19263
+  type: 'test'
+  ...
+# Subtest: padding retains close obstacles
+ok 937 - padding retains close obstacles
+  ---
+  duration_ms: 0.151388
+  type: 'test'
+  ...
+# Subtest: far away routes do not alter preview
+ok 938 - far away routes do not alter preview
+  ---
+  duration_ms: 4.309083
+  type: 'test'
+  ...
+# Subtest: dense sweep detects orthogonal crossing
+ok 939 - dense sweep detects orthogonal crossing
+  ---
+  duration_ms: 1.273069
+  type: 'test'
+  ...
+# Subtest: dense sweep detects shared cable
+ok 940 - dense sweep detects shared cable
+  ---
+  duration_ms: 0.313903
+  type: 'test'
+  ...
+# Subtest: spatially separated routes require no pair comparisons
+ok 941 - spatially separated routes require no pair comparisons
+  ---
+  duration_ms: 3.033021
+  type: 'test'
+  ...
+# Subtest: invalid geometry reported
+ok 942 - invalid geometry reported
+  ---
+  duration_ms: 0.352501
+  type: 'test'
+  ...
+# Subtest: budget exhaustion explicitly reported
+ok 943 - budget exhaustion explicitly reported
+  ---
+  duration_ms: 9.740247
+  type: 'test'
+  ...
+# Subtest: input remains unchanged
+ok 944 - input remains unchanged
+  ---
+  duration_ms: 0.29204
+  type: 'test'
+  ...
+# Subtest: dense summary exposes completeness
+ok 945 - dense summary exposes completeness
+  ---
+  duration_ms: 1.350986
+  type: 'test'
+  ...
+# Subtest: dense summary marks partial analysis
+ok 946 - dense summary marks partial analysis
+  ---
+  duration_ms: 9.858175
+  type: 'test'
+  ...
+# Subtest: dense summary distinguishes limited findings
+ok 947 - dense summary distinguishes limited findings
+  ---
+  duration_ms: 0.666414
+  type: 'test'
+  ...
+# Subtest: dense summary displays pair count
+ok 948 - dense summary displays pair count
+  ---
+  duration_ms: 0.236567
+  type: 'test'
+  ...
+# Subtest: graph and overlay phases use independent bounded metrics
+ok 949 - graph and overlay phases use independent bounded metrics
+  ---
+  duration_ms: 1.350956
+  type: 'test'
+  ...
+# Subtest: graph timing is sampled after SVG generation
+ok 950 - graph timing is sampled after SVG generation
+  ---
+  duration_ms: 0.348165
+  type: 'test'
+  ...
+# Subtest: phase durations use a shared starting timestamp
+ok 951 - phase durations use a shared starting timestamp
+  ---
+  duration_ms: 0.15918
+  type: 'test'
+  ...
+# Subtest: reset clears all three series
+ok 952 - reset clears all three series
+  ---
+  duration_ms: 0.128884
+  type: 'test'
+  ...
+# Subtest: UI labels browser paint as unmeasured
+ok 953 - UI labels browser paint as unmeasured
+  ---
+  duration_ms: 0.138919
+  type: 'test'
+  ...
+# Subtest: metrics keep only bounded history
+ok 954 - metrics keep only bounded history
+  ---
+  duration_ms: 1.657778
+  type: 'test'
+  ...
+# Subtest: interactive render uses cached topology
+ok 955 - interactive render uses cached topology
+  ---
+  duration_ms: 0.799836
+  type: 'test'
+  ...
+# Subtest: cache invalidated on full paint
+ok 956 - cache invalidated on full paint
+  ---
+  duration_ms: 0.237378
+  type: 'test'
+  ...
+# Subtest: cache is lazy and reused during pointer movement
+ok 957 - cache is lazy and reused during pointer movement
+  ---
+  duration_ms: 0.117648
+  type: 'test'
+  ...
+# Subtest: cached graph retains mutable node objects
+ok 958 - cached graph retains mutable node objects
+  ---
+  duration_ms: 4.49285
+  type: 'test'
+  ...
+# Subtest: statistiques vierges avant le premier rendu
+ok 959 - statistiques vierges avant le premier rendu
+  ---
+  duration_ms: 1.492389
+  type: 'test'
+  ...
+# Subtest: statistiques renvoyées en copie non mutable
+ok 960 - statistiques renvoyées en copie non mutable
+  ---
+  duration_ms: 0.187863
+  type: 'test'
+  ...
+# Subtest: les nœuds et les liens inchangés sont conservés
+ok 961 - les nœuds et les liens inchangés sont conservés
+  ---
+  duration_ms: 0.223808
+  type: 'test'
+  ...
+# Subtest: le diagnostic affiche les mutations DOM
+ok 962 - le diagnostic affiche les mutations DOM
+  ---
+  duration_ms: 0.189034
+  type: 'test'
+  ...
+# Subtest: v23.3 : signature stable pour des liaisons équivalentes
+ok 963 - v23.3 : signature stable pour des liaisons équivalentes
+  ---
+  duration_ms: 1.730327
+  type: 'test'
+  ...
+# Subtest: v23.3 : modification du tracé invalide la signature
+ok 964 - v23.3 : modification du tracé invalide la signature
+  ---
+  duration_ms: 0.243357
+  type: 'test'
+  ...
+# Subtest: v23.3 : sélection et alerte invalident la signature
+ok 965 - v23.3 : sélection et alerte invalident la signature
+  ---
+  duration_ms: 0.167222
+  type: 'test'
+  ...
+# Subtest: v23.3 : changement de libellé invalide la signature
+ok 966 - v23.3 : changement de libellé invalide la signature
+  ---
+  duration_ms: 0.175905
+  type: 'test'
+  ...
+# Subtest: v23.3 : les métadonnées CMDB des extrémités ne font pas partie de la signature de liaison
+ok 967 - v23.3 : les métadonnées CMDB des extrémités ne font pas partie de la signature de liaison
+  ---
+  duration_ms: 0.195074
+  type: 'test'
+  ...
+# Subtest: v23.3 : signature de nœud détecte les mutations et la sélection
+ok 968 - v23.3 : signature de nœud détecte les mutations et la sélection
+  ---
+  duration_ms: 0.194052
+  type: 'test'
+  ...
+# Subtest: v23.3 : entrées invalides rejetées
+ok 969 - v23.3 : entrées invalides rejetées
+  ---
+  duration_ms: 0.580164
+  type: 'test'
+  ...
+# Subtest: v23.4 : une sélection ne recalcule pas le diagnostic
+ok 970 - v23.4 : une sélection ne recalcule pas le diagnostic
+  ---
+  duration_ms: 1.756677
+  type: 'test'
+  ...
+# Subtest: v23.4 : mutation de port invalide le cache
+ok 971 - v23.4 : mutation de port invalide le cache
+  ---
+  duration_ms: 0.275966
+  type: 'test'
+  ...
+# Subtest: v23.4 : mutation de câble invalide le cache
+ok 972 - v23.4 : mutation de câble invalide le cache
+  ---
+  duration_ms: 0.186561
+  type: 'test'
+  ...
+# Subtest: v23.4 : cache isolé par canevas
+ok 973 - v23.4 : cache isolé par canevas
+  ---
+  duration_ms: 0.268374
+  type: 'test'
+  ...
+# Subtest: v23.4 : invalidation explicite
+ok 974 - v23.4 : invalidation explicite
+  ---
+  duration_ms: 0.316637
+  type: 'test'
+  ...
+# Subtest: v23.4 : invalidité des entrées et résultats rejetée
+ok 975 - v23.4 : invalidité des entrées et résultats rejetée
+  ---
+  duration_ms: 0.490529
+  type: 'test'
+  ...
+# Subtest: no changes allow local candidate
+ok 976 - no changes allow local candidate
+  ---
+  duration_ms: 1.687493
+  type: 'test'
+  ...
+# Subtest: unknown routes force complete recompute
+ok 977 - unknown routes force complete recompute
+  ---
+  duration_ms: 2.266295
+  type: 'test'
+  ...
+# Subtest: topology change forces full recompute
+ok 978 - topology change forces full recompute
+  ---
+  duration_ms: 0.302436
+  type: 'test'
+  ...
+# Subtest: multi node move is conservatively rejected
+ok 979 - multi node move is conservatively rejected
+  ---
+  duration_ms: 0.612543
+  type: 'test'
+  ...
+# Subtest: independent bundle permits qualified local routing
+ok 980 - independent bundle permits qualified local routing
+  ---
+  duration_ms: 0.586203
+  type: 'test'
+  ...
+# Subtest: invalid budget is rejected
+ok 981 - invalid budget is rejected
+  ---
+  duration_ms: 0.313542
+  type: 'test'
+  ...
+# Subtest: route guard: unknown canvas exposes safe default
+ok 982 - route guard: unknown canvas exposes safe default
+  ---
+  duration_ms: 0.956882
+  type: 'test'
+  ...
+# Subtest: route guard: rejects missing route
+ok 983 - route guard: rejects missing route
+  ---
+  duration_ms: 0.946537
+  type: 'test'
+  ...
+# Subtest: route guard: rejects global bundle dependency
+ok 984 - route guard: rejects global bundle dependency
+  ---
+  duration_ms: 1.065155
+  type: 'test'
+  ...
+# Subtest: independent SAN cable allows local candidate
+ok 985 - independent SAN cable allows local candidate
+  ---
+  duration_ms: 2.636433
+  type: 'test'
+  ...
+# Subtest: shared endpoint blocks local routing
+ok 986 - shared endpoint blocks local routing
+  ---
+  duration_ms: 0.782029
+  type: 'test'
+  ...
+# Subtest: route crossing impact zone blocks local routing
+ok 987 - route crossing impact zone blocks local routing
+  ---
+  duration_ms: 0.627736
+  type: 'test'
+  ...
+# Subtest: missing independent route blocks local routing
+ok 988 - missing independent route blocks local routing
+  ---
+  duration_ms: 0.473313
+  type: 'test'
+  ...
+# Subtest: multi-node motion blocks local routing
+ok 989 - multi-node motion blocks local routing
+  ---
+  duration_ms: 0.440944
+  type: 'test'
+  ...
+# Subtest: identical local and global routes
+ok 990 - identical local and global routes
+  ---
+  duration_ms: 2.748662
+  type: 'test'
+  ...
+# Subtest: geometry divergence detected
+ok 991 - geometry divergence detected
+  ---
+  duration_ms: 1.182061
+  type: 'test'
+  ...
+# Subtest: missing route detected
+ok 992 - missing route detected
+  ---
+  duration_ms: 0.820747
+  type: 'test'
+  ...
+# Subtest: tolerance allows tiny numerical differences
+ok 993 - tolerance allows tiny numerical differences
+  ---
+  duration_ms: 2.208088
+  type: 'test'
+  ...
+# Subtest: invalid points and lengths rejected
+ok 994 - invalid points and lengths rejected
+  ---
+  duration_ms: 0.703891
+  type: 'test'
+  ...
+# Subtest: invalid tolerance rejected
+ok 995 - invalid tolerance rejected
+  ---
+  duration_ms: 1.668465
+  type: 'test'
+  ...
+# Subtest: SAN comparison scales to 1024 independent routes
+ok 996 - SAN comparison scales to 1024 independent routes
+  ---
+  duration_ms: 8.059074
+  type: 'test'
+  ...
+# Subtest: SAN differential identifies exact changed route in large set
+ok 997 - SAN differential identifies exact changed route in large set
+  ---
+  duration_ms: 2.24341
+  type: 'test'
+  ...
+# Subtest: spatial index candidate filtering remains conservative
+ok 998 - spatial index candidate filtering remains conservative
+  ---
+  duration_ms: 0.728348
+  type: 'test'
+  ...
+# Subtest: spatial index never loses an unknown invalid route
+ok 999 - spatial index never loses an unknown invalid route
+  ---
+  duration_ms: 0.203947
+  type: 'test'
+  ...
+# Subtest: route distribuée réutilisée sans fallback
+ok 1000 - route distribuée réutilisée sans fallback
+  ---
+  duration_ms: 0.964403
+  type: 'test'
+  ...
+# Subtest: fallback avoid exclut les deux terminaux
+ok 1001 - fallback avoid exclut les deux terminaux
+  ---
+  duration_ms: 3.018438
+  type: 'test'
+  ...
+# Subtest: fallback orthogonal évite de parcourir les obstacles
+ok 1002 - fallback orthogonal évite de parcourir les obstacles
+  ---
+  duration_ms: 0.193201
+  type: 'test'
+  ...
+# Subtest: route absente déclenche le fallback
+ok 1003 - route absente déclenche le fallback
+  ---
+  duration_ms: 0.171448
+  type: 'test'
+  ...
+# Subtest: entrée map invalide rejetée
+ok 1004 - entrée map invalide rejetée
+  ---
+  duration_ms: 0.479753
+  type: 'test'
+  ...
+# Subtest: aucune mutation sur rendu réutilisé
+ok 1005 - aucune mutation sur rendu réutilisé
+  ---
+  duration_ms: 1.81154
+  type: 'test'
+  ...
+# Subtest: compte créations et remplacements
+ok 1006 - compte créations et remplacements
+  ---
+  duration_ms: 0.331619
+  type: 'test'
+  ...
+# Subtest: compte suppressions
+ok 1007 - compte suppressions
+  ---
+  duration_ms: 0.217187
+  type: 'test'
+  ...
+# Subtest: ratio mutations correct
+ok 1008 - ratio mutations correct
+  ---
+  duration_ms: 0.241053
+  type: 'test'
+  ...
+# Subtest: état vide stable
+ok 1009 - état vide stable
+  ---
+  duration_ms: 0.177919
+  type: 'test'
+  ...
+# Subtest: refuse les compteurs négatifs ou fractionnaires
+ok 1010 - refuse les compteurs négatifs ou fractionnaires
+  ---
+  duration_ms: 0.459322
+  type: 'test'
+  ...
+# Subtest: diagnostic DOM initial sérialisable
+ok 1011 - diagnostic DOM initial sérialisable
+  ---
+  duration_ms: 1.470426
+  type: 'test'
+  ...
+# Subtest: interface propose export JSON
+ok 1012 - interface propose export JSON
+  ---
+  duration_ms: 0.392331
+  type: 'test'
+  ...
+# Subtest: export ne transmet pas les données au réseau
+ok 1013 - export ne transmet pas les données au réseau
+  ---
+  duration_ms: 0.61715
+  type: 'test'
+  ...
+# Subtest: mesure les rendus complets
+ok 1014 - mesure les rendus complets
+  ---
+  duration_ms: 0.166381
+  type: 'test'
+  ...
+# Subtest: réinitialisation des mesures complètes
+ok 1015 - réinitialisation des mesures complètes
+  ---
+  duration_ms: 0.127613
+  type: 'test'
+  ...
+# Subtest: diagnostic affiche taux mutation et décision routage
+ok 1016 - diagnostic affiche taux mutation et décision routage
+  ---
+  duration_ms: 0.182866
+  type: 'test'
+  ...
+# Subtest: banc Chromium réalise un rendu SVG
+ok 1017 - banc Chromium réalise un rendu SVG
+  ---
+  duration_ms: 2.438615
+  type: 'test'
+  ...
+# Subtest: banc compare le rendu avec cache
+ok 1018 - banc compare le rendu avec cache
+  ---
+  duration_ms: 0.257668
+  type: 'test'
+  ...
+# Subtest: banc déplace un équipement SAN
+ok 1019 - banc déplace un équipement SAN
+  ---
+  duration_ms: 0.247072
+  type: 'test'
+  ...
+# Subtest: banc produit des métriques DOM
+ok 1020 - banc produit des métriques DOM
+  ---
+  duration_ms: 0.266422
+  type: 'test'
+  ...
+# Subtest: banc signale explicitement les erreurs navigateur
+ok 1021 - banc signale explicitement les erreurs navigateur
+  ---
+  duration_ms: 0.210077
+  type: 'test'
+  ...
+# Subtest: Chromium facultatif: Playwright peut choisir son navigateur
+ok 1022 - Chromium facultatif: Playwright peut choisir son navigateur
+  ---
+  duration_ms: 0.844552
+  type: 'test'
+  ...
+# Subtest: Recette Windows conserve une preuve screenshot
+ok 1023 - Recette Windows conserve une preuve screenshot
+  ---
+  duration_ms: 1.732321
+  type: 'test'
+  ...
+# Subtest: Comparaison baseline inclut les trois mesures
+ok 1024 - Comparaison baseline inclut les trois mesures
+  ---
+  duration_ms: 0.193823
+  type: 'test'
+  ...
+# Subtest: Echec explicite et non fausse capture
+ok 1025 - Echec explicite et non fausse capture
+  ---
+  duration_ms: 0.109285
+  type: 'test'
+  ...
+# Subtest: PowerShell propage le statut erreur
+ok 1026 - PowerShell propage le statut erreur
+  ---
+  duration_ms: 0.154613
+  type: 'test'
+  ...
+# Subtest: v24.5 scenario multi-move
+ok 1027 - v24.5 scenario multi-move
+  ---
+  duration_ms: 1.549144
+  type: 'test'
+  ...
+# Subtest: v24.5 scenario routing-integrity
+ok 1028 - v24.5 scenario routing-integrity
+  ---
+  duration_ms: 0.319982
+  type: 'test'
+  ...
+# Subtest: v24.5 scenario invalid_paths
+ok 1029 - v24.5 scenario invalid_paths
+  ---
+  duration_ms: 0.427174
+  type: 'test'
+  ...
+# Subtest: v24.5 scenario zoom
+ok 1030 - v24.5 scenario zoom
+  ---
+  duration_ms: 0.222625
+  type: 'test'
+  ...
+# Subtest: v24.5 scenario selection
+ok 1031 - v24.5 scenario selection
+  ---
+  duration_ms: 0.163056
+  type: 'test'
+  ...
+# Subtest: v24.5 scenario interactions
+ok 1032 - v24.5 scenario interactions
+  ---
+  duration_ms: 0.519383
+  type: 'test'
+  ...
+# Subtest: v24.5 fail-closed
+ok 1033 - v24.5 fail-closed
+  ---
+  duration_ms: 0.286341
+  type: 'test'
+  ...
+# Subtest: v24.7 teste insertion native
+ok 1034 - v24.7 teste insertion native
+  ---
+  duration_ms: 1.344556
+  type: 'test'
+  ...
+# Subtest: v24.7 vérifie mouvement natif
+ok 1035 - v24.7 vérifie mouvement natif
+  ---
+  duration_ms: 0.173832
+  type: 'test'
+  ...
+# Subtest: v24.7 crée connexion native
+ok 1036 - v24.7 crée connexion native
+  ---
+  duration_ms: 0.154814
+  type: 'test'
+  ...
+# Subtest: v24.7 vérifie les tracés
+ok 1037 - v24.7 vérifie les tracés
+  ---
+  duration_ms: 0.470409
+  type: 'test'
+  ...
+# Subtest: v24.7 ne prétend pas à une capture sur échec
+ok 1038 - v24.7 ne prétend pas à une capture sur échec
+  ---
+  duration_ms: 0.155515
+  type: 'test'
+  ...
+# Subtest: v24.8 selection native
+ok 1039 - v24.8 selection native
+  ---
+  duration_ms: 1.092656
+  type: 'test'
+  ...
+# Subtest: v24.8 undo native
+ok 1040 - v24.8 undo native
+  ---
+  duration_ms: 0.206972
+  type: 'test'
+  ...
+# Subtest: v24.8 redo native
+ok 1041 - v24.8 redo native
+  ---
+  duration_ms: 0.190026
+  type: 'test'
+  ...
+# Subtest: v24.8 baseline visuelle
+ok 1042 - v24.8 baseline visuelle
+  ---
+  duration_ms: 0.215465
+  type: 'test'
+  ...
+# Subtest: v24.8 seuil pixel
+ok 1043 - v24.8 seuil pixel
+  ---
+  duration_ms: 0.187483
+  type: 'test'
+  ...
+# Subtest: v24.9 rectangle strict
+ok 1044 - v24.9 rectangle strict
+  ---
+  duration_ms: 3.388416
+  type: 'test'
+  ...
+# Subtest: v24.9 contact bord autorisé
+ok 1045 - v24.9 contact bord autorisé
+  ---
+  duration_ms: 0.428546
+  type: 'test'
+  ...
+# Subtest: v24.9 collision intérieure
+ok 1046 - v24.9 collision intérieure
+  ---
+  duration_ms: 0.162275
+  type: 'test'
+  ...
+# Subtest: v24.9 chemin orthogonal libre
+ok 1047 - v24.9 chemin orthogonal libre
+  ---
+  duration_ms: 0.566544
+  type: 'test'
+  ...
+# Subtest: v24.9 détecte collision après déplacement
+ok 1048 - v24.9 détecte collision après déplacement
+  ---
+  duration_ms: 0.451641
+  type: 'test'
+  ...
+# Subtest: v24.9 détecte source décrochée
+ok 1049 - v24.9 détecte source décrochée
+  ---
+  duration_ms: 0.447194
+  type: 'test'
+  ...
+# Subtest: v24.9 détecte destination décrochée
+ok 1050 - v24.9 détecte destination décrochée
+  ---
+  duration_ms: 0.218939
+  type: 'test'
+  ...
+# Subtest: v24.9 détecte diagonale
+ok 1051 - v24.9 détecte diagonale
+  ---
+  duration_ms: 0.26556
+  type: 'test'
+  ...
+# Subtest: v24.9 détecte chemin manquant
+ok 1052 - v24.9 détecte chemin manquant
+  ---
+  duration_ms: 0.42499
+  type: 'test'
+  ...
+# Subtest: v24.9 ne modifie pas les entrées
+ok 1053 - v24.9 ne modifie pas les entrées
+  ---
+  duration_ms: 0.492422
+  type: 'test'
+  ...
+# Subtest: v25.0 importe audit natif
+ok 1054 - v25.0 importe audit natif
+  ---
+  duration_ms: 3.171579
+  type: 'test'
+  ...
+# Subtest: v25.0 affiche les diagnostics dans le panneau
+ok 1055 - v25.0 affiche les diagnostics dans le panneau
+  ---
+  duration_ms: 0.156406
+  type: 'test'
+  ...
+# Subtest: v25.0 limite la charge des topologies
+ok 1056 - v25.0 limite la charge des topologies
+  ---
+  duration_ms: 0.229896
+  type: 'test'
+  ...
+# Subtest: v25.0 permet de localiser une anomalie
+ok 1057 - v25.0 permet de localiser une anomalie
+  ---
+  duration_ms: 0.15265
+  type: 'test'
+  ...
+# Subtest: v25.0 conserve les chemins SVG rendus
+ok 1058 - v25.0 conserve les chemins SVG rendus
+  ---
+  duration_ms: 0.200823
+  type: 'test'
+  ...
+# Subtest: v25.1 valid preview can be applied
+ok 1059 - v25.1 valid preview can be applied
+  ---
+  duration_ms: 1.973594
+  type: 'test'
+  ...
+# Subtest: v25.1 moving endpoint invalidates preview
+ok 1060 - v25.1 moving endpoint invalidates preview
+  ---
+  duration_ms: 0.620285
+  type: 'test'
+  ...
+# Subtest: v25.1 moving obstacle invalidates preview
+ok 1061 - v25.1 moving obstacle invalidates preview
+  ---
+  duration_ms: 0.237508
+  type: 'test'
+  ...
+# Subtest: v25.1 modified offset invalidates preview
+ok 1062 - v25.1 modified offset invalidates preview
+  ---
+  duration_ms: 0.264999
+  type: 'test'
+  ...
+# Subtest: v25.1 manual waypoints invalidate preview
+ok 1063 - v25.1 manual waypoints invalidate preview
+  ---
+  duration_ms: 0.343538
+  type: 'test'
+  ...
+# Subtest: v25.1 revision is independent of obstacle ordering
+ok 1064 - v25.1 revision is independent of obstacle ordering
+  ---
+  duration_ms: 0.170477
+  type: 'test'
+  ...
+# Subtest: lot vide ne modifie rien
+ok 1065 - lot vide ne modifie rien
+  ---
+  duration_ms: 0.857843
+  type: 'test'
+  ...
+# Subtest: limite de lot strictement contrôlée
+ok 1066 - limite de lot strictement contrôlée
+  ---
+  duration_ms: 0.361975
+  type: 'test'
+  ...
+# Subtest: empreinte indépendante de l’ordre des connexions
+ok 1067 - empreinte indépendante de l’ordre des connexions
+  ---
+  duration_ms: 0.487865
+  type: 'test'
+  ...
+# Subtest: topologie modifiée détectée avant toute écriture
+ok 1068 - topologie modifiée détectée avant toute écriture
+  ---
+  duration_ms: 1.311967
+  type: 'test'
+  ...
+# Subtest: sélection vide rejetée sans mutation
+ok 1069 - sélection vide rejetée sans mutation
+  ---
+  duration_ms: 0.381615
+  type: 'test'
+  ...
+# Subtest: doublons ignorés et signalés
+ok 1070 - doublons ignorés et signalés
+  ---
+  duration_ms: 10.052728
+  type: 'test'
+  ...
+# Subtest: v25.3 expose les conflits inter-fabrics
+ok 1071 - v25.3 expose les conflits inter-fabrics
+  ---
+  duration_ms: 16.452302
+  type: 'test'
+  ...
+# Subtest: v25.3 refuse un lot dont les propositions inter-fabrics entrent en conflit
+ok 1072 - v25.3 refuse un lot dont les propositions inter-fabrics entrent en conflit
+  ---
+  duration_ms: 1.801244
+  type: 'test'
+  ...
+# Subtest: v25.3 ne déduit pas une Fabric sans métadonnée
+ok 1073 - v25.3 ne déduit pas une Fabric sans métadonnée
+  ---
+  duration_ms: 1.528243
+  type: 'test'
+  ...
+# Subtest: v25.3 identifie uniquement les couples A/B
+ok 1074 - v25.3 identifie uniquement les couples A/B
+  ---
+  duration_ms: 2.849934
+  type: 'test'
+  ...
+# Subtest: v25.4 sélectionne des propositions compatibles
+ok 1075 - v25.4 sélectionne des propositions compatibles
+  ---
+  duration_ms: 2.27643
+  type: 'test'
+  ...
+# Subtest: v25.4 optimise sans muter les entrées
+ok 1076 - v25.4 optimise sans muter les entrées
+  ---
+  duration_ms: 0.389106
+  type: 'test'
+  ...
+# Subtest: v25.4 résultat déterministe
+ok 1077 - v25.4 résultat déterministe
+  ---
+  duration_ms: 2.699978
+  type: 'test'
+  ...
+# Subtest: v25.4 refuse paramètres invalides
+ok 1078 - v25.4 refuse paramètres invalides
+  ---
+  duration_ms: 0.51104
+  type: 'test'
+  ...
+# Subtest: v25.4 ne sélectionne pas de gain nul
+ok 1079 - v25.4 ne sélectionne pas de gain nul
+  ---
+  duration_ms: 0.226471
+  type: 'test'
+  ...
+# Subtest: v25.5 distance entre segments parallèles
+ok 1080 - v25.5 distance entre segments parallèles
+  ---
+  duration_ms: 1.095641
+  type: 'test'
+  ...
+# Subtest: v25.5 intersection entre segments
+ok 1081 - v25.5 intersection entre segments
+  ---
+  duration_ms: 0.208203
+  type: 'test'
+  ...
+# Subtest: v25.5 distance entre segments disjoints
+ok 1082 - v25.5 distance entre segments disjoints
+  ---
+  duration_ms: 0.450609
+  type: 'test'
+  ...
+# Subtest: v25.5 symétrie de la distance
+ok 1083 - v25.5 symétrie de la distance
+  ---
+  duration_ms: 0.502287
+  type: 'test'
+  ...
+# Subtest: v25.5 refus des chemins invalides
+ok 1084 - v25.5 refus des chemins invalides
+  ---
+  duration_ms: 0.53104
+  type: 'test'
+  ...
+# Subtest: v25.5 refus du seuil excessif
+ok 1085 - v25.5 refus du seuil excessif
+  ---
+  duration_ms: 0.527365
+  type: 'test'
+  ...
+# Subtest: v25.6 détecte une proximité entre Fabrics existantes
+ok 1086 - v25.6 détecte une proximité entre Fabrics existantes
+  ---
+  duration_ms: 1.364937
+  type: 'test'
+  ...
+# Subtest: v25.6 ignore les liens de même Fabric
+ok 1087 - v25.6 ignore les liens de même Fabric
+  ---
+  duration_ms: 0.291369
+  type: 'test'
+  ...
+# Subtest: v25.6 accepte un écart suffisant
+ok 1088 - v25.6 accepte un écart suffisant
+  ---
+  duration_ms: 0.223817
+  type: 'test'
+  ...
+# Subtest: v25.6 signale les routes manquantes
+ok 1089 - v25.6 signale les routes manquantes
+  ---
+  duration_ms: 0.269136
+  type: 'test'
+  ...
+# Subtest: v25.6 refuse les seuils invalides
+ok 1090 - v25.6 refuse les seuils invalides
+  ---
+  duration_ms: 0.587535
+  type: 'test'
+  ...
+# Subtest: v25.6 signale un audit tronqué
+ok 1091 - v25.6 signale un audit tronqué
+  ---
+  duration_ms: 0.17243
+  type: 'test'
+  ...
+# Subtest: v25.7 bloque une nouvelle proximité Fabric A/B
+ok 1092 - v25.7 bloque une nouvelle proximité Fabric A/B
+  ---
+  duration_ms: 1.525528
+  type: 'test'
+  ...
+# Subtest: v25.7 autorise un éloignement
+ok 1093 - v25.7 autorise un éloignement
+  ---
+  duration_ms: 0.409156
+  type: 'test'
+  ...
+# Subtest: v25.7 refuse une aggravation de proximité existante
+ok 1094 - v25.7 refuse une aggravation de proximité existante
+  ---
+  duration_ms: 0.25895
+  type: 'test'
+  ...
+# Subtest: v25.7 autorise une amélioration partielle
+ok 1095 - v25.7 autorise une amélioration partielle
+  ---
+  duration_ms: 0.195965
+  type: 'test'
+  ...
+# Subtest: v25.7 refuse les routes opposées manquantes
+ok 1096 - v25.7 refuse les routes opposées manquantes
+  ---
+  duration_ms: 0.397289
+  type: 'test'
+  ...
+# Subtest: v25.7 ignore les autres Fabrics non renseignées
+ok 1097 - v25.7 ignore les autres Fabrics non renseignées
+  ---
+  duration_ms: 0.225851
+  type: 'test'
+  ...
+# Subtest: tracé manuel protégé
+ok 1098 - tracé manuel protégé
+  ---
+  duration_ms: 1.208932
+  type: 'test'
+  ...
+# Subtest: route absente refusée
+ok 1099 - route absente refusée
+  ---
+  duration_ms: 0.184328
+  type: 'test'
+  ...
+# Subtest: fabric opposée inconnue refusée
+ok 1100 - fabric opposée inconnue refusée
+  ---
+  duration_ms: 0.263467
+  type: 'test'
+  ...
+# Subtest: aucune mutation lors de la recherche
+ok 1101 - aucune mutation lors de la recherche
+  ---
+  duration_ms: 5.502893
+  type: 'test'
+  ...
+# Subtest: paramètres invalides refusés
+ok 1102 - paramètres invalides refusés
+  ---
+  duration_ms: 0.428886
+  type: 'test'
+  ...
+# Subtest: recherche bornée retourne un statut explicite
+ok 1103 - recherche bornée retourne un statut explicite
+  ---
+  duration_ms: 3.171579
+  type: 'test'
+  ...
+# Subtest: empreinte sensible aux modifications fabric
+ok 1104 - empreinte sensible aux modifications fabric
+  ---
+  duration_ms: 12.014635
+  type: 'test'
+  ...
+# Subtest: empreinte sensible aux modifications de routes
+ok 1105 - empreinte sensible aux modifications de routes
+  ---
+  duration_ms: 0.39187
+  type: 'test'
+  ...
+# Subtest: rejet d’une proposition avec ancres incompatibles
+ok 1106 - rejet d’une proposition avec ancres incompatibles
+  ---
+  duration_ms: 0.880908
+  type: 'test'
+  ...
+# Subtest: rejet des chemins manuels
+ok 1107 - rejet des chemins manuels
+  ---
+  duration_ms: 0.205279
+  type: 'test'
+  ...
+# Subtest: rejet transactionnel sans mutation en cas de révision obsolète
+ok 1108 - rejet transactionnel sans mutation en cas de révision obsolète
+  ---
+  duration_ms: 0.582908
+  type: 'test'
+  ...
+# Subtest: v26 vérification après application sur une route valide
+ok 1109 - v26 vérification après application sur une route valide
+  ---
+  duration_ms: 2.205819
+  type: 'test'
+  ...
+# Subtest: v26 rejet si géométrie opposée absente
+ok 1110 - v26 rejet si géométrie opposée absente
+  ---
+  duration_ms: 0.624601
+  type: 'test'
+  ...
+# Subtest: v26 rejet de route appliquée divergente
+ok 1111 - v26 rejet de route appliquée divergente
+  ---
+  duration_ms: 0.33885
+  type: 'test'
+  ...
+# Subtest: v26 rejet des paramètres de contrôle invalides
+ok 1112 - v26 rejet des paramètres de contrôle invalides
+  ---
+  duration_ms: 0.173291
+  type: 'test'
+  ...
+# Subtest: v26.1 cycle complet sauvegarde/rechargement/annulation/rétablissement
+ok 1113 - v26.1 cycle complet sauvegarde/rechargement/annulation/rétablissement
+  ---
+  duration_ms: 12.824285
+  type: 'test'
+  ...
+# Subtest: v26.1 refuse un fingerprint obsolète
+ok 1114 - v26.1 refuse un fingerprint obsolète
+  ---
+  duration_ms: 0.961419
+  type: 'test'
+  ...
+# Subtest: v26.1 refuse une connexion absente
+ok 1115 - v26.1 refuse une connexion absente
+  ---
+  duration_ms: 0.733606
+  type: 'test'
+  ...
+# Subtest: v26.1 refuse une route Fabric opposée inconnue
+ok 1116 - v26.1 refuse une route Fabric opposée inconnue
+  ---
+  duration_ms: 2.504323
+  type: 'test'
+  ...
+# Subtest: v26.1 refuse un état malformé
+ok 1117 - v26.1 refuse un état malformé
+  ---
+  duration_ms: 0.439693
+  type: 'test'
+  ...
+# Subtest: v26.2 version et commande navigateur E2E
+ok 1118 - v26.2 version et commande navigateur E2E
+  ---
+  duration_ms: 1.12126
+  type: 'test'
+  ...
+# Subtest: v26.2 vraie interface, pas de faux rendu
+ok 1119 - v26.2 vraie interface, pas de faux rendu
+  ---
+  duration_ms: 0.143647
+  type: 'test'
+  ...
+# Subtest: v26.2 contrôle clavier et persistance
+ok 1120 - v26.2 contrôle clavier et persistance
+  ---
+  duration_ms: 0.264999
+  type: 'test'
+  ...
+# Subtest: v26.3 recette navigateur A* configurée
+ok 1121 - v26.3 recette navigateur A* configurée
+  ---
+  duration_ms: 1.137744
+  type: 'test'
+  ...
+# Subtest: v26.3 contrôle véritable aperçu A*
+ok 1122 - v26.3 contrôle véritable aperçu A*
+  ---
+  duration_ms: 0.167352
+  type: 'test'
+  ...
+# Subtest: v26.3 validation A* conditionnelle et réversible
+ok 1123 - v26.3 validation A* conditionnelle et réversible
+  ---
+  duration_ms: 0.222876
+  type: 'test'
+  ...
+# Subtest: v26.4 obstacle A* reproductible : amélioration réelle
+ok 1124 - v26.4 obstacle A* reproductible : amélioration réelle
+  ---
+  duration_ms: 6.492995
+  type: 'test'
+  ...
+# Subtest: v26.4 préparation et application reproductibles
+ok 1125 - v26.4 préparation et application reproductibles
+  ---
+  duration_ms: 15.884808
+  type: 'test'
+  ...
+# Subtest: v26.4 topologie périmée : commit refusé sans mutation
+ok 1126 - v26.4 topologie périmée : commit refusé sans mutation
+  ---
+  duration_ms: 6.409028
+  type: 'test'
+  ...
+# Subtest: v26.4 Fabric B sans route : proposition refusée
+ok 1127 - v26.4 Fabric B sans route : proposition refusée
+  ---
+  duration_ms: 0.342396
+  type: 'test'
+  ...
+# Subtest: v26.4 cycle JSON undo redo qualifié
+ok 1128 - v26.4 cycle JSON undo redo qualifié
+  ---
+  duration_ms: 4.966514
+  type: 'test'
+  ...
+# Subtest: v26.5 : multi-obstacles, alternative sans collision
+ok 1129 - v26.5 : multi-obstacles, alternative sans collision
+  ---
+  duration_ms: 5.426587
+  type: 'test'
+  ...
+# Subtest: v26.5 : multi-obstacles, application et contrôle
+ok 1130 - v26.5 : multi-obstacles, application et contrôle
+  ---
+  duration_ms: 14.856688
+  type: 'test'
+  ...
+# Subtest: v26.5 : Fabric B géométrie absente refuse toute proposition
+ok 1131 - v26.5 : Fabric B géométrie absente refuse toute proposition
+  ---
+  duration_ms: 0.367423
+  type: 'test'
+  ...
+# Subtest: v26.5 : obstacle modifié invalide le commit
+ok 1132 - v26.5 : obstacle modifié invalide le commit
+  ---
+  duration_ms: 4.39951
+  type: 'test'
+  ...
+# Subtest: v26.5 : recherche bornée avec obstacles nombreux
+ok 1133 - v26.5 : recherche bornée avec obstacles nombreux
+  ---
+  duration_ms: 6.089616
+  type: 'test'
+  ...
+# Subtest: v26.6 : obstacles multiples, parité géométrique avec v26.5
+ok 1134 - v26.6 : obstacles multiples, parité géométrique avec v26.5
+  ---
+  duration_ms: 15.719458
+  type: 'test'
+  ...
+# Subtest: v26.6 : obstacle géant, repli conservateur
+ok 1135 - v26.6 : obstacle géant, repli conservateur
+  ---
+  duration_ms: 92.578109
+  type: 'test'
+  ...
+# Subtest: v26.6 : obstacles hors grille et marges
+ok 1136 - v26.6 : obstacles hors grille et marges
+  ---
+  duration_ms: 9.166693
+  type: 'test'
+  ...
+# Subtest: v26.6 : aucun obstacle
+ok 1137 - v26.6 : aucun obstacle
+  ---
+  duration_ms: 6.219122
+  type: 'test'
+  ...
+# Subtest: v26.6 : grilles multiples
+ok 1138 - v26.6 : grilles multiples
+  ---
+  duration_ms: 14.084605
+  type: 'test'
+  ...
+# Subtest: v26.7 : parité multiwall dense
+ok 1139 - v26.7 : parité multiwall dense
+  ---
+  duration_ms: 22.378142
+  type: 'test'
+  ...
+# Subtest: v26.7 : croisement strict horizontal vertical
+ok 1140 - v26.7 : croisement strict horizontal vertical
+  ---
+  duration_ms: 0.651371
+  type: 'test'
+  ...
+# Subtest: v26.7 : contact aux extrémités non comptabilisé
+ok 1141 - v26.7 : contact aux extrémités non comptabilisé
+  ---
+  duration_ms: 0.466803
+  type: 'test'
+  ...
+# Subtest: v26.7 : chevauchement colinéaire mesuré
+ok 1142 - v26.7 : chevauchement colinéaire mesuré
+  ---
+  duration_ms: 0.375315
+  type: 'test'
+  ...
+# Subtest: v26.7 : choix de décalage reproductible
+ok 1143 - v26.7 : choix de décalage reproductible
+  ---
+  duration_ms: 1.094048
+  type: 'test'
+  ...
+# Subtest: v26.8 : 240 topologies deterministes, parite exacte avec le moteur de reference
+ok 1144 - v26.8 : 240 topologies deterministes, parite exacte avec le moteur de reference
+  ---
+  duration_ms: 661.145507
+  type: 'test'
+  ...
+# Subtest: v26.8 : reproductibilite stricte des 240 topologies
+ok 1145 - v26.8 : reproductibilite stricte des 240 topologies
+  ---
+  duration_ms: 330.027415
+  type: 'test'
+  ...
+# Subtest: v26.8 : geometries negatives, contacts et superpositions
+ok 1146 - v26.8 : geometries negatives, contacts et superpositions
+  ---
+  duration_ms: 0.965626
+  type: 'test'
+  ...
+# Subtest: v26.8 : aucune mutation des obstacles en calcul differentiel
+ok 1147 - v26.8 : aucune mutation des obstacles en calcul differentiel
+  ---
+  duration_ms: 31.298965
+  type: 'test'
+  ...
+# Subtest: v26.9 exact selects two non-conflicting routes over one high-degree route
+ok 1148 - v26.9 exact selects two non-conflicting routes over one high-degree route
+  ---
+  duration_ms: 2.248999
+  type: 'test'
+  ...
+# Subtest: v26.9 exact honors transitive conflicts and ignores non-positive benefit
+ok 1149 - v26.9 exact honors transitive conflicts and ignores non-positive benefit
+  ---
+  duration_ms: 0.469377
+  type: 'test'
+  ...
+# Subtest: v26.9 deterministic tie break independent of input order
+ok 1150 - v26.9 deterministic tie break independent of input order
+  ---
+  duration_ms: 0.475777
+  type: 'test'
+  ...
+# Subtest: v26.9 large batches retain conservative greedy fallback
+ok 1151 - v26.9 large batches retain conservative greedy fallback
+  ---
+  duration_ms: 0.235495
+  type: 'test'
+  ...
+# Subtest: v27.0 disconnected large batch remains exact
+ok 1152 - v27.0 disconnected large batch remains exact
+  ---
+  duration_ms: 1.926513
+  type: 'test'
+  ...
+# Subtest: v27.0 mixed components preserve independent exact results
+ok 1153 - v27.0 mixed components preserve independent exact results
+  ---
+  duration_ms: 15.571891
+  type: 'test'
+  ...
+# Subtest: v27.0 reject duplicated ids
+ok 1154 - v27.0 reject duplicated ids
+  ---
+  duration_ms: 0.631782
+  type: 'test'
+  ...
+# Subtest: v27.0 reject nonfinite score
+ok 1155 - v27.0 reject nonfinite score
+  ---
+  duration_ms: 0.228534
+  type: 'test'
+  ...
+# Subtest: v27.0 reject malformed conflict
+ok 1156 - v27.0 reject malformed conflict
+  ---
+  duration_ms: 0.211478
+  type: 'test'
+  ...
+# Subtest: v27.1 connected components and isolated routes
+ok 1157 - v27.1 connected components and isolated routes
+  ---
+  duration_ms: 23.554294
+  type: 'test'
+  ...
+# Subtest: v27.1 live selection exposes active conflicts
+ok 1158 - v27.1 live selection exposes active conflicts
+  ---
+  duration_ms: 0.303056
+  type: 'test'
+  ...
+# Subtest: v27.1 conflict-free selection remains valid
+ok 1159 - v27.1 conflict-free selection remains valid
+  ---
+  duration_ms: 0.41778
+  type: 'test'
+  ...
+# Subtest: v27.1 duplicates are normalized
+ok 1160 - v27.1 duplicates are normalized
+  ---
+  duration_ms: 0.242595
+  type: 'test'
+  ...
+# Subtest: v27.1 malformed and unknown links are rejected
+ok 1161 - v27.1 malformed and unknown links are rejected
+  ---
+  duration_ms: 0.642178
+  type: 'test'
+  ...
+# Subtest: v27.2 preview overlay uses existing route geometry and no write
+ok 1162 - v27.2 preview overlay uses existing route geometry and no write
+  ---
+  duration_ms: 13.561286
+  type: 'test'
+  ...
+# Subtest: v27.2 group controls expose highlight, select and deselect
+ok 1163 - v27.2 group controls expose highlight, select and deselect
+  ---
+  duration_ms: 0.333212
+  type: 'test'
+  ...
+# Subtest: v27.2 group selection recalculates conflicts
+ok 1164 - v27.2 group selection recalculates conflicts
+  ---
+  duration_ms: 0.189876
+  type: 'test'
+  ...
+# Subtest: v27.3 compare preview draws before and after paths
+ok 1165 - v27.3 compare preview draws before and after paths
+  ---
+  duration_ms: 0.947148
+  type: 'test'
+  ...
+# Subtest: v27.3 compare preview does not commit or mutate
+ok 1166 - v27.3 compare preview does not commit or mutate
+  ---
+  duration_ms: 0.393273
+  type: 'test'
+  ...
+# Subtest: v27.3 group exposes compare action and gain
+ok 1167 - v27.3 group exposes compare action and gain
+  ---
+  duration_ms: 0.253822
+  type: 'test'
+  ...
+# Subtest: v27.3 compare uses existing preview overlay
+ok 1168 - v27.3 compare uses existing preview overlay
+  ---
+  duration_ms: 1.992233
+  type: 'test'
+  ...
+# Subtest: v27.4 navigation locates group using actual rendered edge geometry
+ok 1169 - v27.4 navigation locates group using actual rendered edge geometry
+  ---
+  duration_ms: 0.974078
+  type: 'test'
+  ...
+# Subtest: v27.4 navigation does not mutate document or history
+ok 1170 - v27.4 navigation does not mutate document or history
+  ---
+  duration_ms: 0.299651
+  type: 'test'
+  ...
+# Subtest: v27.4 group has locate and previous next navigation
+ok 1171 - v27.4 group has locate and previous next navigation
+  ---
+  duration_ms: 0.248194
+  type: 'test'
+  ...
+# Subtest: v27.4 navigation retains non destructive before-after preview
+ok 1172 - v27.4 navigation retains non destructive before-after preview
+  ---
+  duration_ms: 1.483025
+  type: 'test'
+  ...
+# Subtest: v27.5 fit zoom adjusts large group to viewport with padding
+ok 1173 - v27.5 fit zoom adjusts large group to viewport with padding
+  ---
+  duration_ms: 1.213579
+  type: 'test'
+  ...
+# Subtest: v27.5 fit zoom caps small groups at max zoom
+ok 1174 - v27.5 fit zoom caps small groups at max zoom
+  ---
+  duration_ms: 1.885101
+  type: 'test'
+  ...
+# Subtest: v27.5 rejects invalid bounds and padding
+ok 1175 - v27.5 rejects invalid bounds and padding
+  ---
+  duration_ms: 0.434004
+  type: 'test'
+  ...
+# Subtest: v27.5 group navigation uses fitted zoom and recalculated bounds
+ok 1176 - v27.5 group navigation uses fitted zoom and recalculated bounds
+  ---
+  duration_ms: 0.372081
+  type: 'test'
+  ...
+# Subtest: v27.5 displays Fabric A B conflicts without committing changes
+ok 1177 - v27.5 displays Fabric A B conflicts without committing changes
+  ---
+  duration_ms: 0.418541
+  type: 'test'
+  ...
+# Subtest: v27.6 scores only selected improvements and ignores regressions
+ok 1178 - v27.6 scores only selected improvements and ignores regressions
+  ---
+  duration_ms: 1.508073
+  type: 'test'
+  ...
+# Subtest: v27.6 blocks selected cross-fabric conflict
+ok 1179 - v27.6 blocks selected cross-fabric conflict
+  ---
+  duration_ms: 3.537095
+  type: 'test'
+  ...
+# Subtest: v27.6 does not count outside-group conflicts
+ok 1180 - v27.6 does not count outside-group conflicts
+  ---
+  duration_ms: 0.234394
+  type: 'test'
+  ...
+# Subtest: v27.6 ignores invalid numeric scores
+ok 1181 - v27.6 ignores invalid numeric scores
+  ---
+  duration_ms: 0.204748
+  type: 'test'
+  ...
+# Subtest: v27.6 UI uses centralized read-only metrics
+ok 1182 - v27.6 UI uses centralized read-only metrics
+  ---
+  duration_ms: 1.679511
+  type: 'test'
+  ...
+# Subtest: v27.8 only counts positive finite gains of selected compatible corrections
+ok 1183 - v27.8 only counts positive finite gains of selected compatible corrections
+  ---
+  duration_ms: 13.561186
+  type: 'test'
+  ...
+# Subtest: v27.8 detects conflict only when both corrections are selected
+ok 1184 - v27.8 detects conflict only when both corrections are selected
+  ---
+  duration_ms: 0.86929
+  type: 'test'
+  ...
+# Subtest: v27.8 reports missing and unselected dependencies
+ok 1185 - v27.8 reports missing and unselected dependencies
+  ---
+  duration_ms: 0.453063
+  type: 'test'
+  ...
+# Subtest: v27.8 provides deterministic prerequisite-first order
+ok 1186 - v27.8 provides deterministic prerequisite-first order
+  ---
+  duration_ms: 1.027018
+  type: 'test'
+  ...
+# Subtest: v27.8 identifies dependency cycles and does not count selected cyclic work
+ok 1187 - v27.8 identifies dependency cycles and does not count selected cyclic work
+  ---
+  duration_ms: 0.335887
+  type: 'test'
+  ...
+# Subtest: v27.8 rejects duplicate identifiers and unknown risk levels
+ok 1188 - v27.8 rejects duplicate identifiers and unknown risk levels
+  ---
+  duration_ms: 0.562327
+  type: 'test'
+  ...
+# Subtest: v27.8 analysis is non-mutating and CSV formula-safe
+ok 1189 - v27.8 analysis is non-mutating and CSV formula-safe
+  ---
+  duration_ms: 0.574306
+  type: 'test'
+  ...
+# Subtest: cockpit page exposes navigation and sections
+ok 1190 - cockpit page exposes navigation and sections
+  ---
+  duration_ms: 2.563523
+  type: 'test'
+  ...
+# Subtest: UI imports deterministic SAN engine
+ok 1191 - UI imports deterministic SAN engine
+  ---
+  duration_ms: 0.396087
+  type: 'test'
+  ...
+# Subtest: UI avoids HTML injection with textContent
+ok 1192 - UI avoids HTML injection with textContent
+  ---
+  duration_ms: 0.221594
+  type: 'test'
+  ...
+# Subtest: selected incompatible corrections excluded from gain
+ok 1193 - selected incompatible corrections excluded from gain
+  ---
+  duration_ms: 9.584433
+  type: 'test'
+  ...
+# Subtest: UI export is gated on a valid report
+ok 1194 - UI export is gated on a valid report
+  ---
+  duration_ms: 0.287573
+  type: 'test'
+  ...
+# Subtest: projection does not mutate input report
+ok 1195 - projection does not mutate input report
+  ---
+  duration_ms: 2.56865
+  type: 'test'
+  ...
+# Subtest: selected valid correction appears as proposed
+ok 1196 - selected valid correction appears as proposed
+  ---
+  duration_ms: 0.447044
+  type: 'test'
+  ...
+# Subtest: conflicting corrections remain anomalous
+ok 1197 - conflicting corrections remain anomalous
+  ---
+  duration_ms: 12.048837
+  type: 'test'
+  ...
+# Subtest: groups sorted deterministically
+ok 1198 - groups sorted deterministically
+  ---
+  duration_ms: 1.671048
+  type: 'test'
+  ...
+# Subtest: HTML contains visual navigation
+ok 1199 - HTML contains visual navigation
+  ---
+  duration_ms: 1.00874
+  type: 'test'
+  ...
+# Subtest: visual UI uses textContent, not innerHTML
+ok 1200 - visual UI uses textContent, not innerHTML
+  ---
+  duration_ms: 0.432903
+  type: 'test'
+  ...
+# Subtest: projection maps declared object IDs
+ok 1201 - projection maps declared object IDs
+  ---
+  duration_ms: 2.730134
+  type: 'test'
+  ...
+# Subtest: unknown objects generate warnings
+ok 1202 - unknown objects generate warnings
+  ---
+  duration_ms: 0.488226
+  type: 'test'
+  ...
+# Subtest: source objects unchanged
+ok 1203 - source objects unchanged
+  ---
+  duration_ms: 0.798654
+  type: 'test'
+  ...
+# Subtest: invalid correction list rejected
+ok 1204 - invalid correction list rejected
+  ---
+  duration_ms: 0.421996
+  type: 'test'
+  ...
+# Subtest: v28.2 empty overlay is read only
+ok 1205 - v28.2 empty overlay is read only
+  ---
+  duration_ms: 3.203237
+  type: 'test'
+  ...
+# Subtest: v28.2 invalid connections ignored
+ok 1206 - v28.2 invalid connections ignored
+  ---
+  duration_ms: 0.25869
+  type: 'test'
+  ...
+# Subtest: points manuels analysés
+ok 1207 - points manuels analysés
+  ---
+  duration_ms: 2.775813
+  type: 'test'
+  ...
+# Subtest: points manuels invalides rejetés
+ok 1208 - points manuels invalides rejetés
+  ---
+  duration_ms: 0.448295
+  type: 'test'
+  ...
+# Subtest: points manuels limités
+ok 1209 - points manuels limités
+  ---
+  duration_ms: 1.812421
+  type: 'test'
+  ...
+# Subtest: points manuels sérialisés
+ok 1210 - points manuels sérialisés
+  ---
+  duration_ms: 0.210727
+  type: 'test'
+  ...
+# Subtest: tracé avec points manuels
+ok 1211 - tracé avec points manuels
+  ---
+  duration_ms: 0.540785
+  type: 'test'
+  ...
+# Subtest: au moins trois modèles disponibles
+ok 1212 - au moins trois modèles disponibles
+  ---
+  duration_ms: 0.224338
+  type: 'test'
+  ...
+# Subtest: modèle valide san-dual
+ok 1213 - modèle valide san-dual
+  ---
+  duration_ms: 0.515998
+  type: 'test'
+  ...
+# Subtest: modèle valide replication
+ok 1214 - modèle valide replication
+  ---
+  duration_ms: 0.229215
+  type: 'test'
+  ...
+# Subtest: modèle valide backup
+ok 1215 - modèle valide backup
+  ---
+  duration_ms: 0.563489
+  type: 'test'
+  ...
+# Subtest: modèle valide three-tier
+ok 1216 - modèle valide three-tier
+  ---
+  duration_ms: 0.690481
+  type: 'test'
+  ...
+# Subtest: modèle valide hybrid-cloud
+ok 1217 - modèle valide hybrid-cloud
+  ---
+  duration_ms: 0.316608
+  type: 'test'
+  ...
+# Subtest: modèle valide disaster-recovery
+ok 1218 - modèle valide disaster-recovery
+  ---
+  duration_ms: 0.165089
+  type: 'test'
+  ...
+# Subtest: modèle valide kubernetes
+ok 1219 - modèle valide kubernetes
+  ---
+  duration_ms: 0.192089
+  type: 'test'
+  ...
+# Subtest: modèle valide zero-trust
+ok 1220 - modèle valide zero-trust
+  ---
+  duration_ms: 0.150346
+  type: 'test'
+  ...
+# Subtest: modèle valide backup-321
+ok 1221 - modèle valide backup-321
+  ---
+  duration_ms: 0.221584
+  type: 'test'
+  ...
+# Subtest: modèle valide observability
+ok 1222 - modèle valide observability
+  ---
+  duration_ms: 0.13883
+  type: 'test'
+  ...
+# Subtest: modèle valide flowchart
+ok 1223 - modèle valide flowchart
+  ---
+  duration_ms: 0.146531
+  type: 'test'
+  ...
+# Subtest: modèle valide orgchart
+ok 1224 - modèle valide orgchart
+  ---
+  duration_ms: 0.166952
+  type: 'test'
+  ...
+# Subtest: modèle valide application-map
+ok 1225 - modèle valide application-map
+  ---
+  duration_ms: 0.130697
+  type: 'test'
+  ...
+# Subtest: modèle inconnu rejeté
+ok 1226 - modèle inconnu rejeté
+  ---
+  duration_ms: 0.150066
+  type: 'test'
+  ...
+# Subtest: renderer uses onPointerDown callback
+ok 1227 - renderer uses onPointerDown callback
+  ---
+  duration_ms: 1.914636
+  type: 'test'
+  ...
+# Subtest: handles are accessible
+ok 1228 - handles are accessible
+  ---
+  duration_ms: 1.892953
+  type: 'test'
+  ...
+# Subtest: pointer positions use SVG transform
+ok 1229 - pointer positions use SVG transform
+  ---
+  duration_ms: 1.159843
+  type: 'test'
+  ...
+# Subtest: ajout de point par double clic
+ok 1230 - ajout de point par double clic
+  ---
+  duration_ms: 1.2871
+  type: 'test'
+  ...
+# Subtest: suppression de point par double clic
+ok 1231 - suppression de point par double clic
+  ---
+  duration_ms: 3.893677
+  type: 'test'
+  ...
+# Subtest: grille magnétique configurable
+ok 1232 - grille magnétique configurable
+  ---
+  duration_ms: 0.208775
+  type: 'test'
+  ...
+# Subtest: bouton de grille accessible
+ok 1233 - bouton de grille accessible
+  ---
+  duration_ms: 0.264598
+  type: 'test'
+  ...
+# Subtest: clic de forme délégué
+ok 1234 - clic de forme délégué
+  ---
+  duration_ms: 0.196126
+  type: 'test'
+  ...
+# Subtest: la poignée n'ajoute un undo qu'après mouvement
+ok 1235 - la poignée n'ajoute un undo qu'après mouvement
+  ---
+  duration_ms: 1.237885
+  type: 'test'
+  ...
+# Subtest: la saisie des points intercepte les erreurs
+ok 1236 - la saisie des points intercepte les erreurs
+  ---
+  duration_ms: 0.283658
+  type: 'test'
+  ...
+# Subtest: pas de mouvement si coordonnées inchangées
+ok 1237 - pas de mouvement si coordonnées inchangées
+  ---
+  duration_ms: 0.229947
+  type: 'test'
+  ...
+# Subtest: node drag uses SVG coordinates
+ok 1238 - node drag uses SVG coordinates
+  ---
+  duration_ms: 7.569988
+  type: 'test'
+  ...
+# Subtest: pointer captured for node drag
+ok 1239 - pointer captured for node drag
+  ---
+  duration_ms: 0.176917
+  type: 'test'
+  ...
+# Subtest: click without movement does not mutate
+ok 1240 - click without movement does not mutate
+  ---
+  duration_ms: 6.543811
+  type: 'test'
+  ...
+# Subtest: modifier pointerdown does not bubble
+ok 1241 - modifier pointerdown does not bubble
+  ---
+  duration_ms: 1.443044
+  type: 'test'
+  ...
+# Subtest: routage en cache
+ok 1242 - routage en cache
+  ---
+  duration_ms: 1.350585
+  type: 'test'
+  ...
+# Subtest: cache borné
+ok 1243 - cache borné
+  ---
+  duration_ms: 3.599845
+  type: 'test'
+  ...
+# Subtest: invalidation par coordonnées
+ok 1244 - invalidation par coordonnées
+  ---
+  duration_ms: 0.274774
+  type: 'test'
+  ...
+# Subtest: obstacles pris en compte
+ok 1245 - obstacles pris en compte
+  ---
+  duration_ms: 0.392972
+  type: 'test'
+  ...
+# Subtest: mesure SVG froid et chaud
+ok 1246 - mesure SVG froid et chaud
+  ---
+  duration_ms: 1.371887
+  type: 'test'
+  ...
+# Subtest: trois volumes de topologies
+ok 1247 - trois volumes de topologies
+  ---
+  duration_ms: 0.25229
+  type: 'test'
+  ...
+# Subtest: rapport indique les limites du DOM simulé
+ok 1248 - rapport indique les limites du DOM simulé
+  ---
+  duration_ms: 0.160903
+  type: 'test'
+  ...
+# Subtest: cache par instance SVG
+ok 1249 - cache par instance SVG
+  ---
+  duration_ms: 0.827407
+  type: 'test'
+  ...
+# Subtest: réutilisation de noeuds inchangés
+ok 1250 - réutilisation de noeuds inchangés
+  ---
+  duration_ms: 1.502264
+  type: 'test'
+  ...
+# Subtest: réutilisation de connexions inchangées
+ok 1251 - réutilisation de connexions inchangées
+  ---
+  duration_ms: 0.216426
+  type: 'test'
+  ...
+# Subtest: suppression des éléments retirés
+ok 1252 - suppression des éléments retirés
+  ---
+  duration_ms: 0.158369
+  type: 'test'
+  ...
+# Subtest: remplacement local de la forme modifiée
+ok 1253 - remplacement local de la forme modifiée
+  ---
+  duration_ms: 0.105889
+  type: 'test'
+  ...
+1..1253
+# tests 1253
+# suites 0
+# pass 1253
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7176.009414
+
+STDERR

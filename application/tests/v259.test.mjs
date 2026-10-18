@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {alternateTopologyFingerprint,prepareAlternateCommit,commitAlternateRoute} from '../src/san-alternate-routes.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:160,y:0,w:20,h:20},{id:'wall',x:75,y:-10,w:30,h:40}];
+const edge={id:'e',from:'a',to:'b',style:'orthogonal',fabric:'A'};
+const routes=new Map([['e',{points:[{x:20,y:10},{x:160,y:10}]}]]);
+test('empreinte sensible aux modifications fabric',()=>{const a=alternateTopologyFingerprint([edge],nodes,routes);assert.notEqual(a,alternateTopologyFingerprint([{...edge,fabric:'B'}],nodes,routes));});
+test('empreinte sensible aux modifications de routes',()=>{const a=alternateTopologyFingerprint([edge],nodes,routes);assert.notEqual(a,alternateTopologyFingerprint([edge],nodes,new Map([['e',{points:[{x:1,y:2},{x:3,y:4}]}]])));});
+test('rejet d’une proposition avec ancres incompatibles',()=>assert.throws(()=>prepareAlternateCommit({status:'preview',edgeId:'e',step:10,points:[{x:1,y:1},{x:50,y:1},{x:50,y:10},{x:160,y:10}]},edge,nodes,[edge],routes)));
+test('rejet des chemins manuels',()=>assert.throws(()=>prepareAlternateCommit({status:'preview',edgeId:'e',step:10,points:[{x:20,y:10},{x:160,y:10}]},{...edge,waypoints:[{x:40,y:10}]},nodes,[edge],routes)));
+test('rejet transactionnel sans mutation en cas de révision obsolète',()=>{const e={...edge};const before=JSON.stringify(e);assert.throws(()=>commitAlternateRoute(e,{edgeId:'e',revision:'stale',fingerprint:'stale',waypoints:[]},nodes,[e],routes));assert.equal(JSON.stringify(e),before);});

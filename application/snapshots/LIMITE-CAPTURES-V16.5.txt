@@ -1,0 +1,1 @@
+Aucune capture réelle de l’interface v16.5 produite dans cet environnement Linux. Les images antérieures sont des aperçus historiques, pas des captures v16.5. Compilation Windows EXE non réalisée.

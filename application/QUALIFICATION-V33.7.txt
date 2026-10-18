@@ -1,0 +1,1 @@
+Node.js tests: 1443 PASS, 0 FAIL. ZIP CRC verified. Windows native build: NOT RUN. Windows UI screenshots: NOT CAPTURED.

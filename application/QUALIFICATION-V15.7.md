@@ -1,0 +1,1 @@
+OpenVisio v15.7 — 567/567 tests automatisés PASS ; node --check src/main.js PASS. Compilation EXE Windows, recette graphique et captures réelles non réalisées. Les repères sont temporaires et ne sont pas enregistrés dans les diagrammes. Auteur : Abdelhalim Talbi.

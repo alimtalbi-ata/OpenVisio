@@ -1,0 +1,460 @@
+ - recette v36.3 vérifie noeuds ET liens après réouverture
+  ---
+  duration_ms: 0.926542
+  type: 'test'
+  ...
+# Subtest: qualification Windows utilise la recette v36.2
+ok 1690 - qualification Windows utilise la recette v36.2
+  ---
+  duration_ms: 0.328123
+  type: 'test'
+  ...
+# Subtest: build et installateur sont alignés en v36.2
+ok 1691 - build et installateur sont alignés en v36.2
+  ---
+  duration_ms: 1.204879
+  type: 'test'
+  ...
+# Subtest: v36.0 checks entire persisted JSON model
+ok 1692 - v36.0 checks entire persisted JSON model
+  ---
+  duration_ms: 0.769836
+  type: 'test'
+  ...
+# Subtest: v36.0 compares after actual second download
+ok 1693 - v36.0 compares after actual second download
+  ---
+  duration_ms: 0.243956
+  type: 'test'
+  ...
+# Subtest: v36.0 does not silently discard SAN attributes
+ok 1694 - v36.0 does not silently discard SAN attributes
+  ---
+  duration_ms: 0.148523
+  type: 'test'
+  ...
+# Subtest: v36.0 script is included
+ok 1695 - v36.0 script is included
+  ---
+  duration_ms: 0.258508
+  type: 'test'
+  ...
+# Subtest: installer E2E exercises install, launch and uninstall
+ok 1696 - installer E2E exercises install, launch and uninstall
+  ---
+  duration_ms: 0.768183
+  type: 'test'
+  ...
+# Subtest: Windows workflow runs installer E2E
+ok 1697 - Windows workflow runs installer E2E
+  ---
+  duration_ms: 0.212229
+  type: 'test'
+  ...
+# Subtest: version synchronized
+ok 1698 - version synchronized
+  ---
+  duration_ms: 0.356244
+  type: 'test'
+  ...
+# Subtest: installer E2E enforces a timeout
+ok 1699 - installer E2E enforces a timeout
+  ---
+  duration_ms: 0.616666
+  type: 'test'
+  ...
+# Subtest: installer E2E fails if uninstaller missing
+ok 1700 - installer E2E fails if uninstaller missing
+  ---
+  duration_ms: 0.17962
+  type: 'test'
+  ...
+# Subtest: installer E2E verifies application assets
+ok 1701 - installer E2E verifies application assets
+  ---
+  duration_ms: 0.693081
+  type: 'test'
+  ...
+# Subtest: installer E2E verifies post-uninstall executable removal
+ok 1702 - installer E2E verifies post-uninstall executable removal
+  ---
+  duration_ms: 0.164728
+  type: 'test'
+  ...
+# Subtest: CI retains machine-readable qualification report
+ok 1703 - CI retains machine-readable qualification report
+  ---
+  duration_ms: 0.107982
+  type: 'test'
+  ...
+# Subtest: portable script checks exe and html
+ok 1704 - portable script checks exe and html
+  ---
+  duration_ms: 0.763807
+  type: 'test'
+  ...
+# Subtest: single cmd builds portable too
+ok 1705 - single cmd builds portable too
+  ---
+  duration_ms: 0.162985
+  type: 'test'
+  ...
+# Subtest: native file picker advertises only supported types
+ok 1706 - native file picker advertises only supported types
+  ---
+  duration_ms: 0.941224
+  type: 'test'
+  ...
+# Subtest: portable documentation states WebView2 requirement
+ok 1707 - portable documentation states WebView2 requirement
+  ---
+  duration_ms: 0.138528
+  type: 'test'
+  ...
+# Subtest: v34.1 runs source preflight before SDK download
+ok 1708 - v34.1 runs source preflight before SDK download
+  ---
+  duration_ms: 0.769044
+  type: 'test'
+  ...
+# Subtest: v34.1 checks mandatory assets and version
+ok 1709 - v34.1 checks mandatory assets and version
+  ---
+  duration_ms: 0.248333
+  type: 'test'
+  ...
+# Subtest: v34.1 installer has installation logging enabled
+ok 1710 - v34.1 installer has installation logging enabled
+  ---
+  duration_ms: 0.151508
+  type: 'test'
+  ...
+# Subtest: preflight version derives from package metadata
+ok 1711 - preflight version derives from package metadata
+  ---
+  duration_ms: 0.81239
+  type: 'test'
+  ...
+# Subtest: Windows shell version agrees with package metadata
+ok 1712 - Windows shell version agrees with package metadata
+  ---
+  duration_ms: 1.040923
+  type: 'test'
+  ...
+# Subtest: build and installer agree on expected setup filename
+ok 1713 - build and installer agree on expected setup filename
+  ---
+  duration_ms: 0.302785
+  type: 'test'
+  ...
+# Subtest: PowerShell scripts parsed before build
+ok 1714 - PowerShell scripts parsed before build
+  ---
+  duration_ms: 0.631488
+  type: 'test'
+  ...
+# Subtest: missing local HTML assets fail closed
+ok 1715 - missing local HTML assets fail closed
+  ---
+  duration_ms: 0.107642
+  type: 'test'
+  ...
+# Subtest: PowerShell parse failures fail closed
+ok 1716 - PowerShell parse failures fail closed
+  ---
+  duration_ms: 0.155724
+  type: 'test'
+  ...
+# Subtest: version 35.3 matches package
+ok 1717 - version 35.3 matches package
+  ---
+  duration_ms: 1.71152
+  type: 'test'
+  ...
+# Subtest: v35.4 qualification orchestrator writes JSON report
+ok 1718 - v35.4 qualification orchestrator writes JSON report
+  ---
+  duration_ms: 1.031339
+  type: 'test'
+  ...
+# Subtest: v35.4 qualification invokes preflight and HTTP smoke
+ok 1719 - v35.4 qualification invokes preflight and HTTP smoke
+  ---
+  duration_ms: 0.230636
+  type: 'test'
+  ...
+# Subtest: v35.4 qualification invokes installer E2E
+ok 1720 - v35.4 qualification invokes installer E2E
+  ---
+  duration_ms: 1.106491
+  type: 'test'
+  ...
+# Subtest: v35.4 installer E2E checks elevation
+ok 1721 - v35.4 installer E2E checks elevation
+  ---
+  duration_ms: 0.178969
+  type: 'test'
+  ...
+# Subtest: v35.4 launcher propagates errorlevel
+ok 1722 - v35.4 launcher propagates errorlevel
+  ---
+  duration_ms: 0.183406
+  type: 'test'
+  ...
+# Subtest: v35.8 qualification propagates nested native smoke exit code
+ok 1723 - v35.8 qualification propagates nested native smoke exit code
+  ---
+  duration_ms: 1.106512
+  type: 'test'
+  ...
+# Subtest: v35.8 qualification propagates nested installer exit code
+ok 1724 - v35.8 qualification propagates nested installer exit code
+  ---
+  duration_ms: 0.200871
+  type: 'test'
+  ...
+# Subtest: v35.8 qualification records stack trace for failures
+ok 1725 - v35.8 qualification records stack trace for failures
+  ---
+  duration_ms: 1.080222
+  type: 'test'
+  ...
+# Subtest: v35.8 qualification returns success only for PASS
+ok 1726 - v35.8 qualification returns success only for PASS
+  ---
+  duration_ms: 0.297196
+  type: 'test'
+  ...
+# Subtest: v35.8 build output and Inno filename agree
+ok 1727 - v35.8 build output and Inno filename agree
+  ---
+  duration_ms: 0.474633
+  type: 'test'
+  ...
+# Subtest: graphic qualification is explicit opt-in
+ok 1728 - graphic qualification is explicit opt-in
+  ---
+  duration_ms: 0.948574
+  type: 'test'
+  ...
+# Subtest: graphic qualification reuses browser runner
+ok 1729 - graphic qualification reuses browser runner
+  ---
+  duration_ms: 0.148854
+  type: 'test'
+  ...
+# Subtest: graphic qualification verifies evidence
+ok 1730 - graphic qualification verifies evidence
+  ---
+  duration_ms: 0.203296
+  type: 'test'
+  ...
+# Subtest: graphic qualification marks skipped partial
+ok 1731 - graphic qualification marks skipped partial
+  ---
+  duration_ms: 0.225518
+  type: 'test'
+  ...
+# Subtest: graphic cmd wrapper exists
+ok 1732 - graphic cmd wrapper exists
+  ---
+  duration_ms: 0.255484
+  type: 'test'
+  ...
+# Subtest: v34.2: version coherence
+ok 1733 - v34.2: version coherence
+  ---
+  duration_ms: 1.037057
+  type: 'test'
+  ...
+# Subtest: v34.2: installer output is consistent
+ok 1734 - v34.2: installer output is consistent
+  ---
+  duration_ms: 0.315223
+  type: 'test'
+  ...
+# Subtest: v34.2: release manifest generated only after successful build
+ok 1735 - v34.2: release manifest generated only after successful build
+  ---
+  duration_ms: 1.130538
+  type: 'test'
+  ...
+# Subtest: portable artifact filename is derived from csproj release version
+ok 1736 - portable artifact filename is derived from csproj release version
+  ---
+  duration_ms: 0.61903
+  type: 'test'
+  ...
+# Subtest: assembly version is 39.8.0
+ok 1737 - assembly version is 39.8.0
+  ---
+  duration_ms: 0.174552
+  type: 'test'
+  ...
+# Subtest: v34.5 help control is reachable
+ok 1738 - v34.5 help control is reachable
+  ---
+  duration_ms: 0.977358
+  type: 'test'
+  ...
+# Subtest: v34.5 help module loaded
+ok 1739 - v34.5 help module loaded
+  ---
+  duration_ms: 0.203035
+  type: 'test'
+  ...
+# Subtest: v34.5 help is keyboard accessible
+ok 1740 - v34.5 help is keyboard accessible
+  ---
+  duration_ms: 0.143396
+  type: 'test'
+  ...
+# Subtest: v34.5 help uses accessible modal
+ok 1741 - v34.5 help uses accessible modal
+  ---
+  duration_ms: 0.209745
+  type: 'test'
+  ...
+# Subtest: v33.5 inspector filter controls are accessible
+ok 1742 - v33.5 inspector filter controls are accessible
+  ---
+  duration_ms: 1.051759
+  type: 'test'
+  ...
+# Subtest: v33.5 preserves all properties and filters without removing nodes
+ok 1743 - v33.5 preserves all properties and filters without removing nodes
+  ---
+  duration_ms: 0.324267
+  type: 'test'
+  ...
+# Subtest: v33.5 filter updates after canvas repaint
+ok 1744 - v33.5 filter updates after canvas repaint
+  ---
+  duration_ms: 0.149124
+  type: 'test'
+  ...
+# Subtest: v33.5 keeps inspector fields interactive
+ok 1745 - v33.5 keeps inspector fields interactive
+  ---
+  duration_ms: 0.207672
+  type: 'test'
+  ...
+# Subtest: v33.6 toggle exposes correct aria controls
+ok 1746 - v33.6 toggle exposes correct aria controls
+  ---
+  duration_ms: 0.664908
+  type: 'test'
+  ...
+# Subtest: v33.6 collapses without destroying editor fields
+ok 1747 - v33.6 collapses without destroying editor fields
+  ---
+  duration_ms: 0.185418
+  type: 'test'
+  ...
+# Subtest: v33.6 remembers collapse preference safely
+ok 1748 - v33.6 remembers collapse preference safely
+  ---
+  duration_ms: 0.096855
+  type: 'test'
+  ...
+# Subtest: v33.6 inspector quick access expands properties
+ok 1749 - v33.6 inspector quick access expands properties
+  ---
+  duration_ms: 0.380822
+  type: 'test'
+  ...
+# Subtest: advanced inspector command wired
+ok 1750 - advanced inspector command wired
+  ---
+  duration_ms: 0.630697
+  type: 'test'
+  ...
+# Subtest: advanced inspector expands, clears search, selects all
+ok 1751 - advanced inspector expands, clears search, selects all
+  ---
+  duration_ms: 0.115223
+  type: 'test'
+  ...
+# Subtest: build script accepts preinstalled ISCC in PATH
+ok 1752 - build script accepts preinstalled ISCC in PATH
+  ---
+  duration_ms: 0.116034
+  type: 'test'
+  ...
+# Subtest: build removes stale installer before building
+ok 1753 - build removes stale installer before building
+  ---
+  duration_ms: 0.202624
+  type: 'test'
+  ...
+# Subtest: v33.4 includes layout controls and script
+ok 1754 - v33.4 includes layout controls and script
+  ---
+  duration_ms: 1.677218
+  type: 'test'
+  ...
+# Subtest: v33.4 clamps persisted panel sizes and keyboard resizing
+ok 1755 - v33.4 clamps persisted panel sizes and keyboard resizing
+  ---
+  duration_ms: 0.237327
+  type: 'test'
+  ...
+# Subtest: v33.4 respects narrow screens and hidden panels
+ok 1756 - v33.4 respects narrow screens and hidden panels
+  ---
+  duration_ms: 0.2004
+  type: 'test'
+  ...
+# Subtest: v33.2 includes workspace mode assets
+ok 1757 - v33.2 includes workspace mode assets
+  ---
+  duration_ms: 0.669005
+  type: 'test'
+  ...
+# Subtest: v33.2 keeps three named modes and accessible pressed state
+ok 1758 - v33.2 keeps three named modes and accessible pressed state
+  ---
+  duration_ms: 0.135063
+  type: 'test'
+  ...
+# Subtest: v33.2 persists chosen mode with guarded localStorage
+ok 1759 - v33.2 persists chosen mode with guarded localStorage
+  ---
+  duration_ms: 0.092338
+  type: 'test'
+  ...
+# Subtest: v33.2 hides analytical panels only in edition mode
+ok 1760 - v33.2 hides analytical panels only in edition mode
+  ---
+  duration_ms: 0.136856
+  type: 'test'
+  ...
+# Subtest: v33.3 contextual actions included
+ok 1761 - v33.3 contextual actions included
+  ---
+  duration_ms: 0.741043
+  type: 'test'
+  ...
+# Subtest: v33.3 keyboard accessible actions
+ok 1762 - v33.3 keyboard accessible actions
+  ---
+  duration_ms: 0.106259
+  type: 'test'
+  ...
+# Subtest: v33.3 SAN actions reference existing IDs
+ok 1763 - v33.3 SAN actions reference existing IDs
+  ---
+  duration_ms: 0.227632
+  type: 'test'
+  ...
+1..1763
+# tests 1763
+# suites 0
+# pass 1763
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7705.238262
+
+STDERR

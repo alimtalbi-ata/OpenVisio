@@ -1,0 +1,23 @@
+{
+  "kind": "synthetic-nodejs-not-ui",
+  "samples": [
+    {
+      "nodes": 100,
+      "edges": 99,
+      "boundsMs": 0.585,
+      "previewMs": 6.66
+    },
+    {
+      "nodes": 500,
+      "edges": 499,
+      "boundsMs": 0.906,
+      "previewMs": 17.58
+    },
+    {
+      "nodes": 1000,
+      "edges": 999,
+      "boundsMs": 0.133,
+      "previewMs": 21.224
+    }
+  ]
+}

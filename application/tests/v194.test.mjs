@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+const history=readFileSync(new URL('../src/history-transaction.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('v19.4 exposes a disabled redo button',()=>assert.match(html,/disabled="" id="redoBtn"/));
+test('v19.4 undo retains previous state for redo',()=>assert.match(history,/destination.push\(current\)/));
+test('v19.4 new changes invalidate redo',()=>assert.match(history,/redo.length=0/));
+test('v19.4 caps both history directions',()=>assert.match(history,/if\(destination.length>limit\)destination.shift\(\)/));
+test('v19.4 keyboard supports redo variants',()=>{assert.match(main,/e.shiftKey\?"redoBtn":"undoBtn"/);assert.match(main,/e.key.toLowerCase\(\)==="y"/)});
+test('v19.4 version label',()=>{const version=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).version.split('.').slice(0,2).join('.');assert.ok(html.includes('Atelier d’architecture · v'+version));});

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { visibleSanSections, installSanUnifiedFilter } from '../src/topology-filter-v349.js';
+const html = readFileSync(new URL('../index.html', import.meta.url),'utf8');
+test('34.9 category and search intersect rather than override', () => assert.deepEqual(visibleSanSections('Connectivité','port'),['Ports']));
+test('34.9 accent-aware French search', () => assert.deepEqual(visibleSanSections('Tout','chaîn'),['Chaînes']));
+test('34.9 empty query preserves full category', () => assert.equal(visibleSanSections('Comparer','').length,4));
+test('34.9 no DOM navigator safely no-ops', () => assert.equal(installSanUnifiedFilter({getElementById:()=>null}),false));
+test('34.9 integrated script and CSS', () => { assert.match(html,/src\/topology-filter-v349\.js/);assert.match(html,/styles\/topology-filter-v349\.css/); });

@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {qualifyLocalRouteUpdate} from '../src/spatial-routing.js';
+const n=(id,x)=>({id,x,y:0,w:20,h:20});
+const e=(id,from,to)=>({id,from,to});
+const route=(a,b)=>({points:[{x:a,y:10},{x:b,y:10}]});
+test('no changes allow local candidate',()=>{const s={nodes:[n('a',0),n('b',100)],edges:[e('x','a','b')]};assert.equal(qualifyLocalRouteUpdate(s,s,new Map([['x',route(20,100)]])).eligible,true)});
+test('unknown routes force complete recompute',()=>{const s={nodes:[n('a',0),n('b',100)],edges:[e('x','a','b')]};assert.ok(qualifyLocalRouteUpdate(s,s,new Map()).reasons.includes('missing-or-invalid-route'))});
+test('topology change forces full recompute',()=>{const a={nodes:[n('a',0),n('b',100)],edges:[e('x','a','b')]},b={...a,edges:[]};assert.ok(qualifyLocalRouteUpdate(a,b,new Map([['x',route(20,100)]])).reasons.includes('topology-changed'))});
+test('multi node move is conservatively rejected',()=>{const a={nodes:[n('a',0),n('b',100)],edges:[e('x','a','b')]},b={...a,nodes:[n('a',5),n('b',105)]};assert.ok(qualifyLocalRouteUpdate(a,b,new Map([['x',route(20,100)]])).reasons.includes('multi-node-change'))});
+test('independent bundle permits qualified local routing',()=>{const a={nodes:[n('a',0),n('b',100),n('c',400),n('d',500)],edges:[e('x','a','b'),e('y','c','d')]},b={...a,nodes:[n('a',5),...a.nodes.slice(1)]};const q=qualifyLocalRouteUpdate(a,b,new Map([['x',route(20,100)],['y',route(420,500)]]));assert.equal(q.eligible,true)});
+test('invalid budget is rejected',()=>assert.throws(()=>qualifyLocalRouteUpdate({}, {},new Map(),{maxChangedEdges:0})));

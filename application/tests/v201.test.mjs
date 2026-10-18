@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {planEdgeProperty,applyEdgeProperty} from '../src/edge-property-transaction.js';
+const nodes=[{id:'a',ports:['FC0','FC1']},{id:'b',ports:['FC2']}];
+const edge=()=>({id:'e',from:'a',to:'b',offset:12,sourceInterface:'FC0',label:'SAN'});
+test('offset non numérique refusé sans mutation',()=>{const e=edge();assert.throws(()=>planEdgeProperty(e,'offset','xyz',nodes));assert.equal(e.offset,12)});
+test('offset vide refusé',()=>assert.throws(()=>planEdgeProperty(edge(),'offset',' ',nodes)));
+test('offset valide et atomique',()=>{const e=edge(),p=planEdgeProperty(e,'offset','0',nodes);assert.equal(e.offset,12);assert.equal(applyEdgeProperty(e,p),true);assert.equal(e.offset,0)});
+test('interface absente refusée',()=>assert.throws(()=>planEdgeProperty(edge(),'sourceInterface','FC9',nodes)));
+test('interface de destination valide',()=>{const e=edge(),p=planEdgeProperty(e,'targetInterface','FC2',nodes);applyEdgeProperty(e,p);assert.equal(e.targetInterface,'FC2')});
+test('aucune modification identique',()=>{const e=edge(),p=planEdgeProperty(e,'label','SAN',nodes);assert.equal(p.changed,false);assert.equal(applyEdgeProperty(e,p),false)});
+test('application de plan invalide refusée',()=>assert.throws(()=>applyEdgeProperty(edge(),{ok:false})));

@@ -1,0 +1,17 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {normalizeAngle,transformNodes,svgNodeTransform} from '../src/vector-transform.js';
+const n={id:'a',x:10,y:20,w:100,h:50};
+test('angle normalisé',()=>assert.equal(normalizeAngle(-90),270));
+test('angle complet',()=>assert.equal(normalizeAngle(720),0));
+test('angle invalide',()=>assert.throws(()=>normalizeAngle(Infinity)));
+test('rotation',()=>assert.equal(transformNodes([n],'rotate')[0].rotation,90));
+test('rotation cumulative',()=>assert.equal(transformNodes([{...n,rotation:270}],'rotate')[0].rotation,0));
+test('symétrie horizontale',()=>assert.equal(transformNodes([n],'flipH')[0].flipH,true));
+test('symétrie involutive',()=>assert.equal(transformNodes(transformNodes([n],'flipH'),'flipH')[0].flipH,false));
+test('symétrie verticale',()=>assert.equal(transformNodes([n],'flipV')[0].flipV,true));
+test('réinitialisation',()=>assert.deepEqual(transformNodes([{...n,rotation:90,flipH:true,flipV:true}],'reset')[0],{...n,rotation:0,flipH:false,flipV:false}));
+test('source immuable',()=>{transformNodes([n],'rotate');assert.equal(n.rotation,undefined)});
+test('sélection vide',()=>assert.deepEqual(transformNodes([],'rotate'),[]));
+test('opération inconnue',()=>assert.throws(()=>transformNodes([n],'warp')));
+test('SVG rotation et miroirs',()=>assert.match(svgNodeTransform({...n,rotation:90,flipH:true}),/rotate\(90\) scale\(-1 1\)/));
+test('géométrie invalide',()=>assert.throws(()=>svgNodeTransform({...n,w:0})));

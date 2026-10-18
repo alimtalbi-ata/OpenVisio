@@ -1,0 +1,9 @@
+{
+  "scenario": "browser-san-interactions-v248",
+  "environment": "Linux 6.18.55 / Chromium headless; les temps ne mesurent pas les FPS",
+  "capture_kind": "real-browser-only-if-PASS",
+  "utc": "2026-10-17T17:29:32.768929+00:00",
+  "screenshot": "../CAPTURE-CHROMIUM-V41.23.png",
+  "status": "FAIL",
+  "error": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:18765/\nCall log:\n  - navigating to \"http://127.0.0.1:18765/\", waiting until \"load\"\n"
+}

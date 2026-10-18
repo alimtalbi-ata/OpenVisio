@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {verifyCommittedAlternate} from '../src/san-alternate-routes.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:160,y:0,w:20,h:20}];
+const edge={id:'e',from:'a',to:'b',fabric:'A',waypoints:[]};
+const routes=new Map([['e',{points:[{x:20,y:10},{x:160,y:10}]}]]);
+test('v26 vérification après application sur une route valide',()=>{const result=verifyCommittedAlternate(edge,{waypoints:[]},nodes,[edge],routes);assert.equal(result.verified,true);assert.equal(result.after.collisions,0)});
+test('v26 rejet si géométrie opposée absente',()=>assert.throws(()=>verifyCommittedAlternate(edge,{waypoints:[]},nodes,[edge,{id:'f',fabric:'B'}],routes),/manquante/));
+test('v26 rejet de route appliquée divergente',()=>assert.throws(()=>verifyCommittedAlternate({...edge,waypoints:[{x:80,y:50}]},{waypoints:[]},nodes,[edge],routes),/divergente/));
+test('v26 rejet des paramètres de contrôle invalides',()=>assert.throws(()=>verifyCommittedAlternate(edge,{waypoints:[]},nodes,[edge],routes,{minimum:-1}),/invalide/));

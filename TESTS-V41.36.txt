@@ -1,0 +1,80 @@
+ript accepts preinstalled ISCC in PATH
+  ---
+  duration_ms: 0.142023
+  type: 'test'
+  ...
+# Subtest: build removes stale installer before building
+ok 1757 - build removes stale installer before building
+  ---
+  duration_ms: 0.365719
+  type: 'test'
+  ...
+# Subtest: v33.4 includes layout controls and script
+ok 1758 - v33.4 includes layout controls and script
+  ---
+  duration_ms: 2.965066
+  type: 'test'
+  ...
+# Subtest: v33.4 clamps persisted panel sizes and keyboard resizing
+ok 1759 - v33.4 clamps persisted panel sizes and keyboard resizing
+  ---
+  duration_ms: 0.288043
+  type: 'test'
+  ...
+# Subtest: v33.4 respects narrow screens and hidden panels
+ok 1760 - v33.4 respects narrow screens and hidden panels
+  ---
+  duration_ms: 0.269024
+  type: 'test'
+  ...
+# Subtest: v33.2 includes workspace mode assets
+ok 1761 - v33.2 includes workspace mode assets
+  ---
+  duration_ms: 0.950408
+  type: 'test'
+  ...
+# Subtest: v33.2 keeps three named modes and accessible pressed state
+ok 1762 - v33.2 keeps three named modes and accessible pressed state
+  ---
+  duration_ms: 0.212659
+  type: 'test'
+  ...
+# Subtest: v33.2 persists chosen mode with guarded localStorage
+ok 1763 - v33.2 persists chosen mode with guarded localStorage
+  ---
+  duration_ms: 0.111718
+  type: 'test'
+  ...
+# Subtest: v33.2 hides analytical panels only in edition mode
+ok 1764 - v33.2 hides analytical panels only in edition mode
+  ---
+  duration_ms: 0.214252
+  type: 'test'
+  ...
+# Subtest: v33.3 contextual actions included
+ok 1765 - v33.3 contextual actions included
+  ---
+  duration_ms: 0.699561
+  type: 'test'
+  ...
+# Subtest: v33.3 keyboard accessible actions
+ok 1766 - v33.3 keyboard accessible actions
+  ---
+  duration_ms: 0.114261
+  type: 'test'
+  ...
+# Subtest: v33.3 SAN actions reference existing IDs
+ok 1767 - v33.3 SAN actions reference existing IDs
+  ---
+  duration_ms: 0.182875
+  type: 'test'
+  ...
+1..1767
+# tests 1767
+# suites 0
+# pass 1767
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7791.089381

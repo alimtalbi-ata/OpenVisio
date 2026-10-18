@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {compareSanConnectivity,sanImpactHtml} from '../src/san-impact-diff.js';
+const n=[{id:'s',type:'server',title:'Hôte'},{id:'a',type:'switch',fabric:'A'},{id:'b',type:'switch',fabric:'B'},{id:'t',type:'storage',title:'Baie'}];
+const e=(id,from,to)=>({id,from,to,sourceInterface:'fc0',targetInterface:'fc1'});
+const full={nodes:n,edges:[e('e1','s','a'),e('e2','a','t'),e('e3','s','b'),e('e4','b','t')]};
+const single={nodes:n,edges:full.edges.slice(0,2)};
+test('suppression Fabric B dégrade la redondance',()=>{const r=compareSanConnectivity(full,single);assert.equal(r.summary.degraded,1);assert.deepEqual(r.critical[0].lostFabrics,['B']);});
+test('ajout Fabric B améliore',()=>assert.equal(compareSanConnectivity(single,full).summary.improved,1));
+test('configuration inchangée stable',()=>assert.equal(compareSanConnectivity(full,full).summary.stable,1));
+test('aucune paire si absence de stockage',()=>assert.equal(compareSanConnectivity({nodes:n.slice(0,1),edges:[]},{nodes:n.slice(0,1),edges:[]}).summary.pairs,0));
+test('suppression de la baie retire la paire',()=>assert.equal(compareSanConnectivity(full,{nodes:n.slice(0,3),edges:[full.edges[0],full.edges[2]]}).critical[0].impact,'removed-pair'));
+test('identifiant de liaison dupliqué refusé',()=>assert.throws(()=>compareSanConnectivity(full,{nodes:n,edges:[full.edges[0],full.edges[0]]}),/dupliqué/));
+test('connexion orpheline refusée',()=>assert.throws(()=>compareSanConnectivity(full,{nodes:n,edges:[e('x','s','inconnu')]}),/orpheline/));
+test('rapport HTML protège les noms',()=>{const bad={nodes:n.map(x=>x.id==='s'?{...x,title:'<script>alert(1)</script>'}:x),edges:full.edges};const html=sanImpactHtml(compareSanConnectivity(bad,bad));assert.ok(html.includes('&lt;script&gt;'));assert.ok(!html.includes('<script>'));});

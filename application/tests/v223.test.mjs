@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {diagnoseRouteTopology} from '../src/routing.js';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+test('panneau expose le résumé du diagnostic',()=>assert.match(html,/id="wiringTopologySummary"/));
+test('interface branche le moteur sur les tracés SVG',()=>{assert.match(main,/diagnoseRouteTopology\(visibleRoutes\)/);assert.match(main,/renderedCableRoutes\(svg\)/);});
+test('diagnostic ne modifie pas les chemins',()=>{const routes=new Map([['fc-a',{points:[{x:0,y:0},{x:20,y:0}]}]]);const before=JSON.stringify([...routes]);diagnoseRouteTopology(routes);assert.equal(JSON.stringify([...routes]),before);});
+test('chevauchements du panneau : résultat mesurable',()=>{const routes=new Map([['a',{points:[{x:0,y:0},{x:20,y:0}]}],['b',{points:[{x:10,y:0},{x:30,y:0}]}]]);assert.equal(diagnoseRouteTopology(routes).overlappingSegmentPairs,1);});

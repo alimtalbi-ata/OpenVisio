@@ -1,0 +1,24 @@
+node --test tests/*.test.mjs
+ persists chosen mode with guarded localStorage
+ok 1424 - v33.2 persists chosen mode with guarded localStorage
+  ---
+  duration_ms: 0.158459
+  type: 'test'
+  ...
+# Subtest: v33.2 hides analytical panels only in edition mode
+ok 1425 - v33.2 hides analytical panels only in edition mode
+  ---
+  duration_ms: 0.229937
+  type: 'test'
+  ...
+1..1425
+# tests 1425
+# suites 0
+# pass 1425
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7483.417175
+
+Windows EXE build: NOT EXECUTED

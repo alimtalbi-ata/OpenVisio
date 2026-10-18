@@ -1,0 +1,21 @@
+/* v33.2: progressive disclosure. The diagram remains primary; controls stay in DOM. */
+.ov-mode-nav{display:flex;align-items:center;flex-wrap:wrap;gap:7px;padding:9px 16px;background:#f3f6fa;border-bottom:1px solid #d6e0eb;font:14px system-ui}
+.ov-mode-label{font-weight:700;color:#41556c;margin-right:12px}
+.ov-mode-nav button{padding:9px 14px;border:1px solid #c4d1df;border-radius:9px;background:#fff;color:#203951;cursor:pointer;font:600 13px system-ui}
+.ov-mode-nav button.active{background:#173e69;color:#fff;border-color:#173e69}
+.ov-mode-nav button:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+/* SAN-specific analytical panels remain reachable via the SAN mode and command search. */
+:root[data-ov-mode="edition"] section[id^="sanSpofPanel"],
+:root[data-ov-mode="edition"] section[id^="sanResiliencePanel"],
+:root[data-ov-mode="edition"] section[id^="sanSimulationPanel"],
+:root[data-ov-mode="edition"] section[id^="sanImportCorrelationPanel"],
+:root[data-ov-mode="san"] section[id^="sanSpofPanel"],
+:root[data-ov-mode="san"] section[id^="sanResiliencePanel"],
+:root[data-ov-mode="san"] section[id^="sanSimulationPanel"],
+:root[data-ov-mode="san"] section[id^="sanImportCorrelationPanel"]{display:block}
+:root[data-ov-mode="edition"] section[id^="sanSpofPanel"],
+:root[data-ov-mode="edition"] section[id^="sanResiliencePanel"],
+:root[data-ov-mode="edition"] section[id^="sanSimulationPanel"],
+:root[data-ov-mode="edition"] section[id^="sanImportCorrelationPanel"]{display:none}
+:root[data-ov-mode="san"] .canvas-toolbar{position:sticky;top:0;z-index:5}
+@media(max-width:700px){.ov-mode-label{flex-basis:100%}.ov-mode-nav button{flex:1;min-width:100px}}

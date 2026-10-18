@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {fitConflictGroupZoom} from '../src/wiring-navigation.js';
+import {readFileSync} from 'node:fs';
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+test('v27.5 fit zoom adjusts large group to viewport with padding',()=>assert.equal(fitConflictGroupZoom({width:800,height:600},{width:1600,height:500},1),.44<.5?.5:.5));
+test('v27.5 fit zoom caps small groups at max zoom',()=>assert.equal(fitConflictGroupZoom({width:1000,height:800},{width:50,height:50},1),1.5));
+test('v27.5 rejects invalid bounds and padding',()=>{assert.equal(fitConflictGroupZoom({width:0,height:800},{width:50,height:50},1),null);assert.equal(fitConflictGroupZoom({width:100,height:100},{width:50,height:50},1,{padding:55}),null);});
+test('v27.5 group navigation uses fitted zoom and recalculated bounds',()=>{assert.match(main,/fitConflictGroupZoom/);assert.match(main,/updated=paths.map/);assert.match(main,/fit:true/);});
+test('v27.5 displays Fabric A B conflicts without committing changes',()=>{assert.match(main,/Séparation Fabric A\/B/);assert.match(main,/measures.activeFabricConflicts/);});

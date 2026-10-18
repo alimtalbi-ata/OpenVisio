@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {summarizeZoningEvidence,zoningDriftCsv} from '../src/san-zoning-drift-v317.js';
+const w1='10:00:00:00:00:00:00:01',w2='20:00:00:00:00:00:00:02';
+test('detects active/configured member differences per VSAN',()=>{const r=summarizeZoningEvidence({zones:[{name:'zone1',vsan:10,configurationState:'active',members:[w1]},{name:'zone1',vsan:10,configurationState:'configured',members:[w1,w2]}]});assert.equal(r.counts.different,1);assert.deepEqual(r.findings[0].missing,[w2]);});
+test('keeps identical zones matched',()=>{const r=summarizeZoningEvidence({zones:[{name:'Z',configurationState:'active',members:[w1]},{name:'Z',configurationState:'configured',members:[w1]}]});assert.equal(r.counts.matched,1);});
+test('never infers absence from a single configuration state',()=>{const r=summarizeZoningEvidence({zones:[{name:'Z',configurationState:'configured',members:[w1]}]});assert.equal(r.counts.unverified,1);});
+test('separates same zone name across VSANs',()=>{const r=summarizeZoningEvidence({zones:[{name:'Z',vsan:1,configurationState:'active',members:[w1]},{name:'Z',vsan:2,configurationState:'configured',members:[w2]}]});assert.equal(r.findings.length,2);});
+test('escapes CSV formulas',()=>{const s=zoningDriftCsv({findings:[{vsan:'1',name:'=CMD()',status:'UNVERIFIED',missing:[],extra:[],recommendation:'ok'}]});assert.match(s,/"'=CMD\(\)"/);});

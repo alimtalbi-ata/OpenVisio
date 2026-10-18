@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {parseSanConfig,assignSanRoles} from '../src/san-config-import.js';
+const w1='10:00:00:90:FA:12:34:56',w2='20:00:00:90:FA:12:34:56';
+test('Brocade alias and zone',()=>{const r=parseSanConfig(`alicreate "HOST", "${w1}"\nalicreate "ARRAY", "${w2}"\nzonecreate "Z1", "HOST;ARRAY"`,'brocade');assert.equal(r.zones.length,1);assert.deepEqual(r.zones[0].members,[w1,w2]);});
+test('Brocade zoneadd',()=>{const r=parseSanConfig(`zonecreate "Z1", "${w1}"\nzoneadd "Z1", "${w2}"`,'brocade');assert.equal(r.zones[0].members.length,2);});
+test('Cisco zone members',()=>{const r=parseSanConfig(`zone name Z1 vsan 10\n member pwwn ${w1}\n member pwwn ${w2}`,'cisco');assert.equal(r.zones[0].members.length,2);});
+test('Cisco device aliases',()=>{const r=parseSanConfig(`device-alias name H pwwn ${w1}\nzone name Z1 vsan 10\n member H`,'cisco');assert.deepEqual(r.zones[0].members,[w1]);});
+test('Unknown alias warned',()=>{const r=parseSanConfig('zonecreate "Z1", "UNKNOWN"','brocade');assert.ok(r.warnings.length);});
+test('Roles not fabricated',()=>{const r=parseSanConfig(`zonecreate "Z1", "${w1};${w2}"`,'brocade');assert.deepEqual(r.zones[0].initiators,[]);});
+test('Role assignment',()=>{const r=parseSanConfig(`zonecreate "Z1", "${w1};${w2}"`,'brocade');const z=assignSanRoles(r,{Z1:{[w1]:'initiator',[w2]:'target'}});assert.deepEqual(z[0].targets,[w2]);});
+test('Reject excessive input',()=>assert.throws(()=>parseSanConfig('x'.repeat(2_000_001))));
+test('Reject fabric',()=>assert.throws(()=>parseSanConfig('','brocade','C')));

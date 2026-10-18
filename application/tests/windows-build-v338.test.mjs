@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const build=readFileSync('Build-OpenVisio-Windows.cmd','utf8');
+const iss=readFileSync('windows/installer/OpenVisio.iss','utf8');
+test('Inno Setup est recherché après winget',()=>assert.ok(build.indexOf('reg query')>build.indexOf('winget install')));
+test('SDK 8 contrôlé',()=>assert.match(build,/--list-sdks/));
+test('WebView2 Authenticode validé',()=>assert.match(build,/Get-AuthenticodeSignature/));
+test('installateur final contrôlé',()=>assert.match(build,/Installateur anormalement petit/));
+test('version courante de l’installateur',()=>{const v=JSON.parse(readFileSync('package.json','utf8')).version.replace(/\.0$/,'');assert.ok(iss.includes(`OutputBaseFilename=OpenVisio-Setup-v${v}-x64`));});

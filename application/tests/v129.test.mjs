@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateSanImport,compareSanImports,sanDiffCsv} from '../src/zoneset-document.js';
+const sample={vendor:'cisco',fabric:'A',zonesets:[{name:'SET1',vsan:10,zones:['Z1']}],zones:[{name:'Z1',vsan:10,members:['10:00:00:00:00:00:00:01']}],aliases:{},activeConfigurations:[{name:'SET1',vsan:10,source:'zoneset activate'}],warnings:[]};
+test('roundtrip sanitized',()=>assert.deepEqual(validateSanImport(sample),{...sample,requiresRoleAssignment:true}));
+test('null legacy',()=>assert.equal(validateSanImport(null),null));
+test('invalid vendor',()=>assert.throws(()=>validateSanImport({...sample,vendor:'other'})));
+test('invalid vsan',()=>assert.throws(()=>validateSanImport({...sample,zonesets:[{name:'X',vsan:5000,zones:[]}]})));
+test('added zone set',()=>assert.equal(compareSanImports(null,sample)[0].status,'added'));
+test('removed zone set',()=>assert.equal(compareSanImports(sample,null)[0].status,'removed'));
+test('changed zone set',()=>assert.equal(compareSanImports(sample,{...sample,zonesets:[{name:'SET1',vsan:10,zones:['Z2']} ]})[0].status,'changed'));
+test('same members reordered',()=>assert.equal(compareSanImports(sample,{...sample,zonesets:[{name:'SET1',vsan:10,zones:['Z1']} ]})[0].status,'unchanged'));
+test('csv with header',()=>assert.match(sanDiffCsv(compareSanImports(null,sample)),/Zoneset \/ VSAN/));

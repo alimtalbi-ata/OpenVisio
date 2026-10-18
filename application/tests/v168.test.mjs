@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {cachedRoutingPipeline,routingGeometrySignature} from "../src/renderer.js";
+const graph=()=>({nodes:[{id:"a",x:0,y:0,w:50,h:40},{id:"b",x:120,y:0,w:50,h:40}],edges:[{id:"e",from:"a",to:"b",style:"smart"}],selected:null});
+test("signature géométrique stable",()=>{assert.equal(routingGeometrySignature(graph()),routingGeometrySignature(graph()));});
+test("sélection ne relance pas le routage",()=>{const state=graph(),cache={};let calls=0;const run=()=>cachedRoutingPipeline(state,cache,()=>++calls);assert.equal(run(),1);state.selected="a";assert.equal(run(),1);assert.equal(calls,1);});
+test("déplacement invalide le cache",()=>{const state=graph(),cache={};let calls=0;const run=()=>cachedRoutingPipeline(state,cache,()=>++calls);run();state.nodes[0].x=10;assert.equal(run(),2);});
+test("modification de port invalide le cache",()=>{const state=graph(),cache={};let calls=0;const run=()=>cachedRoutingPipeline(state,cache,()=>++calls);run();state.edges[0].fromPort="right";assert.equal(run(),2);});
+test("waypoint invalide le cache",()=>{const state=graph(),cache={};let calls=0;const run=()=>cachedRoutingPipeline(state,cache,()=>++calls);run();state.edges[0].waypoints=[{x:50,y:80}];assert.equal(run(),2);});
+test("aucune réutilisation entre canevas",()=>{const state=graph();let calls=0;cachedRoutingPipeline(state,{},()=>++calls);cachedRoutingPipeline(state,{},()=>++calls);assert.equal(calls,2);});
+test("une nouvelle géométrie remplace le résultat précédent",()=>{const state=graph(),cache={};cachedRoutingPipeline(state,cache,()=>new Map([["e",1]]));state.nodes.push({id:"c",x:40,y:80});const value=cachedRoutingPipeline(state,cache,()=>new Map([["e",2]]));assert.equal(value.get("e"),2);});

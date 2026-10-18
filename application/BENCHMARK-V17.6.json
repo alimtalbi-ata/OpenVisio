@@ -1,0 +1,30 @@
+[
+  {
+    "routes": 100,
+    "queries": 50,
+    "baselineMs": 5.333,
+    "indexedMs": 0.299,
+    "matches": 50
+  },
+  {
+    "routes": 500,
+    "queries": 50,
+    "baselineMs": 2.921,
+    "indexedMs": 0.05,
+    "matches": 50
+  },
+  {
+    "routes": 1000,
+    "queries": 50,
+    "baselineMs": 6.278,
+    "indexedMs": 0.056,
+    "matches": 50
+  },
+  {
+    "routes": 5000,
+    "queries": 50,
+    "baselineMs": 27.067,
+    "indexedMs": 0.069,
+    "matches": 50
+  }
+]

@@ -1,0 +1,16 @@
+import {compareFabricSnapshots} from './san-compliance.js';
+import {validateSanHistory} from './san-cockpit.js';
+const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+export function complianceTimeline(history,options={}){
+ const entries=validateSanHistory(history);return entries.map((entry,i)=>{const score=compareFabricSnapshots(entries.slice(0,i+1),options);return {at:entry.at,label:entry.label,fabric:entry.data.fabric,score:score.score,alerts:score.issues.length};});
+}
+export function remediationForIssue(issue){
+ const map={FABRIC_MISSING:'Importer une configuration récente pour la Fabric absente et vérifier le câblage A/B.',SNAPSHOT_STALE:'Rafraîchir l’export de configuration et comparer avec le référentiel approuvé.',ZONE_UNDEFINED:'Vérifier la zone référencée, son existence et son appartenance au zoneset.'};return map[issue.code]??'Examiner manuellement la configuration et documenter la correction.';
+}
+export function complianceHtmlReport(history,options={}){
+ const entries=validateSanHistory(history);const result=compareFabricSnapshots(entries,options);const timeline=complianceTimeline(entries,options);
+ const rows=timeline.map(t=>`<tr><td>${esc(t.at)}</td><td>${esc(t.label)}</td><td>${esc(t.fabric)}</td><td>${t.score}/100</td><td>${t.alerts}</td></tr>`).join('');
+ const issues=result.issues.map(i=>`<tr><td>${esc(i.severity)}</td><td>${esc(i.fabric)}</td><td>${esc(i.code)}</td><td>${esc(i.detail)}</td><td>${esc(remediationForIssue(i))}</td></tr>`).join('');
+ const differences=result.comparison.filter(x=>x.status!=='unchanged').map(x=>`<tr><td>${esc(x.key)}</td><td>${esc(x.status)}</td></tr>`).join('');
+ return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>OpenVisio — Audit de conformité SAN</title><style>body{font:15px system-ui,sans-serif;margin:2rem;line-height:1.45;color:#17243a}h1,h2{color:#174b8b}table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #cad5e2;padding:.55rem;text-align:left;vertical-align:top}th{background:#e9f1fa}.score{font-size:2rem;font-weight:700}.muted{color:#536275}@media print{body{margin:0.5cm}button{display:none}}</style></head><body><h1>Audit de conformité SAN — OpenVisio</h1><p>Auteur : Abdelhalim Talbi</p><p class="muted">Analyse déclarative hors ligne. Aucun contrôle direct des équipements, chemins actifs ou zoning effectif.</p><p class="score">Score indicatif : ${result.score}/100</p><p>${entries.length} imports · ${result.issues.length} alertes · Fabric A : ${result.zonesByFabric.A} zones · Fabric B : ${result.zonesByFabric.B} zones</p><h2>Historique et évolution des scores</h2><table><thead><tr><th>Date</th><th>Source</th><th>Fabric</th><th>Score</th><th>Alertes</th></tr></thead><tbody>${rows}</tbody></table><h2>Anomalies et recommandations</h2><table><thead><tr><th>Sévérité</th><th>Fabric</th><th>Code</th><th>Constat</th><th>Action recommandée</th></tr></thead><tbody>${issues}</tbody></table><h2>Différences Fabric A/B</h2><table><thead><tr><th>Élément</th><th>État</th></tr></thead><tbody>${differences}</tbody></table><p class="muted">Ce rapport ne constitue pas une certification de conformité.</p></body></html>`;
+}

@@ -1,0 +1,1 @@
+OpenVisio v14.5 — qualification locale\nTests automatisés : 447/447 PASS. Syntaxe JS : PASS. Tests Windows interactifs et EXE : NON RÉALISÉS. Images snapshots : aperçus historiques, non captures v14.5. Auteur : Abdelhalim Talbi.

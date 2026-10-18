@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {summarizeSanConflictGroup} from '../src/wiring-navigation.js';
+import {readFileSync} from 'node:fs';
+const group={edgeIds:['A','B','C']};
+const proposals=[{edgeId:'A',before:{score:9},after:{score:3}},{edgeId:'B',before:{score:4},after:{score:1}},{edgeId:'C',before:{score:2},after:{score:8}}];
+const conflicts=[{a:'A',b:'B',crossFabric:true},{a:'B',b:'C',crossFabric:false},{a:'A',b:'outside',crossFabric:true}];
+test('v27.6 scores only selected improvements and ignores regressions',()=>{const r=summarizeSanConflictGroup(group,proposals,conflicts,['A','C']);assert.equal(r.gain,6);assert.equal(r.selected,2);assert.equal(r.activeConflicts,0);});
+test('v27.6 blocks selected cross-fabric conflict',()=>{const r=summarizeSanConflictGroup(group,proposals,conflicts,['A','B']);assert.equal(r.activeFabricConflicts,1);assert.equal(r.fabricConflicts,1);assert.equal(r.valid,false);});
+test('v27.6 does not count outside-group conflicts',()=>{const r=summarizeSanConflictGroup(group,proposals,conflicts,['A','outside']);assert.equal(r.conflicts,2);assert.equal(r.activeConflicts,0);});
+test('v27.6 ignores invalid numeric scores',()=>{const r=summarizeSanConflictGroup({edgeIds:['x']},[{edgeId:'x',before:{score:'oops'},after:{score:1}}],[],['x']);assert.equal(r.gain,0);});
+test('v27.6 UI uses centralized read-only metrics',()=>{const s=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');assert.match(s,/summarizeSanConflictGroup\(group,batch.proposals,summary.conflicts,ids\)/);assert.match(s,/validation bloquée/);});

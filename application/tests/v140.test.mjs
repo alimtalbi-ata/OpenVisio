@@ -1,0 +1,17 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {sanChains,compareSanChains,sanChainsCsv,sanChainsHtml} from '../src/san-chain.js';
+const nodes=[{id:'s',type:'server',title:'srv',hbas:['HBA0'],wwpns:['10:00:00:00:00:00:00:01'],multipath:'active-active'},{id:'w',type:'switch',title:'FC A',fabric:'A'},{id:'t',type:'storage',title:'array',luns:['LUN-1']},{id:'a',type:'application',title:'ERP'}];
+const edges=[{id:'1',from:'s',to:'w',sourceInterface:'FC0',targetInterface:'FC1'},{id:'2',from:'w',to:'t',sourceInterface:'FC2',targetInterface:'FC0'},{id:'3',from:'a',to:'s'}];const before={nodes,edges};const after={nodes,edges:[edges[2]]};
+test('chaîne serveur stockage',()=>assert.equal(sanChains(before).length,1));
+test('inventaire HBA',()=>assert.deepEqual(sanChains(before)[0].hbas,['HBA0']));
+test('WWPN déclaré',()=>assert.equal(sanChains(before)[0].wwpns.length,1));
+test('LUN déclarée',()=>assert.deepEqual(sanChains(before)[0].luns,['LUN-1']));
+test('application explicite',()=>assert.deepEqual(sanChains(before)[0].applications,['ERP']));
+test('complétude documentaire',()=>assert.equal(sanChains(before)[0].quality,'documented'));
+test('chaîne sans chemin après rupture',()=>assert.equal(sanChains(after)[0].paths,0));
+test('dégradation identifiée',()=>assert.equal(compareSanChains(before,after).rows[0].change,'modified'));
+test('risque de suppression',()=>assert.equal(compareSanChains(before,after).summary.review,1));
+test('comparaison stable',()=>assert.equal(compareSanChains(before,before).summary.changed,0));
+test('champs manquants visibles',()=>{const d={nodes:nodes.map(n=>n.id==='s'?{id:'s',type:'server'}:n),edges};assert.ok(sanChains(d)[0].missing.includes('HBA'))});
+test('CSV neutralise les formules',()=>{const r=compareSanChains(before,before);r.rows[0].server='=CMD';assert.match(sanChainsCsv(r),/"'=CMD"/)});
+test('HTML échappe le texte',()=>{const r=compareSanChains(before,before);r.rows[0].server='<script>';assert.match(sanChainsHtml(r),/&lt;script&gt;/)});
+test('document invalide rejeté',()=>assert.throws(()=>sanChains({nodes:[],edges})));

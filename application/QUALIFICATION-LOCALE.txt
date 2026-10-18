@@ -1,0 +1,55 @@
+Commande : node --test tests/model.test.mjs
+
+TAP version 13
+# Subtest: makeNode produit un identifiant et des coordonnées
+ok 1 - makeNode produit un identifiant et des coordonnées
+  ---
+  duration_ms: 1.297959
+  type: 'test'
+  ...
+# Subtest: validateGraph accepte une connexion valide
+ok 2 - validateGraph accepte une connexion valide
+  ---
+  duration_ms: 1.640627
+  type: 'test'
+  ...
+# Subtest: validateGraph rejette les extrémités inconnues
+ok 3 - validateGraph rejette les extrémités inconnues
+  ---
+  duration_ms: 0.19829
+  type: 'test'
+  ...
+# Subtest: restore résiste à une entrée invalide
+ok 4 - restore résiste à une entrée invalide
+  ---
+  duration_ms: 1.061022
+  type: 'test'
+  ...
+# Subtest: snapshot/restore préserve le graphe
+ok 5 - snapshot/restore préserve le graphe
+  ---
+  duration_ms: 0.323469
+  type: 'test'
+  ...
+# Subtest: validateGraph rejette les connexions vers soi-même
+ok 6 - validateGraph rejette les connexions vers soi-même
+  ---
+  duration_ms: 0.206432
+  type: 'test'
+  ...
+# Subtest: validateGraph accepte un graphe vide
+ok 7 - validateGraph accepte un graphe vide
+  ---
+  duration_ms: 0.253312
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 116.871734
+

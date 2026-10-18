@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {arrangeNodes} from '../src/layout.js';
+const fixtures=()=>[{id:'a',x:10,y:20,w:80,h:40},{id:'b',x:150,y:120,w:100,h:60},{id:'c',x:400,y:300,w:120,h:50}];
+test('alignement gauche',()=>{const n=fixtures();assert.equal(arrangeNodes(n,'alignLeft'),true);assert.deepEqual(n.map(x=>x.x),[10,10,10]);});
+test('alignement haut',()=>{const n=fixtures();arrangeNodes(n,'alignTop');assert.deepEqual(n.map(x=>x.y),[20,20,20]);});
+test('centrage horizontal avec tailles différentes',()=>{const n=fixtures();arrangeNodes(n,'alignCenterX');assert.equal(new Set(n.map(x=>x.x+x.w/2)).size,1);});
+test('centrage vertical avec tailles différentes',()=>{const n=fixtures();arrangeNodes(n,'alignCenterY');assert.equal(new Set(n.map(x=>x.y+x.h/2)).size,1);});
+test('distribution horizontale à espaces égaux',()=>{const n=fixtures();arrangeNodes(n,'distributeX');assert.ok(Math.abs((n[1].x-(n[0].x+n[0].w))-(n[2].x-(n[1].x+n[1].w)))<1e-8);});
+test('distribution verticale à espaces égaux',()=>{const n=fixtures();arrangeNodes(n,'distributeY');assert.ok(Math.abs((n[1].y-(n[0].y+n[0].h))-(n[2].y-(n[1].y+n[1].h)))<1e-8);});
+test('empilement horizontal sans collision',()=>{const n=fixtures();arrangeNodes(n,'stackX',{gap:30});assert.equal(n[1].x,n[0].x+n[0].w+30);assert.equal(n[2].x,n[1].x+n[1].w+30);});
+test('empilement vertical sans collision',()=>{const n=fixtures();arrangeNodes(n,'stackY',{gap:24});assert.equal(n[1].y,n[0].y+n[0].h+24);});
+test('grille magnétique sur les coordonnées',()=>{const n=fixtures();arrangeNodes(n,'stackX',{grid:10,gap:24});assert.ok(n.every(x=>x.x%10===0));});
+test('aucune mutation si distribution de deux formes',()=>{const n=fixtures().slice(0,2),before=JSON.stringify(n);assert.equal(arrangeNodes(n,'distributeX'),false);assert.equal(JSON.stringify(n),before);});
+test('mode inconnu refusé',()=>{const n=fixtures(),before=JSON.stringify(n);assert.equal(arrangeNodes(n,'bad'),false);assert.equal(JSON.stringify(n),before);});

@@ -1,0 +1,6 @@
+{
+  "version": "30.1.0",
+  "author": "Abdelhalim Talbi",
+  "qualification": "automated tests pass; Windows visual qualification pending",
+  "snapshots": "no new real Windows screenshots"
+}

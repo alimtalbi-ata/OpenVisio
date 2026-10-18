@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {fcPortInventory,compareFcPorts,applicationImpact,portImpactHtml} from '../src/san-port-impact.js';
+const node=(id,type,title=id)=>({id,type,title});const edge=(id,from,to,sourceInterface='FC0',targetInterface='FC0')=>({id,from,to,sourceInterface,targetInterface});
+const before={nodes:[node('s','server'),node('w','switch'),node('t','storage'),node('a','application')],edges:[edge('1','s','w'),edge('2','w','t'),{id:'app',from:'a',to:'s'}]};
+const after={...before,edges:[edge('1','s','w'),{id:'app',from:'a',to:'s'}]};
+test('inventaire ports FC',()=>assert.equal(fcPortInventory(before).length,3));
+test('liens non FC ignorés',()=>assert.equal(fcPortInventory({nodes:before.nodes,edges:[{id:'x',from:'a',to:'s',sourceInterface:'eth0',targetInterface:'eth1'}]}).length,0));
+test('port supprimé',()=>assert.equal(compareFcPorts(before,after).summary.removed,1));
+test('port avec moins de liens',()=>assert.equal(compareFcPorts(before,after).summary.reduced,1));
+test('ajout détecté',()=>assert.equal(compareFcPorts(after,before).summary.added,1));
+test('dépendance applicative explicite',()=>assert.equal(applicationImpact(before,after)[0].applicationId,'a'));
+test('pas de dépendance inventée',()=>assert.equal(applicationImpact({...before,edges:before.edges.slice(0,2)},after).length,1));
+test('export HTML échappé',()=>assert.ok(portImpactHtml({rows:[{nodeName:'<script>',port:'FC0',before:1,after:0,status:'removed'}]},[]).includes('&lt;script&gt;')));
+test('validation des arêtes orphelines',()=>assert.throws(()=>fcPortInventory({nodes:[],edges:[edge('x','a','b')]})));

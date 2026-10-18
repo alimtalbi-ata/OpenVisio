@@ -1,0 +1,1 @@
+Node.js test suite: 1421 PASS, 0 FAIL. Windows native build: NOT RUN. Inno Setup compile: NOT RUN. Real Windows screenshots: NOT AVAILABLE.

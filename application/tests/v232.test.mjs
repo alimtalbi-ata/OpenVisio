@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {lastRenderStatistics} from '../src/renderer.js';
+const renderer=readFileSync(new URL('../src/renderer.js',import.meta.url),'utf8');
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+test('statistiques vierges avant le premier rendu',()=>assert.deepEqual(lastRenderStatistics({}),{nodesReused:0,nodesUpdated:0,edgesReused:0,edgesUpdated:0,nodesRemoved:0,edgesRemoved:0}));
+test('statistiques renvoyées en copie non mutable',()=>{const svg={};const x=lastRenderStatistics(svg);x.nodesUpdated=99;assert.equal(lastRenderStatistics(svg).nodesUpdated,0);});
+test('les nœuds et les liens inchangés sont conservés',()=>{assert.match(renderer,/stats\.nodesReused\+\+/);assert.match(renderer,/stats\.edgesReused\+\+/);});
+test('le diagnostic affiche les mutations DOM',()=>assert.match(main,/DOM dernier rendu/));

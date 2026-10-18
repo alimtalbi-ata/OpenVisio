@@ -1,0 +1,1 @@
+OpenVisio v25.6 — Tests npm : réussite. Audit existant A/B en lecture seule. Recette Windows réelle non effectuée. Captures historiques conservées, aucune nouvelle capture réelle. Auteur : Abdelhalim Talbi.

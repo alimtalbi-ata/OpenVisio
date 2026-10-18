@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {arrangeNodes} from '../src/layout.js';
+import {readFileSync} from 'node:fs';
+const shapes=()=>[{id:'a',x:10,y:10,w:80,h:20},{id:'b',x:30,y:20,w:90,h:30},{id:'c',x:50,y:40,w:100,h:40}];
+test('espacement horizontal intelligent sans chevauchement',()=>{const a=shapes();assert.equal(arrangeNodes(a,'distributeSafeX',{gap:24}),true);assert.equal(a[0].x,10);assert.ok(a[1].x>=a[0].x+a[0].w+24);assert.ok(a[2].x>=a[1].x+a[1].w+24);});
+test('espacement vertical intelligent sans chevauchement',()=>{const a=shapes();arrangeNodes(a,'distributeSafeY',{gap:24});assert.ok(a[1].y>=a[0].y+a[0].h+24);assert.ok(a[2].y>=a[1].y+a[1].h+24);});
+test('espacement avec grille ne crée pas de recouvrement',()=>{const a=shapes();arrangeNodes(a,'distributeSafeX',{gap:24,grid:16});assert.ok(a[1].x>=a[0].x+a[0].w);assert.ok(a[2].x>=a[1].x+a[1].w);});
+test('sélection insuffisante ne modifie pas le document',()=>{const a=[shapes()[0]];const before=JSON.stringify(a);assert.equal(arrangeNodes(a,'distributeSafeX'),false);assert.equal(JSON.stringify(a),before);});
+test('commandes intelligentes présentes dans UI et contrôleur',()=>{const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');const js=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');for(const mode of ['distributeSafeX','distributeSafeY']){assert.match(html,new RegExp('id="'+mode+'"'));assert.ok(js.includes('"'+mode+'"'));}});

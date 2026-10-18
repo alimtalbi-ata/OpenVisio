@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {nextFindingIndex,edgeViewportTarget} from '../src/wiring-navigation.js';
+test('navigation circulaire avant et arrière',()=>{assert.equal(nextFindingIndex(3,2,1),0);assert.equal(nextFindingIndex(3,0,-1),2);});
+test('navigation sans anomalie',()=>assert.equal(nextFindingIndex(0,-1,1),-1));
+test('centrage dans viewport défilant',()=>assert.deepEqual(edgeViewportTarget({left:0,top:0,width:400,height:300},{left:300,top:200,width:40,height:20},100,50),{left:220,top:110}));
+test('centrage borné à zéro',()=>assert.deepEqual(edgeViewportTarget({left:0,top:0,width:400,height:300},{left:10,top:10,width:20,height:20},0,0),{left:0,top:0}));
+test('contrôles de navigation présents',()=>{const h=readFileSync('index.html','utf8');assert.match(h,/id="wiringNextFinding"/);assert.match(h,/id="wiringPreviousFinding"/);});
+test('navigation et recentrage raccordés',()=>{const s=readFileSync('src/main.js','utf8');assert.match(s,/edgeViewportTarget\(/);assert.match(s,/stepFinding\(-1\)/);});

@@ -1,0 +1,753 @@
+sultat déterministe sans doublons
+ok 1376 - résultat déterministe sans doublons
+  ---
+  duration_ms: 0.39807
+  type: 'test'
+  ...
+# Subtest: v30.1 UI and package version synchronized
+ok 1377 - v30.1 UI and package version synchronized
+  ---
+  duration_ms: 4.345637
+  type: 'test'
+  ...
+# Subtest: v30.1 resilience panel retained
+ok 1378 - v30.1 resilience panel retained
+  ---
+  duration_ms: 1.950706
+  type: 'test'
+  ...
+# Subtest: v33.1 launcher connected to main page
+ok 1379 - v33.1 launcher connected to main page
+  ---
+  duration_ms: 2.078929
+  type: 'test'
+  ...
+# Subtest: v33.1 keyboard accessible command search
+ok 1380 - v33.1 keyboard accessible command search
+  ---
+  duration_ms: 0.200042
+  type: 'test'
+  ...
+# Subtest: v33.1 installer run entries correctly placed
+ok 1381 - v33.1 installer run entries correctly placed
+  ---
+  duration_ms: 0.169646
+  type: 'test'
+  ...
+# Subtest: v33.1 installer output checked
+ok 1382 - v33.1 installer output checked
+  ---
+  duration_ms: 0.21263
+  type: 'test'
+  ...
+# Subtest: points manuels analysés
+ok 1383 - points manuels analysés
+  ---
+  duration_ms: 1.497694
+  type: 'test'
+  ...
+# Subtest: points manuels invalides rejetés
+ok 1384 - points manuels invalides rejetés
+  ---
+  duration_ms: 0.215734
+  type: 'test'
+  ...
+# Subtest: points manuels limités
+ok 1385 - points manuels limités
+  ---
+  duration_ms: 0.820936
+  type: 'test'
+  ...
+# Subtest: points manuels sérialisés
+ok 1386 - points manuels sérialisés
+  ---
+  duration_ms: 0.177086
+  type: 'test'
+  ...
+# Subtest: tracé avec points manuels
+ok 1387 - tracé avec points manuels
+  ---
+  duration_ms: 0.327533
+  type: 'test'
+  ...
+# Subtest: au moins trois modèles disponibles
+ok 1388 - au moins trois modèles disponibles
+  ---
+  duration_ms: 0.135304
+  type: 'test'
+  ...
+# Subtest: modèle valide san-dual
+ok 1389 - modèle valide san-dual
+  ---
+  duration_ms: 0.307153
+  type: 'test'
+  ...
+# Subtest: modèle valide replication
+ok 1390 - modèle valide replication
+  ---
+  duration_ms: 0.121663
+  type: 'test'
+  ...
+# Subtest: modèle valide backup
+ok 1391 - modèle valide backup
+  ---
+  duration_ms: 0.324308
+  type: 'test'
+  ...
+# Subtest: modèle valide three-tier
+ok 1392 - modèle valide three-tier
+  ---
+  duration_ms: 0.409236
+  type: 'test'
+  ...
+# Subtest: modèle valide hybrid-cloud
+ok 1393 - modèle valide hybrid-cloud
+  ---
+  duration_ms: 0.173632
+  type: 'test'
+  ...
+# Subtest: modèle valide disaster-recovery
+ok 1394 - modèle valide disaster-recovery
+  ---
+  duration_ms: 0.143065
+  type: 'test'
+  ...
+# Subtest: modèle valide kubernetes
+ok 1395 - modèle valide kubernetes
+  ---
+  duration_ms: 0.1002
+  type: 'test'
+  ...
+# Subtest: modèle valide zero-trust
+ok 1396 - modèle valide zero-trust
+  ---
+  duration_ms: 0.091177
+  type: 'test'
+  ...
+# Subtest: modèle valide backup-321
+ok 1397 - modèle valide backup-321
+  ---
+  duration_ms: 0.083545
+  type: 'test'
+  ...
+# Subtest: modèle valide observability
+ok 1398 - modèle valide observability
+  ---
+  duration_ms: 0.089124
+  type: 'test'
+  ...
+# Subtest: modèle valide flowchart
+ok 1399 - modèle valide flowchart
+  ---
+  duration_ms: 0.096896
+  type: 'test'
+  ...
+# Subtest: modèle valide orgchart
+ok 1400 - modèle valide orgchart
+  ---
+  duration_ms: 0.077897
+  type: 'test'
+  ...
+# Subtest: modèle valide application-map
+ok 1401 - modèle valide application-map
+  ---
+  duration_ms: 0.080171
+  type: 'test'
+  ...
+# Subtest: modèle inconnu rejeté
+ok 1402 - modèle inconnu rejeté
+  ---
+  duration_ms: 0.076094
+  type: 'test'
+  ...
+# Subtest: renderer uses onPointerDown callback
+ok 1403 - renderer uses onPointerDown callback
+  ---
+  duration_ms: 1.337624
+  type: 'test'
+  ...
+# Subtest: handles are accessible
+ok 1404 - handles are accessible
+  ---
+  duration_ms: 1.350183
+  type: 'test'
+  ...
+# Subtest: pointer positions use SVG transform
+ok 1405 - pointer positions use SVG transform
+  ---
+  duration_ms: 0.686984
+  type: 'test'
+  ...
+# Subtest: ajout de point par double clic
+ok 1406 - ajout de point par double clic
+  ---
+  duration_ms: 0.756198
+  type: 'test'
+  ...
+# Subtest: suppression de point par double clic
+ok 1407 - suppression de point par double clic
+  ---
+  duration_ms: 0.898442
+  type: 'test'
+  ...
+# Subtest: grille magnétique configurable
+ok 1408 - grille magnétique configurable
+  ---
+  duration_ms: 0.10587
+  type: 'test'
+  ...
+# Subtest: bouton de grille accessible
+ok 1409 - bouton de grille accessible
+  ---
+  duration_ms: 0.160732
+  type: 'test'
+  ...
+# Subtest: clic de forme délégué
+ok 1410 - clic de forme délégué
+  ---
+  duration_ms: 0.15961
+  type: 'test'
+  ...
+# Subtest: la poignée n'ajoute un undo qu'après mouvement
+ok 1411 - la poignée n'ajoute un undo qu'après mouvement
+  ---
+  duration_ms: 0.706975
+  type: 'test'
+  ...
+# Subtest: la saisie des points intercepte les erreurs
+ok 1412 - la saisie des points intercepte les erreurs
+  ---
+  duration_ms: 0.112229
+  type: 'test'
+  ...
+# Subtest: pas de mouvement si coordonnées inchangées
+ok 1413 - pas de mouvement si coordonnées inchangées
+  ---
+  duration_ms: 0.097467
+  type: 'test'
+  ...
+# Subtest: node drag uses SVG coordinates
+ok 1414 - node drag uses SVG coordinates
+  ---
+  duration_ms: 0.675246
+  type: 'test'
+  ...
+# Subtest: pointer captured for node drag
+ok 1415 - pointer captured for node drag
+  ---
+  duration_ms: 0.124678
+  type: 'test'
+  ...
+# Subtest: click without movement does not mutate
+ok 1416 - click without movement does not mutate
+  ---
+  duration_ms: 0.135343
+  type: 'test'
+  ...
+# Subtest: modifier pointerdown does not bubble
+ok 1417 - modifier pointerdown does not bubble
+  ---
+  duration_ms: 0.938032
+  type: 'test'
+  ...
+# Subtest: routage en cache
+ok 1418 - routage en cache
+  ---
+  duration_ms: 1.382992
+  type: 'test'
+  ...
+# Subtest: cache borné
+ok 1419 - cache borné
+  ---
+  duration_ms: 1.061067
+  type: 'test'
+  ...
+# Subtest: invalidation par coordonnées
+ok 1420 - invalidation par coordonnées
+  ---
+  duration_ms: 0.124247
+  type: 'test'
+  ...
+# Subtest: obstacles pris en compte
+ok 1421 - obstacles pris en compte
+  ---
+  duration_ms: 0.145068
+  type: 'test'
+  ...
+# Subtest: mesure SVG froid et chaud
+ok 1422 - mesure SVG froid et chaud
+  ---
+  duration_ms: 0.682797
+  type: 'test'
+  ...
+# Subtest: trois volumes de topologies
+ok 1423 - trois volumes de topologies
+  ---
+  duration_ms: 0.103265
+  type: 'test'
+  ...
+# Subtest: rapport indique les limites du DOM simulé
+ok 1424 - rapport indique les limites du DOM simulé
+  ---
+  duration_ms: 0.097397
+  type: 'test'
+  ...
+# Subtest: cache par instance SVG
+ok 1425 - cache par instance SVG
+  ---
+  duration_ms: 0.922108
+  type: 'test'
+  ...
+# Subtest: réutilisation de noeuds inchangés
+ok 1426 - réutilisation de noeuds inchangés
+  ---
+  duration_ms: 1.632848
+  type: 'test'
+  ...
+# Subtest: réutilisation de connexions inchangées
+ok 1427 - réutilisation de connexions inchangées
+  ---
+  duration_ms: 0.195524
+  type: 'test'
+  ...
+# Subtest: suppression des éléments retirés
+ok 1428 - suppression des éléments retirés
+  ---
+  duration_ms: 0.221203
+  type: 'test'
+  ...
+# Subtest: remplacement local de la forme modifiée
+ok 1429 - remplacement local de la forme modifiée
+  ---
+  duration_ms: 0.188443
+  type: 'test'
+  ...
+# Subtest: Inno Setup est recherché après winget
+ok 1430 - Inno Setup est recherché après winget
+  ---
+  duration_ms: 0.705922
+  type: 'test'
+  ...
+# Subtest: SDK 8 contrôlé
+ok 1431 - SDK 8 contrôlé
+  ---
+  duration_ms: 0.155314
+  type: 'test'
+  ...
+# Subtest: WebView2 Authenticode validé
+ok 1432 - WebView2 Authenticode validé
+  ---
+  duration_ms: 0.088122
+  type: 'test'
+  ...
+# Subtest: installateur final contrôlé
+ok 1433 - installateur final contrôlé
+  ---
+  duration_ms: 0.200552
+  type: 'test'
+  ...
+# Subtest: version courante de l’installateur
+ok 1434 - version courante de l’installateur
+  ---
+  duration_ms: 0.141944
+  type: 'test'
+  ...
+# Subtest: v33.9 installer path consistent in build and Inno Setup
+ok 1435 - v33.9 installer path consistent in build and Inno Setup
+  ---
+  duration_ms: 0.777611
+  type: 'test'
+  ...
+# Subtest: clean publish prevents stale application binaries
+ok 1436 - clean publish prevents stale application binaries
+  ---
+  duration_ms: 0.107612
+  type: 'test'
+  ...
+# Subtest: WebView2 prerequisite checks signature
+ok 1437 - WebView2 prerequisite checks signature
+  ---
+  duration_ms: 0.102014
+  type: 'test'
+  ...
+# Subtest: CI uses the single build entry point
+ok 1438 - CI uses the single build entry point
+  ---
+  duration_ms: 1.224724
+  type: 'test'
+  ...
+# Subtest: CI does not invoke legacy installer path
+ok 1439 - CI does not invoke legacy installer path
+  ---
+  duration_ms: 0.308785
+  type: 'test'
+  ...
+# Subtest: CI checks bundled WebView2 prerequisite
+ok 1440 - CI checks bundled WebView2 prerequisite
+  ---
+  duration_ms: 0.941958
+  type: 'test'
+  ...
+# Subtest: CI uploads exact versioned installer
+ok 1441 - CI uploads exact versioned installer
+  ---
+  duration_ms: 0.254413
+  type: 'test'
+  ...
+# Subtest: single builder checks native resources
+ok 1442 - single builder checks native resources
+  ---
+  duration_ms: 0.376106
+  type: 'test'
+  ...
+# Subtest: dialogue ouverture natif
+ok 1443 - dialogue ouverture natif
+  ---
+  duration_ms: 0.878703
+  type: 'test'
+  ...
+# Subtest: dialogue export natif
+ok 1444 - dialogue export natif
+  ---
+  duration_ms: 0.130697
+  type: 'test'
+  ...
+# Subtest: protection taille import
+ok 1445 - protection taille import
+  ---
+  duration_ms: 1.491064
+  type: 'test'
+  ...
+# Subtest: liste documents récents
+ok 1446 - liste documents récents
+  ---
+  duration_ms: 0.282505
+  type: 'test'
+  ...
+# Subtest: native JSON import uses editor-specific input
+ok 1447 - native JSON import uses editor-specific input
+  ---
+  duration_ms: 0.956079
+  type: 'test'
+  ...
+# Subtest: recent documents persist to local app data
+ok 1448 - recent documents persist to local app data
+  ---
+  duration_ms: 0.132048
+  type: 'test'
+  ...
+# Subtest: published app includes every HTML page
+ok 1449 - published app includes every HTML page
+  ---
+  duration_ms: 0.124737
+  type: 'test'
+  ...
+# Subtest: installer registers dedicated extension and startup document
+ok 1450 - installer registers dedicated extension and startup document
+  ---
+  duration_ms: 0.101102
+  type: 'test'
+  ...
+# Subtest: native shell rejects non JSON imports
+ok 1451 - native shell rejects non JSON imports
+  ---
+  duration_ms: 0.25894
+  type: 'test'
+  ...
+# Subtest: version desktop cohérente
+ok 1452 - version desktop cohérente
+  ---
+  duration_ms: 1.131844
+  type: 'test'
+  ...
+# Subtest: navigation native attend chargement
+ok 1453 - navigation native attend chargement
+  ---
+  duration_ms: 0.982669
+  type: 'test'
+  ...
+# Subtest: publication inclut les ressources
+ok 1454 - publication inclut les ressources
+  ---
+  duration_ms: 0.197758
+  type: 'test'
+  ...
+# Subtest: installateur signale WebView2 absent
+ok 1455 - installateur signale WebView2 absent
+  ---
+  duration_ms: 0.153832
+  type: 'test'
+  ...
+# Subtest: startup waits for actual WebView navigation
+ok 1456 - startup waits for actual WebView navigation
+  ---
+  duration_ms: 0.69062
+  type: 'test'
+  ...
+# Subtest: navigation completion resolves startup readiness
+ok 1457 - navigation completion resolves startup readiness
+  ---
+  duration_ms: 0.161523
+  type: 'test'
+  ...
+# Subtest: navigation resets readiness on new document
+ok 1458 - navigation resets readiness on new document
+  ---
+  duration_ms: 0.859934
+  type: 'test'
+  ...
+# Subtest: startup wait is bounded
+ok 1459 - startup wait is bounded
+  ---
+  duration_ms: 0.174973
+  type: 'test'
+  ...
+# Subtest: installer E2E exercises install, launch and uninstall
+ok 1460 - installer E2E exercises install, launch and uninstall
+  ---
+  duration_ms: 0.924472
+  type: 'test'
+  ...
+# Subtest: Windows workflow runs installer E2E
+ok 1461 - Windows workflow runs installer E2E
+  ---
+  duration_ms: 0.27287
+  type: 'test'
+  ...
+# Subtest: version synchronized
+ok 1462 - version synchronized
+  ---
+  duration_ms: 0.527784
+  type: 'test'
+  ...
+# Subtest: installer E2E enforces a timeout
+ok 1463 - installer E2E enforces a timeout
+  ---
+  duration_ms: 0.766564
+  type: 'test'
+  ...
+# Subtest: installer E2E fails if uninstaller missing
+ok 1464 - installer E2E fails if uninstaller missing
+  ---
+  duration_ms: 0.12614
+  type: 'test'
+  ...
+# Subtest: installer E2E verifies application assets
+ok 1465 - installer E2E verifies application assets
+  ---
+  duration_ms: 0.1263
+  type: 'test'
+  ...
+# Subtest: installer E2E verifies post-uninstall executable removal
+ok 1466 - installer E2E verifies post-uninstall executable removal
+  ---
+  duration_ms: 0.220502
+  type: 'test'
+  ...
+# Subtest: CI retains machine-readable qualification report
+ok 1467 - CI retains machine-readable qualification report
+  ---
+  duration_ms: 0.150216
+  type: 'test'
+  ...
+# Subtest: v34.1 runs source preflight before SDK download
+ok 1468 - v34.1 runs source preflight before SDK download
+  ---
+  duration_ms: 1.111943
+  type: 'test'
+  ...
+# Subtest: v34.1 checks mandatory assets and version
+ok 1469 - v34.1 checks mandatory assets and version
+  ---
+  duration_ms: 0.415586
+  type: 'test'
+  ...
+# Subtest: v34.1 installer has installation logging enabled
+ok 1470 - v34.1 installer has installation logging enabled
+  ---
+  duration_ms: 0.274373
+  type: 'test'
+  ...
+# Subtest: v34.2: version coherence
+ok 1471 - v34.2: version coherence
+  ---
+  duration_ms: 1.002529
+  type: 'test'
+  ...
+# Subtest: v34.2: installer output is consistent
+ok 1472 - v34.2: installer output is consistent
+  ---
+  duration_ms: 0.495797
+  type: 'test'
+  ...
+# Subtest: v34.2: release manifest generated only after successful build
+ok 1473 - v34.2: release manifest generated only after successful build
+  ---
+  duration_ms: 1.083531
+  type: 'test'
+  ...
+# Subtest: v34.5 help control is reachable
+ok 1474 - v34.5 help control is reachable
+  ---
+  duration_ms: 1.748582
+  type: 'test'
+  ...
+# Subtest: v34.5 help module loaded
+ok 1475 - v34.5 help module loaded
+  ---
+  duration_ms: 0.134683
+  type: 'test'
+  ...
+# Subtest: v34.5 help is keyboard accessible
+ok 1476 - v34.5 help is keyboard accessible
+  ---
+  duration_ms: 0.133441
+  type: 'test'
+  ...
+# Subtest: v34.5 help uses accessible modal
+ok 1477 - v34.5 help uses accessible modal
+  ---
+  duration_ms: 0.20569
+  type: 'test'
+  ...
+# Subtest: v33.5 inspector filter controls are accessible
+ok 1478 - v33.5 inspector filter controls are accessible
+  ---
+  duration_ms: 0.882358
+  type: 'test'
+  ...
+# Subtest: v33.5 preserves all properties and filters without removing nodes
+ok 1479 - v33.5 preserves all properties and filters without removing nodes
+  ---
+  duration_ms: 0.392971
+  type: 'test'
+  ...
+# Subtest: v33.5 filter updates after canvas repaint
+ok 1480 - v33.5 filter updates after canvas repaint
+  ---
+  duration_ms: 0.156305
+  type: 'test'
+  ...
+# Subtest: v33.5 keeps inspector fields interactive
+ok 1481 - v33.5 keeps inspector fields interactive
+  ---
+  duration_ms: 0.213331
+  type: 'test'
+  ...
+# Subtest: v33.6 toggle exposes correct aria controls
+ok 1482 - v33.6 toggle exposes correct aria controls
+  ---
+  duration_ms: 0.770059
+  type: 'test'
+  ...
+# Subtest: v33.6 collapses without destroying editor fields
+ok 1483 - v33.6 collapses without destroying editor fields
+  ---
+  duration_ms: 0.181303
+  type: 'test'
+  ...
+# Subtest: v33.6 remembers collapse preference safely
+ok 1484 - v33.6 remembers collapse preference safely
+  ---
+  duration_ms: 0.092659
+  type: 'test'
+  ...
+# Subtest: v33.6 inspector quick access expands properties
+ok 1485 - v33.6 inspector quick access expands properties
+  ---
+  duration_ms: 0.199421
+  type: 'test'
+  ...
+# Subtest: advanced inspector command wired
+ok 1486 - advanced inspector command wired
+  ---
+  duration_ms: 0.868658
+  type: 'test'
+  ...
+# Subtest: advanced inspector expands, clears search, selects all
+ok 1487 - advanced inspector expands, clears search, selects all
+  ---
+  duration_ms: 0.135174
+  type: 'test'
+  ...
+# Subtest: build script accepts preinstalled ISCC in PATH
+ok 1488 - build script accepts preinstalled ISCC in PATH
+  ---
+  duration_ms: 0.124598
+  type: 'test'
+  ...
+# Subtest: build removes stale installer before building
+ok 1489 - build removes stale installer before building
+  ---
+  duration_ms: 0.213672
+  type: 'test'
+  ...
+# Subtest: v33.4 includes layout controls and script
+ok 1490 - v33.4 includes layout controls and script
+  ---
+  duration_ms: 2.162856
+  type: 'test'
+  ...
+# Subtest: v33.4 clamps persisted panel sizes and keyboard resizing
+ok 1491 - v33.4 clamps persisted panel sizes and keyboard resizing
+  ---
+  duration_ms: 0.223636
+  type: 'test'
+  ...
+# Subtest: v33.4 respects narrow screens and hidden panels
+ok 1492 - v33.4 respects narrow screens and hidden panels
+  ---
+  duration_ms: 0.211238
+  type: 'test'
+  ...
+# Subtest: v33.2 includes workspace mode assets
+ok 1493 - v33.2 includes workspace mode assets
+  ---
+  duration_ms: 0.872914
+  type: 'test'
+  ...
+# Subtest: v33.2 keeps three named modes and accessible pressed state
+ok 1494 - v33.2 keeps three named modes and accessible pressed state
+  ---
+  duration_ms: 0.13915
+  type: 'test'
+  ...
+# Subtest: v33.2 persists chosen mode with guarded localStorage
+ok 1495 - v33.2 persists chosen mode with guarded localStorage
+  ---
+  duration_ms: 0.296236
+  type: 'test'
+  ...
+# Subtest: v33.2 hides analytical panels only in edition mode
+ok 1496 - v33.2 hides analytical panels only in edition mode
+  ---
+  duration_ms: 0.235285
+  type: 'test'
+  ...
+# Subtest: v33.3 contextual actions included
+ok 1497 - v33.3 contextual actions included
+  ---
+  duration_ms: 1.34178
+  type: 'test'
+  ...
+# Subtest: v33.3 keyboard accessible actions
+ok 1498 - v33.3 keyboard accessible actions
+  ---
+  duration_ms: 0.146781
+  type: 'test'
+  ...
+# Subtest: v33.3 SAN actions reference existing IDs
+ok 1499 - v33.3 SAN actions reference existing IDs
+  ---
+  duration_ms: 0.177066
+  type: 'test'
+  ...
+1..1499
+# tests 1499
+# suites 0
+# pass 1499
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5601.081918

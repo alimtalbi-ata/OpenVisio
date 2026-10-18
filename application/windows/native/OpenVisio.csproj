@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup>
+  <OutputType>WinExe</OutputType><TargetFramework>net8.0-windows</TargetFramework><UseWindowsForms>true</UseWindowsForms>
+  <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><AssemblyName>OpenVisio</AssemblyName>
+  <Version>41.67.0</Version><Authors>Abdelhalim Talbi</Authors><EnableWindowsTargeting>true</EnableWindowsTargeting>
+ </PropertyGroup>
+ <!-- wwwroot/index.html is included by the wildcard HTML content item. -->
+ <ItemGroup><PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" /></ItemGroup>
+ <ItemGroup Condition="'$(OpenVisioEmbedAssets)' != 'true'"><Content Include="../../*.html" Link="wwwroot/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/><Content Include="../../src/**" Link="wwwroot/src/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/><Content Include="../../styles/**" Link="wwwroot/styles/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/><Content Include="../../assets/**" Link="wwwroot/assets/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/></ItemGroup>
+ <ItemGroup Condition="'$(OpenVisioEmbedAssets)' == 'true'"><EmbeddedResource Include="openvisio-assets.zip" LogicalName="OpenVisio.Assets.zip" /></ItemGroup>
+</Project>

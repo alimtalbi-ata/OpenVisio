@@ -1,0 +1,21 @@
+/* v38.4 : actions quotidiennes d’abord, outils spécialisés accessibles au besoin. */
+.quick-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0}
+.quick-actions-divider{width:1px;height:25px;background:var(--border,#cbd5e1);margin:0 4px}
+.quick-actions-more{position:relative;z-index:40}
+.quick-actions-more>summary{cursor:pointer;list-style:none;border:1px solid #94a3b8;border-radius:8px;padding:8px 11px;font-size:13px;background:transparent;color:inherit;white-space:nowrap}
+.quick-actions-more>summary::-webkit-details-marker{display:none}
+.quick-actions-more[open]>summary{outline:2px solid #2563eb;outline-offset:2px}
+.quick-actions-more-panel{position:absolute;right:0;top:calc(100% + 7px);display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:7px;min-width:min(430px,90vw);padding:12px;background:var(--panel,#fff);color:var(--text,#172033);border:1px solid #94a3b8;border-radius:10px;box-shadow:0 12px 30px #0003;max-height:65vh;overflow:auto}
+.quick-actions-more-panel button{text-align:left;white-space:normal}
+.quick-actions button:focus-visible,.quick-actions-more>summary:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+@media(max-width:750px){.quick-actions-more-panel{right:auto;left:0;grid-template-columns:1fr;min-width:min(270px,85vw)}.quick-actions{gap:5px}.quick-actions button{padding:6px 8px}}
+
+/* V38.5 — parcours de démarrage accessible et sans nouvel écran permanent */
+.start-guide-dialog{border:1px solid #94a3b8;border-radius:14px;max-width:min(620px,calc(100vw - 32px));width:100%;padding:24px;color:var(--text,#172033);background:var(--surface,#fff);box-shadow:0 20px 80px #0004}
+.start-guide-dialog::backdrop{background:#11182799}.start-guide-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.start-guide-head h2{margin:0}.start-guide-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}.start-guide-actions button{display:flex;flex-direction:column;gap:10px;text-align:left;padding:18px 12px;border:1px solid #94a3b8;border-radius:10px;background:transparent;color:inherit;cursor:pointer;min-height:110px}.start-guide-actions button:hover,.start-guide-actions button:focus-visible{border-color:#2563eb;outline:2px solid #2563eb;outline-offset:1px}.start-guide-actions button span,.start-guide-note{font-size:0.85rem;opacity:.75}@media(max-width:580px){.start-guide-actions{grid-template-columns:1fr}.start-guide-actions button{min-height:65px}}
+
+/* v38.6 — raccourcis contextuels de l'inspecteur */
+#inspectorSanFields,#inspectorClearFilter{border:1px solid var(--border,#cbd5e1);background:transparent;color:inherit;border-radius:7px;padding:5px 9px;cursor:pointer;white-space:nowrap}
+#inspectorSanFields:hover,#inspectorClearFilter:hover{border-color:#2563eb}
+#inspectorSanFields:focus-visible,#inspectorClearFilter:focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+.inspector-controls{flex-wrap:wrap}

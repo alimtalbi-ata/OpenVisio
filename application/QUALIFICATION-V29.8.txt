@@ -1,0 +1,1 @@
+npm test : 1296 tests réussis, 0 échec. Intégrité ZIP CRC vérifiée. Recette graphique Windows non effectuée.

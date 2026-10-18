@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {normalizePathOverlay,applyPathOverlay} from '../src/san-resilience-path-overlay-v305.js';
+test('shared dependency overrides surviving state',()=>{const x=normalizePathOverlay({survivingIds:['s','x'],sharedIds:['x']});assert.equal(x.get('x'),'san-path-shared');assert.equal(x.get('s'),'san-path-surviving');});
+test('lost overrides surviving',()=>{const x=normalizePathOverlay({lostIds:['x'],survivingIds:['x']});assert.equal(x.get('x'),'san-path-lost');});
+test('invalid and duplicate identifiers ignored',()=>{assert.deepEqual([...normalizePathOverlay({sharedIds:['x','x',null,'']}).keys()],['x']);});
+test('missing DOM safe',()=>assert.equal(applyPathOverlay(null,{}),0));
+test('overlay resets prior classes and uses connection IDs',()=>{const classes=new Set(['san-path-lost']);const node={getAttribute:k=>k==='data-connection-id'?'e1':null,classList:{add:k=>classes.add(k),remove:k=>classes.delete(k)}};const root={querySelectorAll:()=>[node]};assert.equal(applyPathOverlay(root,{survivingIds:['e1']}),1);assert.deepEqual([...classes],['san-path-surviving']);assert.equal(applyPathOverlay(root,{}),0);assert.equal(classes.size,0);});

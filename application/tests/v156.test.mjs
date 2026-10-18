@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {resizeFromCorner,rulerTicks} from '../src/vector-resize.js';
+test('agrandissement',()=>assert.deepEqual(resizeFromCorner({w:100,h:80},30,20),{w:130,h:100}));
+test('dimensions minimales',()=>assert.deepEqual(resizeFromCorner({w:100,h:80},-500,-500),{w:40,h:30}));
+test('grille',()=>assert.deepEqual(resizeFromCorner({w:100,h:80},13,12,{grid:10}),{w:110,h:90}));
+test('proportions largeur',()=>assert.deepEqual(resizeFromCorner({w:100,h:50},40,0,{proportional:true}),{w:140,h:70}));
+test('proportions hauteur',()=>assert.deepEqual(resizeFromCorner({w:100,h:50},0,25,{proportional:true}),{w:150,h:75}));
+test('invalide',()=>assert.throws(()=>resizeFromCorner({w:NaN,h:80},0,0)));
+test('graduations',()=>assert.deepEqual(rulerTicks(0,350),[0,100,200,300]));
+test('graduations décalées',()=>assert.deepEqual(rulerTicks(25,250,50),[50,100,150,200,250]));
+test('pas invalide',()=>assert.throws(()=>rulerTicks(0,100,0)));

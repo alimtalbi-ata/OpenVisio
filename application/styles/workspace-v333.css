@@ -1,0 +1,8 @@
+/* v33.3: contextual quick actions, keyboard accessibility and comfortable focus */
+.ov-quick-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 16px;background:#fff;border-bottom:1px solid #d6e0eb}
+.ov-quick-actions button{border:1px solid #c7d4e3;border-radius:8px;background:#f8fafc;color:#173e69;padding:9px 13px;font:600 13px system-ui;cursor:pointer;min-height:40px}
+.ov-quick-actions button:hover{background:#e7f0fb;border-color:#7598c3}
+.ov-quick-actions button:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+:root[data-ov-mode="edition"] .ov-quick-actions button:nth-child(1),:root[data-ov-mode="san"] .ov-quick-actions button:nth-child(2){background:#dceafe}
+@media(max-width:640px){.ov-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.ov-quick-actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){.ov-quick-actions *{scroll-behavior:auto}}

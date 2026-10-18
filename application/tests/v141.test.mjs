@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {parseSanList,parseSanProperty,sanFieldsForNode} from '../src/san-properties.js';
+test('HBA : dédoublonnage et normalisation',()=>assert.deepEqual(parseSanList(' qlogic0; QLOGIC0 ; emulex1 ','hbas'),['qlogic0','emulex1']));
+test('WWPN : validation',()=>assert.deepEqual(parseSanList('10:00:00:00:00:00:00:01','wwpns'),['10:00:00:00:00:00:00:01']));
+test('WWPN invalide rejeté',()=>assert.throws(()=>parseSanList('1000','wwpns'),/WWPN/));
+test('LUN : liste séparée par retour ligne',()=>assert.deepEqual(parseSanList('lun01\nlun02','luns'),['lun01','lun02']));
+test('Limite de volume',()=>assert.throws(()=>parseSanList(Array(129).fill('x').join(';'),'hbas'),/128/));
+test('Champ inconnu refusé',()=>assert.throws(()=>parseSanProperty('x','a'),/inconnu/));
+test('MPIO conservé en texte',()=>assert.equal(parseSanProperty('multipath','  DM-Multipath  '),'DM-Multipath'));
+test('Serveur : champs SAN',()=>assert.equal(sanFieldsForNode({type:'server'}).length,3));
+test('Stockage : LUN',()=>assert.equal(sanFieldsForNode({type:'storage'}).length,1));
+test('Autres équipements : aucun champ spécifique',()=>assert.deepEqual(sanFieldsForNode({type:'switch'}),[]));

@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {proposeSanAlternate} from '../src/san-alternate-routes.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:160,y:0,w:20,h:20},{id:'wall',x:75,y:-10,w:30,h:40}];
+const edge={id:'e',from:'a',to:'b',style:'orthogonal',fabric:'A'};
+const routes=new Map([['e',{points:[{x:20,y:10},{x:160,y:10}]}]]);
+test('tracé manuel protégé',()=>assert.equal(proposeSanAlternate({...edge,waypoints:[{x:80,y:50}]},nodes,routes,[edge]).status,'protected'));
+test('route absente refusée',()=>assert.equal(proposeSanAlternate(edge,nodes,new Map(),[edge]).status,'unavailable'));
+test('fabric opposée inconnue refusée',()=>assert.equal(proposeSanAlternate(edge,nodes,routes,[edge,{id:'f',fabric:'B'}]).status,'unavailable'));
+test('aucune mutation lors de la recherche',()=>{const snapshot=JSON.stringify({nodes,edge,routes:[...routes]});proposeSanAlternate(edge,nodes,routes,[edge]);assert.equal(JSON.stringify({nodes,edge,routes:[...routes]}),snapshot)});
+test('paramètres invalides refusés',()=>assert.throws(()=>proposeSanAlternate(edge,nodes,routes,[edge],{steps:[2]})));
+test('recherche bornée retourne un statut explicite',()=>assert.ok(['preview','no-improvement'].includes(proposeSanAlternate(edge,nodes,routes,[edge]).status)));

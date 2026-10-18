@@ -1,0 +1,70 @@
+{
+  "version": "41.32",
+  "environment": "Node.js synthetic DOM, single cold sample per topology",
+  "results": [
+    {
+      "equipment": 10,
+      "connections": 9,
+      "routeCalculationMs": 16.661,
+      "reduceFanOutCrossingsMs": 9.442,
+      "distributeEndpointAnchorsMs": 0.533,
+      "orthogonalFanOutMs": 0.667,
+      "allStagesMs": {
+        "routeCalculation": 16.661,
+        "parallelSeparation": 0.519,
+        "sharedSegmentHandling": 0.566,
+        "distributeEndpointAnchors": 0.533,
+        "orthogonalFanOut": 0.667,
+        "reduceFanOutCrossings": 9.442
+      }
+    },
+    {
+      "equipment": 25,
+      "connections": 24,
+      "routeCalculationMs": 74.717,
+      "reduceFanOutCrossingsMs": 62.818,
+      "distributeEndpointAnchorsMs": 0.482,
+      "orthogonalFanOutMs": 0.758,
+      "allStagesMs": {
+        "routeCalculation": 74.717,
+        "parallelSeparation": 0.999,
+        "sharedSegmentHandling": 1.123,
+        "distributeEndpointAnchors": 0.482,
+        "orthogonalFanOut": 0.758,
+        "reduceFanOutCrossings": 62.818
+      }
+    },
+    {
+      "equipment": 50,
+      "connections": 49,
+      "routeCalculationMs": 98.15,
+      "reduceFanOutCrossingsMs": 116.292,
+      "distributeEndpointAnchorsMs": 0.568,
+      "orthogonalFanOutMs": 1.173,
+      "allStagesMs": {
+        "routeCalculation": 98.15,
+        "parallelSeparation": 0.593,
+        "sharedSegmentHandling": 0.748,
+        "distributeEndpointAnchors": 0.568,
+        "orthogonalFanOut": 1.173,
+        "reduceFanOutCrossings": 116.292
+      }
+    },
+    {
+      "equipment": 100,
+      "connections": 99,
+      "routeCalculationMs": 329.053,
+      "reduceFanOutCrossingsMs": 354.91,
+      "distributeEndpointAnchorsMs": 0.67,
+      "orthogonalFanOutMs": 2.537,
+      "allStagesMs": {
+        "routeCalculation": 329.053,
+        "parallelSeparation": 0.733,
+        "sharedSegmentHandling": 0.812,
+        "distributeEndpointAnchors": 0.67,
+        "orthogonalFanOut": 2.537,
+        "reduceFanOutCrossings": 354.91
+      }
+    }
+  ]
+}

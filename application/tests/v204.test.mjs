@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createHistory} from '../src/history-transaction.js';
+const base=()=>({nodes:[],edges:[],groups:[],layers:[],guides:[]});
+test('SAN extras restored with diagram on undo',()=>{let extras={declaredZones:[{id:'old'}],lastSanImport:null};const h=createHistory(60,{captureExtras:()=>structuredClone(extras),restoreExtras:v=>extras=v});const state=base();h.checkpoint(state);state.nodes.push({id:'a'});extras={declaredZones:[{id:'new'}],lastSanImport:{id:'new'}};assert.equal(h.travel(state,h.undo,h.redo),true);assert.deepEqual(state.nodes,[]);assert.equal(extras.declaredZones[0].id,'old');assert.equal(h.travel(state,h.redo,h.undo),true);assert.equal(extras.declaredZones[0].id,'new');});
+test('invalid SAN extras refuse undo without consuming history',()=>{let extras={ok:true};const state=base();const h=createHistory(60,{captureExtras:()=>extras,validateExtras:v=>{if(!v.ok)throw Error('invalid SAN')}});h.checkpoint(state);h.undo[0]=JSON.stringify({version:2,diagram:JSON.stringify(state),extras:{ok:false}});assert.throws(()=>h.travel(state,h.undo,h.redo),/invalid SAN/);assert.equal(h.undo.length,1);assert.equal(h.redo.length,0);});
+test('legacy history snapshots remain readable',()=>{const h=createHistory();const state=base();h.undo.push(JSON.stringify(state));state.nodes.push({id:'x'});assert.equal(h.travel(state,h.undo,h.redo),true);assert.deepEqual(state.nodes,[]);});

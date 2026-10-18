@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {centerOf,segmentsIntersect,detectCableCrossings} from '../src/cable-crossings.js';
+const n=(id,x,y)=>({id,x,y,w:10,h:10});
+test('centre du symbole',()=>assert.deepEqual(centerOf(n('x',0,0)),{x:5,y:5}));
+test('croisement strict',()=>assert.equal(segmentsIntersect({x:0,y:0},{x:10,y:10},{x:0,y:10},{x:10,y:0}),true));
+test('contacts et segments colinéaires ignorés',()=>{assert.equal(segmentsIntersect({x:0,y:0},{x:5,y:5},{x:5,y:5},{x:10,y:0}),false);assert.equal(segmentsIntersect({x:0,y:0},{x:10,y:0},{x:2,y:0},{x:8,y:0}),false);});
+test('détection croisement entre câbles indépendants',()=>{const nodes=[n('a',0,0),n('b',100,100),n('c',0,100),n('d',100,0)];assert.deepEqual(detectCableCrossings(nodes,[{id:'ab',from:'a',to:'b',style:'straight'},{id:'cd',from:'c',to:'d',style:'straight'}]),[{code:'cable-crossing',edgeId:'ab',otherEdgeId:'cd'}]);});
+test('pas de faux croisement au nœud partagé',()=>{assert.deepEqual(detectCableCrossings([n('a',0,0),n('b',100,100),n('c',0,100)],[{id:'ab',from:'a',to:'b'},{id:'ac',from:'a',to:'c'}]),[]);});
+test('noeuds absents et coordonnées invalides ignorés',()=>assert.deepEqual(detectCableCrossings([n('a',0,0),{id:'b',x:NaN,y:0,w:10,h:10}],[{id:'ab',from:'a',to:'b'}]),[]));
+test('diagnostic visible et raccordé au panneau',()=>{const main=readFileSync('src/main.js','utf8');assert.match(main,/report\.diagnostics\.push\(\.\.\.detectCableCrossings/);assert.match(readFileSync('src/wiring-diagnostics.js','utf8'),/cable-crossing/);});

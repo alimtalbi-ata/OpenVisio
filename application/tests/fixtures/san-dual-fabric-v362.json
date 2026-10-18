@@ -1,0 +1,74 @@
+{
+  "schema": "openvisio.diagram.v1",
+  "nodes": [
+    {
+      "id": "host-a",
+      "type": "server",
+      "name": "ESXi-01",
+      "wwpn": "10:00:00:00:00:01:00:01",
+      "multipath": true
+    },
+    {
+      "id": "fc-a",
+      "type": "san-switch",
+      "fabric": "A",
+      "vsan": 10,
+      "zoneset": "ZS-A",
+      "zoning": [
+        "ESX01-PURE-A"
+      ]
+    },
+    {
+      "id": "fc-b",
+      "type": "san-switch",
+      "fabric": "B",
+      "vsan": 20,
+      "zoneset": "ZS-B",
+      "zoning": [
+        "ESX01-PURE-B"
+      ]
+    },
+    {
+      "id": "array",
+      "type": "storage",
+      "name": "FlashArray",
+      "target": [
+        "50:00:00:00:00:01:00:01",
+        "50:00:00:00:00:01:00:02"
+      ],
+      "lun": 12
+    }
+  ],
+  "edges": [
+    {
+      "id": "a1",
+      "source": "host-a",
+      "target": "fc-a",
+      "fabric": "A",
+      "port": "fc0"
+    },
+    {
+      "id": "a2",
+      "source": "host-a",
+      "target": "fc-b",
+      "fabric": "B",
+      "port": "fc1"
+    },
+    {
+      "id": "a3",
+      "source": "fc-a",
+      "target": "array",
+      "fabric": "A"
+    },
+    {
+      "id": "a4",
+      "source": "fc-b",
+      "target": "array",
+      "fabric": "B"
+    }
+  ],
+  "metadata": {
+    "scenario": "dual-fabric-multipath",
+    "synthetic": true
+  }
+}

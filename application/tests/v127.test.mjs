@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {parseSanConfig,summarizeSanActivation} from '../src/san-config-import.js';
+const w='10:00:00:90:fa:12:34:56';
+test('Brocade cfgcreate et cfgenable',()=>{const p=parseSanConfig(`zonecreate "Z","${w}"\ncfgcreate "CFG","Z"\ncfgenable "CFG"`,'brocade');assert.deepEqual(p.zonesets[0].zones,['Z']);assert.equal(summarizeSanActivation(p)[0].declaredActive,true)});
+test('Brocade cfgadd',()=>{const p=parseSanConfig('zonecreate "A","'+w+'"\nzonecreate "B","'+w+'"\ncfgcreate "CFG","A"\ncfgadd "CFG","B"','brocade');assert.deepEqual(p.zonesets[0].zones,['A','B'])});
+test('Cisco zoneset et VSAN',()=>{const p=parseSanConfig(`zone name Z vsan 10\n member pwwn ${w}\nzoneset name PROD vsan 10\n member zone Z\nzoneset activate name PROD vsan 10`,'cisco');assert.equal(p.zones[0].vsan,10);assert.equal(p.zonesets[0].vsan,10);assert.equal(summarizeSanActivation(p)[0].declaredActive,true)});
+test('Cisco VSAN distincts',()=>{const p=parseSanConfig('zoneset name P vsan 10\n member zone Z\nzoneset name P vsan 20\n member zone Z','cisco');assert.equal(p.zonesets.length,2)});
+test('Zone manquante avertissement',()=>{const p=parseSanConfig('cfgcreate "C","INCONNUE"','brocade');assert.match(p.warnings.join(' '),/inconnue/i)});
+test('Activation sans définition avertissement',()=>{const p=parseSanConfig('cfgenable "C"','brocade');assert.match(p.warnings.join(' '),/absent/i)});
+test('Zonesets absents restent vides',()=>{const p=parseSanConfig('zonecreate "Z","'+w+'"','brocade');assert.deepEqual(p.zonesets,[]);assert.deepEqual(p.activeConfigurations,[])});
+test('Activation non déclarée ne présume pas active',()=>{const p=parseSanConfig('cfgcreate "C","Z"','brocade');assert.equal(summarizeSanActivation(p)[0].declaredActive,false)});

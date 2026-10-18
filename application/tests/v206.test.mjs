@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {DOCUMENT_KEY,encodeDocument,decodeDocument,saveDocument} from '../src/unified-storage.js';
+const deps={restoreGraph:raw=>JSON.parse(raw),validateZones:x=>x,validateSanImport:x=>x};
+const graph=JSON.stringify({nodes:[{id:'a'}],edges:[]});
+test('clé de document dédiée',()=>assert.equal(DOCUMENT_KEY,'openvisio-document-v206'));
+test('aller-retour atomique diagramme et SAN',()=>{const doc=decodeDocument(encodeDocument(graph,[{name:'Z'}],{fabric:'A'}),deps);assert.equal(doc.graph.nodes[0].id,'a');assert.equal(doc.zones[0].name,'Z');assert.equal(doc.sanImport.fabric,'A');});
+test('écriture unique en stockage',()=>{const calls=[];saveDocument({setItem:(...a)=>calls.push(a)},DOCUMENT_KEY,graph,[],null);assert.equal(calls.length,1);});
+test('échec stockage sans écriture secondaire',()=>assert.throws(()=>saveDocument({setItem:()=>{throw Error('quota');}},DOCUMENT_KEY,graph,[],null),/quota/));
+test('rejet document altéré',()=>assert.throws(()=>decodeDocument('{"schema":1,"zones":[]}',deps)));
+test('rejet graphe invalide avant stockage',()=>assert.throws(()=>encodeDocument('{}',[],null)));
+test('rejet zoning invalide avant stockage',()=>assert.throws(()=>encodeDocument(graph,{},null)));
+test('validation du zoning avant restauration',()=>{let count=0;assert.throws(()=>decodeDocument(encodeDocument(graph,[],null),{...deps,validateZones:()=>{count++;throw Error('bad zoning');}}),/bad zoning/);assert.equal(count,1);});

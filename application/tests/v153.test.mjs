@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {routeSmart,intersectsObstacle} from '../src/routing.js';
+const a={x:0,y:40,w:80,h:60},b={x:340,y:40,w:80,h:60};
+test('smart route generates anchored endpoints',()=>{const r=routeSmart(a,b);assert.ok(r.points.length>=2);assert.ok(Number.isFinite(r.score));});
+test('smart route deterministic',()=>{assert.deepEqual(routeSmart(a,b),routeSmart(a,b));});
+test('smart route supports obstacle',()=>{const o={x:160,y:0,w:80,h:140};const r=routeSmart(a,b,[o]);assert.ok(r.points.length>=2);assert.equal(r.avoided,true);});
+test('smart route reacts to moved node',()=>{assert.notDeepEqual(routeSmart(a,b).path,routeSmart(a,{...b,y:180}).path);});
+test('smart route rejects absent endpoints',()=>assert.throws(()=>routeSmart(null,b)));
+test('smart route avoids obstacles in core segments',()=>{const o={x:160,y:0,w:80,h:140};const r=routeSmart(a,b,[o]);assert.equal(r.points.slice(1).some((p,i)=>intersectsObstacle(r.points[i],p,o)),false);});

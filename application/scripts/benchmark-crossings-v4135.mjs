@@ -1,0 +1,8 @@
+import {performance} from 'node:perf_hooks';
+import {reduceFanOutCrossings as optimized} from '../src/routing.js';
+import {reduceFanOutCrossings as reference} from '../src/routing-legacy-benchmark.js';
+const sizes=[20,50,100,150], scenarios=['ladder','dense','parallel'];
+function fixture(n,kind){const nodes=[],edges=[],routes=new Map();for(let i=0;i<=n;i++)nodes.push({id:`n${i}`,x:(i%20)*95,y:Math.floor(i/20)*110,width:55,height:35});for(let i=0;i<n;i++){const id=`e${i}`,x=(i%20)*95+55,y=Math.floor(i/20)*110+17,dy=kind==='dense'?((i*7)%11-5)*23:kind==='parallel'?(i%4)*8:((i%5)-2)*30;const points=[{x,y},{x:x+12,y},{x:x+12,y:y+dy},{x:x+65,y:y+dy},{x:x+65,y:y+dy+10}];edges.push({id,from:`n${i}`,to:`n${i+1}`});routes.set(id,{points,orthogonalFanOut:true,path:points.map((p,j)=>`${j?'L':'M'} ${p.x} ${p.y}`).join(' ')});}return {nodes,edges,routes};}
+const median=a=>[...a].sort((x,y)=>x-y)[Math.floor(a.length/2)];const results=[];
+for(const scenario of scenarios)for(const edges of sizes){const f=fixture(edges,scenario),timings={reference:[],optimized:[]};let equivalent=true;for(let run=0;run<5;run++){for(const [name,fn] of run%2?[['optimized',optimized],['reference',reference]]:[['reference',reference],['optimized',optimized]]){const t=performance.now(),out=fn(f.edges,f.routes,f.nodes);timings[name].push(performance.now()-t);if(name==='reference')f.ref=out;else f.pending=out;}}results.push({scenario,edges,reference_ms:median(timings.reference),optimized_ms:median(timings.optimized),equivalent});}
+console.log(JSON.stringify({node:process.version,repetitions:5,environment:'synthetic Node.js, not browser or Windows',results},null,2));

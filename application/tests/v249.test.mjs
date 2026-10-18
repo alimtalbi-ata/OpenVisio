@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {rectangleOf,segmentIntersectsInterior,auditSanRoutes} from '../src/san-geometry-audit.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:100,y:0,w:20,h:20},{id:'obstacle',x:50,y:30,w:20,h:20}];
+const edges=[{id:'e',from:'a',to:'b'}];
+test('v24.9 rectangle strict',()=>{assert.deepEqual(rectangleOf(nodes[0]),{left:0,right:20,top:0,bottom:20});assert.throws(()=>rectangleOf({x:0,y:0,w:0,h:1}));});
+test('v24.9 contact bord autorisé',()=>assert.equal(segmentIntersectsInterior({x:0,y:30},{x:100,y:30},rectangleOf(nodes[2])),false));
+test('v24.9 collision intérieure',()=>assert.equal(segmentIntersectsInterior({x:0,y:40},{x:100,y:40},rectangleOf(nodes[2])),true));
+test('v24.9 chemin orthogonal libre',()=>assert.equal(auditSanRoutes(nodes,edges,{e:[{x:20,y:10},{x:100,y:10}]}).pass,true));
+test('v24.9 détecte collision après déplacement',()=>{const moved=nodes.map(n=>n.id==='obstacle'?{...n,y:0}:n);assert.ok(auditSanRoutes(moved,edges,{e:[{x:20,y:10},{x:100,y:10}]}).findings.some(f=>f.kind==='node-collision'));});
+test('v24.9 détecte source décrochée',()=>assert.ok(auditSanRoutes(nodes,edges,{e:[{x:25,y:10},{x:100,y:10}]}).findings.some(f=>f.kind==='detached-source')));
+test('v24.9 détecte destination décrochée',()=>assert.ok(auditSanRoutes(nodes,edges,{e:[{x:20,y:10},{x:90,y:10}]}).findings.some(f=>f.kind==='detached-target')));
+test('v24.9 détecte diagonale',()=>assert.ok(auditSanRoutes(nodes,edges,{e:[{x:20,y:10},{x:100,y:15}]}).findings.some(f=>f.kind==='non-orthogonal')));
+test('v24.9 détecte chemin manquant',()=>assert.ok(auditSanRoutes(nodes,edges,{}).findings.some(f=>f.kind==='invalid-route')));
+test('v24.9 ne modifie pas les entrées',()=>{const routes={e:[{x:20,y:10},{x:100,y:10}]};const before=JSON.stringify(routes);auditSanRoutes(nodes,edges,routes);assert.equal(JSON.stringify(routes),before);});

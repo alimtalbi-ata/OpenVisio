@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {normalizeWwpn,auditZoning} from '../src/zoning.js';
+import {buildWiringReport,reportCsv,reportHtml} from '../src/wiring-report.js';
+test('normalisation WWPN',()=>assert.equal(normalizeWwpn('10:00:00:90:fa:12:34:56'),'10:00:00:90:FA:12:34:56'));
+test('WWPN mal formé rejeté',()=>assert.equal(normalizeWwpn('invalid'),null));
+test('zone déclarée produit une paire',()=>assert.equal(auditZoning([],[],[{name:'z1',fabric:'A',initiators:['10000090FA123456'],targets:['20000090FA123456']}]).matrix.length,1));
+test('zones incomplètes signalées',()=>assert.ok(auditZoning([],[],[{name:'z',fabric:'B',initiators:[],targets:[]}]).findings.some(x=>x.code==='incomplete-zone')));
+test('zones dupliquées signalées',()=>assert.ok(auditZoning([],[],[{name:'z',fabric:'A',initiators:[],targets:[]},{name:'Z',fabric:'A',initiators:[],targets:[]}]).findings.some(x=>x.code==='duplicate-zone')));
+test('membres dupliqués signalés',()=>assert.ok(auditZoning([],[],[{name:'z',fabric:'A',initiators:['10000090FA123456','10:00:00:90:fa:12:34:56'],targets:['20000090FA123456']}]).findings.some(x=>x.code==='duplicate-member')));
+test('chemin physique non confirmé signalé',()=>assert.ok(auditZoning([],[],[{name:'z',fabric:'A',initiators:['10000090FA123456'],targets:['20000090FA123456']}]).findings.some(x=>x.code==='unverified-physical-path')));
+test('export CSV zoning',()=>assert.match(reportCsv(buildWiringReport([],[],[{name:'z',fabric:'A',initiators:['10000090FA123456'],targets:['20000090FA123456']}]),'zoning'),/Initiateur WWPN/));
+test('rapport HTML inclut zoning',()=>assert.match(reportHtml(buildWiringReport([],[],[])),/Zoning déclaré/));

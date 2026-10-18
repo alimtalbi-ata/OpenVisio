@@ -1,0 +1,58 @@
+{
+  "product": "OpenVisio",
+  "version": "27.8.0",
+  "author": "Abdelhalim Talbi",
+  "qualification": {
+    "node_tests": 1221,
+    "passed": 1221,
+    "failed": 0,
+    "javascript_syntax": "PASS",
+    "windows_gui_capture": "NOT_PERFORMED"
+  },
+  "files": {
+    "package.json": {
+      "bytes": 1274,
+      "sha256": "e5c286417cf302ad528add25991915e354bb993fb4aaab4a2c58a8b3c21b90fc"
+    },
+    "index.html": {
+      "bytes": 29771,
+      "sha256": "ce931adfe617972203ce2f35dab943addac5c21b97f52e94341130c5443dad3c"
+    },
+    "CHANGELOG.md": {
+      "bytes": 1011,
+      "sha256": "6315576f38b6e751bdd1d92170db7ff42ccd095dcb9c75c44461f9bd755237cb"
+    },
+    "GUIDE-UTILISATEUR.md": {
+      "bytes": 1291,
+      "sha256": "ff98bf6559f63cf4a3f0afafb42f1ddf3881cac1ebdd25ff488ce613c03b9f6a"
+    },
+    "QUALIFICATION-V27.8.md": {
+      "bytes": 1076,
+      "sha256": "48fe6655a9ae0991de6d2e3193302cf05c6091e241975d7854f7660fdedebc53"
+    },
+    "SNAPSHOTS-V27.8.md": {
+      "bytes": 526,
+      "sha256": "dffe40d7295faacc76e2e54304ff9acb82380d9ee3b771d275d719de32a399b7"
+    },
+    "qualification-v278-tests.txt": {
+      "bytes": 151,
+      "sha256": "28d93973da2d6264a19b35d1b74d42d817eed9744304d65d83816327a4f0f869"
+    },
+    "src/san-recommendations.js": {
+      "bytes": 6685,
+      "sha256": "fafe63c6bfe613535e6e0fa84bfe688375122b91b42e3eaa59d172498959f56d"
+    },
+    "tests/v278.test.mjs": {
+      "bytes": 2695,
+      "sha256": "364bb5c139b1e630235c8a3eef2ed49469f6b347043aba2bdba2e5321de15361"
+    },
+    "tests/v194.test.mjs": {
+      "bytes": 1018,
+      "sha256": "725ae2ef0dd88b3a0b59a14d40478c214b99dfebf469c83475e1f58580aefa82"
+    },
+    "tests/v263.test.mjs": {
+      "bytes": 948,
+      "sha256": "7ca604e61f84bb4631047aab9187524560cc7e9624632d9d4b39c3b37d3570c7"
+    }
+  }
+}

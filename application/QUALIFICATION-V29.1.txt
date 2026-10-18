@@ -1,0 +1,4 @@
+node --check src/san-impact-view-v291.js: PASS
+node --test tests/*.test.mjs: 1273 PASS, 0 FAIL
+Recette Windows réelle: NON EFFECTUÉE
+Auteur: Abdelhalim Talbi

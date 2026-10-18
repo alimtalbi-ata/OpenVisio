@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createInteractionMetrics} from '../src/interaction-metrics.js';
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('graph and overlay phases use independent bounded metrics',()=>{assert.match(main,/graphPhaseMetrics=createInteractionMetrics/);assert.match(main,/overlayPhaseMetrics=createInteractionMetrics/)});
+test('graph timing is sampled after SVG generation',()=>{assert.match(main,/renderGraph\(svg,interactiveVisibleGraph\(\),graphHandlers\);const afterGraph=performance\.now\(\)/)});
+test('phase durations use a shared starting timestamp',()=>{assert.match(main,/graphPhaseMetrics\.record\(afterGraph-started\)/);assert.match(main,/overlayPhaseMetrics\.record\(finished-afterGraph\)/)});
+test('reset clears all three series',()=>{assert.match(main,/interactionMetrics\.reset\(\);graphPhaseMetrics\.reset\(\);overlayPhaseMetrics\.reset\(\)/)});
+test('UI labels browser paint as unmeasured',()=>{assert.match(html,/hors temps de peinture navigateur/)});
+test('metrics keep only bounded history',()=>{const m=createInteractionMetrics({capacity:2});[1,2,3].forEach(n=>m.record(n));assert.deepEqual([m.snapshot().count,m.snapshot().meanMs],[2,2.5])});

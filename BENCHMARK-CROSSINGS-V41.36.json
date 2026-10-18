@@ -1,0 +1,71 @@
+{
+  "version": "41.36",
+  "node": "v22.16.0",
+  "repetitions": 3,
+  "environment": "synthetic Node.js; not browser or Windows",
+  "results": [
+    {
+      "scenario": "ladder",
+      "edges": 20,
+      "reference_ms": 18.23,
+      "optimized_ms": 9.692,
+      "equivalent": true
+    },
+    {
+      "scenario": "ladder",
+      "edges": 50,
+      "reference_ms": 94.756,
+      "optimized_ms": 8.181,
+      "equivalent": true
+    },
+    {
+      "scenario": "ladder",
+      "edges": 100,
+      "reference_ms": 788.606,
+      "optimized_ms": 30.468,
+      "equivalent": true
+    },
+    {
+      "scenario": "dense",
+      "edges": 20,
+      "reference_ms": 6.551,
+      "optimized_ms": 1.398,
+      "equivalent": true
+    },
+    {
+      "scenario": "dense",
+      "edges": 50,
+      "reference_ms": 102.009,
+      "optimized_ms": 7.791,
+      "equivalent": true
+    },
+    {
+      "scenario": "dense",
+      "edges": 100,
+      "reference_ms": 860.129,
+      "optimized_ms": 31.729,
+      "equivalent": true
+    },
+    {
+      "scenario": "parallel",
+      "edges": 20,
+      "reference_ms": 6.949,
+      "optimized_ms": 1.326,
+      "equivalent": true
+    },
+    {
+      "scenario": "parallel",
+      "edges": 50,
+      "reference_ms": 105.903,
+      "optimized_ms": 7.547,
+      "equivalent": true
+    },
+    {
+      "scenario": "parallel",
+      "edges": 100,
+      "reference_ms": 809.651,
+      "optimized_ms": 30.359,
+      "equivalent": true
+    }
+  ]
+}

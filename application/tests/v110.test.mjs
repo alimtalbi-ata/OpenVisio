@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+const host=readFileSync(new URL('../windows/native/Program.cs',import.meta.url),'utf8');
+const project=readFileSync(new URL('../windows/native/OpenVisio.csproj',import.meta.url),'utf8');
+const build=readFileSync(new URL('../Build-Windows-EXE.cmd',import.meta.url),'utf8');
+test('desktop no longer exposes loopback HTTP server',()=>assert.doesNotMatch(host,/HttpListener|TcpListener/));
+test('desktop restricts navigation to internal host',()=>assert.match(host,/openvisio\.local/));
+test('desktop isolates local WebView2 profile',()=>assert.match(host,/LocalApplicationData/));
+test('publishes web assets',()=>assert.match(project,/CopyToPublishDirectory="PreserveNewest"/));
+test('build verifies executable and assets',()=>assert.match(build,/wwwroot\\index\.html/));
+test('build uses native Windows UI target',()=>assert.match(project,/net8\.0-windows/));
+test('desktop has native menu and status bar',()=>{assert.match(host,/MenuStrip/);assert.match(host,/StatusStrip/)});

@@ -1,0 +1,297 @@
+
+> openvisio-v9.1-stabilisation-routage@9.1.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: makeNode produit un identifiant et des coordonnées
+ok 1 - makeNode produit un identifiant et des coordonnées
+  ---
+  duration_ms: 0.858733
+  type: 'test'
+  ...
+# Subtest: validateGraph accepte une connexion valide
+ok 2 - validateGraph accepte une connexion valide
+  ---
+  duration_ms: 0.236237
+  type: 'test'
+  ...
+# Subtest: validateGraph rejette les extrémités inconnues
+ok 3 - validateGraph rejette les extrémités inconnues
+  ---
+  duration_ms: 0.146406
+  type: 'test'
+  ...
+# Subtest: restore résiste à une entrée invalide
+ok 4 - restore résiste à une entrée invalide
+  ---
+  duration_ms: 0.961845
+  type: 'test'
+  ...
+# Subtest: snapshot/restore préserve le graphe
+ok 5 - snapshot/restore préserve le graphe
+  ---
+  duration_ms: 0.336505
+  type: 'test'
+  ...
+# Subtest: validateGraph rejette les connexions vers soi-même
+ok 6 - validateGraph rejette les connexions vers soi-même
+  ---
+  duration_ms: 0.120858
+  type: 'test'
+  ...
+# Subtest: validateGraph accepte un graphe vide
+ok 7 - validateGraph accepte un graphe vide
+  ---
+  duration_ms: 0.153576
+  type: 'test'
+  ...
+# Subtest: grouper et dégrouper
+ok 8 - grouper et dégrouper
+  ---
+  duration_ms: 0.949027
+  type: 'test'
+  ...
+# Subtest: groupe nécessite deux objets
+ok 9 - groupe nécessite deux objets
+  ---
+  duration_ms: 0.109081
+  type: 'test'
+  ...
+# Subtest: calques visibilité et verrouillage
+ok 10 - calques visibilité et verrouillage
+  ---
+  duration_ms: 0.207465
+  type: 'test'
+  ...
+# Subtest: refuse un calque inexistant
+ok 11 - refuse un calque inexistant
+  ---
+  duration_ms: 0.348252
+  type: 'test'
+  ...
+# Subtest: segment traversant obstacle détecté
+ok 12 - segment traversant obstacle détecté
+  ---
+  duration_ms: 0.668173
+  type: 'test'
+  ...
+# Subtest: segment éloigné accepté
+ok 13 - segment éloigné accepté
+  ---
+  duration_ms: 0.105866
+  type: 'test'
+  ...
+# Subtest: routage d'évitement renvoie un chemin
+ok 14 - routage d'évitement renvoie un chemin
+  ---
+  duration_ms: 1.941708
+  type: 'test'
+  ...
+# Subtest: routage sans obstacle renvoie un chemin
+ok 15 - routage sans obstacle renvoie un chemin
+  ---
+  duration_ms: 0.959542
+  type: 'test'
+  ...
+# Subtest: projection bornée au segment
+ok 16 - projection bornée au segment
+  ---
+  duration_ms: 1.158384
+  type: 'test'
+  ...
+# Subtest: projection sur segment vertical
+ok 17 - projection sur segment vertical
+  ---
+  duration_ms: 0.182509
+  type: 'test'
+  ...
+# Subtest: segment le plus proche
+ok 18 - segment le plus proche
+  ---
+  duration_ms: 0.163861
+  type: 'test'
+  ...
+# Subtest: insertion au milieu des points manuels
+ok 19 - insertion au milieu des points manuels
+  ---
+  duration_ms: 0.391547
+  type: 'test'
+  ...
+# Subtest: insertion avant le premier point
+ok 20 - insertion avant le premier point
+  ---
+  duration_ms: 0.254595
+  type: 'test'
+  ...
+# Subtest: rejet de coordonnées invalides
+ok 21 - rejet de coordonnées invalides
+  ---
+  duration_ms: 0.215918
+  type: 'test'
+  ...
+# Subtest: limite de points respectée
+ok 22 - limite de points respectée
+  ---
+  duration_ms: 0.187817
+  type: 'test'
+  ...
+# Subtest: ancrage sur le côté droit
+ok 23 - ancrage sur le côté droit
+  ---
+  duration_ms: 0.702634
+  type: 'test'
+  ...
+# Subtest: ancrage sur le côté gauche
+ok 24 - ancrage sur le côté gauche
+  ---
+  duration_ms: 3.874131
+  type: 'test'
+  ...
+# Subtest: tracé orthogonal contient quatre points
+ok 25 - tracé orthogonal contient quatre points
+  ---
+  duration_ms: 0.21757
+  type: 'test'
+  ...
+# Subtest: tracé direct contient deux points
+ok 26 - tracé direct contient deux points
+  ---
+  duration_ms: 0.163912
+  type: 'test'
+  ...
+# Subtest: décalage de routage
+ok 27 - décalage de routage
+  ---
+  duration_ms: 0.260433
+  type: 'test'
+  ...
+# Subtest: milieu calculé
+ok 28 - milieu calculé
+  ---
+  duration_ms: 0.262306
+  type: 'test'
+  ...
+# Subtest: extrémité manquante rejetée
+ok 29 - extrémité manquante rejetée
+  ---
+  duration_ms: 0.44826
+  type: 'test'
+  ...
+# Subtest: points manuels analysés
+ok 30 - points manuels analysés
+  ---
+  duration_ms: 2.361685
+  type: 'test'
+  ...
+# Subtest: points manuels invalides rejetés
+ok 31 - points manuels invalides rejetés
+  ---
+  duration_ms: 0.269347
+  type: 'test'
+  ...
+# Subtest: points manuels limités
+ok 32 - points manuels limités
+  ---
+  duration_ms: 0.272231
+  type: 'test'
+  ...
+# Subtest: points manuels sérialisés
+ok 33 - points manuels sérialisés
+  ---
+  duration_ms: 0.234856
+  type: 'test'
+  ...
+# Subtest: tracé avec points manuels
+ok 34 - tracé avec points manuels
+  ---
+  duration_ms: 0.28563
+  type: 'test'
+  ...
+# Subtest: trois modèles disponibles
+ok 35 - trois modèles disponibles
+  ---
+  duration_ms: 0.09476
+  type: 'test'
+  ...
+# Subtest: modèle valide san-dual
+ok 36 - modèle valide san-dual
+  ---
+  duration_ms: 0.412738
+  type: 'test'
+  ...
+# Subtest: modèle valide replication
+ok 37 - modèle valide replication
+  ---
+  duration_ms: 0.174637
+  type: 'test'
+  ...
+# Subtest: modèle valide backup
+ok 38 - modèle valide backup
+  ---
+  duration_ms: 0.371427
+  type: 'test'
+  ...
+# Subtest: modèle inconnu rejeté
+ok 39 - modèle inconnu rejeté
+  ---
+  duration_ms: 0.318068
+  type: 'test'
+  ...
+# Subtest: renderer uses onPointerDown callback
+ok 40 - renderer uses onPointerDown callback
+  ---
+  duration_ms: 1.244001
+  type: 'test'
+  ...
+# Subtest: handles are accessible
+ok 41 - handles are accessible
+  ---
+  duration_ms: 0.240554
+  type: 'test'
+  ...
+# Subtest: pointer positions use SVG transform
+ok 42 - pointer positions use SVG transform
+  ---
+  duration_ms: 1.052098
+  type: 'test'
+  ...
+# Subtest: ajout de point par double clic
+ok 43 - ajout de point par double clic
+  ---
+  duration_ms: 1.784826
+  type: 'test'
+  ...
+# Subtest: suppression de point par double clic
+ok 44 - suppression de point par double clic
+  ---
+  duration_ms: 0.111824
+  type: 'test'
+  ...
+# Subtest: grille magnétique configurable
+ok 45 - grille magnétique configurable
+  ---
+  duration_ms: 0.085636
+  type: 'test'
+  ...
+# Subtest: bouton de grille accessible
+ok 46 - bouton de grille accessible
+  ---
+  duration_ms: 0.336996
+  type: 'test'
+  ...
+# Subtest: clic de forme délégué
+ok 47 - clic de forme délégué
+  ---
+  duration_ms: 0.122681
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 206.255209
+\nSyntax checks: [0, 0, 0, 0, 0, 0, 0, 0]\n

@@ -1,0 +1,8 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {normalizeWwpn,importSanConfiguration,compareImportedZonesToDiagram} from '../src/san-config-import-v311.js';
+test('WWPN normalization rejects malformed data',()=>{assert.equal(normalizeWwpn('10:00:00:00:c9:aa:bb:cc'),'10:00:00:00:c9:aa:bb:cc');assert.equal(normalizeWwpn('not-a-wwpn'),null);});
+test('Brocade zoning parses explicit members',()=>{const x=importSanConfiguration('zone: z1 10:00:00:00:c9:aa:bb:cc; 50:00:00:00:00:00:00:01');assert.equal(x.zones.length,1);assert.equal(x.zones[0].members.length,2);assert.equal(compareImportedZonesToDiagram(x,[{initiatorWwpn:'10:00:00:00:c9:aa:bb:cc',targetWwpn:'50:00:00:00:00:00:00:01'}])[0].status,'DOCUMENTED_PAIR');});
+test('Cisco MDS zones parse member pwwn',()=>{const x=importSanConfiguration('zone name prod vsan 10\n member pwwn 10:00:00:00:c9:aa:bb:cc\n member pwwn 50:00:00:00:00:00:00:01');assert.equal(x.zones[0].vsan,'10');assert.equal(x.zones[0].members.length,2);});
+test('missing zoning is not claimed as physical fault',()=>{const x=importSanConfiguration('switchname: san1');assert.equal(compareImportedZonesToDiagram(x,[{initiatorWwpn:'10:00:00:00:c9:aa:bb:cc',targetWwpn:'50:00:00:00:00:00:00:01'}])[0].status,'NO_ZONE_EVIDENCE');});
+test('ESXi path states require explicit active state',()=>{const x=importSanConfiguration('Runtime Name: vmhba2:C0:T1:L0\nState: active\nRuntime Name: vmhba3:C0:T1:L0\nState: dead');assert.deepEqual(x.hostPaths.map(h=>h.active),[true,false]);});
+test('reject oversize imports',()=>assert.throws(()=>importSanConfiguration('x'.repeat(5_000_001))));

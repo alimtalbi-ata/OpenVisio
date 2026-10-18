@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {auditExistingFabricClearance} from '../src/route-batch.js';
+const a={id:'a',fabric:'A'},b={id:'b',fabric:'B'},c={id:'c',fabric:'A'};
+const points=(y)=>[{x:0,y},{x:20,y}];
+test('v25.6 détecte une proximité entre Fabrics existantes',()=>{const r=auditExistingFabricClearance([a,b],new Map([['a',points(0)],['b',points(3)]]));assert.equal(r.findings.length,1);assert.equal(r.findings[0].clearance,3);});
+test('v25.6 ignore les liens de même Fabric',()=>assert.equal(auditExistingFabricClearance([a,c],new Map([['a',points(0)],['c',points(0)]])).findings.length,0));
+test('v25.6 accepte un écart suffisant',()=>assert.equal(auditExistingFabricClearance([a,b],new Map([['a',points(0)],['b',points(9)]])).pass,true));
+test('v25.6 signale les routes manquantes',()=>assert.equal(auditExistingFabricClearance([a,b],new Map()).skipped.length,1));
+test('v25.6 refuse les seuils invalides',()=>assert.throws(()=>auditExistingFabricClearance([] ,new Map(),{minimum:-1}),/invalide/));
+test('v25.6 signale un audit tronqué',()=>assert.equal(auditExistingFabricClearance([a,b],new Map(),{limit:1}).truncated,true));

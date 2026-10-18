@@ -1,0 +1,9 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {analyzeSanRedundancy} from '../src/san-redundancy-v363.js';
+function topology(a={},b={}) {return {nodes:[{id:'h',type:'server',multipath:true},{id:'a',type:'storage'},{id:'sa',type:'san-switch',zoneset:'z',zoning:['ok'],...a},{id:'sb',type:'san-switch',zoneset:'z',zoning:['ok'],...b}],edges:[{id:'a1',source:'h',target:'sa',fabric:'A'},{id:'a2',source:'sa',target:'a',fabric:'A'},{id:'b1',source:'h',target:'sb',fabric:'B'},{id:'b2',source:'sb',target:'a',fabric:'B'}]};}
+test('v37.7 same chassis shared by distinct switches is correlated SPOF',()=>{const p=analyzeSanRedundancy(topology({chassis:'c1'},{chassis:'c1'})).paths[0];assert.equal(p.independence,'SHARED_RISK');assert.deepEqual(p.commonCriticalNodeIds,[]);assert.deepEqual(p.commonCriticalDomains.map(x=>x.value),['c1']);});
+test('v37.7 distinct sites remain independent',()=>{const p=analyzeSanRedundancy(topology({site:'paris'},{site:'lyon'})).paths[0];assert.equal(p.independence,'INDEPENDENT');assert.deepEqual(p.commonCriticalDomains,[]);});
+test('v37.7 shared power domain on links is detected',()=>{const d=topology();d.edges[0].powerDomain='pdu-1';d.edges[2].powerDomain='pdu-1';const p=analyzeSanRedundancy(d).paths[0];assert.equal(p.independence,'SHARED_RISK');assert.deepEqual(p.commonCriticalDomains[0].edgeIds,['a1','b1']);});
+test('v37.7 incomplete fabric does not report false shared domain',()=>{const d=topology({site:'s'},{site:'s'});d.edges=d.edges.filter(e=>e.fabric==='A');const p=analyzeSanRedundancy(d).paths[0];assert.equal(p.independence,'INCOMPLETE');assert.deepEqual(p.commonCriticalDomains,[]);});
+test('v37.7 analysis remains read-only',()=>{const d=topology({chassis:'c'},{chassis:'c'}),before=JSON.stringify(d);analyzeSanRedundancy(d);assert.equal(JSON.stringify(d),before);});

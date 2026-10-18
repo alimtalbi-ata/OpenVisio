@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {uniformDimensions} from '../src/vector-sizing.js';
+import {magneticSnap} from '../src/magnetic-guides.js';
+const nodes=()=>[{id:'a',x:0,y:0,w:100,h:50},{id:'b',x:200,y:50,w:60,h:30}];
+test('largeur uniforme',()=>{const n=nodes(),r=uniformDimensions(n,'a','width');assert.deepEqual(r[0][1],{w:100,h:30});assert.equal(n[1].w,60)});
+test('hauteur uniforme',()=>assert.deepEqual(uniformDimensions(nodes(),'a','height')[0][1],{w:60,h:50}));
+test('taille uniforme',()=>assert.deepEqual(uniformDimensions(nodes(),'a','both')[0][1],{w:100,h:50}));
+test('référence absente',()=>assert.deepEqual(uniformDimensions(nodes(),'z','both'),[]));
+test('mode incorrect',()=>assert.throws(()=>uniformDimensions(nodes(),'a','other')));
+test('dimension invalide',()=>{const n=nodes();n[0].w=0;assert.throws(()=>uniformDimensions(n,'a','both'))});
+test('guide vertical sur bord gauche',()=>{const r=magneticSnap({id:'a',x:98,y:0,w:40,h:40},[{id:'b',x:100,y:200,w:40,h:40}],{threshold:3});assert.ok(r.guides.some(g=>g.axis==='x'))});
+test('guide horizontal sur centre',()=>{const r=magneticSnap({id:'a',x:0,y:99,w:40,h:40},[{id:'b',x:200,y:100,w:40,h:40}],{threshold:3});assert.ok(r.guides.some(g=>g.axis==='y'))});

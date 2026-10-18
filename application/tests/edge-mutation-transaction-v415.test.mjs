@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createEdgeMutationSession,reconcileEdgeTransaction} from '../src/edge-mutation-tracker.js';
+const e=(id,to='b')=>({id,from:'a',to});
+test('v41.15 edit invalidates only changed connection',()=>{const s=createEdgeMutationSession([e('1'),e('2')]);let dirty;reconcileEdgeTransaction(s,[e('1','c'),e('2')],x=>dirty=x);assert.deepEqual(dirty,['1']);});
+test('v41.15 delete invalidates deleted connection',()=>{const s=createEdgeMutationSession([e('1'),e('2')]);let dirty;reconcileEdgeTransaction(s,[e('2')],x=>dirty=x);assert.deepEqual(dirty,['1']);});
+test('v41.15 undo and redo invalidates restored geometry',()=>{const s=createEdgeMutationSession([e('1')]);const all=[];for(const to of ['c','b','c'])reconcileEdgeTransaction(s,[e('1',to)],x=>all.push(...x));assert.deepEqual(all,['1','1','1']);});
+test('v41.15 no-op does not invalidate',()=>{const s=createEdgeMutationSession([e('1')]);let n=0;reconcileEdgeTransaction(s,[e('1')],()=>n++);assert.equal(n,0);});
+test('v41.15 invalid duplicates preserve prior snapshot',()=>{const s=createEdgeMutationSession([e('1')]);assert.throws(()=>reconcileEdgeTransaction(s,[e('1'),e('1')],()=>{}),/Duplicate/);assert.equal(s.snapshot().size,1);});
+test('v41.15 reset after document reload',()=>{const s=createEdgeMutationSession([e('1')]);s.reset([e('3')]);let ids;reconcileEdgeTransaction(s,[e('3','z')],x=>ids=x);assert.deepEqual(ids,['3']);});

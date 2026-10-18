@@ -1,0 +1,11 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {shapeKey,filterShapes,toggleFavorite,readFavorites,CATEGORIES} from "../src/library.js";
+const shapes=[{name:"PowerStore",vendor:"Dell",type:"storage",category:"storage",subtitle:"Stockage bloc"},{name:"ProLiant",vendor:"HPE",type:"server",category:"compute",subtitle:"Serveur rack"},{name:"Brocade",vendor:"Brocade",type:"switch",category:"network",subtitle:"SAN"}];
+test("recherche sans accents",()=>assert.equal(filterShapes(shapes,{query:"stockage"}).length,1));
+test("recherche par mots multiples",()=>assert.equal(filterShapes(shapes,{query:"dell bloc"}).length,1));
+test("filtre constructeur",()=>assert.equal(filterShapes(shapes,{vendor:"HPE"})[0].name,"ProLiant"));
+test("filtre famille",()=>assert.equal(filterShapes(shapes,{category:"network"})[0].name,"Brocade"));
+test("ajout et retrait favoris",()=>{const key=shapeKey(shapes[0]);assert.deepEqual(toggleFavorite([],key),[key]);assert.deepEqual(toggleFavorite([key],key),[])});
+test("filtre favoris",()=>assert.equal(filterShapes(shapes,{category:"favorites",favorites:[shapeKey(shapes[2])]} )[0].name,"Brocade"));
+test("favoris corrompus",()=>assert.deepEqual(readFavorites("invalid"),[]));
+test("catégories disponibles",()=>assert.ok(CATEGORIES.some(c=>c.id==="favorites")));

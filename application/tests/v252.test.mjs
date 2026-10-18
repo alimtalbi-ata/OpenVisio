@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {prepareRouteBatch,commitRouteBatch,batchFingerprint} from '../src/route-batch.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:200,y:0,w:20,h:20}];
+const edges=[{id:'e',from:'a',to:'b',style:'orthogonal',offset:0}];
+const routes=new Map([['e',{points:[{x:20,y:10},{x:110,y:10},{x:110,y:10},{x:200,y:10}]}]]);
+test('lot vide ne modifie rien',()=>{const b=prepareRouteBatch([],nodes,new Map());assert.equal(b.proposals.length,0);assert.equal(b.total,0)});
+test('limite de lot strictement contrôlée',()=>assert.throws(()=>prepareRouteBatch(edges,nodes,routes,{limit:101})));
+test('empreinte indépendante de l’ordre des connexions',()=>assert.equal(batchFingerprint(edges,nodes),batchFingerprint([...edges].reverse(),nodes)));
+test('topologie modifiée détectée avant toute écriture',()=>{const b=prepareRouteBatch(edges,nodes,routes);assert.throws(()=>commitRouteBatch(edges,[{...nodes[0],x:1},nodes[1]],b,new Set(['e'])))});
+test('sélection vide rejetée sans mutation',()=>{const b=prepareRouteBatch(edges,nodes,routes);assert.throws(()=>commitRouteBatch(edges,nodes,b,new Set()));assert.equal(edges[0].offset,0)});
+test('doublons ignorés et signalés',()=>{const b=prepareRouteBatch([...edges,...edges],nodes,routes);assert.equal(b.skipped.some(x=>x.reason==='Doublon'),true)});

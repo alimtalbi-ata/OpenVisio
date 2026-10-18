@@ -1,0 +1,3 @@
+Suite npm test : 1409 réussis, 0 échec.
+Compilation Windows .NET : non exécutée (SDK absent).
+Recette graphique Windows : non exécutée.

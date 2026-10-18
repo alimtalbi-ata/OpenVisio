@@ -1,0 +1,31 @@
+/* OpenVisio v33.0: calmer primary workspace without removing existing functionality. */
+:root { --ov-focus:#2563eb; }
+.app-header { gap:12px; flex-wrap:wrap; padding:12px 18px; }
+.quick-actions { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
+.quick-actions-label { font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:#64748b; margin:0 5px 0 12px; }
+.quick-actions button { min-height:34px; border-radius:8px; }
+.ribbon { flex-wrap:wrap; row-gap:8px; padding:8px 14px; }
+.ribbon-group { border-radius:8px; }
+.panel { min-width:0; }
+button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible { outline:3px solid var(--ov-focus); outline-offset:2px; }
+.workspace-hub { position:fixed; right:16px; bottom:16px; z-index:1100; filter:drop-shadow(0 3px 8px #0002); }
+.workspace-hub details { background:#fff; color:#1e293b; border:1px solid #cbd5e1; border-radius:12px; min-width:205px; }
+.workspace-hub summary { cursor:pointer; font-weight:650; padding:12px 16px; }
+.workspace-hub-links { display:flex; flex-direction:column; gap:3px; padding:0 10px 10px; }
+.workspace-hub-links a { display:block; padding:9px; border-radius:7px; color:#155e95; text-decoration:none; }
+.workspace-hub-links a:hover { background:#eff6ff; }
+@media(max-width:1100px) { .quick-actions-label { flex-basis:100%; margin-top:6px; } .workspace-hub { right:8px; bottom:8px; } }
+
+/* v33.1: discoverable command launcher, accessible keyboard navigation. */
+.ov-command-launch{position:fixed;left:16px;bottom:16px;z-index:1200;background:#17365b;color:white;border:0;border-radius:12px;padding:12px 18px;box-shadow:0 5px 20px #0003;cursor:pointer;font:600 14px system-ui}
+.ov-command-dialog{position:fixed;inset:0;z-index:2500;background:#09172899;display:grid;place-items:start center;padding-top:min(16vh,140px)}
+.ov-command-dialog[hidden]{display:none}
+.ov-command-box{background:#fff;color:#142235;width:min(680px,calc(100vw - 28px));max-height:72vh;overflow:hidden;display:flex;flex-direction:column;border-radius:16px;box-shadow:0 20px 80px #0005}
+.ov-command-top{display:flex;align-items:center;gap:10px;padding:16px;border-bottom:1px solid #dde4ed}
+.ov-command-top input{flex:1;min-width:0;border:1px solid #bccbdc;border-radius:8px;padding:12px;font:16px system-ui}
+.ov-command-top button{border:0;background:#edf2f8;padding:10px;border-radius:8px}
+.ov-command-results{overflow:auto;padding:8px}
+.ov-command-results button{display:flex;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:12px;border:0;background:white;color:#17263b;border-radius:8px;cursor:pointer;font:14px system-ui}
+.ov-command-results button:hover,.ov-command-results button[aria-selected=true]{background:#e9f1ff}
+.ov-command-results small{color:#64748b}
+.ov-command-empty{padding:20px;color:#64748b}

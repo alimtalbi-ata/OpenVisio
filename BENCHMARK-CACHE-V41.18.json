@@ -1,0 +1,49 @@
+{
+  "version": "41.18",
+  "type": "synthetic Node.js cache operation comparison; not Windows UI nor actual SAN diagram rendering",
+  "node": "v22.16.0",
+  "samples": [
+    {
+      "routes": 100,
+      "mode": "full-clear",
+      "medianMs": 0.0058,
+      "remainingRoutes": 0,
+      "iterations": 15
+    },
+    {
+      "routes": 100,
+      "mode": "targeted-delete",
+      "medianMs": 0.0062,
+      "remainingRoutes": 50,
+      "iterations": 15
+    },
+    {
+      "routes": 500,
+      "mode": "full-clear",
+      "medianMs": 0.019,
+      "remainingRoutes": 0,
+      "iterations": 15
+    },
+    {
+      "routes": 500,
+      "mode": "targeted-delete",
+      "medianMs": 0.0283,
+      "remainingRoutes": 250,
+      "iterations": 15
+    },
+    {
+      "routes": 1000,
+      "mode": "full-clear",
+      "medianMs": 0.0041,
+      "remainingRoutes": 0,
+      "iterations": 15
+    },
+    {
+      "routes": 1000,
+      "mode": "targeted-delete",
+      "medianMs": 0.0534,
+      "remainingRoutes": 500,
+      "iterations": 15
+    }
+  ]
+}

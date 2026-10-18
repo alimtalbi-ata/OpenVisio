@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {portInventory,fabricDiagnostics,fabricRedundancy} from '../src/ports.js';
+const nodes=[{id:'srv',type:'server',title:'ESXi',ports:['FC0','FC1']},{id:'a',type:'switch',fabric:'A',ports:['FC1']},{id:'b',type:'switch',fabric:'B',ports:['FC1']}];
+const edges=[{id:'e1',from:'srv',to:'a',sourceInterface:'FC0',targetInterface:'FC1'},{id:'e2',from:'srv',to:'b',sourceInterface:'FC1',targetInterface:'FC1'}];
+test('inventaire ports libres',()=>assert.equal(portInventory(nodes,[]).filter(x=>x.status==='free').length,4));
+test('inventaire ports occupés',()=>assert.equal(portInventory(nodes,edges).filter(x=>x.status==='used').length,4));
+test('occupation multiple détectée',()=>assert.equal(portInventory(nodes,[edges[0],{...edges[0],id:'e3'}]).find(x=>x.nodeId==='srv'&&x.port==='FC0').status,'conflict'));
+test('inventaire inclut famille FC',()=>assert.equal(portInventory(nodes,edges)[0].family,'fibre-channel'));
+test('mismatch fabric détecté',()=>assert.equal(fabricDiagnostics([{id:'x',fabric:'A'},{id:'y',fabric:'B'}],[{id:'e',from:'x',to:'y'}])[0].code,'fabric-mismatch'));
+test('fabric SHARED ne déclenche pas anomalie',()=>assert.equal(fabricDiagnostics([{id:'x',fabric:'SHARED'},{id:'y',fabric:'B'}],[{id:'e',from:'x',to:'y'}]).length,0));
+test('double fabric A/B détectée',()=>assert.equal(fabricRedundancy(nodes,edges).find(x=>x.nodeId==='srv').redundant,true));
+test('un seul fabric ne prouve pas redondance',()=>assert.equal(fabricRedundancy(nodes,edges.slice(0,1)).find(x=>x.nodeId==='srv').redundant,false));
+test('lien sans équipement ne provoque pas erreur',()=>assert.deepEqual(fabricDiagnostics(nodes,[{id:'z',from:'unknown',to:'a'}]),[]));

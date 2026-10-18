@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {renderDiagnosticSnapshot,summarizeDomMutations} from '../src/renderer.js';
+import {readFileSync} from 'node:fs';
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('diagnostic DOM initial sérialisable',()=>{const d=renderDiagnosticSnapshot({});assert.equal(d.dom.mutationRatio,0);assert.equal(d.routing.mode,'not-measured');assert.doesNotThrow(()=>JSON.stringify(d));});
+test('interface propose export JSON',()=>assert.match(html,/id="renderDiagnosticsExport"/));
+test('export ne transmet pas les données au réseau',()=>{assert.match(main,/URL.createObjectURL\(blob\)/);assert.match(main,/URL.revokeObjectURL\(url\)/);});
+test('mesure les rendus complets',()=>{assert.match(main,/fullPaintMetrics.record/);assert.match(main,/rendu complet moyen/);});
+test('réinitialisation des mesures complètes',()=>assert.match(main,/fullPaintMetrics.reset\(\)/));
+test('diagnostic affiche taux mutation et décision routage',()=>{assert.match(main,/mutationRatio/);assert.match(main,/routing.mode/);});

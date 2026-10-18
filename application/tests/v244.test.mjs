@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const py=readFileSync(new URL('./browser-san-performance.py',import.meta.url),'utf8');
+const ps=readFileSync(new URL('../windows/Run-Graphic-Qualification.ps1',import.meta.url),'utf8');
+test('Chromium facultatif: Playwright peut choisir son navigateur',()=>assert.match(py,/default=None/));
+test('Recette Windows conserve une preuve screenshot',()=>assert.match(ps,/openvisio-ui-real\.png/));
+test('Comparaison baseline inclut les trois mesures',()=>{for(const x of ['cold_ms','cached_ms','move_ms'])assert.ok(py.includes(x))});
+test('Echec explicite et non fausse capture',()=>assert.match(py,/status='FAIL'/));
+test('PowerShell propage le statut erreur',()=>assert.match(ps,/LASTEXITCODE -ne 0/));

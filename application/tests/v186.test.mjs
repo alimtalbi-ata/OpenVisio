@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {diagnosticLevel,summarizeDiagnostics,filterDiagnostics,diagnosticDescription} from '../src/wiring-diagnostics.js';
+test('priorité critique pour conflit de port',()=>assert.equal(diagnosticLevel('port-reused'),'critical'));
+test('priorité avertissement pour port inconnu',()=>assert.equal(diagnosticLevel('unknown-port'),'warning'));
+test('code inconnu conservé en information',()=>assert.equal(diagnosticLevel('future-check'),'info'));
+test('comptage stable et non destructif',()=>{const rows=[{code:'port-reused'},{code:'unknown-port'},{code:'other'}];assert.deepEqual(summarizeDiagnostics(rows),{critical:1,warning:1,info:1});assert.equal(rows.length,3)});
+test('filtrage conserve ordre et source',()=>{const rows=[{code:'unknown-port'},{code:'port-reused'},{code:'fabric-mismatch'}];assert.deepEqual(filterDiagnostics(rows,'critical'),rows.slice(1));assert.equal(rows.length,3)});
+test('filtre invalide rejeté',()=>assert.throws(()=>filterDiagnostics([],'broken'),/invalide/));
+test('description compréhensible et repli',()=>{assert.match(diagnosticDescription({code:'port-reused'}),/Port/);assert.match(diagnosticDescription({code:'new'}),/new/) });

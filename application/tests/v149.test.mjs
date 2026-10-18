@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {runResilienceCampaign,campaignCsv,campaignHtml} from '../src/san-resilience-campaign.js';
+const doc={nodes:[{id:'srv',type:'server',title:'Server'},{id:'swA',type:'san-switch',title:'A'},{id:'swB',type:'san-switch',title:'B'},{id:'st',type:'storage',title:'Storage'}],edges:[{id:'a1',from:'srv',to:'swA',fabric:'A'},{id:'a2',from:'swA',to:'st',fabric:'A'},{id:'b1',from:'srv',to:'swB',fabric:'B'},{id:'b2',from:'swB',to:'st',fabric:'B'}]};
+const cases=[{id:'A',failures:[{kind:'fabric',id:'A'}]},{id:'AB',failures:[{kind:'fabric',id:'A'},{kind:'fabric',id:'B'}]}];
+test('campaign returns sorted scenarios',()=>{const r=runResilienceCampaign(doc,cases);assert.equal(r.results.length,2);assert.equal(r.results[0].id,'A');});
+test('campaign preserves input',()=>{const x=JSON.stringify(doc);runResilienceCampaign(doc,cases);assert.equal(JSON.stringify(doc),x);});
+test('campaign rejects empty',()=>assert.throws(()=>runResilienceCampaign(doc,[])));
+test('campaign rejects duplicate IDs',()=>assert.throws(()=>runResilienceCampaign(doc,[cases[0],cases[0]])));
+test('campaign rejects unknown targets',()=>assert.throws(()=>runResilienceCampaign(doc,[{id:'x',failures:[{kind:'node',id:'ghost'}]}])));
+test('campaign rejects missing failures',()=>assert.throws(()=>runResilienceCampaign(doc,[{id:'x',failures:[]}])));
+test('campaign produces equipment frequency',()=>{const r=runResilienceCampaign(doc,cases);assert.equal(r.critical.find(x=>x.id==='A').scenarios,2);});
+test('campaign CSV contains columns',()=>assert.match(campaignCsv(runResilienceCampaign(doc,cases)),/Dégradations/));
+test('campaign HTML escapes scenario names',()=>{const r=runResilienceCampaign(doc,[{id:'x',name:'<script>alert(1)</script>',failures:[{kind:'fabric',id:'A'}]}]);assert.doesNotMatch(campaignHtml(r),/<script>/);});
+test('campaign rejects more than 100 scenarios',()=>assert.throws(()=>runResilienceCampaign(doc,Array.from({length:101},(_,i)=>({id:String(i),failures:[{kind:'fabric',id:'A'}]})))));

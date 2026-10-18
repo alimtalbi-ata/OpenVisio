@@ -1,0 +1,11 @@
+/* v38.4 : actions quotidiennes d’abord, outils spécialisés accessibles au besoin. */
+.quick-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0}
+.quick-actions-divider{width:1px;height:25px;background:var(--border,#cbd5e1);margin:0 4px}
+.quick-actions-more{position:relative;z-index:40}
+.quick-actions-more>summary{cursor:pointer;list-style:none;border:1px solid #94a3b8;border-radius:8px;padding:8px 11px;font-size:13px;background:transparent;color:inherit;white-space:nowrap}
+.quick-actions-more>summary::-webkit-details-marker{display:none}
+.quick-actions-more[open]>summary{outline:2px solid #2563eb;outline-offset:2px}
+.quick-actions-more-panel{position:absolute;right:0;top:calc(100% + 7px);display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:7px;min-width:min(430px,90vw);padding:12px;background:var(--panel,#fff);color:var(--text,#172033);border:1px solid #94a3b8;border-radius:10px;box-shadow:0 12px 30px #0003;max-height:65vh;overflow:auto}
+.quick-actions-more-panel button{text-align:left;white-space:normal}
+.quick-actions button:focus-visible,.quick-actions-more>summary:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+@media(max-width:750px){.quick-actions-more-panel{right:auto;left:0;grid-template-columns:1fr;min-width:min(270px,85vw)}.quick-actions{gap:5px}.quick-actions button{padding:6px 8px}}

@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-15T14:46:06.005Z",
+  "environment": {
+    "node": "v22.16.0",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "scope": "Node.js routing optimizer with orthogonal links; excludes SVG DOM, smart obstacle search, browser UI",
+  "results": [
+    {
+      "nodes": 100,
+      "edges": 99,
+      "elapsedMs": 22.51,
+      "routes": 99,
+      "crossingsEvaluated": true
+    },
+    {
+      "nodes": 500,
+      "edges": 499,
+      "elapsedMs": 2.24,
+      "routes": 499,
+      "crossingsEvaluated": false
+    },
+    {
+      "nodes": 1000,
+      "edges": 999,
+      "elapsedMs": 4.23,
+      "routes": 999,
+      "crossingsEvaluated": false
+    }
+  ]
+}

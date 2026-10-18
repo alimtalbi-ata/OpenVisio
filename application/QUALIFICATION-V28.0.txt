@@ -1,0 +1,1 @@
+Automated Node tests: 1232 passed, 0 failed. ZIP CRC checked. Real Windows UI capture: NOT PERFORMED.

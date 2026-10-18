@@ -1,0 +1,403 @@
+--
+  duration_ms: 0.670821
+  type: 'test'
+  ...
+# Subtest: v27.8 analysis is non-mutating and CSV formula-safe
+ok 1200 - v27.8 analysis is non-mutating and CSV formula-safe
+  ---
+  duration_ms: 0.945169
+  type: 'test'
+  ...
+# Subtest: cockpit page exposes navigation and sections
+ok 1201 - cockpit page exposes navigation and sections
+  ---
+  duration_ms: 4.702838
+  type: 'test'
+  ...
+# Subtest: UI imports deterministic SAN engine
+ok 1202 - UI imports deterministic SAN engine
+  ---
+  duration_ms: 0.379151
+  type: 'test'
+  ...
+# Subtest: UI avoids HTML injection with textContent
+ok 1203 - UI avoids HTML injection with textContent
+  ---
+  duration_ms: 0.257428
+  type: 'test'
+  ...
+# Subtest: selected incompatible corrections excluded from gain
+ok 1204 - selected incompatible corrections excluded from gain
+  ---
+  duration_ms: 13.07849
+  type: 'test'
+  ...
+# Subtest: UI export is gated on a valid report
+ok 1205 - UI export is gated on a valid report
+  ---
+  duration_ms: 0.475357
+  type: 'test'
+  ...
+# Subtest: projection does not mutate input report
+ok 1206 - projection does not mutate input report
+  ---
+  duration_ms: 2.696203
+  type: 'test'
+  ...
+# Subtest: selected valid correction appears as proposed
+ok 1207 - selected valid correction appears as proposed
+  ---
+  duration_ms: 0.283537
+  type: 'test'
+  ...
+# Subtest: conflicting corrections remain anomalous
+ok 1208 - conflicting corrections remain anomalous
+  ---
+  duration_ms: 9.003363
+  type: 'test'
+  ...
+# Subtest: groups sorted deterministically
+ok 1209 - groups sorted deterministically
+  ---
+  duration_ms: 1.022431
+  type: 'test'
+  ...
+# Subtest: HTML contains visual navigation
+ok 1210 - HTML contains visual navigation
+  ---
+  duration_ms: 0.578892
+  type: 'test'
+  ...
+# Subtest: visual UI uses textContent, not innerHTML
+ok 1211 - visual UI uses textContent, not innerHTML
+  ---
+  duration_ms: 0.652864
+  type: 'test'
+  ...
+# Subtest: projection maps declared object IDs
+ok 1212 - projection maps declared object IDs
+  ---
+  duration_ms: 1.913354
+  type: 'test'
+  ...
+# Subtest: unknown objects generate warnings
+ok 1213 - unknown objects generate warnings
+  ---
+  duration_ms: 0.332381
+  type: 'test'
+  ...
+# Subtest: source objects unchanged
+ok 1214 - source objects unchanged
+  ---
+  duration_ms: 0.386212
+  type: 'test'
+  ...
+# Subtest: invalid correction list rejected
+ok 1215 - invalid correction list rejected
+  ---
+  duration_ms: 0.298309
+  type: 'test'
+  ...
+# Subtest: v28.2 empty overlay is read only
+ok 1216 - v28.2 empty overlay is read only
+  ---
+  duration_ms: 2.34231
+  type: 'test'
+  ...
+# Subtest: v28.2 invalid connections ignored
+ok 1217 - v28.2 invalid connections ignored
+  ---
+  duration_ms: 0.586214
+  type: 'test'
+  ...
+# Subtest: points manuels analysés
+ok 1218 - points manuels analysés
+  ---
+  duration_ms: 3.892577
+  type: 'test'
+  ...
+# Subtest: points manuels invalides rejetés
+ok 1219 - points manuels invalides rejetés
+  ---
+  duration_ms: 0.692975
+  type: 'test'
+  ...
+# Subtest: points manuels limités
+ok 1220 - points manuels limités
+  ---
+  duration_ms: 0.477149
+  type: 'test'
+  ...
+# Subtest: points manuels sérialisés
+ok 1221 - points manuels sérialisés
+  ---
+  duration_ms: 1.30724
+  type: 'test'
+  ...
+# Subtest: tracé avec points manuels
+ok 1222 - tracé avec points manuels
+  ---
+  duration_ms: 1.989943
+  type: 'test'
+  ...
+# Subtest: au moins trois modèles disponibles
+ok 1223 - au moins trois modèles disponibles
+  ---
+  duration_ms: 3.133953
+  type: 'test'
+  ...
+# Subtest: modèle valide san-dual
+ok 1224 - modèle valide san-dual
+  ---
+  duration_ms: 1.159568
+  type: 'test'
+  ...
+# Subtest: modèle valide replication
+ok 1225 - modèle valide replication
+  ---
+  duration_ms: 0.180101
+  type: 'test'
+  ...
+# Subtest: modèle valide backup
+ok 1226 - modèle valide backup
+  ---
+  duration_ms: 0.678042
+  type: 'test'
+  ...
+# Subtest: modèle valide three-tier
+ok 1227 - modèle valide three-tier
+  ---
+  duration_ms: 0.945134
+  type: 'test'
+  ...
+# Subtest: modèle valide hybrid-cloud
+ok 1228 - modèle valide hybrid-cloud
+  ---
+  duration_ms: 0.393523
+  type: 'test'
+  ...
+# Subtest: modèle valide disaster-recovery
+ok 1229 - modèle valide disaster-recovery
+  ---
+  duration_ms: 0.453354
+  type: 'test'
+  ...
+# Subtest: modèle valide kubernetes
+ok 1230 - modèle valide kubernetes
+  ---
+  duration_ms: 0.272801
+  type: 'test'
+  ...
+# Subtest: modèle valide zero-trust
+ok 1231 - modèle valide zero-trust
+  ---
+  duration_ms: 0.321214
+  type: 'test'
+  ...
+# Subtest: modèle valide backup-321
+ok 1232 - modèle valide backup-321
+  ---
+  duration_ms: 0.320182
+  type: 'test'
+  ...
+# Subtest: modèle valide observability
+ok 1233 - modèle valide observability
+  ---
+  duration_ms: 0.11285
+  type: 'test'
+  ...
+# Subtest: modèle valide flowchart
+ok 1234 - modèle valide flowchart
+  ---
+  duration_ms: 0.118068
+  type: 'test'
+  ...
+# Subtest: modèle valide orgchart
+ok 1235 - modèle valide orgchart
+  ---
+  duration_ms: 0.108634
+  type: 'test'
+  ...
+# Subtest: modèle valide application-map
+ok 1236 - modèle valide application-map
+  ---
+  duration_ms: 0.087692
+  type: 'test'
+  ...
+# Subtest: modèle inconnu rejeté
+ok 1237 - modèle inconnu rejeté
+  ---
+  duration_ms: 0.30522
+  type: 'test'
+  ...
+# Subtest: renderer uses onPointerDown callback
+ok 1238 - renderer uses onPointerDown callback
+  ---
+  duration_ms: 1.777068
+  type: 'test'
+  ...
+# Subtest: handles are accessible
+ok 1239 - handles are accessible
+  ---
+  duration_ms: 5.177282
+  type: 'test'
+  ...
+# Subtest: pointer positions use SVG transform
+ok 1240 - pointer positions use SVG transform
+  ---
+  duration_ms: 2.811407
+  type: 'test'
+  ...
+# Subtest: ajout de point par double clic
+ok 1241 - ajout de point par double clic
+  ---
+  duration_ms: 1.209563
+  type: 'test'
+  ...
+# Subtest: suppression de point par double clic
+ok 1242 - suppression de point par double clic
+  ---
+  duration_ms: 2.141257
+  type: 'test'
+  ...
+# Subtest: grille magnétique configurable
+ok 1243 - grille magnétique configurable
+  ---
+  duration_ms: 0.148824
+  type: 'test'
+  ...
+# Subtest: bouton de grille accessible
+ok 1244 - bouton de grille accessible
+  ---
+  duration_ms: 0.219611
+  type: 'test'
+  ...
+# Subtest: clic de forme délégué
+ok 1245 - clic de forme délégué
+  ---
+  duration_ms: 0.189896
+  type: 'test'
+  ...
+# Subtest: la poignée n'ajoute un undo qu'après mouvement
+ok 1246 - la poignée n'ajoute un undo qu'après mouvement
+  ---
+  duration_ms: 3.374692
+  type: 'test'
+  ...
+# Subtest: la saisie des points intercepte les erreurs
+ok 1247 - la saisie des points intercepte les erreurs
+  ---
+  duration_ms: 0.195454
+  type: 'test'
+  ...
+# Subtest: pas de mouvement si coordonnées inchangées
+ok 1248 - pas de mouvement si coordonnées inchangées
+  ---
+  duration_ms: 0.122985
+  type: 'test'
+  ...
+# Subtest: node drag uses SVG coordinates
+ok 1249 - node drag uses SVG coordinates
+  ---
+  duration_ms: 1.377135
+  type: 'test'
+  ...
+# Subtest: pointer captured for node drag
+ok 1250 - pointer captured for node drag
+  ---
+  duration_ms: 0.666945
+  type: 'test'
+  ...
+# Subtest: click without movement does not mutate
+ok 1251 - click without movement does not mutate
+  ---
+  duration_ms: 0.387764
+  type: 'test'
+  ...
+# Subtest: modifier pointerdown does not bubble
+ok 1252 - modifier pointerdown does not bubble
+  ---
+  duration_ms: 2.362591
+  type: 'test'
+  ...
+# Subtest: routage en cache
+ok 1253 - routage en cache
+  ---
+  duration_ms: 0.928589
+  type: 'test'
+  ...
+# Subtest: cache borné
+ok 1254 - cache borné
+  ---
+  duration_ms: 1.396855
+  type: 'test'
+  ...
+# Subtest: invalidation par coordonnées
+ok 1255 - invalidation par coordonnées
+  ---
+  duration_ms: 0.217498
+  type: 'test'
+  ...
+# Subtest: obstacles pris en compte
+ok 1256 - obstacles pris en compte
+  ---
+  duration_ms: 0.349637
+  type: 'test'
+  ...
+# Subtest: mesure SVG froid et chaud
+ok 1257 - mesure SVG froid et chaud
+  ---
+  duration_ms: 1.039266
+  type: 'test'
+  ...
+# Subtest: trois volumes de topologies
+ok 1258 - trois volumes de topologies
+  ---
+  duration_ms: 0.178339
+  type: 'test'
+  ...
+# Subtest: rapport indique les limites du DOM simulé
+ok 1259 - rapport indique les limites du DOM simulé
+  ---
+  duration_ms: 0.181313
+  type: 'test'
+  ...
+# Subtest: cache par instance SVG
+ok 1260 - cache par instance SVG
+  ---
+  duration_ms: 1.022381
+  type: 'test'
+  ...
+# Subtest: réutilisation de noeuds inchangés
+ok 1261 - réutilisation de noeuds inchangés
+  ---
+  duration_ms: 1.371477
+  type: 'test'
+  ...
+# Subtest: réutilisation de connexions inchangées
+ok 1262 - réutilisation de connexions inchangées
+  ---
+  duration_ms: 0.170036
+  type: 'test'
+  ...
+# Subtest: suppression des éléments retirés
+ok 1263 - suppression des éléments retirés
+  ---
+  duration_ms: 0.208484
+  type: 'test'
+  ...
+# Subtest: remplacement local de la forme modifiée
+ok 1264 - remplacement local de la forme modifiée
+  ---
+  duration_ms: 0.137367
+  type: 'test'
+  ...
+1..1264
+# tests 1264
+# suites 0
+# pass 1264
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7158.078152

@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateTopology,diffTopologies,diffSummary,topologyDiffHtml} from '../src/topology-diff.js';
+const node=(id,extra={})=>({id,type:'server',title:id,x:1,...extra});const doc=(nodes=[],edges=[])=>({nodes,edges});
+test('ajout noeud',()=>assert.equal(diffSummary(diffTopologies(doc(),doc([node('a')]))).added,1));
+test('suppression noeud',()=>assert.equal(diffSummary(diffTopologies(doc([node('a')]),doc())).removed,1));
+test('modification titre',()=>assert.deepEqual(diffTopologies(doc([node('a')]),doc([node('a',{title:'X'})]))[0].fields,['title']));
+test('inchangé',()=>assert.equal(diffTopologies(doc([node('a')]),doc([node('a')])).length,0));
+test('ajout connexion',()=>assert.equal(diffTopologies(doc([node('a'),node('b')]),doc([node('a'),node('b')],[{id:'e',from:'a',to:'b'}]))[0].kind,'edges'));
+test('connexion orpheline rejetée',()=>assert.throws(()=>validateTopology(doc([],[{id:'e',from:'a',to:'b'}]))));
+test('doublon rejeté',()=>assert.throws(()=>validateTopology(doc([node('a'),node('a')]))));
+test('HTML échappé',()=>assert.match(topologyDiffHtml(diffTopologies(doc(),doc([node('<script>')]))),/&lt;script&gt;/));

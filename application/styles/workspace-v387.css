@@ -1,0 +1,4 @@
+.inspector-category-toolbar{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px;border-bottom:1px solid var(--border,#d9e2ee)}
+.inspector-category-toolbar button{border:1px solid #cbd5e1;border-radius:7px;padding:6px 8px;background:transparent;color:inherit;cursor:pointer;font:inherit;font-size:12px}
+.inspector-category-toolbar button[aria-pressed="true"]{border-color:#2563eb;background:#dbeafe;color:#1e40af;font-weight:700}
+.inspector-category-toolbar button:focus-visible{outline:2px solid #2563eb;outline-offset:2px}

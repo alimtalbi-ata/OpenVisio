@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {routePreviewPath,previewRouteGeometry} from '../src/route-preview.js';
+test('path serialization',()=>assert.equal(routePreviewPath([{x:0,y:1},{x:20,y:1}]),'M 0 1 L 20 1'));
+test('rejects non finite coordinates',()=>assert.throws(()=>routePreviewPath([{x:0,y:0},{x:Infinity,y:1}])));
+test('rejects empty paths',()=>assert.throws(()=>routePreviewPath([])));
+test('preview geometry is independent of input',()=>{const original=[{x:0,y:0},{x:10,y:0}];const proposal={status:'preview',edgeId:'x',points:[{x:0,y:0},{x:0,y:10}]};const result=previewRouteGeometry(proposal,original);assert.equal(result.before,'M 0 0 L 10 0');assert.equal(result.after,'M 0 0 L 0 10');assert.equal(original.length,2);});
+test('invalid preview rejected',()=>assert.throws(()=>previewRouteGeometry({status:'protected'},[])));
+test('overlay mounted and cleaned on cancel',()=>{const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');assert.match(main,/routePreviewOverlay/);assert.match(main,/addEventListener\('close',clearPreview/);assert.match(main,/previewRouteGeometry\(proposal/);});

@@ -1,0 +1,56 @@
+{
+  "version": "41.20",
+  "description": "Synthetic multi-step SAN routing benchmark; excludes SVG DOM, browser, Windows and obstacle avoidance",
+  "node": "v22.16.0",
+  "repetitions": 7,
+  "steps": [
+    "move",
+    "move-again",
+    "undo",
+    "redo"
+  ],
+  "results": [
+    {
+      "connections": 100,
+      "fullMedianMs": 4.655515999999977,
+      "targetedMedianMs": 2.423827000000003,
+      "geometryEquivalent": true,
+      "fullRecomputations": 400,
+      "targetedRecomputations": 24,
+      "affectedPerMutation": [
+        6,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "connections": 500,
+      "fullMedianMs": 18.91931600000001,
+      "targetedMedianMs": 10.93586799999997,
+      "geometryEquivalent": true,
+      "fullRecomputations": 2000,
+      "targetedRecomputations": 40,
+      "affectedPerMutation": [
+        10,
+        10,
+        10,
+        10
+      ]
+    },
+    {
+      "connections": 1000,
+      "fullMedianMs": 35.684410000000014,
+      "targetedMedianMs": 22.340968999999973,
+      "geometryEquivalent": true,
+      "fullRecomputations": 4000,
+      "targetedRecomputations": 40,
+      "affectedPerMutation": [
+        10,
+        10,
+        10,
+        10
+      ]
+    }
+  ]
+}

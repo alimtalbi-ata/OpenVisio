@@ -1,0 +1,16 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {auditSanPaths,zoningReview} from '../src/san-audit.js';
+import {buildWiringReport,reportCsv} from '../src/wiring-report.js';
+const n=(id,type,fabric='')=>({id,title:id,type,fabric,ports:['FC0','FC1']});
+const e=(id,from,to)=>({id,from,to,sourceInterface:'FC0',targetInterface:'FC1'});
+const nodes=[n('host','server'),n('a','switch','A'),n('b','switch','B'),n('array','storage')];
+const edges=[e('1','host','a'),e('2','a','array'),e('3','host','b'),e('4','b','array')];
+test('independent A/B paths',()=>{const r=auditSanPaths(nodes,edges)[0];assert.equal(r.independent,true);assert.equal(r.status,'redundant');assert.equal(r.paths,2)});
+test('single fabric risk',()=>{const r=auditSanPaths(nodes,edges.slice(0,2))[0];assert.equal(r.status,'at-risk');assert.equal(r.hasB,false)});
+test('unreachable storage',()=>assert.equal(auditSanPaths(nodes,[])[0].status,'unreachable'));
+test('shared switch is not independent',()=>{const x=[n('host','server'),n('a','switch','A'),n('b','switch','B'),n('array','storage'),n('shared','switch','SHARED')];const y=[e('1','host','shared'),e('2','shared','a'),e('3','shared','b'),e('4','a','array'),e('5','b','array')];assert.equal(auditSanPaths(x,y)[0].independent,false)});
+test('zoning review direct FC',()=>assert.equal(zoningReview([n('h','server'),n('s','storage')],[e('x','h','s')])[0].code,'direct-fc-link-review'));
+test('zoning review cross fabric',()=>assert.equal(zoningReview(nodes,[e('x','a','b')])[0].code,'cross-fabric-switch-link'));
+test('non FC edge ignored',()=>assert.equal(auditSanPaths(nodes,[{id:'x',from:'host',to:'array',sourceInterface:'eth0',targetInterface:'eth0'}])[0].paths,0));
+test('CSV paths export',()=>assert.match(reportCsv(buildWiringReport(nodes,edges),'san-paths'),/Chemins independants/));
+test('no false positive zoning',()=>assert.equal(zoningReview(nodes,edges).length,0));

@@ -1,0 +1,13 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {separateParallelRoutes} from "../src/routing.js";
+const route={points:[{x:0,y:0},{x:60,y:0},{x:60,y:80},{x:150,y:80}],path:"M 0 0 L 60 0 L 60 80 L 150 80"};
+const edges=[{id:"a"},{id:"b"},{id:"c"}];
+const source=()=>new Map(edges.map(e=>[e.id,route]));
+test("multi-segment bundles get distinct lanes",()=>{const r=separateParallelRoutes(edges,source());assert.notEqual(r.get("a").path,r.get("c").path);});
+test("middle lane stays original",()=>assert.equal(separateParallelRoutes(edges,source()).get("b"),route));
+test("endpoints are preserved",()=>{const r=separateParallelRoutes(edges,source());assert.deepEqual(r.get("a").points[0],route.points[0]);assert.deepEqual(r.get("a").points.at(-1),route.points.at(-1));});
+test("manual paths remain untouched",()=>{const r=separateParallelRoutes([{id:"a",waypoints:[{x:3,y:4}]},{id:"b"}],new Map([["a",route],["b",route]]));assert.equal(r.get("a"),route);});
+test("obstacle crossing rejects displaced lane",()=>{const r=separateParallelRoutes(edges,source(),{obstacles:[{x:20,y:-16,w:20,h:9}]});assert.equal(r.get("a"),route);});
+test("non-orthogonal paths are not changed",()=>{const diagonal={points:[{x:0,y:0},{x:50,y:50}],path:"M 0 0 L 50 50"};const r=separateParallelRoutes(edges,new Map(edges.map(e=>[e.id,diagonal])));assert.equal(r.get("a"),diagonal);});
+test("input is immutable",()=>{separateParallelRoutes(edges,source());assert.equal(route.points.length,4);assert.equal(route.points[1].y,0);});

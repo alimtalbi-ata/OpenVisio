@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {simulateMultipleSanFailures,multipleFailureCsv,multipleFailureHtml} from '../src/san-failure-simulator.js';
+const doc={format:'openvisio-diagram',version:2,nodes:[{id:'s',type:'server',title:'Serveur'},{id:'t',type:'storage',title:'Baie'},{id:'a',type:'switch',title:'A'},{id:'b',type:'switch',title:'B'}],edges:[{id:'a1',from:'s',to:'a',fabric:'A'},{id:'a2',from:'a',to:'t',fabric:'A'},{id:'b1',from:'s',to:'b',fabric:'B'},{id:'b2',from:'b',to:'t',fabric:'B'}]};
+test('scénario combiné non destructif',()=>{const x=JSON.stringify(doc);simulateMultipleSanFailures(doc,[{kind:'fabric',id:'A'},{kind:'fabric',id:'B'}]);assert.equal(JSON.stringify(doc),x)});
+test('perte des deux fabrics',()=>{const r=simulateMultipleSanFailures(doc,[{kind:'fabric',id:'A'},{kind:'fabric',id:'B'}]);assert.equal(r.targets.length,2)});
+test('une seule fabric dégrade',()=>{const r=simulateMultipleSanFailures(doc,[{kind:'fabric',id:'A'}]);assert.equal(r.summary.loss,0)});
+test('déduplication des pannes',()=>{const r=simulateMultipleSanFailures(doc,[{kind:'node',id:'a'},{kind:'node',id:'a'}]);assert.equal(r.targets.length,1)});
+test('liste vide rejetée',()=>assert.throws(()=>simulateMultipleSanFailures(doc,[])));
+test('cible inexistante rejetée',()=>assert.throws(()=>simulateMultipleSanFailures(doc,[{kind:'node',id:'xxx'}])));
+test('taille limitée',()=>assert.throws(()=>simulateMultipleSanFailures(doc,Array.from({length:51},()=>({kind:'node',id:'a'})))));
+test('CSV du scénario',()=>assert.match(multipleFailureCsv(simulateMultipleSanFailures(doc,[{kind:'node',id:'a'}])),/Identifiant/));
+test('HTML du scénario',()=>assert.match(multipleFailureHtml(simulateMultipleSanFailures(doc,[{kind:'node',id:'a'}])),/Défaillances simulées/));

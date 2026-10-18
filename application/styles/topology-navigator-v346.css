@@ -1,0 +1,7 @@
+/* OpenVisio v34.6 — navigation du comparateur SAN */
+.topology-navigator{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:var(--surface,#fff);border-bottom:1px solid #94a3b8;box-shadow:0 2px 6px #0f172a20}
+.topology-nav-button{border:1px solid #94a3b8;border-radius:8px;padding:7px 11px;cursor:pointer;background:#f1f5f9;color:#0f172a;font:inherit}
+.topology-nav-button:hover,.topology-nav-button:focus-visible{outline:2px solid #2563eb;outline-offset:1px}
+.topology-nav-button[aria-current="true"]{background:#1d4ed8;color:white}
+#topologyDiffDialog [id^="topology"]{scroll-margin-top:95px}
+@media(max-width:650px){.topology-navigator{flex-wrap:nowrap;overflow-x:auto;max-width:100%}.topology-nav-button{white-space:nowrap}}

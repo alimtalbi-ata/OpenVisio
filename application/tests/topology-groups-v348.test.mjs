@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {SAN_CATEGORIES,selectCategory,installSanCategories} from '../src/topology-groups-v348.js';
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('34.8 navigation module and stylesheet included',()=>{assert.match(html,/src\/topology-groups-v348\.js/);assert.match(html,/styles\/topology-groups-v348\.css/)});
+test('34.8 categories cover all legacy sections',()=>assert.equal(new Set(SAN_CATEGORIES.Tout).size,10));
+test('34.8 unknown category fails safely to all',()=>assert.deepEqual(selectCategory('inconnu'),SAN_CATEGORIES.Tout));
+test('34.8 connectivity focuses relevant views',()=>assert.deepEqual(selectCategory('Connectivité'),['Zoning','Chemins','Ports','Chaînes','Accès']));
+test('34.8 no navigator is a safe no-op',()=>assert.equal(installSanCategories({getElementById:()=>null}),false));

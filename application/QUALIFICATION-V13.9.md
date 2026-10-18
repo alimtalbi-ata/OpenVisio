@@ -1,0 +1,1 @@
+OpenVisio v13.9 — tests Node exécutés avec npm test ; syntaxe src/main.js vérifiée. Enveloppe Windows non compilée dans cet environnement. Captures historiques statiques uniquement. Auteur : Abdelhalim Talbi.

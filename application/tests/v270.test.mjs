@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {optimizeRouteBatch} from '../src/route-batch.js';
+const p=(edgeId,score)=>({edgeId,before:{score},after:{score:0}});
+const batch=(proposals,conflicts=[])=>({proposals,conflicts:conflicts.map(([a,b])=>({a,b}))});
+test('v27.0 disconnected large batch remains exact',()=>{const r=optimizeRouteBatch(batch(Array.from({length:40},(_,i)=>p(`E${String(i).padStart(2,'0')}`,1))));assert.equal(r.selectedIds.length,40);assert.equal(r.exactComponents,40);assert.equal(r.heuristicComponents,0);});
+test('v27.0 mixed components preserve independent exact results',()=>{const proposals=Array.from({length:19},(_,i)=>p(`L${i}`,1)).concat([p('A',9),p('B',6),p('C',6)]);const conflicts=Array.from({length:18},(_,i)=>[`L${i}`,`L${i+1}`]).concat([['A','B'],['A','C']]);const r=optimizeRouteBatch(batch(proposals,conflicts));assert.equal(r.heuristicComponents,1);assert.ok(r.selectedIds.includes('B')&&r.selectedIds.includes('C'));assert.ok(!r.selectedIds.includes('A'));});
+test('v27.0 reject duplicated ids',()=>assert.throws(()=>optimizeRouteBatch(batch([p('A',1),p('A',2)])),/dupliquée/));
+test('v27.0 reject nonfinite score',()=>assert.throws(()=>optimizeRouteBatch(batch([p('A',NaN)])),/invalide/));
+test('v27.0 reject malformed conflict',()=>assert.throws(()=>optimizeRouteBatch({proposals:[p('A',1)],conflicts:[null]}),/invalide/));

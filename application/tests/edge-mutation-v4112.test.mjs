@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {changedEdgeIds} from '../src/edge-mutation-tracker.js';
+const base={id:'san-1',from:'a',to:'b',style:'smart',waypoints:[{x:1,y:2}]};
+test('unchanged connections do not invalidate',()=>{const a=changedEdgeIds(new Map(),[base]);assert.deepEqual(changedEdgeIds(a.next,[structuredClone(base)]).dirty,[])});
+test('in-place waypoint edits invalidate',()=>{const edge=structuredClone(base);const a=changedEdgeIds(new Map(),[edge]);edge.waypoints[0].x=9;assert.deepEqual(changedEdgeIds(a.next,[edge]).dirty,['san-1'])});
+test('deletion invalidates',()=>{const a=changedEdgeIds(new Map(),[base]);assert.deepEqual(changedEdgeIds(a.next,[]).dirty,['san-1'])});
+test('undo to old geometry invalidates changed geometry',()=>{const a=changedEdgeIds(new Map(),[base]);const edited={...base,to:'c'};const b=changedEdgeIds(a.next,[edited]);assert.deepEqual(changedEdgeIds(b.next,[base]).dirty,['san-1'])});
+test('duplicate edge ids fail closed',()=>assert.throws(()=>changedEdgeIds(new Map(),[base,base]),/Duplicate/));
+test('invalid edge ids fail closed',()=>assert.throws(()=>changedEdgeIds(new Map(),[{from:'a'}]),/Missing/));

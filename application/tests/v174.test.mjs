@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {incrementalRoutingPipeline} from '../src/renderer.js';
+const nodes=Array.from({length:202},(_,i)=>({id:`n${i}`,x:i*100,y:0,w:40,h:40}));
+const edges=Array.from({length:201},(_,i)=>({id:`e${i}`,from:`n${i}`,to:`n${i+1}`,style:'avoid'}));
+const state={nodes,edges};
+const routes=new Map(edges.map((e,i)=>[e.id,{points:[{x:i*100+40,y:20},{x:(i+1)*100,y:20}],path:'previous'}]));
+test('avoid routes use global fallback for unverified bundles',()=>{const p={};incrementalRoutingPipeline(state,p,()=>routes);const changed={nodes:nodes.map((n,i)=>i===0?{...n,x:10}:n),edges};const r=incrementalRoutingPipeline(changed,p,()=>routes);assert.equal(r,routes);});
+test('avoid routes globally invalidate when obstacle moves',()=>{const p={};incrementalRoutingPipeline(state,p,()=>routes);const changed={nodes:nodes.map((n,i)=>i===150?{...n,x:100,y:0}:n),edges};const r=incrementalRoutingPipeline(changed,p,()=>routes);assert.equal(r,routes);});
+test('smart routes retain global fallback',()=>{const p={};incrementalRoutingPipeline(state,p,()=>routes);const smart=edges.map((e,i)=>i===0?{...e,style:'smart'}:e);const changed={nodes:nodes.map((n,i)=>i===0?{...n,x:10}:n),edges:smart};assert.equal(incrementalRoutingPipeline(changed,p,()=>routes),routes);});

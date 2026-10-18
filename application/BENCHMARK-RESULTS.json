@@ -1,0 +1,31 @@
+{
+  "environment": {
+    "node": "v22.16.0",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "scope": "Node.js route computation only; not browser SVG rendering",
+  "results": [
+    {
+      "nodes": 100,
+      "edges": 99,
+      "elapsedMs": 0.41759400000000113,
+      "pathBytes": 4128,
+      "meanRouteMs": 0.004218121212121223
+    },
+    {
+      "nodes": 500,
+      "edges": 499,
+      "elapsedMs": 1.7668510000000026,
+      "pathBytes": 22256,
+      "meanRouteMs": 0.0035407835671342736
+    },
+    {
+      "nodes": 1000,
+      "edges": 999,
+      "elapsedMs": 2.418139,
+      "pathBytes": 45262,
+      "meanRouteMs": 0.00242055955955956
+    }
+  ]
+}

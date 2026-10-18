@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {reduceFanOutCrossings} from '../src/routing.js';
+const edge={id:'e',from:'a',to:'b'};
+const route={points:[{x:0,y:0},{x:16,y:0},{x:16,y:30},{x:70,y:30},{x:70,y:0},{x:100,y:0}],orthogonalFanOut:true};
+test('input validation',()=>assert.throws(()=>reduceFanOutCrossings([],null,[])));
+test('empty graph',()=>assert.equal(reduceFanOutCrossings([],new Map(),[]).size,0));
+test('manual routes are not changed',()=>{const e={...edge,waypoints:[{x:1,y:1}]};const r=reduceFanOutCrossings([e],new Map([['e',route]]),[]);assert.equal(r.get('e'),route);});
+test('physical ports are protected',()=>{const e={...edge,sourceInterface:'eth0'};assert.equal(reduceFanOutCrossings([e],new Map([['e',route]]),[]).get('e'),route);});
+test('budget protects large graphs',()=>{const r=reduceFanOutCrossings([edge],new Map([['e',route]]),[],{maxEdges:1});assert.ok(r.has('e'));});
+test('route endpoints remain unchanged',()=>{const r=reduceFanOutCrossings([edge],new Map([['e',route]]),[]).get('e');assert.deepEqual(r.points[0],route.points[0]);assert.deepEqual(r.points.at(-1),route.points.at(-1));});
+test('deterministic',()=>{const run=()=>reduceFanOutCrossings([edge],new Map([['e',route]]),[]).get('e').points;assert.deepEqual(run(),run());});

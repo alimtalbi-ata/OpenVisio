@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {normalizeGuides,moveGuide,toggleGuideLock,snapToGuides} from '../src/custom-guides.js';import {snapshot,restore} from '../src/model.js';
+test('normalisation des repères hérités',()=>assert.deepEqual(normalizeGuides([{axis:'x',position:42}]),[{axis:'x',position:42,locked:false}]));
+test('verrouillage',()=>assert.equal(toggleGuideLock([{axis:'x',position:42}],0)[0].locked,true));
+test('déverrouillage',()=>assert.equal(toggleGuideLock([{axis:'x',position:42,locked:true}],0)[0].locked,false));
+test('déplacement verrouillé refusé',()=>assert.throws(()=>moveGuide([{axis:'x',position:42,locked:true}],0,45),/verrouillé/));
+test('déplacement libre',()=>assert.equal(moveGuide([{axis:'y',position:42}],0,45)[0].position,45));
+test('repères sauvegardés dans snapshot',()=>{const s={nodes:[],edges:[],guides:[{axis:'y',position:12,locked:true}]};assert.deepEqual(restore(snapshot(s)).guides,s.guides);});
+test('ancien document sans repères',()=>assert.deepEqual(restore(JSON.stringify({nodes:[],edges:[]})).guides,[]));
+test('accrochage sur repère verrouillé',()=>assert.equal(snapToGuides({x:40,y:0,w:30,h:20},[{axis:'x',position:42,locked:true}]).x,42));
+test('indice de verrouillage invalide',()=>assert.throws(()=>toggleGuideLock([],0)));

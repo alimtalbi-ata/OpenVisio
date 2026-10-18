@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {alternateTopologyFingerprint,commitAlternateRoute,qualifyAlternateLifecycle} from '../src/san-alternate-routes.js';
+import {routeRevision} from '../src/route-preview.js';
+const nodes=[{id:'a',x:0,y:0,w:20,h:20},{id:'b',x:160,y:0,w:20,h:20}];
+const edges=[{id:'e',from:'a',to:'b',fabric:'A',style:'orthogonal',waypoints:[]}];
+const routes=new Map([['e',{points:[{x:20,y:10},{x:160,y:10}]}]]);
+const plan=()=>({edgeId:'e',waypoints:[],revision:routeRevision(edges[0],nodes),fingerprint:alternateTopologyFingerprint(edges,nodes,routes)});
+test('v26.1 cycle complet sauvegarde/rechargement/annulation/rétablissement',()=>{const state={nodes,edges,selected:null};const before=JSON.stringify(state);const result=qualifyAlternateLifecycle(state,plan(),routes);assert.equal(result.qualified,true);assert.equal(result.undo,true);assert.equal(result.redo,true);assert.equal(JSON.stringify(state),before)});
+test('v26.1 refuse un fingerprint obsolète',()=>assert.throws(()=>qualifyAlternateLifecycle({nodes,edges}, {...plan(),fingerprint:'stale'},routes),/obsolète/));
+test('v26.1 refuse une connexion absente',()=>assert.throws(()=>qualifyAlternateLifecycle({nodes,edges}, {...plan(),edgeId:'absent'},routes),/absente/));
+test('v26.1 refuse une route Fabric opposée inconnue',()=>{const others=[...edges,{id:'f',from:'a',to:'b',fabric:'B'}];const p={...plan(),fingerprint:alternateTopologyFingerprint(others,nodes,routes)};assert.throws(()=>qualifyAlternateLifecycle({nodes,edges:others},p,routes),/manquante/)});
+test('v26.1 refuse un état malformé',()=>assert.throws(()=>qualifyAlternateLifecycle({nodes:[],edges:null},plan(),routes),/invalide/));

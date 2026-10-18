@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const root=new URL('../',import.meta.url);
+const read=p=>readFileSync(new URL(p,root),'utf8');
+test('Windows launcher shows current version',()=>assert.match(read('windows/openvisio.ps1'),/OpenVisio v18\.3/));
+test('Windows launcher prevents iframe embedding',()=>assert.match(read('windows/openvisio.ps1'),/X-Frame-Options.*DENY/));
+test('Windows launcher restricts serving to loopback',()=>assert.match(read('windows/openvisio.ps1'),/IPAddress\]::Loopback/));
+test('UI and package use current version',()=>{const v=JSON.parse(read('package.json')).version;assert.ok(read('index.html').includes('OpenVisio v'+v.replace(/\.0$/,'')))});
+test('Windows native smoke test validates frame protection',()=>assert.match(read('windows/Validate-OpenVisio-Windows.ps1'),/X-Frame-Options/));

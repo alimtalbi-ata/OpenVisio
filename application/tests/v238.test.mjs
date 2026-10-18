@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {compareRoutingGeometry} from '../src/renderer.js';
+const route=(...points)=>({points:points.map(([x,y])=>({x,y}))});
+test('identical local and global routes',()=>{const a=new Map([['a',route([0,0],[10,10])]]);assert.deepEqual(compareRoutingGeometry(a,new Map(a)),{equivalent:true,divergentEdges:[],comparedEdges:1});});
+test('geometry divergence detected',()=>{const a=new Map([['a',route([0,0],[10,10])]]);const b=new Map([['a',route([0,0],[11,10])]]);assert.deepEqual(compareRoutingGeometry(a,b).divergentEdges,['a']);});
+test('missing route detected',()=>assert.equal(compareRoutingGeometry(new Map([['a',route([0,0])]]),new Map()).equivalent,false));
+test('tolerance allows tiny numerical differences',()=>assert.equal(compareRoutingGeometry(new Map([['a',route([0,0])]]),new Map([['a',route([0.0001,0])]])).equivalent,true));
+test('invalid points and lengths rejected',()=>assert.equal(compareRoutingGeometry(new Map([['a',route([0,0])]]),new Map([['a',route([0,0],[1,1])]])).equivalent,false));
+test('invalid tolerance rejected',()=>assert.throws(()=>compareRoutingGeometry(new Map(),new Map(),{tolerance:-1}),TypeError));

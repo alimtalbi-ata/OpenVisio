@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateRelationField,auditSanRelations,sanRelationsCsv,sanRelationsHtml} from '../src/san-relations.js';
+const w='10:00:00:00:00:00:00:01',t='50:00:00:00:00:00:00:02';const doc={nodes:[{id:'a',type:'server',title:'Server',wwpns:[w]},{id:'b',type:'storage',title:'Array',luns:['L1']}],edges:[{id:'e',from:'a',to:'b',initiatorWwpn:w,targetWwpn:t,zoneName:'zone1',lunId:'L1',pathId:'p1'}]};
+test('valid WWPN',()=>assert.equal(validateRelationField('initiatorWwpn',w),w));
+test('reject malformed WWPN',()=>assert.throws(()=>validateRelationField('targetWwpn','bad')));
+test('reject unknown key',()=>assert.throws(()=>validateRelationField('unknown','x')));
+test('reject controls',()=>assert.throws(()=>validateRelationField('zoneName','a\nb')));
+test('healthy relation',()=>assert.equal(auditSanRelations(doc).summary.review,0));
+test('mismatched initiator',()=>assert.ok(auditSanRelations({...doc,edges:[{...doc.edges[0],initiatorWwpn:t}]}).rows[0].issues.includes('INITIATOR_NOT_ON_SOURCE')));
+test('mismatched LUN',()=>assert.ok(auditSanRelations({...doc,edges:[{...doc.edges[0],lunId:'L2'}]}).rows[0].issues.includes('LUN_NOT_ON_TARGET')));
+test('missing zone',()=>assert.ok(auditSanRelations({...doc,edges:[{...doc.edges[0],zoneName:''}]}).rows[0].issues.includes('LUN_WITHOUT_ZONE')));
+test('csv escaping',()=>assert.match(sanRelationsCsv(auditSanRelations({...doc,nodes:[{...doc.nodes[0],title:'=cmd'},doc.nodes[1]]})),/"'=cmd"/));
+test('html escaping',()=>assert.match(sanRelationsHtml(auditSanRelations({...doc,nodes:[{...doc.nodes[0],title:'<script>'},doc.nodes[1]]})),/&lt;script&gt;/));

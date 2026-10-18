@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {compareFabricSnapshots,complianceCsv} from '../src/san-compliance.js';
+const data=fabric=>({vendor:'brocade',fabric,zones:[],zonesets:[],activeConfigurations:[],aliases:{},warnings:[]});
+const entry=(fabric,at='2026-10-15T10:00:00Z')=>({id:fabric,at,label:'test',data:data(fabric)});
+test('empty history score 0',()=>assert.equal(compareFabricSnapshots([]).score,0));
+test('missing fabrics flagged',()=>assert.equal(compareFabricSnapshots([]).issues.length,2));
+test('one fabric flagged',()=>assert.equal(compareFabricSnapshots([entry('A')]).issues.some(x=>x.fabric==='B'),true));
+test('both fabrics no missing',()=>assert.equal(compareFabricSnapshots([entry('A'),entry('B')],{maxAgeDays:0}).issues.length,0));
+test('missing fabric rule disabled',()=>assert.equal(compareFabricSnapshots([],{requireBothFabrics:false}).issues.length,0));
+test('stale snapshot flagged',()=>assert.ok(compareFabricSnapshots([entry('A','2020-01-01T00:00:00Z')]).issues.some(x=>x.code==='SNAPSHOT_STALE')));
+test('zoneset missing zone flagged',()=>{const a=entry('A');a.data.zonesets=[{name:'ZS',zones:['MISSING'],vsan:null}];assert.ok(compareFabricSnapshots([a]).issues.some(x=>x.code==='ZONE_UNDEFINED'));});
+test('CSV has BOM and header',()=>assert.ok(complianceCsv(compareFabricSnapshots([])).startsWith('\uFEFF"Type"')));

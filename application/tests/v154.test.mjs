@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {magneticSnap,alignToReference} from '../src/magnetic-guides.js';
+test('snap center X',()=>{const r=magneticSnap({id:'a',x:101,y:200,w:40,h:40},[{id:'b',x:100,y:400,w:40,h:40}]);assert.equal(r.x,100);assert.equal(r.guides[0].axis,'x')});
+test('snap top',()=>{const r=magneticSnap({id:'a',x:0,y:103,w:20,h:20},[{id:'b',x:200,y:100,w:20,h:20}]);assert.equal(r.y,100)});
+test('outside threshold no snap',()=>{const r=magneticSnap({id:'a',x:0,y:0,w:20,h:20},[{id:'b',x:100,y:100,w:20,h:20}]);assert.equal(r.guides.length,0)});
+test('ignore self',()=>{const r=magneticSnap({id:'a',x:2,y:3,w:20,h:20},[{id:'a',x:2,y:3,w:20,h:20}]);assert.equal(r.guides.length,0)});
+test('grid fallback',()=>{const r=magneticSnap({x:13,y:27,w:10,h:10},[],{grid:10});assert.deepEqual([r.x,r.y],[10,30])});
+test('right align',()=>{const ns=[{id:'a',x:100,y:0,w:60,h:20},{id:'b',x:0,y:50,w:20,h:20}];alignToReference(ns,'a','right');assert.equal(ns[1].x,140)});
+test('bottom align',()=>{const ns=[{id:'a',x:0,y:100,w:20,h:60},{id:'b',x:0,y:0,w:20,h:20}];alignToReference(ns,'a','bottom');assert.equal(ns[1].y,140)});
+test('center align',()=>{const ns=[{id:'a',x:100,y:100,w:60,h:60},{id:'b',x:0,y:0,w:20,h:20}];alignToReference(ns,'a','centerX');alignToReference(ns,'a','centerY');assert.deepEqual([ns[1].x,ns[1].y],[120,120])});
+test('unknown reference unchanged',()=>{const ns=[{id:'a',x:0,y:0}];assert.equal(alignToReference(ns,'z','left'),false)});
+test('invalid axis rejected',()=>assert.throws(()=>alignToReference([],null,'diagonal')));

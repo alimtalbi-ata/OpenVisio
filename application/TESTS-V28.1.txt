@@ -1,0 +1,638 @@
+s obstacles en calcul differentiel
+  ---
+  duration_ms: 55.480448
+  type: 'test'
+  ...
+# Subtest: v26.9 exact selects two non-conflicting routes over one high-degree route
+ok 1133 - v26.9 exact selects two non-conflicting routes over one high-degree route
+  ---
+  duration_ms: 13.497248
+  type: 'test'
+  ...
+# Subtest: v26.9 exact honors transitive conflicts and ignores non-positive benefit
+ok 1134 - v26.9 exact honors transitive conflicts and ignores non-positive benefit
+  ---
+  duration_ms: 0.65683
+  type: 'test'
+  ...
+# Subtest: v26.9 deterministic tie break independent of input order
+ok 1135 - v26.9 deterministic tie break independent of input order
+  ---
+  duration_ms: 1.023031
+  type: 'test'
+  ...
+# Subtest: v26.9 large batches retain conservative greedy fallback
+ok 1136 - v26.9 large batches retain conservative greedy fallback
+  ---
+  duration_ms: 0.459412
+  type: 'test'
+  ...
+# Subtest: v27.0 disconnected large batch remains exact
+ok 1137 - v27.0 disconnected large batch remains exact
+  ---
+  duration_ms: 4.35536
+  type: 'test'
+  ...
+# Subtest: v27.0 mixed components preserve independent exact results
+ok 1138 - v27.0 mixed components preserve independent exact results
+  ---
+  duration_ms: 13.799733
+  type: 'test'
+  ...
+# Subtest: v27.0 reject duplicated ids
+ok 1139 - v27.0 reject duplicated ids
+  ---
+  duration_ms: 0.914187
+  type: 'test'
+  ...
+# Subtest: v27.0 reject nonfinite score
+ok 1140 - v27.0 reject nonfinite score
+  ---
+  duration_ms: 0.248254
+  type: 'test'
+  ...
+# Subtest: v27.0 reject malformed conflict
+ok 1141 - v27.0 reject malformed conflict
+  ---
+  duration_ms: 0.285951
+  type: 'test'
+  ...
+# Subtest: v27.1 connected components and isolated routes
+ok 1142 - v27.1 connected components and isolated routes
+  ---
+  duration_ms: 17.491985
+  type: 'test'
+  ...
+# Subtest: v27.1 live selection exposes active conflicts
+ok 1143 - v27.1 live selection exposes active conflicts
+  ---
+  duration_ms: 0.563428
+  type: 'test'
+  ...
+# Subtest: v27.1 conflict-free selection remains valid
+ok 1144 - v27.1 conflict-free selection remains valid
+  ---
+  duration_ms: 0.492522
+  type: 'test'
+  ...
+# Subtest: v27.1 duplicates are normalized
+ok 1145 - v27.1 duplicates are normalized
+  ---
+  duration_ms: 0.328725
+  type: 'test'
+  ...
+# Subtest: v27.1 malformed and unknown links are rejected
+ok 1146 - v27.1 malformed and unknown links are rejected
+  ---
+  duration_ms: 0.568967
+  type: 'test'
+  ...
+# Subtest: v27.2 preview overlay uses existing route geometry and no write
+ok 1147 - v27.2 preview overlay uses existing route geometry and no write
+  ---
+  duration_ms: 1.761353
+  type: 'test'
+  ...
+# Subtest: v27.2 group controls expose highlight, select and deselect
+ok 1148 - v27.2 group controls expose highlight, select and deselect
+  ---
+  duration_ms: 0.242966
+  type: 'test'
+  ...
+# Subtest: v27.2 group selection recalculates conflicts
+ok 1149 - v27.2 group selection recalculates conflicts
+  ---
+  duration_ms: 0.59723
+  type: 'test'
+  ...
+# Subtest: v27.3 compare preview draws before and after paths
+ok 1150 - v27.3 compare preview draws before and after paths
+  ---
+  duration_ms: 2.455228
+  type: 'test'
+  ...
+# Subtest: v27.3 compare preview does not commit or mutate
+ok 1151 - v27.3 compare preview does not commit or mutate
+  ---
+  duration_ms: 0.286331
+  type: 'test'
+  ...
+# Subtest: v27.3 group exposes compare action and gain
+ok 1152 - v27.3 group exposes compare action and gain
+  ---
+  duration_ms: 0.231078
+  type: 'test'
+  ...
+# Subtest: v27.3 compare uses existing preview overlay
+ok 1153 - v27.3 compare uses existing preview overlay
+  ---
+  duration_ms: 5.712393
+  type: 'test'
+  ...
+# Subtest: v27.4 navigation locates group using actual rendered edge geometry
+ok 1154 - v27.4 navigation locates group using actual rendered edge geometry
+  ---
+  duration_ms: 2.783432
+  type: 'test'
+  ...
+# Subtest: v27.4 navigation does not mutate document or history
+ok 1155 - v27.4 navigation does not mutate document or history
+  ---
+  duration_ms: 0.668987
+  type: 'test'
+  ...
+# Subtest: v27.4 group has locate and previous next navigation
+ok 1156 - v27.4 group has locate and previous next navigation
+  ---
+  duration_ms: 0.285099
+  type: 'test'
+  ...
+# Subtest: v27.4 navigation retains non destructive before-after preview
+ok 1157 - v27.4 navigation retains non destructive before-after preview
+  ---
+  duration_ms: 4.36226
+  type: 'test'
+  ...
+# Subtest: v27.5 fit zoom adjusts large group to viewport with padding
+ok 1158 - v27.5 fit zoom adjusts large group to viewport with padding
+  ---
+  duration_ms: 1.542533
+  type: 'test'
+  ...
+# Subtest: v27.5 fit zoom caps small groups at max zoom
+ok 1159 - v27.5 fit zoom caps small groups at max zoom
+  ---
+  duration_ms: 14.596975
+  type: 'test'
+  ...
+# Subtest: v27.5 rejects invalid bounds and padding
+ok 1160 - v27.5 rejects invalid bounds and padding
+  ---
+  duration_ms: 3.081411
+  type: 'test'
+  ...
+# Subtest: v27.5 group navigation uses fitted zoom and recalculated bounds
+ok 1161 - v27.5 group navigation uses fitted zoom and recalculated bounds
+  ---
+  duration_ms: 1.090953
+  type: 'test'
+  ...
+# Subtest: v27.5 displays Fabric A B conflicts without committing changes
+ok 1162 - v27.5 displays Fabric A B conflicts without committing changes
+  ---
+  duration_ms: 0.287212
+  type: 'test'
+  ...
+# Subtest: v27.6 scores only selected improvements and ignores regressions
+ok 1163 - v27.6 scores only selected improvements and ignores regressions
+  ---
+  duration_ms: 3.349545
+  type: 'test'
+  ...
+# Subtest: v27.6 blocks selected cross-fabric conflict
+ok 1164 - v27.6 blocks selected cross-fabric conflict
+  ---
+  duration_ms: 3.666802
+  type: 'test'
+  ...
+# Subtest: v27.6 does not count outside-group conflicts
+ok 1165 - v27.6 does not count outside-group conflicts
+  ---
+  duration_ms: 0.300062
+  type: 'test'
+  ...
+# Subtest: v27.6 ignores invalid numeric scores
+ok 1166 - v27.6 ignores invalid numeric scores
+  ---
+  duration_ms: 0.217137
+  type: 'test'
+  ...
+# Subtest: v27.6 UI uses centralized read-only metrics
+ok 1167 - v27.6 UI uses centralized read-only metrics
+  ---
+  duration_ms: 3.173319
+  type: 'test'
+  ...
+# Subtest: v27.8 only counts positive finite gains of selected compatible corrections
+ok 1168 - v27.8 only counts positive finite gains of selected compatible corrections
+  ---
+  duration_ms: 54.305918
+  type: 'test'
+  ...
+# Subtest: v27.8 detects conflict only when both corrections are selected
+ok 1169 - v27.8 detects conflict only when both corrections are selected
+  ---
+  duration_ms: 4.361419
+  type: 'test'
+  ...
+# Subtest: v27.8 reports missing and unselected dependencies
+ok 1170 - v27.8 reports missing and unselected dependencies
+  ---
+  duration_ms: 2.777673
+  type: 'test'
+  ...
+# Subtest: v27.8 provides deterministic prerequisite-first order
+ok 1171 - v27.8 provides deterministic prerequisite-first order
+  ---
+  duration_ms: 4.757515
+  type: 'test'
+  ...
+# Subtest: v27.8 identifies dependency cycles and does not count selected cyclic work
+ok 1172 - v27.8 identifies dependency cycles and does not count selected cyclic work
+  ---
+  duration_ms: 2.743642
+  type: 'test'
+  ...
+# Subtest: v27.8 rejects duplicate identifiers and unknown risk levels
+ok 1173 - v27.8 rejects duplicate identifiers and unknown risk levels
+  ---
+  duration_ms: 2.149187
+  type: 'test'
+  ...
+# Subtest: v27.8 analysis is non-mutating and CSV formula-safe
+ok 1174 - v27.8 analysis is non-mutating and CSV formula-safe
+  ---
+  duration_ms: 2.478443
+  type: 'test'
+  ...
+# Subtest: cockpit page exposes navigation and sections
+ok 1175 - cockpit page exposes navigation and sections
+  ---
+  duration_ms: 6.384816
+  type: 'test'
+  ...
+# Subtest: UI imports deterministic SAN engine
+ok 1176 - UI imports deterministic SAN engine
+  ---
+  duration_ms: 0.546774
+  type: 'test'
+  ...
+# Subtest: UI avoids HTML injection with textContent
+ok 1177 - UI avoids HTML injection with textContent
+  ---
+  duration_ms: 0.409657
+  type: 'test'
+  ...
+# Subtest: selected incompatible corrections excluded from gain
+ok 1178 - selected incompatible corrections excluded from gain
+  ---
+  duration_ms: 26.670407
+  type: 'test'
+  ...
+# Subtest: UI export is gated on a valid report
+ok 1179 - UI export is gated on a valid report
+  ---
+  duration_ms: 0.251869
+  type: 'test'
+  ...
+# Subtest: projection does not mutate input report
+ok 1180 - projection does not mutate input report
+  ---
+  duration_ms: 2.68915
+  type: 'test'
+  ...
+# Subtest: selected valid correction appears as proposed
+ok 1181 - selected valid correction appears as proposed
+  ---
+  duration_ms: 0.346041
+  type: 'test'
+  ...
+# Subtest: conflicting corrections remain anomalous
+ok 1182 - conflicting corrections remain anomalous
+  ---
+  duration_ms: 11.063292
+  type: 'test'
+  ...
+# Subtest: groups sorted deterministically
+ok 1183 - groups sorted deterministically
+  ---
+  duration_ms: 1.083312
+  type: 'test'
+  ...
+# Subtest: HTML contains visual navigation
+ok 1184 - HTML contains visual navigation
+  ---
+  duration_ms: 0.802178
+  type: 'test'
+  ...
+# Subtest: visual UI uses textContent, not innerHTML
+ok 1185 - visual UI uses textContent, not innerHTML
+  ---
+  duration_ms: 0.315595
+  type: 'test'
+  ...
+# Subtest: projection maps declared object IDs
+ok 1186 - projection maps declared object IDs
+  ---
+  duration_ms: 8.790869
+  type: 'test'
+  ...
+# Subtest: unknown objects generate warnings
+ok 1187 - unknown objects generate warnings
+  ---
+  duration_ms: 1.305777
+  type: 'test'
+  ...
+# Subtest: source objects unchanged
+ok 1188 - source objects unchanged
+  ---
+  duration_ms: 0.438641
+  type: 'test'
+  ...
+# Subtest: invalid correction list rejected
+ok 1189 - invalid correction list rejected
+  ---
+  duration_ms: 0.750801
+  type: 'test'
+  ...
+# Subtest: points manuels analysés
+ok 1190 - points manuels analysés
+  ---
+  duration_ms: 4.069169
+  type: 'test'
+  ...
+# Subtest: points manuels invalides rejetés
+ok 1191 - points manuels invalides rejetés
+  ---
+  duration_ms: 1.050151
+  type: 'test'
+  ...
+# Subtest: points manuels limités
+ok 1192 - points manuels limités
+  ---
+  duration_ms: 0.946806
+  type: 'test'
+  ...
+# Subtest: points manuels sérialisés
+ok 1193 - points manuels sérialisés
+  ---
+  duration_ms: 0.713194
+  type: 'test'
+  ...
+# Subtest: tracé avec points manuels
+ok 1194 - tracé avec points manuels
+  ---
+  duration_ms: 6.967023
+  type: 'test'
+  ...
+# Subtest: au moins trois modèles disponibles
+ok 1195 - au moins trois modèles disponibles
+  ---
+  duration_ms: 0.257518
+  type: 'test'
+  ...
+# Subtest: modèle valide san-dual
+ok 1196 - modèle valide san-dual
+  ---
+  duration_ms: 1.492337
+  type: 'test'
+  ...
+# Subtest: modèle valide replication
+ok 1197 - modèle valide replication
+  ---
+  duration_ms: 0.231258
+  type: 'test'
+  ...
+# Subtest: modèle valide backup
+ok 1198 - modèle valide backup
+  ---
+  duration_ms: 1.734102
+  type: 'test'
+  ...
+# Subtest: modèle valide three-tier
+ok 1199 - modèle valide three-tier
+  ---
+  duration_ms: 1.099606
+  type: 'test'
+  ...
+# Subtest: modèle valide hybrid-cloud
+ok 1200 - modèle valide hybrid-cloud
+  ---
+  duration_ms: 0.315766
+  type: 'test'
+  ...
+# Subtest: modèle valide disaster-recovery
+ok 1201 - modèle valide disaster-recovery
+  ---
+  duration_ms: 0.155975
+  type: 'test'
+  ...
+# Subtest: modèle valide kubernetes
+ok 1202 - modèle valide kubernetes
+  ---
+  duration_ms: 0.649318
+  type: 'test'
+  ...
+# Subtest: modèle valide zero-trust
+ok 1203 - modèle valide zero-trust
+  ---
+  duration_ms: 1.439659
+  type: 'test'
+  ...
+# Subtest: modèle valide backup-321
+ok 1204 - modèle valide backup-321
+  ---
+  duration_ms: 0.164758
+  type: 'test'
+  ...
+# Subtest: modèle valide observability
+ok 1205 - modèle valide observability
+  ---
+  duration_ms: 0.240452
+  type: 'test'
+  ...
+# Subtest: modèle valide flowchart
+ok 1206 - modèle valide flowchart
+  ---
+  duration_ms: 0.149185
+  type: 'test'
+  ...
+# Subtest: modèle valide orgchart
+ok 1207 - modèle valide orgchart
+  ---
+  duration_ms: 0.122103
+  type: 'test'
+  ...
+# Subtest: modèle valide application-map
+ok 1208 - modèle valide application-map
+  ---
+  duration_ms: 0.140772
+  type: 'test'
+  ...
+# Subtest: modèle inconnu rejeté
+ok 1209 - modèle inconnu rejeté
+  ---
+  duration_ms: 2.074434
+  type: 'test'
+  ...
+# Subtest: renderer uses onPointerDown callback
+ok 1210 - renderer uses onPointerDown callback
+  ---
+  duration_ms: 1.950538
+  type: 'test'
+  ...
+# Subtest: handles are accessible
+ok 1211 - handles are accessible
+  ---
+  duration_ms: 7.305893
+  type: 'test'
+  ...
+# Subtest: pointer positions use SVG transform
+ok 1212 - pointer positions use SVG transform
+  ---
+  duration_ms: 6.750447
+  type: 'test'
+  ...
+# Subtest: ajout de point par double clic
+ok 1213 - ajout de point par double clic
+  ---
+  duration_ms: 1.550705
+  type: 'test'
+  ...
+# Subtest: suppression de point par double clic
+ok 1214 - suppression de point par double clic
+  ---
+  duration_ms: 3.349525
+  type: 'test'
+  ...
+# Subtest: grille magnétique configurable
+ok 1215 - grille magnétique configurable
+  ---
+  duration_ms: 0.215575
+  type: 'test'
+  ...
+# Subtest: bouton de grille accessible
+ok 1216 - bouton de grille accessible
+  ---
+  duration_ms: 0.250247
+  type: 'test'
+  ...
+# Subtest: clic de forme délégué
+ok 1217 - clic de forme délégué
+  ---
+  duration_ms: 0.442356
+  type: 'test'
+  ...
+# Subtest: la poignée n'ajoute un undo qu'après mouvement
+ok 1218 - la poignée n'ajoute un undo qu'après mouvement
+  ---
+  duration_ms: 0.918243
+  type: 'test'
+  ...
+# Subtest: la saisie des points intercepte les erreurs
+ok 1219 - la saisie des points intercepte les erreurs
+  ---
+  duration_ms: 0.27864
+  type: 'test'
+  ...
+# Subtest: pas de mouvement si coordonnées inchangées
+ok 1220 - pas de mouvement si coordonnées inchangées
+  ---
+  duration_ms: 0.135865
+  type: 'test'
+  ...
+# Subtest: node drag uses SVG coordinates
+ok 1221 - node drag uses SVG coordinates
+  ---
+  duration_ms: 1.292787
+  type: 'test'
+  ...
+# Subtest: pointer captured for node drag
+ok 1222 - pointer captured for node drag
+  ---
+  duration_ms: 0.28569
+  type: 'test'
+  ...
+# Subtest: click without movement does not mutate
+ok 1223 - click without movement does not mutate
+  ---
+  duration_ms: 0.122624
+  type: 'test'
+  ...
+# Subtest: modifier pointerdown does not bubble
+ok 1224 - modifier pointerdown does not bubble
+  ---
+  duration_ms: 1.880913
+  type: 'test'
+  ...
+# Subtest: routage en cache
+ok 1225 - routage en cache
+  ---
+  duration_ms: 4.208859
+  type: 'test'
+  ...
+# Subtest: cache borné
+ok 1226 - cache borné
+  ---
+  duration_ms: 2.670952
+  type: 'test'
+  ...
+# Subtest: invalidation par coordonnées
+ok 1227 - invalidation par coordonnées
+  ---
+  duration_ms: 0.401564
+  type: 'test'
+  ...
+# Subtest: obstacles pris en compte
+ok 1228 - obstacles pris en compte
+  ---
+  duration_ms: 0.477569
+  type: 'test'
+  ...
+# Subtest: mesure SVG froid et chaud
+ok 1229 - mesure SVG froid et chaud
+  ---
+  duration_ms: 1.875494
+  type: 'test'
+  ...
+# Subtest: trois volumes de topologies
+ok 1230 - trois volumes de topologies
+  ---
+  duration_ms: 0.315476
+  type: 'test'
+  ...
+# Subtest: rapport indique les limites du DOM simulé
+ok 1231 - rapport indique les limites du DOM simulé
+  ---
+  duration_ms: 0.341254
+  type: 'test'
+  ...
+# Subtest: cache par instance SVG
+ok 1232 - cache par instance SVG
+  ---
+  duration_ms: 1.169842
+  type: 'test'
+  ...
+# Subtest: réutilisation de noeuds inchangés
+ok 1233 - réutilisation de noeuds inchangés
+  ---
+  duration_ms: 2.703542
+  type: 'test'
+  ...
+# Subtest: réutilisation de connexions inchangées
+ok 1234 - réutilisation de connexions inchangées
+  ---
+  duration_ms: 0.326923
+  type: 'test'
+  ...
+# Subtest: suppression des éléments retirés
+ok 1235 - suppression des éléments retirés
+  ---
+  duration_ms: 0.275945
+  type: 'test'
+  ...
+# Subtest: remplacement local de la forme modifiée
+ok 1236 - remplacement local de la forme modifiée
+  ---
+  duration_ms: 0.406242
+  type: 'test'
+  ...
+1..1236
+# tests 1236
+# suites 0
+# pass 1233
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11230.765014

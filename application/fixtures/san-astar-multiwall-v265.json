@@ -1,0 +1,70 @@
+{
+  "nodes": [
+    {
+      "id": "a",
+      "x": 0,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "b",
+      "x": 160,
+      "y": 0,
+      "w": 20,
+      "h": 20
+    },
+    {
+      "id": "wall",
+      "x": 75,
+      "y": -10,
+      "w": 30,
+      "h": 40
+    },
+    {
+      "id": "wall2",
+      "x": 115,
+      "y": -10,
+      "w": 20,
+      "h": 40
+    },
+    {
+      "id": "wall3",
+      "x": 45,
+      "y": -10,
+      "w": 15,
+      "h": 40
+    }
+  ],
+  "edges": [
+    {
+      "id": "e",
+      "from": "a",
+      "to": "b",
+      "style": "orthogonal",
+      "fabric": "A",
+      "fromPort": "right",
+      "toPort": "left"
+    }
+  ],
+  "routes": {
+    "e": {
+      "points": [
+        {
+          "x": 20,
+          "y": 10
+        },
+        {
+          "x": 160,
+          "y": 10
+        }
+      ]
+    }
+  },
+  "expected": {
+    "step": 10,
+    "minimumGain": 1,
+    "beforeCollisions": 1,
+    "afterCollisions": 0
+  }
+}

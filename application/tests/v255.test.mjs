@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {routeClearance,prepareRouteBatch} from '../src/route-batch.js';
+const line=(...points)=>points.map(([x,y])=>({x,y}));
+test('v25.5 distance entre segments parallèles',()=>assert.equal(routeClearance(line([0,0],[10,0]),line([0,7],[10,7])),7));
+test('v25.5 intersection entre segments',()=>assert.equal(routeClearance(line([0,0],[10,0]),line([5,-4],[5,4])),0));
+test('v25.5 distance entre segments disjoints',()=>assert.equal(routeClearance(line([0,0],[2,0]),line([5,4],[8,4])),5));
+test('v25.5 symétrie de la distance',()=>{const a=line([0,0],[5,0]),b=line([6,2],[8,2]);assert.equal(routeClearance(a,b),routeClearance(b,a));});
+test('v25.5 refus des chemins invalides',()=>assert.throws(()=>routeClearance([],line([0,0],[1,1])),/invalide/));
+test('v25.5 refus du seuil excessif',()=>assert.throws(()=>prepareRouteBatch([],[],new Map(),{fabricClearance:101}),/invalide/));

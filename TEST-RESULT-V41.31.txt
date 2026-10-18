@@ -1,0 +1,47 @@
+st'
+  ...
+# Subtest: v33.2 keeps three named modes and accessible pressed state
+ok 1760 - v33.2 keeps three named modes and accessible pressed state
+  ---
+  duration_ms: 0.167261
+  type: 'test'
+  ...
+# Subtest: v33.2 persists chosen mode with guarded localStorage
+ok 1761 - v33.2 persists chosen mode with guarded localStorage
+  ---
+  duration_ms: 0.094962
+  type: 'test'
+  ...
+# Subtest: v33.2 hides analytical panels only in edition mode
+ok 1762 - v33.2 hides analytical panels only in edition mode
+  ---
+  duration_ms: 0.137817
+  type: 'test'
+  ...
+# Subtest: v33.3 contextual actions included
+ok 1763 - v33.3 contextual actions included
+  ---
+  duration_ms: 0.654644
+  type: 'test'
+  ...
+# Subtest: v33.3 keyboard accessible actions
+ok 1764 - v33.3 keyboard accessible actions
+  ---
+  duration_ms: 0.108814
+  type: 'test'
+  ...
+# Subtest: v33.3 SAN actions reference existing IDs
+ok 1765 - v33.3 SAN actions reference existing IDs
+  ---
+  duration_ms: 0.262144
+  type: 'test'
+  ...
+1..1765
+# tests 1765
+# suites 0
+# pass 1765
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7844.890742

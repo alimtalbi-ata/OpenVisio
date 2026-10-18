@@ -1,0 +1,35 @@
+TAP version 13
+# Subtest: independent dual fabric
+ok 1 - independent dual fabric
+  ---
+  duration_ms: 20.644185
+  type: 'test'
+  ...
+# Subtest: missing B is P1
+ok 2 - missing B is P1
+  ---
+  duration_ms: 3.145991
+  type: 'test'
+  ...
+# Subtest: does not mutate input
+ok 3 - does not mutate input
+  ---
+  duration_ms: 2.286326
+  type: 'test'
+  ...
+# Subtest: CSV escapes spreadsheet formulas
+ok 4 - CSV escapes spreadsheet formulas
+  ---
+  duration_ms: 2.30238
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 167.834424
+

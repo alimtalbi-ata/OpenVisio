@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const history=readFileSync(new URL('../src/history-transaction.js',import.meta.url),'utf8');
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+test('v19.6 cancellation restores redo history',()=>assert.match(history,/redo.splice\(0,redo.length,\.\.\.previousRedo\)/));
+test('v19.6 cancellation discards provisional undo',()=>assert.match(history,/undo.pop\(\)/));
+test('v19.6 move cancellation restores original coordinates',()=>assert.match(main,/node.x=initial.x;node.y=initial.y/));
+test('v19.6 waypoint cancellation restores original point',()=>assert.match(main,/edge.waypoints\[waypointDrag.index\]=\{\.\.\.waypointDrag.original\}/));
+test('v19.6 resize cancellation restores dimensions',()=>assert.match(main,/node.w=resizeDrag.w;node.h=resizeDrag.h/));

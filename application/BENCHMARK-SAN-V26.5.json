@@ -1,0 +1,11 @@
+{
+  "version": "26.5",
+  "runs": 30,
+  "medianMs": 1.1606740000000002,
+  "p95Ms": 2.679121000000002,
+  "maxMs": 4.090778999999998,
+  "statuses": {
+    "preview": 30
+  },
+  "environment": "Node.js; synthetic fixtures; not Windows UI"
+}

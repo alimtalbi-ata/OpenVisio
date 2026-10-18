@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {svgPathPolyline,renderedCableRoutes,detectCableCrossings} from '../src/cable-crossings.js';
+const nodes=[{id:'a',x:0,y:0,w:10,h:10},{id:'b',x:100,y:100,w:10,h:10},{id:'c',x:0,y:100,w:10,h:10},{id:'d',x:100,y:0,w:10,h:10}];
+const edges=[{id:'ab',from:'a',to:'b',style:'straight'},{id:'cd',from:'c',to:'d',style:'straight'}];
+test('SVG M/L absolute interpreted',()=>assert.deepEqual(svgPathPolyline('M 0 0 L 10 0 L 10 20'),[{x:0,y:0},{x:10,y:0},{x:10,y:20}]));
+test('SVG implicit L and exponents',()=>assert.deepEqual(svgPathPolyline('M 1e1 2 L 20 30 40 50'),[{x:10,y:2},{x:20,y:30},{x:40,y:50}]));
+test('SVG unsupported curves safely fall back',()=>assert.equal(svgPathPolyline('M 0 0 C 1 2 3 4 5 6'),null));
+test('SVG malformed input safely rejected',()=>assert.equal(svgPathPolyline('M 0'),null));
+test('rendered routes extracted from SVG-like DOM',()=>{const svg={querySelectorAll:()=>[{getAttribute:()=> 'ab',querySelector:()=>({getAttribute:()=> 'M 0 0 L 100 0'})}]};assert.equal(renderedCableRoutes(svg).get('ab').length,2)});
+test('rendered paths override geometric approximation',()=>{const paths=new Map([['ab',[{x:0,y:0},{x:100,y:0}]],['cd',[{x:0,y:100},{x:100,y:100}]]]);assert.equal(detectCableCrossings(nodes,edges,paths).length,0)});
+test('crossings on rendered paths detected',()=>{const paths=new Map([['ab',[{x:0,y:0},{x:100,y:100}]],['cd',[{x:0,y:100},{x:100,y:0}]]]);assert.equal(detectCableCrossings(nodes,edges,paths).length,1)});

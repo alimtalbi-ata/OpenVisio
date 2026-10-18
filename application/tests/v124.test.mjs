@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateZones,exportDiagram,importZones} from '../src/zoning-document.js';
+const z={name:'ESX-A',fabric:'A',initiators:['10:00:00:00:00:00:00:01'],targets:['20:00:00:00:00:00:00:01']};
+test('roundtrip zoning v2',()=>{const d=exportDiagram({nodes:[],edges:[],groups:[],layers:[]},[z]);assert.deepEqual(importZones(JSON.parse(JSON.stringify(d))),[z]);assert.equal(d.version,2);});
+test('legacy diagram imports empty zoning',()=>assert.deepEqual(importZones({version:1}),[]));
+test('reject duplicate zone same fabric',()=>assert.throws(()=>validateZones([z,z])));
+test('accept same zone in other fabric',()=>assert.equal(validateZones([z,{...z,fabric:'B'}]).length,2));
+test('reject missing fabric',()=>assert.throws(()=>validateZones([{...z,fabric:'C'}])));
+test('reject non-array',()=>assert.throws(()=>validateZones({})));
+test('reject oversized member array',()=>assert.throws(()=>validateZones([{...z,targets:Array(257).fill('x')}])));
+test('reject oversized name',()=>assert.throws(()=>validateZones([{...z,name:'x'.repeat(129)}])));
+test('normalize fabric case',()=>assert.equal(validateZones([{...z,fabric:'a'}])[0].fabric,'A'));

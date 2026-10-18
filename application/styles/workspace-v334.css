@@ -1,0 +1,12 @@
+/* OpenVisio 33.4 — largeurs ajustables, canevas prioritaire. */
+@media(min-width:851px){
+.workspace{grid-template-columns:var(--ov-library-width,260px) minmax(280px,1fr) var(--ov-inspector-width,278px)}
+.workspace:has(.library-panel.hidden-panel):not(:has(.inspector-panel.hidden-panel)){grid-template-columns:minmax(280px,1fr) var(--ov-inspector-width,278px)}
+.workspace:has(.inspector-panel.hidden-panel):not(:has(.library-panel.hidden-panel)){grid-template-columns:var(--ov-library-width,260px) minmax(280px,1fr)}
+.workspace .library-panel,.workspace .inspector-panel{position:relative;min-width:0}
+.ov-resize-handle{position:absolute;top:0;bottom:0;width:12px;z-index:9;cursor:col-resize;background:transparent;border:0;padding:0;touch-action:none}
+.ov-resize-handle:hover,.ov-resize-handle:focus-visible{background:rgba(37,99,235,.14);outline:2px solid #2563eb;outline-offset:-2px}
+.library-panel>.ov-resize-handle{right:0}.inspector-panel>.ov-resize-handle{left:0}
+body.ov-resizing,body.ov-resizing *{cursor:col-resize!important;user-select:none!important}
+}
+@media(max-width:850px){.ov-resize-handle{display:none}}

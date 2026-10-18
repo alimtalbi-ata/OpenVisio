@@ -1,0 +1,1 @@
+Tentative de capture réelle Chromium headless Linux le 15/10/2026 : échec (aucun PNG généré). Captures historiques non représentatives de v17.9. Aucune capture Windows réelle.

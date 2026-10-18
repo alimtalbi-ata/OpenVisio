@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {routeSharedLength,totalRouteSharedLength,routeWithFewerCrossings} from '../src/routing.js';
+const r=(...points)=>({points:points.map(([x,y])=>({x,y}))});
+test('shared horizontal overlap counts length, not endpoints',()=>assert.equal(routeSharedLength(r([0,0],[100,0]),r([40,0],[140,0])),60));
+test('shared vertical overlap counts length',()=>assert.equal(routeSharedLength(r([0,0],[0,100]),r([0,30],[0,80])),50));
+test('perpendicular crossings do not count as overlap',()=>assert.equal(routeSharedLength(r([0,0],[100,0]),r([50,-50],[50,50])),0));
+test('total shared length excludes self pairs',()=>assert.equal(totalRouteSharedLength([r([0,0],[100,0]),r([20,0],[80,0]),r([0,50],[100,50])]),60));
+test('invalid routes fail explicitly',()=>assert.throws(()=>routeSharedLength({points:null},r([0,0],[1,0])),/Invalid/));
+test('candidate routes remain valid with overlap penalty',()=>{const a={x:0,y:0,w:40,h:40},b={x:200,y:0,w:40,h:40};const route=routeWithFewerCrossings(a,b,[]);assert.ok(route.points.length>=2);});

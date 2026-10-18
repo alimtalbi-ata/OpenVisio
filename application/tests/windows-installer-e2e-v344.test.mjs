@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const e2e=readFileSync('windows/Test-Installer-E2E.ps1','utf8');
+const ci=readFileSync('.github/workflows/windows-release.yml','utf8');
+test('installer E2E enforces a timeout',()=>assert.match(e2e,/WaitForExit\(\$ProcessTimeoutSeconds/));
+test('installer E2E fails if uninstaller missing',()=>assert.match(e2e,/throw 'Uninstaller missing'/));
+test('installer E2E verifies application assets',()=>assert.match(e2e,/wwwroot\/src\/main\.js/));
+test('installer E2E verifies post-uninstall executable removal',()=>assert.match(e2e,/Executable remains after uninstall/));
+test('CI retains machine-readable qualification report',()=>assert.match(ci,/dist\/qualification\/\*\.json/));

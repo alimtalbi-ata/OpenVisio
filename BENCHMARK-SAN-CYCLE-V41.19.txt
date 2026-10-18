@@ -1,0 +1,36 @@
+{
+  "version": "41.19",
+  "type": "synthetic SAN-like routing cycle; Node.js, no DOM/Windows",
+  "runs": 7,
+  "generatedAt": "2026-10-17T17:16:33.198Z",
+  "node": "v22.16.0",
+  "results": [
+    {
+      "routes": 100,
+      "affected": 8,
+      "fullMedianMs": 1.3853709999999992,
+      "targetedMedianMs": 0.671438000000002,
+      "fullRecomputations": 100,
+      "targetedRecomputations": 8,
+      "geometryEquivalent": true
+    },
+    {
+      "routes": 500,
+      "affected": 8,
+      "fullMedianMs": 5.449936000000008,
+      "targetedMedianMs": 2.818193000000008,
+      "fullRecomputations": 500,
+      "targetedRecomputations": 8,
+      "geometryEquivalent": true
+    },
+    {
+      "routes": 1000,
+      "affected": 8,
+      "fullMedianMs": 10.285769999999957,
+      "targetedMedianMs": 6.361325000000022,
+      "fullRecomputations": 1000,
+      "targetedRecomputations": 8,
+      "geometryEquivalent": true
+    }
+  ]
+}

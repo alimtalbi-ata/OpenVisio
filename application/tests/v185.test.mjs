@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {cableDiagnostics,portInventory,fabricRedundancy} from '../src/ports.js';
+const nodes=[{id:'host',type:'server',ports:['FC0','FC1']},{id:'swA',type:'switch',fabric:' a ',ports:['FC0']},{id:'swB',type:'switch',fabric:'b',ports:['FC0']}];
+const link=(id,to,sourceInterface='FC0',targetInterface='FC0')=>({id,from:'host',to,sourceInterface,targetInterface});
+test('valid A/B FC wiring has no cable anomaly',()=>assert.deepEqual(cableDiagnostics(nodes,[link('a','swA'),link('b','swB','FC1')]),[]));
+test('fabric redundancy accepts trimmed and lowercase labels',()=>assert.equal(fabricRedundancy(nodes,[link('a','swA'),link('b','swB','FC1')]).find(x=>x.nodeId==='host').redundant,true));
+test('duplicate usage across different cables is reported',()=>assert.ok(cableDiagnostics(nodes,[link('a','swA'),link('b','swB')]).some(x=>x.code==='port-reused'&&x.previousEdgeId==='a')));
+test('unknown port does not create a false port-reused finding',()=>{const r=cableDiagnostics(nodes,[link('a','swA','BAD'),link('b','swB','BAD')]);assert.equal(r.filter(x=>x.code==='unknown-port').length,2);assert.equal(r.some(x=>x.code==='port-reused'&&x.port==='BAD'),false)});
+test('self-loop using one port is not counted as two distinct cables',()=>{const r=cableDiagnostics(nodes,[{id:'loop',from:'host',to:'host',sourceInterface:'FC0',targetInterface:'FC0'}]);assert.equal(r.some(x=>x.code==='port-reused'),false)});
+test('inventory flags genuinely shared physical port as conflict',()=>{const r=portInventory(nodes,[link('a','swA'),link('b','swB')]);assert.equal(r.find(x=>x.nodeId==='host'&&x.port==='FC0').status,'conflict')});

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+const q=readFileSync('windows/Qualify-Windows-Release.ps1','utf8');
+const py=readFileSync('tests/browser-functional-v357.py','utf8');
+test('functional qualification is explicit opt-in',()=>assert.match(q,/\[switch\]\$RunFunctionalSmoke/));
+test('functional check requires PASS evidence',()=>{assert.match(q,/functional-report\.json/);assert.match(q,/result\.status -ne 'PASS'/)});
+test('functional test operates real editor controls',()=>{for(const id of ['#diagramCanvas','[data-shape="server"]','[data-tool="connect"]','#undoBtn','#redoBtn'])assert.ok(py.includes(id),id)});
+test('functional capture is genuine Playwright screenshot',()=>assert.match(py,/page\.screenshot\(/));
+test('functional CMD entrypoint exists',()=>assert.ok(existsSync('Qualify-OpenVisio-Windows-Functional.cmd')));

@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+const root=new URL('../',import.meta.url);
+const read=p=>readFileSync(new URL(p,root),'utf8');
+const html=read('index.html');
+test('v18.0 visible version matches package',()=>{const version=JSON.parse(read('package.json')).version;const label=version.replace(/\.0$/,'');assert.ok(html.includes(`<title>OpenVisio v${label}`));assert.ok(html.includes(`Atelier d’architecture · v${label}`))});
+test('v18.0 main canvas and layers exist',()=>{for(const id of ['diagramCanvas','nodesLayer','edgesLayer','canvasViewport'])assert.match(html,new RegExp(`id="${id}"`))});
+test('v18.0 core editing commands exist',()=>{for(const id of ['newDiagram','saveJsonBtn','openJsonBtn','exportBtn','undoBtn','shapeLibrary','inspectorContent'])assert.match(html,new RegExp(`id="${id}"`))});
+test('v18.0 diagnostic controls and accessible toggle exist',()=>{assert.match(html,/id="renderDiagnosticsToggle"[^>]*aria-expanded="false"/);for(const id of ['renderDiagnosticsPanel','renderDiagnosticsOutput','renderDiagnosticsReset'])assert.match(html,new RegExp(`id="${id}"`))});
+test('v18.0 Windows build and validation scripts are packaged',()=>{for(const f of ['Build-Windows-EXE.cmd','windows/Validate-OpenVisio-Windows.ps1','windows/native/OpenVisio.csproj'])assert.ok(existsSync(new URL(f,root)),f)});

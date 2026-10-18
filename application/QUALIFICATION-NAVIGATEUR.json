@@ -1,0 +1,7 @@
+{
+  "tests": "node --test",
+  "pass": true,
+  "windows_native": "NOT_RUN",
+  "real_browser_screenshots": 0,
+  "historical_previews": 3
+}

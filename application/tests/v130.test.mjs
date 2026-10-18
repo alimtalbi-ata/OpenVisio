@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {appendSanSnapshot,validateSanHistory,cockpitSummary,cockpitCsv} from '../src/san-cockpit.js';
+const sample=(fabric='A')=>({vendor:'brocade',fabric,zonesets:[{name:'CFG',vsan:null,zones:['Z1']}],activeConfigurations:[],zones:[{name:'Z1',vsan:null,members:[]}],aliases:{},warnings:[]});
+test('snapshot SAN ajouté',()=>assert.equal(appendSanSnapshot([],sample()).length,1));
+test('historique SAN invalidé si non tableau',()=>assert.throws(()=>validateSanHistory({}))); 
+test('historique SAN invalidé si date incorrecte',()=>assert.throws(()=>validateSanHistory([{at:'bad',data:sample()}])));
+test('résumé fabrics A/B',()=>{const a=appendSanSnapshot([],sample('A'));const b=appendSanSnapshot(a,sample('B'));assert.deepEqual(cockpitSummary(b).fabrics,{A:1,B:1});});
+test('détecte zone absente',()=>{const x=sample();x.zones=[];assert.equal(cockpitSummary(appendSanSnapshot([],x)).alerts.length,1);});
+test('CSV possède entête et BOM',()=>assert.match(cockpitCsv(cockpitSummary([])),/^\uFEFF"Type"/));
+test('historique limité à 30',()=>{let h=[];for(let i=0;i<32;i++)h=appendSanSnapshot(h,sample());assert.equal(h.length,30);});
+test('différences de zonesets entre imports',()=>{const x=sample();const y=sample();y.zonesets[0].zones=['Z2'];const h=appendSanSnapshot(appendSanSnapshot([],x),y);assert.equal(cockpitSummary(h).changed,1);});

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {planPortRename,applyPortRename} from '../src/ports.js';
+const make=()=>({nodes:[{id:'a',ports:['FC0','FC1'],fabric:'A',wwpns:['10:00']}],edges:[{id:'e',from:'a',to:'b',sourceInterface:'FC0',waypoints:[{x:3,y:5}],zoneName:'z'},{id:'loop',from:'a',to:'a',sourceInterface:'FC0',targetInterface:'FC0'}]});
+test('prévisualisation sans mutation',()=>{const {nodes,edges}=make(),before=JSON.stringify([nodes,edges]);const plan=planPortRename(nodes[0],'FC0','FC2',edges);assert.equal(plan.affected.length,2);assert.equal(JSON.stringify([nodes,edges]),before);});
+test('réaffectation des deux extrémités, métadonnées intactes',()=>{const {nodes,edges}=make();const plan=planPortRename(nodes[0],'FC0','FC2',edges);assert.equal(applyPortRename(nodes,edges,plan),true);assert.deepEqual(nodes[0].ports,['FC2','FC1']);assert.equal(edges[1].sourceInterface,'FC2');assert.equal(edges[1].targetInterface,'FC2');assert.deepEqual(edges[0].waypoints,[{x:3,y:5}]);assert.equal(edges[0].zoneName,'z');assert.equal(nodes[0].fabric,'A');});
+test('collision de nom refusée',()=>{const {nodes,edges}=make();assert.throws(()=>planPortRename(nodes[0],'FC0','fc1',edges),/déjà utilisé/);});
+test('port absent refusé',()=>{const {nodes,edges}=make();assert.throws(()=>planPortRename(nodes[0],'missing','FC2',edges),/introuvable/);});
+test('plan périmé refusé avant toute mutation',()=>{const {nodes,edges}=make();const plan=planPortRename(nodes[0],'FC0','FC2',edges);edges.push({id:'late',from:'a',to:'c',sourceInterface:'FC0'});const before=JSON.stringify([nodes,edges]);assert.throws(()=>applyPortRename(nodes,edges,plan),/périmé/);assert.equal(JSON.stringify([nodes,edges]),before);});
+test('renommage identique sans effet',()=>{const {nodes,edges}=make();const plan=planPortRename(nodes[0],'FC0','FC0',edges);assert.equal(applyPortRename(nodes,edges,plan),false);});

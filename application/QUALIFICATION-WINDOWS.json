@@ -1,0 +1,7 @@
+{
+  "node_tests_passed": 144,
+  "windows_exe_compiled": false,
+  "reason": "dotnet SDK unavailable in build environment",
+  "windows_execution": "NOT_TESTED",
+  "snapshots": "historical static previews"
+}

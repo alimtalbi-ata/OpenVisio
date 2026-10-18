@@ -1,0 +1,14 @@
+// OpenVisio v15.0 — Analyse documentaire SPOF. Auteur : Abdelhalim Talbi.
+import {failureTargets,simulateMultipleSanFailures} from './san-failure-simulator.js';
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const csv=x=>{let s=String(x??'');if(/^\s*[=+@-]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"';};
+export function analyzeSanSpof(doc,{maxTargets=200}={}){
+ const targets=failureTargets(doc);if(targets.length>maxTargets)throw new Error('Trop de cibles pour analyse SPOF ('+targets.length+' > '+maxTargets+')');
+ const baselinePairs=0; // no simulation when diagram has no eligible targets
+ const results=targets.map(t=>{const r=simulateMultipleSanFailures(doc,[{kind:t.kind,id:t.id}]);return {kind:t.kind,id:t.id,label:t.label,loss:r.summary.loss,degraded:r.summary.degraded,applications:r.summary.applications,affected:r.summary.affected,rows:r.rows.filter(x=>x.impact!=='unchanged')};});
+ results.sort((a,b)=>b.loss-a.loss||b.degraded-a.degraded||b.applications-a.applications||a.kind.localeCompare(b.kind)||a.id.localeCompare(b.id));
+ const spofs=results.filter(r=>r.loss>0);const recommendations=spofs.map(r=>({target:r.kind+':'+r.id,advice:r.kind==='fabric'?'Vérifier une seconde Fabric indépendante et les chemins multipathing.':r.kind==='edge'?'Ajouter un chemin physique indépendant et valider zoning/masking.':'Prévoir la redondance du composant et contrôler les dépendances applicatives.',evidence:r.loss+' paire(s) serveur-stockage perdue(s) dans le modèle.'}));
+ return {results,spofs,recommendations,baselinePairs,scope:'Analyse documentaire de défaillances unitaires. Une perte de paire est un SPOF modélisé, pas une preuve de panne réelle. Les recommandations doivent être validées sur les équipements.'};
+}
+export function spofCsv(r){return [['Type','Identifiant','Nom','Pertes','Dégradations','Applications'],...r.results.map(x=>[x.kind,x.id,x.label,x.loss,x.degraded,x.applications])].map(row=>row.map(csv).join(',')).join('\r\n')+'\r\n';}
+export function spofHtml(r){return '<!doctype html><html lang="fr"><meta charset="utf-8"><title>OpenVisio — SPOF SAN</title><style>body{font:14px system-ui;margin:2rem}table{border-collapse:collapse;width:100%}th,td{border:1px solid #aaa;padding:7px}th{background:#e8f1fa}</style><h1>Analyse des points uniques de défaillance SAN</h1><p>Auteur : Abdelhalim Talbi</p><p>'+esc(r.scope)+'</p><p>'+r.spofs.length+' SPOF modélisé(s) ; '+r.results.length+' cibles analysées.</p><table><tr><th>Cible</th><th>Pertes</th><th>Dégradations</th><th>Applications</th></tr>'+r.results.map(x=>'<tr>'+[x.kind+':'+x.label,x.loss,x.degraded,x.applications].map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')+'</table><h2>Pistes de remédiation (non appliquées)</h2><ul>'+r.recommendations.map(x=>'<li><b>'+esc(x.target)+'</b> — '+esc(x.advice)+' '+esc(x.evidence)+'</li>').join('')+'</ul></html>';}

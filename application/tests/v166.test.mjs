@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {orthogonalFanOut} from '../src/routing.js';
+const nodes=[{id:'a',x:0,y:0,w:80,h:100},{id:'b',x:240,y:0,w:80,h:100}];
+const edge={id:'e',from:'a',to:'b'};
+const route={points:[{x:80,y:30},{x:160,y:30},{x:160,y:70},{x:240,y:70}],distributedAnchors:true};
+test('orthogonal fan-out creates an outward source stub',()=>{const r=orthogonalFanOut([edge],new Map([['e',route]]),nodes).get('e');assert.equal(r.points[1].x,96);assert.equal(r.points[1].y,30);assert.equal(r.orthogonalFanOut,true)});
+test('fan-out segments remain orthogonal',()=>{const r=orthogonalFanOut([edge],new Map([['e',route]]),nodes).get('e');assert.ok(r.points.slice(1).every((p,i)=>p.x===r.points[i].x||p.y===r.points[i].y))});
+test('explicit source port is preserved',()=>{const r=orthogonalFanOut([{...edge,fromPort:'top'}],new Map([['e',route]]),nodes).get('e');assert.equal(r.points[0].x,80)});
+test('manual waypoints preserve route',()=>{const r=orthogonalFanOut([{...edge,waypoints:[{x:140,y:30}]}],new Map([['e',route]]),nodes).get('e');assert.equal(r,route)});
+test('physical interfaces preserve route',()=>{const r=orthogonalFanOut([{...edge,sourceInterface:'eth0'}],new Map([['e',route]]),nodes).get('e');assert.equal(r,route)});
+test('reject invalid stub',()=>assert.throws(()=>orthogonalFanOut([],new Map(),[],{stub:0})));
+test('obstacle blocks fan-out',()=>{const n=[...nodes,{id:'block',x:86,y:22,w:12,h:16}];const r=orthogonalFanOut([edge],new Map([['e',route]]),n).get('e');assert.equal(r.orthogonalFanOut,undefined)});

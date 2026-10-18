@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {separateParallelRoutes} from "../src/routing.js";
+const edges=[{id:"a"},{id:"b"},{id:"c"}];
+const route={points:[{x:0,y:0},{x:100,y:0}],path:"M 0 0 L 100 0"};
+test("parallel routes are separated",()=>{const r=separateParallelRoutes(edges,new Map(edges.map(e=>[e.id,route])));assert.notEqual(r.get("a").path,r.get("c").path);assert.equal(r.get("b").path,route.path);});
+test("endpoints remain unchanged",()=>{const r=separateParallelRoutes(edges,new Map(edges.map(e=>[e.id,route])));assert.deepEqual(r.get("a").points[0],route.points[0]);assert.deepEqual(r.get("a").points.at(-1),route.points.at(-1));});
+test("manual waypoints untouched",()=>{const r=separateParallelRoutes([{id:"a",waypoints:[{x:2,y:3}]},{id:"b"}],new Map([["a",route],["b",route]]));assert.equal(r.get("a"),route);assert.equal(r.get("b"),route);});
+test("vertical links separated",()=>{const v={points:[{x:20,y:0},{x:20,y:100}],path:"M 20 0 L 20 100"};const r=separateParallelRoutes(edges.slice(0,2),new Map([["a",v],["b",v]]));assert.notEqual(r.get("a").points[1].x,20);});
+test("unrelated links unchanged",()=>{const r=separateParallelRoutes([{id:"a"}],new Map([["a",route]]));assert.equal(r.get("a"),route);});
+test("invalid spacing rejected",()=>assert.throws(()=>separateParallelRoutes([],new Map(),{spacing:0})));
+test("does not mutate source routes",()=>{const r=separateParallelRoutes(edges,new Map(edges.map(e=>[e.id,route])));assert.equal(route.points.length,2);assert.notEqual(r.get("a"),route);});

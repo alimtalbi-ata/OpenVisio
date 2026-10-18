@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const main=readFileSync(new URL('../src/main.js',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+test('v25.0 importe audit natif',()=>assert.match(main,/import \{auditSanRoutes\}/));
+test('v25.0 affiche les diagnostics dans le panneau',()=>assert.match(html,/id="sanNativeGeometryAudit"/));
+test('v25.0 limite la charge des topologies',()=>assert.match(main,/auditedEdges.length>250/));
+test('v25.0 permet de localiser une anomalie',()=>assert.match(main,/Anomalie géométrique/));
+test('v25.0 conserve les chemins SVG rendus',()=>assert.match(main,/renderedCableRoutes\(svg\)/));

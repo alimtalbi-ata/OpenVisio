@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {summarizeDomMutations} from '../src/renderer.js';
+const stats=(o={})=>({nodesUpdated:0,edgesUpdated:0,nodesRemoved:0,edgesRemoved:0,nodesReused:0,edgesReused:0,...o});
+test('aucune mutation sur rendu réutilisé',()=>assert.deepEqual(summarizeDomMutations(stats({nodesReused:3,edgesReused:4})),{createdOrReplaced:0,removed:0,reused:7,total:7,mutationRatio:0}));
+test('compte créations et remplacements',()=>assert.equal(summarizeDomMutations(stats({nodesUpdated:2,edgesUpdated:3})).createdOrReplaced,5));
+test('compte suppressions',()=>assert.equal(summarizeDomMutations(stats({nodesRemoved:2,edgesRemoved:1})).removed,3));
+test('ratio mutations correct',()=>assert.equal(summarizeDomMutations(stats({nodesUpdated:1,nodesReused:3})).mutationRatio,.25));
+test('état vide stable',()=>assert.equal(summarizeDomMutations(stats()).mutationRatio,0));
+test('refuse les compteurs négatifs ou fractionnaires',()=>{assert.throws(()=>summarizeDomMutations(stats({edgesUpdated:-1})));assert.throws(()=>summarizeDomMutations(stats({nodesReused:1.2})));});

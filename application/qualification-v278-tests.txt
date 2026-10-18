@@ -1,0 +1,7 @@
+Commande : npm test
+# tests 1221
+# pass 1221
+# fail 0
+# duration_ms 5766.853922
+
+Syntaxe JavaScript : PASS (tous les fichiers src/*.js et tests/*.mjs)
