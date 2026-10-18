@@ -19,7 +19,7 @@ REM Mandatory application regression tests before compiling release binaries.
 where node.exe >nul 2>&1
 if errorlevel 1 (echo Node.js requis pour la qualification de la release. & goto :error)
 node --version
-node --test tests/*.test.mjs
+node --test tests
 if errorlevel 1 (echo ECHEC: tests Node.js. & goto :error)
 node windows/verify-release.mjs
 if errorlevel 1 goto :error
