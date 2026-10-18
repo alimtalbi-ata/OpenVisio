@@ -4,6 +4,7 @@ from tkinter import filedialog, messagebox
 from uuid import uuid4
 from .model import load, save
 from .export import export_svg
+from .shapes import SHAPES, get_shape
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -30,6 +31,10 @@ class Editor(tk.Tk):
         edit.add_command(label="Relier deux équipements", command=self.begin_link)
         edit.add_command(label="Supprimer la sélection", command=self.delete_selected)
         bar.add_cascade(label="Édition", menu=edit)
+        shapes_menu = tk.Menu(bar, tearoff=False)
+        for key, shape in SHAPES.items():
+            shapes_menu.add_command(label=shape["label"], command=lambda kind=key: self.create_node(180, 140, kind))
+        bar.add_cascade(label="Équipements", menu=shapes_menu)
         self.config(menu=bar)
         self.bind("<Control-s>", lambda event: self.store())
         self.bind("<Control-o>", lambda event: self.open())
@@ -41,8 +46,8 @@ class Editor(tk.Tk):
         self.current_path = None
         self.selected = None
         self.draw()
-    def create_node(self, x, y):
-        node = {"id": uuid4().hex, "x": round(x), "y": round(y), "label": "Équipement"}
+    def create_node(self, x, y, kind="server"):
+        node = {"id": uuid4().hex, "x": round(x), "y": round(y), "label": get_shape(kind)["label"], "shape": kind}
         self.document["nodes"].append(node)
         self.selected = node["id"]
         self.draw()
@@ -88,7 +93,7 @@ class Editor(tk.Tk):
         for n in self.document["nodes"]:
             x, y = n["x"], n["y"]
             selected = n["id"] == self.selected
-            self.canvas.create_rectangle(x-70, y-30, x+70, y+30, fill="#dbeafe" if selected else "white", outline="#1d4ed8", width=3 if selected else 1)
+            self.canvas.create_rectangle(x-70, y-30, x+70, y+30, fill=get_shape(n.get("shape", "server"))["fill"] if not selected else "#bfdbfe", outline="#1d4ed8", width=3 if selected else 1)
             self.canvas.create_text(x, y, text=n.get("label", "Équipement")[:40], fill="#172554")
     def open(self):
         path = filedialog.askopenfilename(filetypes=[("OpenVisio JSON", "*.ovjson *.json")])
