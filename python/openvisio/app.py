@@ -11,7 +11,7 @@ from .links import normalize_link, PROTOCOLS
 from .history import History
 from .render import node_at, edge_at, draw_document
 from .viewport import Viewport
-from .layout import snap, align
+from .layout import snap, align, distribute, move_group
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -28,6 +28,7 @@ class Editor(tk.Tk):
         self.link_start = None
         self.viewport = Viewport()
         self._pan_anchor = None
+        self._drag_anchor = None
         self.history = History(self.document)
         self.saved_snapshot = self._snapshot()
         self.protocol("WM_DELETE_WINDOW", self.close_safely)
@@ -36,7 +37,7 @@ class Editor(tk.Tk):
         self.canvas.bind("<Double-Button-1>", self.add_node)
         self.canvas.bind("<Button-1>", self.click)
         self.canvas.bind("<B1-Motion>", self.drag)
-        self.canvas.bind("<ButtonRelease-1>", lambda event: self._record_change())
+        self.canvas.bind("<ButtonRelease-1>", self.end_drag)
         self.canvas.bind("<Configure>", lambda event: self.draw())
         self.canvas.bind("<MouseWheel>", self.wheel_zoom)
         self.canvas.bind("<Button-4>", lambda event: self.zoom_at(event, 1.12))
@@ -73,6 +74,8 @@ class Editor(tk.Tk):
         view.add_command(label="Activer / désactiver l'accrochage", command=self.toggle_snap)
         view.add_command(label="Aligner horizontalement", command=lambda: self.align_selection("y"))
         view.add_command(label="Aligner verticalement", command=lambda: self.align_selection("x"))
+        view.add_command(label="Distribuer horizontalement", command=lambda: self.distribute_selection("x"))
+        view.add_command(label="Distribuer verticalement", command=lambda: self.distribute_selection("y"))
         bar.add_cascade(label="Affichage", menu=view)
         self.config(menu=bar)
         self.bind("<Control-z>", lambda event: self.undo())
@@ -95,6 +98,15 @@ class Editor(tk.Tk):
             self.draw()
         else:
             messagebox.showinfo("Alignement", "Sélectionnez au moins deux équipements avec Ctrl+clic")
+    def distribute_selection(self, axis):
+        if distribute(self.document["nodes"], self.selected_nodes, axis):
+            self._record_change()
+            self.draw()
+        else:
+            messagebox.showinfo("Distribution", "Sélectionnez au moins trois équipements avec des positions différentes")
+    def end_drag(self, event):
+        self._drag_anchor = None
+        self._record_change()
     def zoom_at(self, event, factor):
         self.viewport.zoom_at(factor, event.x, event.y)
         self.draw()
@@ -188,12 +200,17 @@ class Editor(tk.Tk):
             self.selected = node["id"] if node else None
             self.selected_nodes = {node["id"]} if node else set()
         self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
+        self._drag_anchor = self.viewport.world(event.x, event.y) if node and not (event.state & 0x0004) else None
         self.draw()
     def drag(self, event):
-        node = next((n for n in self.document["nodes"] if n["id"] == self.selected), None)
-        if node:
-            x, y = self.viewport.world(event.x, event.y)
-            node["x"], node["y"] = (snap(x), snap(y)) if self.snap_enabled else (x, y)
+        if self._drag_anchor is None or not self.selected_nodes:
+            return
+        x, y = self.viewport.world(event.x, event.y)
+        old_x, old_y = self._drag_anchor
+        dx, dy = x - old_x, y - old_y
+        changed = move_group(self.document["nodes"], self.selected_nodes, dx, dy, 20 if self.snap_enabled else None)
+        if changed:
+            self._drag_anchor = (x, y) if not self.snap_enabled else (old_x + snap(dx), old_y + snap(dy))
             self.draw()
     def begin_link(self):
         if not self.selected:
