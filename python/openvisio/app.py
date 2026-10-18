@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from uuid import uuid4
 from .model import load, save
+from .export import export_svg
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -21,7 +22,7 @@ class Editor(tk.Tk):
         self.canvas.bind("<Configure>", lambda event: self.draw())
         bar = tk.Menu(self)
         filemenu = tk.Menu(bar, tearoff=False)
-        for label, command in [("Nouveau", self.new), ("Ouvrir", self.open), ("Enregistrer", self.store), ("Enregistrer sous", self.store_as)]:
+        for label, command in [("Nouveau", self.new), ("Ouvrir", self.open), ("Enregistrer", self.store), ("Enregistrer sous", self.store_as), ("Exporter en SVG", self.export_as_svg)]:
             filemenu.add_command(label=label, command=command)
         bar.add_cascade(label="Fichier", menu=filemenu)
         edit = tk.Menu(bar, tearoff=False)
@@ -106,6 +107,15 @@ class Editor(tk.Tk):
             self.status.set("Enregistré : " + self.current_path)
         except (ValueError, OSError) as exc:
             messagebox.showerror("Enregistrement impossible", str(exc))
+    def export_as_svg(self):
+        path = filedialog.asksaveasfilename(defaultextension=".svg", filetypes=[("Image vectorielle SVG", "*.svg")])
+        if not path:
+            return
+        try:
+            export_svg(path, self.document)
+            self.status.set("SVG exporté : " + path)
+        except (ValueError, OSError) as exc:
+            messagebox.showerror("Export impossible", str(exc))
     def store_as(self):
         path = filedialog.asksaveasfilename(defaultextension=".ovjson", filetypes=[("OpenVisio", "*.ovjson")])
         if path:
