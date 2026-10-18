@@ -6,6 +6,7 @@ from .model import load, save
 from .export import export_svg
 from .shapes import SHAPES, get_shape
 from .properties import normalize_properties
+from .links import normalize_link, PROTOCOLS
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -31,6 +32,7 @@ class Editor(tk.Tk):
         edit.add_command(label="Ajouter un équipement", command=lambda: self.create_node(150, 120))
         edit.add_command(label="Relier deux équipements", command=self.begin_link)
         edit.add_command(label="Propriétés de la sélection", command=self.edit_properties)
+        edit.add_command(label="Propriétés de la dernière liaison", command=self.edit_last_link)
         edit.add_command(label="Supprimer la sélection", command=self.delete_selected)
         bar.add_cascade(label="Édition", menu=edit)
         shapes_menu = tk.Menu(bar, tearoff=False)
@@ -106,6 +108,35 @@ class Editor(tk.Tk):
             dialog.destroy()
         tk.Button(dialog, text="Enregistrer", command=apply).grid(row=5, column=1, pady=12, sticky="e")
         dialog.bind("<Return>", lambda event: apply())
+        dialog.bind("<Escape>", lambda event: dialog.destroy())
+        dialog.wait_window()
+    def edit_last_link(self):
+        if not self.document["edges"]:
+            messagebox.showinfo("Liaisons", "Créez d'abord une connexion")
+            return
+        edge = self.document["edges"][-1]
+        dialog = tk.Toplevel(self)
+        dialog.title("Propriétés de la liaison SAN")
+        dialog.transient(self)
+        dialog.grab_set()
+        fields = {}
+        for row, (key, title) in enumerate((("protocol", "Protocole"), ("source_port", "Port source"), ("target_port", "Port cible"), ("fabric", "Fabric"), ("speed_gbps", "Débit (Gbit/s)"))):
+            tk.Label(dialog, text=title).grid(row=row, column=0, padx=12, pady=6, sticky="w")
+            value = tk.StringVar(value=edge.get(key, "FC" if key == "protocol" else ""))
+            if key == "protocol":
+                tk.OptionMenu(dialog, value, *PROTOCOLS).grid(row=row, column=1, padx=12, pady=6, sticky="ew")
+            else:
+                tk.Entry(dialog, textvariable=value, width=38).grid(row=row, column=1, padx=12, pady=6)
+            fields[key] = value
+        def apply():
+            try:
+                edge.update(normalize_link(**{key: value.get() for key, value in fields.items()}))
+            except ValueError as exc:
+                messagebox.showerror("Liaison invalide", str(exc), parent=dialog)
+                return
+            self.draw()
+            dialog.destroy()
+        tk.Button(dialog, text="Enregistrer", command=apply).grid(row=5, column=1, pady=12, sticky="e")
         dialog.bind("<Escape>", lambda event: dialog.destroy())
         dialog.wait_window()
     def delete_selected(self):
