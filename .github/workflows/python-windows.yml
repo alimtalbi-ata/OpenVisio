@@ -21,7 +21,7 @@ jobs:
       - name: Install Inno Setup
         shell: pwsh
         run: |
-          winget install --id JRSoftware.InnoSetup -e --accept-package-agreements --accept-source-agreements --silent
+          choco install innosetup -y --no-progress
           if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
       - name: Build Python portable and installer
         shell: cmd
