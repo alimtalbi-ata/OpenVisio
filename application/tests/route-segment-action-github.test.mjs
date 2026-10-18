@@ -11,3 +11,11 @@ test('route diagnostics expose accessible segment actions',()=>{
  assert.match(src,/onSelectSegment\(item\.edgeId,number\)/);
  assert.match(src,/Examiner le segment/);
 });
+
+test('v41.77 segment controls provide keyboard navigation',()=>{
+ const src=readFileSync(new URL('../src/route-clearance-view.js',import.meta.url),'utf8');
+ assert.match(src,/event\.key==='ArrowLeft'/);
+ assert.match(src,/event\.key==='ArrowRight'/);
+ assert.match(src,/siblings\[next\]\?\.focus/);
+ assert.match(src,/event\.stopPropagation\?\.\(\)/);
+});
