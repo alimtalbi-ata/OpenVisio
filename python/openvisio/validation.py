@@ -21,7 +21,7 @@ def validate_document(data):
             value = node.get(key)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
                 raise ValueError("Coordonnée invalide")
-        for key in ("label", "shape", "hostname", "address", "vendor", "model"):
+        for key in ("label", "shape", "hostname", "address", "vendor", "model", "role", "location", "serial_number", "firmware", "notes"):
             if key in node and (not isinstance(node[key], str) or len(node[key]) > 4096):
                 raise ValueError("Propriété équipement invalide : " + key)
     for edge in edges:
