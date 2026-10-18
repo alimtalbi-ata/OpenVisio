@@ -1,6 +1,6 @@
 """Native Tkinter diagram editor. Author: Abdelhalim Talbi."""
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, simpledialog
 from uuid import uuid4
 from .model import load, save
 from .export import export_svg
@@ -29,6 +29,7 @@ class Editor(tk.Tk):
         edit = tk.Menu(bar, tearoff=False)
         edit.add_command(label="Ajouter un équipement", command=lambda: self.create_node(150, 120))
         edit.add_command(label="Relier deux équipements", command=self.begin_link)
+        edit.add_command(label="Propriétés de la sélection", command=self.edit_properties)
         edit.add_command(label="Supprimer la sélection", command=self.delete_selected)
         bar.add_cascade(label="Édition", menu=edit)
         shapes_menu = tk.Menu(bar, tearoff=False)
@@ -39,6 +40,7 @@ class Editor(tk.Tk):
         self.bind("<Control-s>", lambda event: self.store())
         self.bind("<Control-o>", lambda event: self.open())
         self.bind("<Delete>", lambda event: self.delete_selected())
+        self.bind("<F2>", lambda event: self.edit_properties())
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
     def new(self):
@@ -77,6 +79,20 @@ class Editor(tk.Tk):
             return
         self.link_start = self.selected
         self.status.set("Cliquez sur le second équipement pour créer la connexion")
+    def edit_properties(self):
+        node = next((n for n in self.document["nodes"] if n["id"] == self.selected), None)
+        if node is None:
+            messagebox.showinfo("Propriétés", "Sélectionnez un équipement")
+            return
+        label = simpledialog.askstring("Nom de l'équipement", "Nom :", initialvalue=node.get("label", ""), parent=self)
+        if label is None:
+            return
+        label = label.strip()
+        if not label:
+            messagebox.showerror("Propriétés", "Le nom ne peut pas être vide")
+            return
+        node["label"] = label[:120]
+        self.draw()
     def delete_selected(self):
         sid = self.selected
         self.document["nodes"] = [n for n in self.document["nodes"] if n["id"] != sid]
