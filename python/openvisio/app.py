@@ -1,5 +1,6 @@
 """Native Tkinter diagram editor. Author: Abdelhalim Talbi."""
 import tkinter as tk
+import json
 from math import hypot
 from tkinter import filedialog, messagebox, simpledialog
 from uuid import uuid4
@@ -19,6 +20,8 @@ class Editor(tk.Tk):
         self.selected = None
         self.selected_edge = None
         self.link_start = None
+        self.saved_snapshot = self._snapshot()
+        self.protocol("WM_DELETE_WINDOW", self.close_safely)
         self.canvas = tk.Canvas(self, bg="#f8fafc", highlightthickness=0)
         self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Double-Button-1>", self.add_node)
@@ -48,11 +51,29 @@ class Editor(tk.Tk):
         self.bind("<F2>", lambda event: self.edit_properties())
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
+    def _snapshot(self):
+        return json.dumps(self.document, sort_keys=True, ensure_ascii=False)
+    def _confirm_discard(self):
+        if self._snapshot() == self.saved_snapshot:
+            return True
+        answer = messagebox.askyesnocancel("Modifications non enregistrées", "Enregistrer les modifications avant de continuer ?", parent=self)
+        if answer is None:
+            return False
+        if answer:
+            self.store()
+            return self._snapshot() == self.saved_snapshot
+        return True
+    def close_safely(self):
+        if self._confirm_discard():
+            self.destroy()
     def new(self):
+        if not self._confirm_discard():
+            return
         self.document = {"nodes": [], "edges": []}
         self.current_path = None
         self.selected = None
         self.selected_edge = None
+        self.saved_snapshot = self._snapshot()
         self.draw()
     def create_node(self, x, y, kind="server"):
         node = {"id": uuid4().hex, "x": round(x), "y": round(y), "label": get_shape(kind)["label"], "shape": kind}
@@ -182,12 +203,16 @@ class Editor(tk.Tk):
             self.canvas.create_rectangle(x-70, y-30, x+70, y+30, fill=get_shape(n.get("shape", "server"))["fill"] if not selected else "#bfdbfe", outline="#1d4ed8", width=3 if selected else 1)
             self.canvas.create_text(x, y, text=n.get("label", "Équipement")[:40], fill="#172554")
     def open(self):
+        if not self._confirm_discard():
+            return
         path = filedialog.askopenfilename(filetypes=[("OpenVisio JSON", "*.ovjson *.json")])
         if not path: return
         try:
             self.document = load(path)
             self.current_path = path
             self.selected = None
+            self.selected_edge = None
+            self.saved_snapshot = self._snapshot()
             self.draw()
         except (ValueError, OSError) as exc:
             messagebox.showerror("Ouverture impossible", str(exc))
@@ -195,6 +220,7 @@ class Editor(tk.Tk):
         if not self.current_path: return self.store_as()
         try:
             save(self.current_path, self.document)
+            self.saved_snapshot = self._snapshot()
             self.status.set("Enregistré : " + self.current_path)
         except (ValueError, OSError) as exc:
             messagebox.showerror("Enregistrement impossible", str(exc))
@@ -210,8 +236,11 @@ class Editor(tk.Tk):
     def store_as(self):
         path = filedialog.asksaveasfilename(defaultextension=".ovjson", filetypes=[("OpenVisio", "*.ovjson")])
         if path:
+            previous_path = self.current_path
             self.current_path = path
             self.store()
+            if self._snapshot() != self.saved_snapshot:
+                self.current_path = previous_path
 
 def main():
     Editor().mainloop()
