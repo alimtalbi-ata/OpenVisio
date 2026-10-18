@@ -5,6 +5,7 @@ from uuid import uuid4
 from .model import load, save
 from .export import export_svg
 from .shapes import SHAPES, get_shape
+from .properties import normalize_properties
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -84,15 +85,29 @@ class Editor(tk.Tk):
         if node is None:
             messagebox.showinfo("Propriétés", "Sélectionnez un équipement")
             return
-        label = simpledialog.askstring("Nom de l'équipement", "Nom :", initialvalue=node.get("label", ""), parent=self)
-        if label is None:
-            return
-        label = label.strip()
-        if not label:
-            messagebox.showerror("Propriétés", "Le nom ne peut pas être vide")
-            return
-        node["label"] = label[:120]
-        self.draw()
+        dialog = tk.Toplevel(self)
+        dialog.title("Propriétés de l'équipement")
+        dialog.transient(self)
+        dialog.grab_set()
+        fields = {}
+        for row, (key, title) in enumerate((("label", "Nom"), ("hostname", "Hôte / FQDN"), ("address", "Adresse IP"), ("vendor", "Constructeur"), ("model", "Modèle"))):
+            tk.Label(dialog, text=title, anchor="w").grid(row=row, column=0, padx=12, pady=6, sticky="w")
+            value = tk.StringVar(value=node.get(key, ""))
+            tk.Entry(dialog, textvariable=value, width=42).grid(row=row, column=1, padx=12, pady=6)
+            fields[key] = value
+        def apply():
+            try:
+                values = normalize_properties(**{key: value.get() for key, value in fields.items()})
+            except ValueError as exc:
+                messagebox.showerror("Propriétés invalides", str(exc), parent=dialog)
+                return
+            node.update(values)
+            self.draw()
+            dialog.destroy()
+        tk.Button(dialog, text="Enregistrer", command=apply).grid(row=5, column=1, pady=12, sticky="e")
+        dialog.bind("<Return>", lambda event: apply())
+        dialog.bind("<Escape>", lambda event: dialog.destroy())
+        dialog.wait_window()
     def delete_selected(self):
         sid = self.selected
         self.document["nodes"] = [n for n in self.document["nodes"] if n["id"] != sid]
