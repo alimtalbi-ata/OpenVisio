@@ -191,6 +191,8 @@ function refreshRouteQualityPanel(){
  if(!panel||panel.hidden)return;
  renderRouteClearancePanel($('routeQualityResults'),lastRouteClearanceDiagnostics(svg),{
   filter:$('routeQualityFilter')?.value||"all",
+  search:$('routeQualitySearch')?.value||"",
+  selectedEdgeId:state.selected,
   onSelect:id=>{
    if(!state.edges.some(edge=>String(edge.id)===String(id)))return;
    select(id);
@@ -201,6 +203,7 @@ function refreshRouteQualityPanel(){
  });
 }
 $('routeQualityFilter')?.addEventListener('change',refreshRouteQualityPanel);
+$('routeQualitySearch')?.addEventListener('input',refreshRouteQualityPanel);
 $('routeQualityToggle')?.addEventListener('click',()=>{
  const panel=$('routeQualityPanel');panel.hidden=!panel.hidden;
  $('routeQualityToggle').setAttribute('aria-expanded',String(!panel.hidden));

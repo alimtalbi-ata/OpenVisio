@@ -48,7 +48,7 @@ echo [4/5] Compilation WinForms + WebView2...
 REM Clear old build output to prevent stale artifacts from passing validation.
 if exist "dist\windows-x64" rmdir /s /q "dist\windows-x64"
 if exist "dist\windows-x64" goto :error
-if exist "dist\installer\OpenVisio-Setup-v41.67-x64.exe" del /q "dist\installer\OpenVisio-Setup-v41.67-x64.exe"
+if exist "dist\installer\OpenVisio-Setup-v41.70-x64.exe" del /q "dist\installer\OpenVisio-Setup-v41.70-x64.exe"
 "%DOTNET_ROOT%\dotnet.exe" publish "windows\native\OpenVisio.csproj" -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o "dist\windows-x64"
 if errorlevel 1 goto :error
 if not exist "dist\windows-x64\OpenVisio.exe" goto :error
@@ -58,20 +58,20 @@ if not exist "dist\windows-x64\wwwroot\styles\app.css" goto :error
 echo [5/5] Compilation installateur...
 "%ISCC%" "windows\installer\OpenVisio.iss"
 if errorlevel 1 goto :error
-if not exist "dist\installer\OpenVisio-Setup-v41.67-x64.exe" goto :error
+if not exist "dist\installer\OpenVisio-Setup-v41.70-x64.exe" goto :error
 echo Verification de la taille du livrable...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$p='dist\installer\OpenVisio-Setup-v41.67-x64.exe'; if((Get-Item $p).Length -lt 1000000){throw 'Installateur anormalement petit'}"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$p='dist\installer\OpenVisio-Setup-v41.70-x64.exe'; if((Get-Item $p).Length -lt 1000000){throw 'Installateur anormalement petit'}"
 if errorlevel 1 goto :error
 echo [POST] Construction de la distribution portable...
 powershell -NoProfile -ExecutionPolicy Bypass -File "windows\Build-Portable-Windows.ps1"
 if errorlevel 1 goto :error
-if not exist "dist\portable\OpenVisio-v41.67-Windows-x64-Portable.exe" goto :error
+if not exist "dist\portable\OpenVisio-v41.70-Windows-x64-Portable.exe" goto :error
 powershell -NoProfile -ExecutionPolicy Bypass -File "windows\Stage-Binaries.ps1"
 if errorlevel 1 goto :error
 powershell -NoProfile -ExecutionPolicy Bypass -File "windows\Write-Release-Manifest.ps1"
 if errorlevel 1 goto :error
-echo SUCCES: dist\installer\OpenVisio-Setup-v41.67-x64.exe
-powershell -NoProfile -Command "Get-FileHash 'dist\installer\OpenVisio-Setup-v41.67-x64.exe' -Algorithm SHA256 | Format-List"
+echo SUCCES: dist\installer\OpenVisio-Setup-v41.70-x64.exe
+powershell -NoProfile -Command "Get-FileHash 'dist\installer\OpenVisio-Setup-v41.70-x64.exe' -Algorithm SHA256 | Format-List"
 exit /b 0
 :error
 echo ECHEC: construction interrompue. Verifiez la connexion Internet, les droits et les messages precedents.

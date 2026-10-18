@@ -104,7 +104,7 @@ internal sealed class OpenVisioWindow : Form {
 
  }
  public OpenVisioWindow() {
-  Text = "OpenVisio 41.67 — Éditeur de diagrammes et SAN";
+  Text = "OpenVisio 41.70 — Éditeur de diagrammes et SAN";
   Width = 1440; Height = 900; MinimumSize = new System.Drawing.Size(900, 600);
   StartPosition = FormStartPosition.CenterScreen;
   var menu = new MenuStrip();
@@ -139,7 +139,7 @@ internal sealed class OpenVisioWindow : Form {
    var folder = Path.GetDirectoryName(diagnosticPath)!; Directory.CreateDirectory(folder);
    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe", $"\"{folder}\"") { UseShellExecute = true });
   });
-  help.DropDownItems.Add("À propos", null, (_,_) => MessageBox.Show(this, "OpenVisio 41.67\nAuteur : Abdelhalim Talbi\nApplication Windows .NET + WebView2", "À propos"));
+  help.DropDownItems.Add("À propos", null, (_,_) => MessageBox.Show(this, "OpenVisio 41.70\nAuteur : Abdelhalim Talbi\nApplication Windows .NET + WebView2", "À propos"));
   menu.Items.AddRange(new ToolStripItem[] {file, edit, display, tools, help});
   var strip = new StatusStrip(); strip.Items.Add(status);
   Controls.Add(view); Controls.Add(strip); Controls.Add(menu); MainMenuStrip = menu;
