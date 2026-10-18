@@ -38,7 +38,8 @@ with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
     archive.write(root / "run_openvisio.py", "03-Sources/run_openvisio.py")
     for script in ("generate_docs.py", "package_release.py"):
         archive.write(root / "scripts" / script, "02-Compilation/scripts/" + script)
-    archive.write(root / "scripts" / "Smoke-Portable-Windows.ps1", "04-Tests/Smoke-Portable-Windows.ps1")
+    for script in ("Smoke-Portable-Windows.ps1", "Smoke-Installer-Windows.ps1"):
+        archive.write(root / "scripts" / script, "04-Tests/" + script)
     archive.writestr("06-Historique/README.txt", "OpenVisio 42.0.0 - Auteur : Abdelhalim Talbi\nCommits : https://github.com/alimtalbi-ata/OpenVisio/commits/develop/openvisio-python-v42/\nQualification : CI Windows ; installation PC tiers non certifiee.\n")
 with zipfile.ZipFile(target) as archive:
     if archive.testzip() is not None:
