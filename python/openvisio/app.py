@@ -10,6 +10,7 @@ from .properties import normalize_properties
 from .links import normalize_link, PROTOCOLS
 from .history import History
 from .render import node_at, edge_at, draw_document
+from .viewport import Viewport
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -21,6 +22,8 @@ class Editor(tk.Tk):
         self.selected = None
         self.selected_edge = None
         self.link_start = None
+        self.viewport = Viewport()
+        self._pan_anchor = None
         self.history = History(self.document)
         self.saved_snapshot = self._snapshot()
         self.protocol("WM_DELETE_WINDOW", self.close_safely)
@@ -31,6 +34,12 @@ class Editor(tk.Tk):
         self.canvas.bind("<B1-Motion>", self.drag)
         self.canvas.bind("<ButtonRelease-1>", lambda event: self._record_change())
         self.canvas.bind("<Configure>", lambda event: self.draw())
+        self.canvas.bind("<MouseWheel>", self.wheel_zoom)
+        self.canvas.bind("<Button-4>", lambda event: self.zoom_at(event, 1.12))
+        self.canvas.bind("<Button-5>", lambda event: self.zoom_at(event, 1/1.12))
+        self.canvas.bind("<ButtonPress-2>", self.start_pan)
+        self.canvas.bind("<B2-Motion>", self.pan_motion)
+        self.canvas.bind("<ButtonRelease-2>", lambda event: self.end_pan())
         bar = tk.Menu(self)
         filemenu = tk.Menu(bar, tearoff=False)
         for label, command in [("Nouveau", self.new), ("Ouvrir", self.open), ("Enregistrer", self.store), ("Enregistrer sous", self.store_as), ("Exporter en SVG", self.export_as_svg)]:
@@ -50,6 +59,12 @@ class Editor(tk.Tk):
         for key, shape in SHAPES.items():
             shapes_menu.add_command(label=shape["label"], command=lambda kind=key: self.create_node(180, 140, kind))
         bar.add_cascade(label="Équipements", menu=shapes_menu)
+        view = tk.Menu(bar, tearoff=False)
+        view.add_command(label="Ajuster à la fenêtre", command=self.fit_view)
+        view.add_command(label="Zoom +", command=lambda: self.zoom_center(1.2))
+        view.add_command(label="Zoom -", command=lambda: self.zoom_center(1/1.2))
+        view.add_command(label="Zoom 100 %", command=self.reset_view)
+        bar.add_cascade(label="Affichage", menu=view)
         self.config(menu=bar)
         self.bind("<Control-z>", lambda event: self.undo())
         self.bind("<Control-y>", lambda event: self.redo())
@@ -59,6 +74,30 @@ class Editor(tk.Tk):
         self.bind("<F2>", lambda event: self.edit_properties())
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
+    def zoom_at(self, event, factor):
+        self.viewport.zoom_at(factor, event.x, event.y)
+        self.draw()
+    def wheel_zoom(self, event):
+        self.zoom_at(event, 1.12 if event.delta > 0 else 1/1.12)
+    def zoom_center(self, factor):
+        self.viewport.zoom_at(factor, self.canvas.winfo_width()/2, self.canvas.winfo_height()/2)
+        self.draw()
+    def reset_view(self):
+        self.viewport = Viewport()
+        self.draw()
+    def fit_view(self):
+        self.viewport.fit(self.document["nodes"], self.canvas.winfo_width(), self.canvas.winfo_height())
+        self.draw()
+    def start_pan(self, event):
+        self._pan_anchor = (event.x, event.y)
+    def pan_motion(self, event):
+        if self._pan_anchor is not None:
+            x, y = self._pan_anchor
+            self.viewport.pan(event.x-x, event.y-y)
+            self._pan_anchor = (event.x, event.y)
+            self.draw()
+    def end_pan(self):
+        self._pan_anchor = None
     def _record_change(self):
         self.history.record(self.document)
     def undo(self):
@@ -105,11 +144,11 @@ class Editor(tk.Tk):
         self.selected = node["id"]
         self.draw()
     def add_node(self, event):
-        self.create_node(event.x, event.y)
+        self.create_node(*self.viewport.world(event.x, event.y))
     def node_at(self, x, y):
-        return node_at(self.document["nodes"], x, y)
+        return node_at(self.document["nodes"], *self.viewport.world(x, y))
     def edge_at(self, x, y):
-        return edge_at(self.document["nodes"], self.document["edges"], x, y)
+        return edge_at(self.document["nodes"], self.document["edges"], *self.viewport.world(x, y), tolerance=9/self.viewport.zoom)
     def click(self, event):
         node = self.node_at(event.x, event.y)
         if self.link_start is not None and node is not None:
@@ -123,7 +162,7 @@ class Editor(tk.Tk):
     def drag(self, event):
         node = next((n for n in self.document["nodes"] if n["id"] == self.selected), None)
         if node:
-            node["x"], node["y"] = event.x, event.y
+            node["x"], node["y"] = self.viewport.world(event.x, event.y)
             self.draw()
     def begin_link(self):
         if not self.selected:
@@ -204,7 +243,7 @@ class Editor(tk.Tk):
         self._record_change()
         self.draw()
     def draw(self):
-        draw_document(self.canvas, self.document, self.selected, self.selected_edge)
+        draw_document(self.canvas, self.document, self.selected, self.selected_edge, self.viewport)
     def open(self):
         if not self._confirm_discard():
             return
