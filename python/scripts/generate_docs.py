@@ -11,10 +11,10 @@ OUT = ROOT / "dist" / "documentation"
 OUT.mkdir(parents=True, exist_ok=True)
 sections = [
  ("OpenVisio v42.0 — Guide Windows", "Auteur : Abdelhalim Talbi. Édition native Python/Tkinter."),
- ("Périmètre fonctionnel", "Version initiale : créer, déplacer, relier et supprimer des équipements ; ouvrir et enregistrer des documents JSON. Parité avec v41.77 non atteinte."),
+ ("Périmètre fonctionnel", "Version initiale : créer, déplacer, relier et supprimer des équipements ; ouvrir et enregistrer des documents JSON ; exporter les diagrammes au format SVG vectoriel. Parité avec v41.77 non atteinte."),
  ("Installation", "Exécuter OpenVisio-Setup-v42.0-x64.exe sur Windows x64. L'application et l'interpréteur Python sont intégrés à l'exécutable. Aucun code source ni environnement Python requis sur le PC cible."),
  ("Portable", "Copier OpenVisio-v42.0-Windows-x64-Portable.exe sur le PC Windows x64 et le lancer. Aucun Node.js, Java, WebView2 ou .NET requis. Les bibliothèques Windows système et l'environnement graphique Windows restent nécessaires."),
- ("Utilisation", "Double-clic sur le canevas : équipement ; glisser : déplacement ; menu Édition : créer une liaison ; Ctrl+O : ouvrir ; Ctrl+S : enregistrer ; Suppr : supprimer."),
+ ("Utilisation", "Double-clic sur le canevas : équipement ; glisser : déplacement ; menu Édition : créer une liaison ; Ctrl+O : ouvrir ; Ctrl+S : enregistrer ; Fichier > Exporter en SVG : exporter une image vectorielle ; Suppr : supprimer."),
  ("Architecture", "Tkinter (interface) -> modèle Python validé -> JSON atomique. PyInstaller compile le programme en EXE portable. Inno Setup crée l'installateur."),
  ("Compilation", "Sur Windows x64 avec Python 3.12, lancer python/Build-Windows.cmd. Le script installe PyInstaller dans un venv, exécute les tests, produit les deux exécutables, calcule SHA256 et construit l'archive cumulative."),
  ("Validation", "Les tests automatisés valident la sérialisation, les identifiants et les références. L'exécution sur un PC Windows propre et les captures réelles doivent être effectuées séparément. Aucune capture réelle n'est fournie par ce générateur."),
