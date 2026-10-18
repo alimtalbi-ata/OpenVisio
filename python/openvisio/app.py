@@ -11,6 +11,7 @@ from .links import normalize_link, PROTOCOLS
 from .history import History
 from .render import node_at, edge_at, draw_document
 from .viewport import Viewport
+from .layout import snap, align
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -21,6 +22,9 @@ class Editor(tk.Tk):
         self.current_path = None
         self.selected = None
         self.selected_edge = None
+        self.selected_nodes = set()
+        self.grid_enabled = True
+        self.snap_enabled = True
         self.link_start = None
         self.viewport = Viewport()
         self._pan_anchor = None
@@ -64,6 +68,11 @@ class Editor(tk.Tk):
         view.add_command(label="Zoom +", command=lambda: self.zoom_center(1.2))
         view.add_command(label="Zoom -", command=lambda: self.zoom_center(1/1.2))
         view.add_command(label="Zoom 100 %", command=self.reset_view)
+        view.add_separator()
+        view.add_command(label="Afficher / masquer la grille", command=self.toggle_grid)
+        view.add_command(label="Activer / désactiver l'accrochage", command=self.toggle_snap)
+        view.add_command(label="Aligner horizontalement", command=lambda: self.align_selection("y"))
+        view.add_command(label="Aligner verticalement", command=lambda: self.align_selection("x"))
         bar.add_cascade(label="Affichage", menu=view)
         self.config(menu=bar)
         self.bind("<Control-z>", lambda event: self.undo())
@@ -74,6 +83,18 @@ class Editor(tk.Tk):
         self.bind("<F2>", lambda event: self.edit_properties())
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
+    def toggle_grid(self):
+        self.grid_enabled = not self.grid_enabled
+        self.draw()
+    def toggle_snap(self):
+        self.snap_enabled = not self.snap_enabled
+        self.status.set("Accrochage " + ("activé" if self.snap_enabled else "désactivé"))
+    def align_selection(self, axis):
+        if align(self.document["nodes"], self.selected_nodes, axis):
+            self._record_change()
+            self.draw()
+        else:
+            messagebox.showinfo("Alignement", "Sélectionnez au moins deux équipements avec Ctrl+clic")
     def zoom_at(self, event, factor):
         self.viewport.zoom_at(factor, event.x, event.y)
         self.draw()
@@ -142,6 +163,7 @@ class Editor(tk.Tk):
         self.document["nodes"].append(node)
         self._record_change()
         self.selected = node["id"]
+        self.selected_nodes = {node["id"]}
         self.draw()
     def add_node(self, event):
         self.create_node(*self.viewport.world(event.x, event.y))
@@ -156,13 +178,22 @@ class Editor(tk.Tk):
                 self.document["edges"].append({"id": uuid4().hex, "from": self.link_start, "to": node["id"]})
                 self._record_change()
             self.link_start = None
-        self.selected = node["id"] if node else None
+        if node and (event.state & 0x0004):
+            if node["id"] in self.selected_nodes:
+                self.selected_nodes.remove(node["id"])
+            else:
+                self.selected_nodes.add(node["id"])
+            self.selected = None
+        else:
+            self.selected = node["id"] if node else None
+            self.selected_nodes = {node["id"]} if node else set()
         self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
         self.draw()
     def drag(self, event):
         node = next((n for n in self.document["nodes"] if n["id"] == self.selected), None)
         if node:
-            node["x"], node["y"] = self.viewport.world(event.x, event.y)
+            x, y = self.viewport.world(event.x, event.y)
+            node["x"], node["y"] = (snap(x), snap(y)) if self.snap_enabled else (x, y)
             self.draw()
     def begin_link(self):
         if not self.selected:
@@ -240,10 +271,11 @@ class Editor(tk.Tk):
         self.document["nodes"] = [n for n in self.document["nodes"] if n["id"] != sid]
         self.document["edges"] = [e for e in self.document["edges"] if e["from"] != sid and e["to"] != sid]
         self.selected = None
+        self.selected_nodes.clear()
         self._record_change()
         self.draw()
     def draw(self):
-        draw_document(self.canvas, self.document, self.selected, self.selected_edge, self.viewport)
+        draw_document(self.canvas, self.document, self.selected, self.selected_edge, self.viewport, grid=self.grid_enabled, selected_nodes=self.selected_nodes)
     def open(self):
         if not self._confirm_discard():
             return
