@@ -30,7 +30,7 @@ export function summarizeRouteIssueSegments(issues=[], limit=5){
  const indices=[...new Set(issues.filter(i=>Number.isInteger(i?.segment)&&i.segment>=0).map(i=>i.segment+1))].sort((a,b)=>a-b);
  return {segments:indices.slice(0,limit),overflow:Math.max(0,indices.length-limit)};
 }
-export function renderRouteClearancePanel(container,diagnostics,{onSelect=()=>{},filter="all",search="",selectedEdgeId=null}={}){
+export function renderRouteClearancePanel(container,diagnostics,{onSelect=()=>{},filter="all",search="",selectedEdgeId=null,onSelectSegment=()=>{}}={}){
  if(!["all","error","review"].includes(filter))throw new RangeError("Filtre de gravité invalide");
  if(!container||typeof container.replaceChildren!=='function')throw new TypeError('Conteneur DOM invalide');
  const view=buildRouteClearanceView(diagnostics);
@@ -44,7 +44,7 @@ export function renderRouteClearancePanel(container,diagnostics,{onSelect=()=>{}
   const li=doc.createElement('li');const button=doc.createElement('button');
   const affected=summarizeRouteIssueSegments(item.issues);
   button.type='button';button.textContent=`${item.edgeId} — ${item.label}`;
-  if(affected.segments.length){const detail=doc.createElement('span');detail.className='route-issue-segments';detail.textContent=`Segments à examiner : ${affected.segments.join(', ')}${affected.overflow?` (+${affected.overflow} autres)`:''}`;li.append(detail);}
+  if(affected.segments.length){const detail=doc.createElement('span');detail.className='route-issue-segments';detail.textContent='Segments à examiner : ';for(const number of affected.segments){const segmentButton=doc.createElement('button');segmentButton.type='button';segmentButton.className='route-issue-segment-button';segmentButton.textContent=String(number);segmentButton.setAttribute('aria-label',`Examiner le segment ${number} de ${item.edgeId}`);segmentButton.addEventListener('click',()=>onSelectSegment(item.edgeId,number));segmentButton.addEventListener('keydown',event=>{if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;const siblings=[...detail.querySelectorAll('.route-issue-segment-button')];const current=siblings.indexOf(segmentButton);const next=event.key==='ArrowRight'?(current+1)%siblings.length:(current-1+siblings.length)%siblings.length;event.preventDefault?.();event.stopPropagation?.();siblings[next]?.focus?.();});detail.append(segmentButton);}if(affected.overflow){const extra=doc.createElement('span');extra.textContent=` (+${affected.overflow} autres)`;detail.append(extra);}li.append(detail);}
   button.setAttribute('aria-label',`Examiner la connexion ${item.edgeId}`);
   if(selectedEdgeId!==null&&String(selectedEdgeId)===item.edgeId){button.setAttribute('aria-current','true');li.setAttribute('data-selected','true');}
   button.addEventListener('click',()=>onSelect(item.edgeId));buttons.push(button);li.append(button);list.append(li);

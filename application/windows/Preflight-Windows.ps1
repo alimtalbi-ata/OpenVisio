@@ -48,3 +48,8 @@ foreach ($match in $assetRefs) {
   if (-not (Test-Path -LiteralPath (Join-Path $Root $relative) -PathType Leaf)) { throw "HTML asset missing: $relative" }
 }
 Write-Host "PASS: $($assetRefs.Count) local HTML assets found"
+
+$portableBuild = Get-Content -Raw (Join-Path $Root 'windows/Build-Portable-Windows.ps1')
+if (-not $portableBuild.Contains('OpenVisioEmbedAssets=true')) { throw 'Portable assets not embedded' }
+if (-not $portableBuild.Contains('PublishSingleFile=true')) { throw 'Portable single-file disabled' }
+Write-Host 'PASS: portable packaging configuration'
