@@ -2,6 +2,7 @@
 from pathlib import Path
 from xml.sax.saxutils import escape
 from .model import validate
+from .shapes import get_shape
 
 def to_svg(data, width=1600, height=1000):
     data = validate(data)
@@ -13,7 +14,8 @@ def to_svg(data, width=1600, height=1000):
     for node in data["nodes"]:
         x, y = node["x"], node["y"]
         label = escape(str(node.get("label", "Équipement")))
-        lines.extend([f'<rect x="{x-70}" y="{y-30}" width="140" height="60" rx="8" fill="white" stroke="#1d4ed8"/>', f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{label}</text>'])
+        fill = get_shape(node.get("shape", "server"))["fill"]
+        lines.extend([f'<rect x="{x-70}" y="{y-30}" width="140" height="60" rx="8" fill="{fill}" stroke="#1d4ed8"/>', f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{label}</text>'])
     lines.append("</svg>")
     return "\n".join(lines)
 
