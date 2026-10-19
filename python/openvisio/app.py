@@ -325,13 +325,15 @@ class Editor(tk.Tk):
     def new(self):
         if not self._confirm_discard():
             return
-        self.document = {"nodes": [], "edges": []}
+        document = {"nodes": [], "edges": []}
+        self.history.reset(document)
+        self.document = document
         self.current_path = None
         self.selected = None
         self.selected_edge = None
         self.selected_nodes.clear()
+        self.link_start = None
         self.saved_snapshot = self._snapshot()
-        self.history.reset(self.document)
         self.draw()
     def create_node(self, x, y, kind="server"):
         self.document, node_id = add_equipment(self.document, x, y, kind)
