@@ -96,6 +96,17 @@ class Editor(tk.Tk):
         view.add_command(label="Distribuer verticalement", command=lambda: self.distribute_selection("y"))
         bar.add_cascade(label="Affichage", menu=view)
         self.config(menu=bar)
+        toolbar = tk.Frame(self, bg="#e8eef6", padx=8, pady=6)
+        toolbar.pack(side="top", fill="x", before=self.canvas)
+        actions = (
+            ("Nouveau", self.new), ("Ouvrir", self.open), ("Enregistrer", self.store),
+            ("Annuler", self.undo), ("Rétablir", self.redo),
+            ("Ajouter serveur", lambda: self.create_node(*self.viewport.world(self.canvas.winfo_width()/2, self.canvas.winfo_height()/2))),
+            ("Relier", self.begin_link), ("Propriétés", self.edit_properties),
+            ("Rechercher", self.find_equipment), ("Ajuster", self.fit_view),
+        )
+        for label, command in actions:
+            tk.Button(toolbar, text=label, command=command, padx=8, pady=3).pack(side="left", padx=2)
         self.bind("<Control-f>", lambda event: self.find_equipment())
         self.bind("<Control-a>", lambda event: self.select_all())
         self.bind("<Escape>", lambda event: self.clear_selection())
