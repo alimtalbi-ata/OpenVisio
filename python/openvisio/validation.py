@@ -9,7 +9,7 @@ def validate_document(data):
         raise ValueError("Collections nodes/edges invalides")
     if len(nodes) > 100000 or len(edges) > 200000:
         raise ValueError("Document trop volumineux")
-    node_ids, edge_ids = set(), set()
+    node_ids, edge_ids, directed_pairs = set(), set(), set()
     for node in nodes:
         if not isinstance(node, dict):
             raise ValueError("Équipement invalide")
@@ -36,6 +36,9 @@ def validate_document(data):
             raise ValueError("Liaison vers un équipement inexistant")
         if source == target:
             raise ValueError("Une liaison ne peut pas relier un équipement à lui-même")
+        if (source, target) in directed_pairs:
+            raise ValueError("Liaison orientée dupliquée")
+        directed_pairs.add((source, target))
         for key in ("protocol", "source_port", "target_port", "fabric", "speed_gbps"):
             if key in edge and (not isinstance(edge[key], str) or len(edge[key]) > 4096):
                 raise ValueError("Propriété liaison invalide : " + key)
