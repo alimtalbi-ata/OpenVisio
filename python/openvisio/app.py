@@ -15,7 +15,7 @@ from .layout import snap, align, distribute, move_group
 from .clipboard import copy_selection, paste_selection
 from .templates import TEMPLATES, create_template
 from .selection import nodes_in_rectangle
-from .selection_state import select_node, select_rectangle
+from .selection_state import select_node, select_rectangle, reconcile_selection
 from .property_commands import update_equipment, update_connection
 from .shortcut_policy import editor_shortcut_allowed
 from .search import find_nodes
@@ -247,6 +247,11 @@ class Editor(tk.Tk):
         self._pan_anchor = None
     def _record_change(self):
         self.history.record(self.document)
+        self.selected_nodes, self.selected, self.selected_edge = reconcile_selection(
+            self.document, self.selected_nodes, self.selected, self.selected_edge
+        )
+        if self.link_start not in {node["id"] for node in self.document["nodes"]}:
+            self.link_start = None
     def undo(self):
         document = self.history.undo()
         if document is not None:
