@@ -19,13 +19,14 @@ from .selection_state import select_node, select_rectangle, reconcile_selection
 from .property_commands import update_equipment, update_connection
 from .shortcut_policy import editor_shortcut_allowed
 from .context_actions import context_selection
+from .editor_state import document_summary, document_dirty
 from .search import find_nodes
 from .commands import add_equipment, remove_selection, connect_equipment
 
 class Editor(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("OpenVisio 42.1 — Python natif")
+        self.title("OpenVisio 42.2 — Python natif")
         self.geometry("1100x720")
         self.document = {"nodes": [], "edges": []}
         self.current_path = None
@@ -131,6 +132,17 @@ class Editor(tk.Tk):
             self.bind(sequence, lambda event, action=command: self._editor_shortcut(event, action))
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
+        self.document_status = tk.StringVar()
+        tk.Label(self, textvariable=self.document_status, anchor="w", bg="#e8eef6").pack(fill="x")
+        self._refresh_document_status()
+    def _refresh_document_status(self):
+        """Present unsaved state and selection without hiding action feedback."""
+        dirty = document_dirty(self._snapshot(), self.saved_snapshot)
+        self.title("OpenVisio 42.2 — " + ("* " if dirty else "") + (str(self.current_path) if self.current_path else "Sans titre"))
+        self.document_status.set(document_summary(
+            self.document, self.selected_nodes, self.selected_edge, dirty, self.current_path
+        ))
+
     def _editor_shortcut(self, event, action):
         """Never intercept text editing or modal dialog keystrokes."""
         if not editor_shortcut_allowed(event.widget.winfo_class(), event.widget.winfo_toplevel() is self):
@@ -492,6 +504,7 @@ class Editor(tk.Tk):
             x0, y0 = self.viewport.screen(*self._marquee_start)
             x1, y1 = self.viewport.screen(*self._marquee_end)
             self.canvas.create_rectangle(x0, y0, x1, y1, outline="#2563eb", dash=(5, 3), width=2)
+        self._refresh_document_status()
     def open(self):
         path = filedialog.askopenfilename(filetypes=[("OpenVisio JSON", "*.ovjson *.json")])
         if not path:
