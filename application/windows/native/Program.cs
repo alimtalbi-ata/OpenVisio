@@ -36,7 +36,7 @@ internal sealed class OpenVisioWindow : Form {
   var assembly = Assembly.GetExecutingAssembly();
   using var stream = assembly.GetManifestResourceStream("OpenVisio.Assets.zip");
   if (stream == null) return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "wwwroot"));
-  var cache = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "OpenVisio", "assets", "41.50");
+  var cache = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "OpenVisio", "assets", "41.77");
   // Hash the embedded archive, not just the version label: changed or corrupted
   // resources must never be silently accepted from an existing cache.
   using var archiveBytes = new MemoryStream();
@@ -104,7 +104,7 @@ internal sealed class OpenVisioWindow : Form {
 
  }
  public OpenVisioWindow() {
-  Text = "OpenVisio 41.72 — Éditeur de diagrammes et SAN";
+  Text = "OpenVisio 41.77 — Éditeur de diagrammes et SAN";
   Width = 1440; Height = 900; MinimumSize = new System.Drawing.Size(900, 600);
   StartPosition = FormStartPosition.CenterScreen;
   var menu = new MenuStrip();
@@ -139,7 +139,7 @@ internal sealed class OpenVisioWindow : Form {
    var folder = Path.GetDirectoryName(diagnosticPath)!; Directory.CreateDirectory(folder);
    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe", $"\"{folder}\"") { UseShellExecute = true });
   });
-  help.DropDownItems.Add("À propos", null, (_,_) => MessageBox.Show(this, "OpenVisio 41.72\nAuteur : Abdelhalim Talbi\nApplication Windows .NET + WebView2", "À propos"));
+  help.DropDownItems.Add("À propos", null, (_,_) => MessageBox.Show(this, "OpenVisio 41.77\nAuteur : Abdelhalim Talbi\nApplication Windows .NET + WebView2", "À propos"));
   menu.Items.AddRange(new ToolStripItem[] {file, edit, display, tools, help});
   var strip = new StatusStrip(); strip.Items.Add(status);
   Controls.Add(view); Controls.Add(strip); Controls.Add(menu); MainMenuStrip = menu;

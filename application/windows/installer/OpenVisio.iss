@@ -1,5 +1,5 @@
 ; OpenVisio Windows installer. Author: Abdelhalim Talbi.
-#define AppVersion "41.72.0"
+#define AppVersion "41.77.0"
 [Setup]
 AppId={{A7E490D2-1976-46CA-BFB8-CB80557D4E20}
 AppName=OpenVisio
@@ -8,7 +8,7 @@ AppPublisher=Abdelhalim Talbi
 DefaultDirName={autopf}\OpenVisio
 DefaultGroupName=OpenVisio
 OutputDir=..\..\dist\installer
-OutputBaseFilename=OpenVisio-Setup-v41.72-x64
+OutputBaseFilename=OpenVisio-Setup-v41.77-x64
 Compression=lzma2
 SolidCompression=yes
 ArchitecturesAllowed=x64compatible
