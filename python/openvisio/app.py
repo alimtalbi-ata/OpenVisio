@@ -6,6 +6,7 @@ from uuid import uuid4
 from .model import load, save
 from .document_recovery import backup_path, read_backup
 from .document_transactions import replace_document
+from .document_service import open_document, save_document, restore_previous
 from .export import export_svg
 from .shapes import SHAPES, get_shape
 from .properties import normalize_properties
@@ -530,7 +531,7 @@ class Editor(tk.Tk):
             messagebox.showinfo("Récupération", "Aucune sauvegarde précédente disponible.")
             return
         try:
-            recovered = read_backup(self.current_path)
+            recovered = restore_previous(self.current_path)
         except (ValueError, OSError, UnicodeError) as exc:
             messagebox.showerror("Sauvegarde invalide", str(exc))
             return
@@ -549,7 +550,7 @@ class Editor(tk.Tk):
         # The discard prompt may have saved the current file and rotated .bak.
         # Re-read the backup so recovery never uses a stale pre-save snapshot.
         try:
-            recovered = read_backup(self.current_path)
+            recovered = restore_previous(self.current_path)
         except (ValueError, OSError, UnicodeError) as exc:
             messagebox.showerror("Sauvegarde modifiée ou invalide", str(exc))
             return
@@ -565,7 +566,7 @@ class Editor(tk.Tk):
         if not path:
             return
         try:
-            document = load(path)
+            document = open_document(path)
         except (ValueError, OSError, UnicodeError) as exc:
             messagebox.showerror("Ouverture impossible", str(exc))
             return
@@ -584,7 +585,7 @@ class Editor(tk.Tk):
     def store(self):
         if not self.current_path: return self.store_as()
         try:
-            save(self.current_path, self.document)
+            save_document(self.current_path, self.document)
             self.saved_snapshot = self._snapshot()
             self.status.set("Enregistré : " + self.current_path)
             self._refresh_document_status()
@@ -604,7 +605,7 @@ class Editor(tk.Tk):
         if not path:
             return
         try:
-            save(path, self.document)
+            save_document(path, self.document)
         except (ValueError, OSError) as exc:
             messagebox.showerror("Enregistrement impossible", str(exc))
             return
