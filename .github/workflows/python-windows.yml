@@ -1,4 +1,4 @@
-name: OpenVisio Python Windows v42.1
+name: OpenVisio Python Windows v42.2
 on:
   workflow_dispatch:
   push:
@@ -31,28 +31,28 @@ jobs:
         shell: pwsh
         working-directory: python
         run: |
-          $files = @('binary/OpenVisio-v42.1-Windows-x64-Portable.exe', 'binary/OpenVisio-Setup-v42.1-x64.exe', 'dist/OpenVisio-v42.1-Windows-Cumulative.zip')
+          $files = @('binary/OpenVisio-v42.2-Windows-x64-Portable.exe', 'binary/OpenVisio-Setup-v42.2-x64.exe', 'dist/OpenVisio-v42.2-Windows-Cumulative.zip')
           foreach ($file in $files) {
             if (!(Test-Path $file)) { throw "Missing: $file" }
             Get-FileHash $file -Algorithm SHA256 | Format-List
           }
           $isolated = Join-Path $env:RUNNER_TEMP 'OpenVisioPortableOnly'
           New-Item -ItemType Directory -Force $isolated | Out-Null
-          Copy-Item 'binary/OpenVisio-v42.1-Windows-x64-Portable.exe' (Join-Path $isolated 'OpenVisio.exe')
+          Copy-Item 'binary/OpenVisio-v42.2-Windows-x64-Portable.exe' (Join-Path $isolated 'OpenVisio.exe')
           if (Test-Path (Join-Path $isolated 'openvisio')) { throw 'Source leakage' }
       - name: Smoke test portable outside repository
         shell: pwsh
         working-directory: python
-        run: ./scripts/Smoke-Portable-Windows.ps1 -Executable 'binary/OpenVisio-v42.1-Windows-x64-Portable.exe'
+        run: ./scripts/Smoke-Portable-Windows.ps1 -Executable 'binary/OpenVisio-v42.2-Windows-x64-Portable.exe'
       - name: Smoke test silent installer and uninstall
         shell: pwsh
         working-directory: python
-        run: ./scripts/Smoke-Installer-Windows.ps1 -Installer 'binary/OpenVisio-Setup-v42.1-x64.exe'
+        run: ./scripts/Smoke-Installer-Windows.ps1 -Installer 'binary/OpenVisio-Setup-v42.2-x64.exe'
       - uses: actions/upload-artifact@v4
         with:
-          name: OpenVisio-v42.1-Python-Windows
+          name: OpenVisio-v42.2-Python-Windows
           path: |
             python/binary/**
-            python/dist/OpenVisio-v42.1-Windows-Cumulative.zip
+            python/dist/OpenVisio-v42.2-Windows-Cumulative.zip
           if-no-files-found: error
           retention-days: 30
