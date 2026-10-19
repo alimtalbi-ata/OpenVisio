@@ -169,15 +169,22 @@ class Editor(tk.Tk):
             menu.grab_release()
 
     def load_template(self, name):
+        try:
+            document = create_template(name)
+            # Validate and snapshot before asking to discard existing edits.
+            candidate = History(document, limit=self.history.limit)
+        except (ValueError, KeyError, TypeError) as exc:
+            messagebox.showerror("Modèle invalide", str(exc))
+            return
         if not self._confirm_discard():
             return
-        self.document = create_template(name)
+        self.document = candidate.current
+        self.history = candidate
         self.current_path = None
         self.selected = None
         self.selected_edge = None
         self.selected_nodes.clear()
         self.link_start = None
-        self.history.reset(self.document)
         self.saved_snapshot = json.dumps({"nodes": [], "edges": []}, sort_keys=True, ensure_ascii=False)
         self.fit_view()
         self.status.set("Modèle chargé : " + name + " — Enregistrez pour conserver votre diagramme")
