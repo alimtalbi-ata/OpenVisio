@@ -10,10 +10,10 @@ class HistoryTests(unittest.TestCase):
         self.assertEqual(h.undo()["nodes"], [])
         self.assertEqual(h.redo()["nodes"][0]["x"], 0)
     def test_new_edit_clears_redo(self):
-        h = History({"n":0})
-        h.record({"n":1})
+        h = History({"nodes": [], "edges": []})
+        h.record({"nodes": [{"id": "a", "x": 1, "y": 0}], "edges": []})
         h.undo()
-        h.record({"n":2})
+        h.record({"nodes": [{"id": "b", "x": 2, "y": 0}], "edges": []})
         self.assertIsNone(h.redo())
     def test_invalid_snapshot_is_rejected_without_corrupting_history(self):
         h = History({"nodes": [], "edges": []})
@@ -24,9 +24,9 @@ class HistoryTests(unittest.TestCase):
         self.assertEqual(h.current, {"nodes": [], "edges": []})
 
     def test_limit(self):
-        h = History({"n":0}, limit=2)
+        h = History({"nodes": [], "edges": []}, limit=2)
         for i in range(1, 5):
-            h.record({"n":i})
-        self.assertEqual(h.undo()["n"],3)
-        self.assertEqual(h.undo()["n"],2)
+            h.record({"nodes": [{"id": "a", "x": i, "y": 0}], "edges": []})
+        self.assertEqual(h.undo()["nodes"][0]["x"], 3)
+        self.assertEqual(h.undo()["nodes"][0]["x"], 2)
         self.assertIsNone(h.undo())
