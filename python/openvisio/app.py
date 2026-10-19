@@ -110,25 +110,31 @@ class Editor(tk.Tk):
         )
         for label, command in actions:
             tk.Button(toolbar, text=label, command=command, padx=8, pady=3).pack(side="left", padx=2)
-        self.bind("<Control-f>", lambda event: self.find_equipment())
-        self.bind("<Control-a>", lambda event: None if isinstance(event.widget, (tk.Entry, tk.Text, tk.Spinbox)) else self.select_all())
-        self.bind("<Escape>", lambda event: self.clear_selection())
-        self.bind("<Control-c>", lambda event: None if isinstance(event.widget, (tk.Entry, tk.Text, tk.Spinbox)) else self.copy_selected())
-        self.bind("<Control-v>", lambda event: None if isinstance(event.widget, (tk.Entry, tk.Text, tk.Spinbox)) else self.paste_selected())
-        self.bind("<Control-d>", lambda event: self.duplicate_selected())
-        self.bind("<Control-z>", lambda event: None if isinstance(event.widget, (tk.Entry, tk.Text, tk.Spinbox)) else self.undo())
-        self.bind("<Control-y>", lambda event: self.redo())
-        self.bind("<Control-s>", lambda event: self.store())
-        self.bind("<Control-o>", lambda event: self.open())
-        self.bind("<Delete>", self._delete_shortcut)
-        self.bind("<F2>", lambda event: self.edit_properties())
+        shortcuts = (
+            ("<Control-f>", self.find_equipment),
+            ("<Control-a>", self.select_all),
+            ("<Escape>", self.clear_selection),
+            ("<Control-c>", self.copy_selected),
+            ("<Control-v>", self.paste_selected),
+            ("<Control-d>", self.duplicate_selected),
+            ("<Control-z>", self.undo),
+            ("<Control-y>", self.redo),
+            ("<Control-s>", self.store),
+            ("<Control-o>", self.open),
+            ("<Delete>", self.delete_selected),
+            ("<F2>", self.edit_properties),
+        )
+        for sequence, command in shortcuts:
+            self.bind(sequence, lambda event, action=command: self._editor_shortcut(event, action))
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
-    def _delete_shortcut(self, event):
-        """Keep native text editing intact when focus is in an input widget."""
+    def _editor_shortcut(self, event, action):
+        """Never intercept text editing or modal dialog keystrokes."""
         if isinstance(event.widget, (tk.Entry, tk.Text, tk.Spinbox)):
             return None
-        self.delete_selected()
+        if event.widget.winfo_toplevel() is not self:
+            return None
+        action()
         return "break"
 
     def load_template(self, name):
