@@ -5,6 +5,7 @@ from tkinter import filedialog, messagebox, simpledialog
 from uuid import uuid4
 from .model import load, save
 from .document_recovery import backup_path, read_backup
+from .document_transactions import replace_document
 from .export import export_svg
 from .shapes import SHAPES, get_shape
 from .properties import normalize_properties
@@ -552,9 +553,7 @@ class Editor(tk.Tk):
         except (ValueError, OSError, UnicodeError) as exc:
             messagebox.showerror("Sauvegarde modifiée ou invalide", str(exc))
             return
-        self.history.record(self.document)
-        self.history.record(recovered)
-        self.document = recovered
+        self.document = replace_document(self.history, self.document, recovered)
         self.selected = self.selected_edge = None
         self.selected_nodes.clear()
         self.link_start = None
