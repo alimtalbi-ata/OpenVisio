@@ -37,5 +37,12 @@ def save(path, data):
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(tmp, path)
+        # Flush the directory entry on POSIX for crash-resistant rename.
+        if os.name == "posix":
+            directory_fd = os.open(path.parent, os.O_RDONLY)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
     finally:
         if os.path.exists(tmp): os.unlink(tmp)
