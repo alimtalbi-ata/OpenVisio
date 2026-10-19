@@ -9,7 +9,10 @@ def validate(data):
     return validate_document(data)
 
 def load(path):
-    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeError) as exc:
+        raise ValueError("Document OpenVisio illisible ou JSON invalide") from exc
     if isinstance(data, dict) and isinstance(data.get("edges", []), list):
         # Backward compatibility with earlier diagrams lacking edge IDs.
         edges = []
