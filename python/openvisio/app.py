@@ -532,6 +532,7 @@ class Editor(tk.Tk):
             save(self.current_path, self.document)
             self.saved_snapshot = self._snapshot()
             self.status.set("Enregistré : " + self.current_path)
+            self._refresh_document_status()
         except (ValueError, OSError) as exc:
             messagebox.showerror("Enregistrement impossible", str(exc))
     def export_as_svg(self):
@@ -555,6 +556,7 @@ class Editor(tk.Tk):
         self.current_path = path
         self.saved_snapshot = self._snapshot()
         self.status.set("Enregistré : " + path)
+        self._refresh_document_status()
 
 def main():
     Editor().mainloop()
