@@ -47,6 +47,7 @@ class Editor(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.close_safely)
         self.canvas = tk.Canvas(self, bg="#f8fafc", highlightthickness=0)
         self.canvas.pack(fill="both", expand=True)
+        self.canvas.bind("<Button-3>", self.show_context_menu)
         self.canvas.bind("<Double-Button-1>", self.add_node)
         self.canvas.bind("<Button-1>", self.click)
         self.canvas.bind("<B1-Motion>", self.drag)
@@ -135,6 +136,44 @@ class Editor(tk.Tk):
             return None
         action()
         return "break"
+
+    def show_context_menu(self, event):
+        """Context actions follow the object under the pointer."""
+        node = self.node_at(event.x, event.y)
+        edge = None if node else self.edge_at(event.x, event.y)
+        if node is not None:
+            if node["id"] not in self.selected_nodes:
+                self.selected_nodes = {node["id"]}
+            self.selected = node["id"]
+            self.selected_edge = None
+        elif edge is not None:
+            self.selected_nodes.clear()
+            self.selected = None
+            self.selected_edge = edge["id"]
+        else:
+            self.selected_nodes.clear()
+            self.selected = None
+            self.selected_edge = None
+        self.draw()
+        menu = tk.Menu(self, tearoff=False)
+        if node is not None:
+            menu.add_command(label="Propriétés de l'équipement", command=self.edit_properties)
+            menu.add_command(label="Créer une liaison", command=self.begin_link)
+            menu.add_command(label="Dupliquer", command=self.duplicate_selected)
+            menu.add_separator()
+            menu.add_command(label="Supprimer", command=self.delete_selected)
+        elif edge is not None:
+            menu.add_command(label="Propriétés de la liaison", command=self.edit_selected_link)
+            menu.add_command(label="Supprimer la liaison", command=self.delete_selected)
+        else:
+            x, y = self.viewport.world(event.x, event.y)
+            menu.add_command(label="Ajouter un serveur ici", command=lambda: self.create_node(x, y))
+            menu.add_command(label="Coller", command=self.paste_selected)
+            menu.add_command(label="Ajuster à la fenêtre", command=self.fit_view)
+        try:
+            menu.tk_popup(event.x_root, event.y_root)
+        finally:
+            menu.grab_release()
 
     def load_template(self, name):
         if not self._confirm_discard():
