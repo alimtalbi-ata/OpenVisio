@@ -15,6 +15,7 @@ from .layout import snap, align, distribute, move_group
 from .clipboard import copy_selection, paste_selection
 from .templates import TEMPLATES, create_template
 from .selection import nodes_in_rectangle
+from .selection_state import select_node, select_rectangle
 from .search import find_nodes
 from .commands import add_equipment, remove_selection, connect_equipment
 
@@ -206,7 +207,7 @@ class Editor(tk.Tk):
             x1, y1 = self._marquee_end
             if abs(x1-x0) >= 4 or abs(y1-y0) >= 4:
                 ids = nodes_in_rectangle(self.document["nodes"], x0, y0, x1, y1)
-                self.selected_nodes = self._marquee_previous | ids if (event.state & 0x0001) else ids
+                self.selected_nodes = select_rectangle(self._marquee_previous, ids, additive=bool(event.state & 0x0001))
                 self.selected = next(iter(self.selected_nodes), None) if len(self.selected_nodes)==1 else None
                 self.selected_edge = None
         self._marquee_start = self._marquee_end = None
@@ -254,6 +255,7 @@ class Editor(tk.Tk):
             self.document = document
             self.selected = self.selected_edge = None
             self.selected_nodes.clear()
+            self.link_start = None
             self.draw()
     def _snapshot(self):
         return json.dumps(self.document, sort_keys=True, ensure_ascii=False)
@@ -304,18 +306,14 @@ class Editor(tk.Tk):
                 except ValueError as exc:
                     self.status.set(str(exc))
             self.link_start = None
-        if node and (event.state & 0x0004):
-            if node["id"] in self.selected_nodes:
-                self.selected_nodes.remove(node["id"])
-            else:
-                self.selected_nodes.add(node["id"])
+        if node is None and (event.state & 0x0001):
+            # Preserve existing selection until additive marquee completes.
             self.selected = None
         else:
-            if node and node["id"] in self.selected_nodes and len(self.selected_nodes) > 1:
-                self.selected = node["id"]
-            else:
-                self.selected = node["id"] if node else None
-                self.selected_nodes = {node["id"]} if node else set()
+            self.selected_nodes, self.selected = select_node(
+                self.selected_nodes, node["id"] if node else None,
+                ctrl=bool(event.state & 0x0004),
+            )
         self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
         self._drag_anchor = self.viewport.world(event.x, event.y) if node and not (event.state & 0x0004) else None
         self._marquee_start = self.viewport.world(event.x, event.y) if node is None and self.selected_edge is None else None
