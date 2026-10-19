@@ -15,6 +15,14 @@ class HistoryTests(unittest.TestCase):
         h.undo()
         h.record({"n":2})
         self.assertIsNone(h.redo())
+    def test_invalid_snapshot_is_rejected_without_corrupting_history(self):
+        h = History({"nodes": [], "edges": []})
+        bad = {"nodes": [{"id": "a", "x": 0, "y": 0}], "edges": [{"id": "e", "from": "a", "to": "missing"}]}
+        with self.assertRaises(ValueError):
+            h.record(bad)
+        self.assertIsNone(h.undo())
+        self.assertEqual(h.current, {"nodes": [], "edges": []})
+
     def test_limit(self):
         h = History({"n":0}, limit=2)
         for i in range(1, 5):
