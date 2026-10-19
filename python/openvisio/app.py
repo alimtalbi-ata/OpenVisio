@@ -306,22 +306,25 @@ class Editor(tk.Tk):
         )
         if self.link_start not in {node["id"] for node in self.document["nodes"]}:
             self.link_start = None
+    def _restore_history_document(self, document, action):
+        """Centralize selection cleanup after undo/redo."""
+        if document is None:
+            self.status.set("Aucune opération à " + action.lower())
+            return
+        self.document = document
+        self.selected = self.selected_edge = None
+        self.selected_nodes.clear()
+        self.link_start = None
+        self._drag_anchor = None
+        self._marquee_start = self._marquee_end = None
+        self.status.set(action + " effectué")
+        self.draw()
+
     def undo(self):
-        document = self.history.undo()
-        if document is not None:
-            self.document = document
-            self.selected = self.selected_edge = None
-            self.selected_nodes.clear()
-            self.link_start = None
-            self.draw()
+        self._restore_history_document(self.history.undo(), "Annulation")
+
     def redo(self):
-        document = self.history.redo()
-        if document is not None:
-            self.document = document
-            self.selected = self.selected_edge = None
-            self.selected_nodes.clear()
-            self.link_start = None
-            self.draw()
+        self._restore_history_document(self.history.redo(), "Rétablissement")
     def _snapshot(self):
         return json.dumps(self.document, sort_keys=True, ensure_ascii=False)
     def _confirm_discard(self):
