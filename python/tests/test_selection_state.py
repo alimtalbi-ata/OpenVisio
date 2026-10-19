@@ -17,6 +17,14 @@ class SelectionStateTests(unittest.TestCase):
         self.assertEqual(select_rectangle({"a"}, {"b"}, additive=True), {"a", "b"})
         self.assertEqual(select_rectangle({"a"}, {"b"}), {"b"})
 
+    def test_reconcile_keeps_existing_primary(self):
+        doc = {"nodes": [{"id": "a"}, {"id": "b"}], "edges": []}
+        self.assertEqual(reconcile_selection(doc, {"a", "b"}, "a"), ({"a", "b"}, "a", None))
+
+    def test_reconcile_keeps_edge_when_no_nodes_selected(self):
+        doc = {"nodes": [], "edges": [{"id": "e"}]}
+        self.assertEqual(reconcile_selection(doc, set(), None, "e"), (set(), None, "e"))
+
     def test_reconcile_removes_deleted_ids(self):
         doc = {"nodes": [{"id": "a"}], "edges": [{"id": "e"}]}
         self.assertEqual(reconcile_selection(doc, {"a", "deleted"}, "deleted", "e"), ({"a"}, None, None))
