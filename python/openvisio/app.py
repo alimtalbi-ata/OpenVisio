@@ -246,6 +246,7 @@ class Editor(tk.Tk):
             self.document = document
             self.selected = self.selected_edge = None
             self.selected_nodes.clear()
+            self.link_start = None
             self.draw()
     def redo(self):
         document = self.history.redo()
