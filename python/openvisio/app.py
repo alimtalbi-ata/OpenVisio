@@ -220,9 +220,12 @@ class Editor(tk.Tk):
         self.selected_edge = None
         self.draw()
     def clear_selection(self):
+        """Escape also cancels a pending connection operation."""
         self.selected_nodes.clear()
         self.selected = None
         self.selected_edge = None
+        self.link_start = None
+        self.status.set("Sélection et création de liaison annulées")
         self.draw()
     def copy_selected(self):
         ids = self.selected_nodes or ({self.selected} if self.selected else set())
