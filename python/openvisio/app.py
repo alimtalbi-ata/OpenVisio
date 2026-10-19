@@ -16,6 +16,7 @@ from .clipboard import copy_selection, paste_selection
 from .templates import TEMPLATES, create_template
 from .selection import nodes_in_rectangle
 from .selection_state import select_node, select_rectangle
+from .property_commands import update_equipment, update_connection
 from .search import find_nodes
 from .commands import add_equipment, remove_selection, connect_equipment
 
@@ -373,12 +374,11 @@ class Editor(tk.Tk):
         def apply():
             try:
                 raw = {key: (value.get("1.0", "end-1c") if key == "notes" else value.get()) for key, value in fields.items()}
-                values = normalize_properties(**raw)
+                updated_document = update_equipment(self.document, node["id"], raw, shape.get())
             except ValueError as exc:
                 messagebox.showerror("Propriétés invalides", str(exc), parent=dialog)
                 return
-            node.update(values)
-            node["shape"] = shape.get()
+            self.document = updated_document
             self._record_change()
             self.draw()
             dialog.destroy()
@@ -409,7 +409,10 @@ class Editor(tk.Tk):
             fields[key] = value
         def apply():
             try:
-                edge.update(normalize_link(**{key: value.get() for key, value in fields.items()}))
+                updated_document = update_connection(
+                    self.document, edge["id"], {key: value.get() for key, value in fields.items()}
+                )
+                self.document = updated_document
                 self._record_change()
             except ValueError as exc:
                 messagebox.showerror("Liaison invalide", str(exc), parent=dialog)
