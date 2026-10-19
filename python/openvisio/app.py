@@ -25,7 +25,7 @@ from .commands import add_equipment, remove_selection, connect_equipment
 class Editor(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("OpenVisio 42.0 — Python natif")
+        self.title("OpenVisio 42.1 — Python natif")
         self.geometry("1100x720")
         self.document = {"nodes": [], "edges": []}
         self.current_path = None
@@ -434,7 +434,7 @@ class Editor(tk.Tk):
             self.draw()
             dialog.destroy()
         tk.Button(dialog, text="Enregistrer", command=apply).grid(row=shape_row+1, column=1, pady=12, sticky="e")
-        dialog.bind("<Return>", lambda event: apply())
+        dialog.bind("<Control-Return>", lambda event: apply())
         dialog.bind("<Escape>", lambda event: dialog.destroy())
         dialog.wait_window()
     def edit_selected_link(self):
