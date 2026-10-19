@@ -16,6 +16,7 @@ from .clipboard import copy_selection, paste_selection
 from .templates import TEMPLATES, create_template
 from .selection import nodes_in_rectangle
 from .search import find_nodes
+from .commands import add_equipment, remove_selection, connect_equipment
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -280,11 +281,10 @@ class Editor(tk.Tk):
         self.history.reset(self.document)
         self.draw()
     def create_node(self, x, y, kind="server"):
-        node = {"id": uuid4().hex, "x": round(x), "y": round(y), "label": get_shape(kind)["label"], "shape": kind}
-        self.document["nodes"].append(node)
+        self.document, node_id = add_equipment(self.document, x, y, kind)
         self._record_change()
-        self.selected = node["id"]
-        self.selected_nodes = {node["id"]}
+        self.selected = node_id
+        self.selected_nodes = {node_id}
         self.draw()
     def add_node(self, event):
         self.create_node(*self.viewport.world(event.x, event.y))
@@ -297,8 +297,11 @@ class Editor(tk.Tk):
         self._marquee_previous = set(self.selected_nodes)
         if self.link_start is not None and node is not None:
             if node["id"] != self.link_start:
-                self.document["edges"].append({"id": uuid4().hex, "from": self.link_start, "to": node["id"]})
-                self._record_change()
+                try:
+                    self.document = connect_equipment(self.document, self.link_start, node["id"])
+                    self._record_change()
+                except ValueError as exc:
+                    self.status.set(str(exc))
             self.link_start = None
         if node and (event.state & 0x0004):
             if node["id"] in self.selected_nodes:
@@ -424,8 +427,7 @@ class Editor(tk.Tk):
         selected_edge = self.selected_edge
         if not ids and not selected_edge:
             return
-        self.document["nodes"] = [n for n in self.document["nodes"] if n["id"] not in ids]
-        self.document["edges"] = [e for e in self.document["edges"] if e["id"] != selected_edge and e["from"] not in ids and e["to"] not in ids]
+        self.document = remove_selection(self.document, ids, selected_edge)
         self.selected = None
         self.selected_edge = None
         self.selected_nodes.clear()
