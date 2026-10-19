@@ -65,6 +65,8 @@ class Editor(tk.Tk):
         filemenu = tk.Menu(bar, tearoff=False)
         for label, command in [("Nouveau", self.new), ("Ouvrir", self.open), ("Enregistrer", self.store), ("Enregistrer sous", self.store_as), ("Exporter en SVG", self.export_as_svg)]:
             filemenu.add_command(label=label, command=command)
+        filemenu.add_separator()
+        filemenu.add_command(label="Restaurer la sauvegarde précédente (.bak)", command=self.restore_backup)
         bar.add_cascade(label="Fichier", menu=filemenu)
         edit = tk.Menu(bar, tearoff=False)
         edit.add_command(label="Annuler", command=self.undo)
@@ -516,6 +518,39 @@ class Editor(tk.Tk):
             x1, y1 = self.viewport.screen(*self._marquee_end)
             self.canvas.create_rectangle(x0, y0, x1, y1, outline="#2563eb", dash=(5, 3), width=2)
         self._refresh_document_status()
+    def restore_backup(self):
+        """Load the validated previous version without silently overwriting the file."""
+        if not self.current_path:
+            messagebox.showinfo("Récupération", "Ouvrez d'abord un document enregistré.")
+            return
+        from pathlib import Path
+        backup = Path(str(self.current_path) + ".bak")
+        if not backup.is_file():
+            messagebox.showinfo("Récupération", "Aucune sauvegarde précédente disponible.")
+            return
+        try:
+            recovered = load(backup)
+        except (ValueError, OSError, UnicodeError) as exc:
+            messagebox.showerror("Sauvegarde invalide", str(exc))
+            return
+        if not messagebox.askyesno(
+            "Restaurer la version précédente",
+            "Charger la sauvegarde précédente dans l'éditeur ? "
+            "Les changements actuels seront remplacés. "
+            "La sauvegarde ne sera pas écrasée.",
+            parent=self,
+        ):
+            return
+        if not self._confirm_discard():
+            return
+        self.document = recovered
+        self.history.record(recovered)
+        self.selected = self.selected_edge = None
+        self.selected_nodes.clear()
+        self.link_start = None
+        self.status.set("Sauvegarde précédente chargée ; enregistrez pour la conserver")
+        self.draw()
+
     def open(self):
         path = filedialog.askopenfilename(filetypes=[("OpenVisio JSON", "*.ovjson *.json")])
         if not path:
