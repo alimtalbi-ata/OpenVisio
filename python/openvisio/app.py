@@ -543,6 +543,13 @@ class Editor(tk.Tk):
             return
         if not self._confirm_discard():
             return
+        # The discard prompt may have saved the current file and rotated .bak.
+        # Re-read the backup so recovery never uses a stale pre-save snapshot.
+        try:
+            recovered = load(backup)
+        except (ValueError, OSError, UnicodeError) as exc:
+            messagebox.showerror("Sauvegarde modifiée ou invalide", str(exc))
+            return
         self.document = recovered
         self.history.record(recovered)
         self.selected = self.selected_edge = None
