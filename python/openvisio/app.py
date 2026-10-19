@@ -18,6 +18,7 @@ from .selection import nodes_in_rectangle
 from .selection_state import select_node, select_rectangle, reconcile_selection
 from .property_commands import update_equipment, update_connection
 from .shortcut_policy import editor_shortcut_allowed
+from .context_actions import context_selection
 from .search import find_nodes
 from .commands import add_equipment, remove_selection, connect_equipment
 
@@ -141,19 +142,11 @@ class Editor(tk.Tk):
         """Context actions follow the object under the pointer."""
         node = self.node_at(event.x, event.y)
         edge = None if node else self.edge_at(event.x, event.y)
-        if node is not None:
-            if node["id"] not in self.selected_nodes:
-                self.selected_nodes = {node["id"]}
-            self.selected = node["id"]
-            self.selected_edge = None
-        elif edge is not None:
-            self.selected_nodes.clear()
-            self.selected = None
-            self.selected_edge = edge["id"]
-        else:
-            self.selected_nodes.clear()
-            self.selected = None
-            self.selected_edge = None
+        self.selected_nodes, self.selected, self.selected_edge = context_selection(
+            node["id"] if node is not None else None,
+            edge["id"] if edge is not None else None,
+            self.selected_nodes,
+        )
         self.draw()
         menu = tk.Menu(self, tearoff=False)
         if node is not None:
