@@ -10,10 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dist" / "documentation"
 OUT.mkdir(parents=True, exist_ok=True)
 sections = [
- ("OpenVisio v42.0 — Guide Windows", "Auteur : Abdelhalim Talbi. Édition native Python/Tkinter."),
+ ("OpenVisio v42.1 — Guide Windows", "Auteur : Abdelhalim Talbi. Édition native Python/Tkinter."),
  ("Périmètre fonctionnel", "Version initiale : bibliothèque de huit types d'équipements (serveur, baie, switch SAN, NAS, switch réseau, pare-feu, base de données, application) ; créer, déplacer, relier et supprimer des équipements ; ouvrir et enregistrer des documents JSON ; exporter les diagrammes au format SVG vectoriel. Parité avec v41.77 non atteinte."),
- ("Installation", "Exécuter OpenVisio-Setup-v42.0-x64.exe sur Windows x64. L'application et l'interpréteur Python sont intégrés à l'exécutable. Aucun code source ni environnement Python requis sur le PC cible."),
- ("Portable", "Copier OpenVisio-v42.0-Windows-x64-Portable.exe sur le PC Windows x64 et le lancer. Aucun Node.js, Java, WebView2 ou .NET requis. Les bibliothèques Windows système et l'environnement graphique Windows restent nécessaires."),
+ ("Installation", "Exécuter OpenVisio-Setup-v42.1-x64.exe sur Windows x64. L'application et l'interpréteur Python sont intégrés à l'exécutable. Aucun code source ni environnement Python requis sur le PC cible."),
+ ("Portable", "Copier OpenVisio-v42.1-Windows-x64-Portable.exe sur le PC Windows x64 et le lancer. Aucun Node.js, Java, WebView2 ou .NET requis. Les bibliothèques Windows système et l'environnement graphique Windows restent nécessaires."),
  ("Utilisation", "Menu Équipements : choisir une forme infrastructure ; F2 : modifier nom, hôte/FQDN, adresse IPv4/IPv6, constructeur et modèle de l'équipement sélectionné ; Édition > Propriétés de la liaison sélectionnée : protocole FC/iSCSI/Ethernet/NFS/SMB/NVMe, ports, fabric et débit ; cliquer sur une liaison pour la sélectionner, modifier ses propriétés ou la supprimer ; double-clic sur le canevas : serveur ; glisser : déplacement ; menu Édition : créer une liaison ; Ctrl+O : ouvrir ; Ctrl+S : enregistrer ; Ctrl+Z : annuler ; Ctrl+Y : rétablir ; Fichier > Exporter en SVG : exporter une image vectorielle ; Suppr : supprimer."),
  ("Modèles de diagrammes infrastructure", "Le menu Modèles propose SAN double fabric (deux hôtes, deux fabrics FC, baie de stockage), NAS et clients (Linux NFS, Windows SMB, réseau Ethernet), et Application trois tiers (web, application, base de données). Chaque modèle génère des identifiants uniques et reste modifiable. L’ouverture d’un modèle demande confirmation avant d’abandonner un diagramme non enregistré."),
  ("Copie et duplication des topologies", "Ctrl+C copie les équipements sélectionnés et les connexions internes au groupe ; Ctrl+V colle une copie avec nouveaux identifiants et décalage progressif ; Ctrl+D duplique immédiatement. Suppr supprime le groupe et les liaisons associées. Ces opérations sont annulables avec Ctrl+Z."),
@@ -39,10 +39,10 @@ doc = Document()
 for i, (title, body) in enumerate(sections):
     doc.add_heading(title, 0 if i == 0 else 1)
     doc.add_paragraph(body)
-doc.save(OUT / "OpenVisio-v42.0-Guide-Windows.docx")
+doc.save(OUT / "OpenVisio-v42.1-Guide-Windows.docx")
 styles = getSampleStyleSheet()
 story = []
 for i, (title, body) in enumerate(sections):
     story.extend([Paragraph(escape(title), styles["Title"] if i == 0 else styles["Heading2"]), Spacer(1, 9), Paragraph(escape(body), styles["BodyText"]), Spacer(1, 12)])
-SimpleDocTemplate(str(OUT / "OpenVisio-v42.0-Guide-Windows.pdf"), pagesize=A4).build(story)
+SimpleDocTemplate(str(OUT / "OpenVisio-v42.1-Guide-Windows.pdf"), pagesize=A4).build(story)
 print("Documentation Word et PDF générée :", OUT)
