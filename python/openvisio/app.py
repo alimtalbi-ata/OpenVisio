@@ -370,8 +370,11 @@ class Editor(tk.Tk):
                 try:
                     self.document = connect_equipment(self.document, self.link_start, node["id"])
                     self._record_change()
+                    self.status.set("Liaison créée entre les deux équipements")
                 except ValueError as exc:
                     self.status.set(str(exc))
+            else:
+                self.status.set("Liaison annulée : choisissez deux équipements différents")
             self.link_start = None
         if node is None and (event.state & 0x0001):
             # Preserve existing selection until additive marquee completes.
