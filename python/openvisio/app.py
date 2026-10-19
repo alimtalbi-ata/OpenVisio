@@ -17,6 +17,7 @@ from .templates import TEMPLATES, create_template
 from .selection import nodes_in_rectangle
 from .selection_state import select_node, select_rectangle
 from .property_commands import update_equipment, update_connection
+from .shortcut_policy import editor_shortcut_allowed
 from .search import find_nodes
 from .commands import add_equipment, remove_selection, connect_equipment
 
@@ -130,9 +131,7 @@ class Editor(tk.Tk):
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
     def _editor_shortcut(self, event, action):
         """Never intercept text editing or modal dialog keystrokes."""
-        if isinstance(event.widget, (tk.Entry, tk.Text, tk.Spinbox)):
-            return None
-        if event.widget.winfo_toplevel() is not self:
+        if not editor_shortcut_allowed(event.widget.winfo_class(), event.widget.winfo_toplevel() is self):
             return None
         action()
         return "break"
