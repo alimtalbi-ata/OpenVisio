@@ -117,10 +117,17 @@ class Editor(tk.Tk):
         self.bind("<Control-y>", lambda event: self.redo())
         self.bind("<Control-s>", lambda event: self.store())
         self.bind("<Control-o>", lambda event: self.open())
-        self.bind("<Delete>", lambda event: self.delete_selected())
+        self.bind("<Delete>", self._delete_shortcut)
         self.bind("<F2>", lambda event: self.edit_properties())
         self.status = tk.StringVar(value="Double-clic : ajouter | Glisser : déplacer | Édition : relier")
         tk.Label(self, textvariable=self.status, anchor="w").pack(fill="x")
+    def _delete_shortcut(self, event):
+        """Keep native text editing intact when focus is in an input widget."""
+        if isinstance(event.widget, (tk.Entry, tk.Text, tk.Spinbox)):
+            return None
+        self.delete_selected()
+        return "break"
+
     def load_template(self, name):
         if not self._confirm_discard():
             return
