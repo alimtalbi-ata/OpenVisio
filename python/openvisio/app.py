@@ -4,6 +4,7 @@ import json
 from tkinter import filedialog, messagebox, simpledialog
 from uuid import uuid4
 from .model import load, save
+from .document_recovery import backup_path, read_backup
 from .export import export_svg
 from .shapes import SHAPES, get_shape
 from .properties import normalize_properties
@@ -523,13 +524,12 @@ class Editor(tk.Tk):
         if not self.current_path:
             messagebox.showinfo("Récupération", "Ouvrez d'abord un document enregistré.")
             return
-        from pathlib import Path
-        backup = Path(str(self.current_path) + ".bak")
+        backup = backup_path(self.current_path)
         if not backup.is_file():
             messagebox.showinfo("Récupération", "Aucune sauvegarde précédente disponible.")
             return
         try:
-            recovered = load(backup)
+            recovered = read_backup(self.current_path)
         except (ValueError, OSError, UnicodeError) as exc:
             messagebox.showerror("Sauvegarde invalide", str(exc))
             return
@@ -546,7 +546,7 @@ class Editor(tk.Tk):
         # The discard prompt may have saved the current file and rotated .bak.
         # Re-read the backup so recovery never uses a stale pre-save snapshot.
         try:
-            recovered = load(backup)
+            recovered = read_backup(self.current_path)
         except (ValueError, OSError, UnicodeError) as exc:
             messagebox.showerror("Sauvegarde modifiée ou invalide", str(exc))
             return
