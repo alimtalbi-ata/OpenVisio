@@ -31,8 +31,11 @@ def validate_document(data):
         if not isinstance(ident, str) or not ident or ident in edge_ids or ident in node_ids:
             raise ValueError("Identifiant liaison invalide ou dupliqué")
         edge_ids.add(ident)
-        if edge.get("from") not in node_ids or edge.get("to") not in node_ids:
+        source, target = edge.get("from"), edge.get("to")
+        if not isinstance(source, str) or not isinstance(target, str) or source not in node_ids or target not in node_ids:
             raise ValueError("Liaison vers un équipement inexistant")
+        if source == target:
+            raise ValueError("Une liaison ne peut pas relier un équipement à lui-même")
         for key in ("protocol", "source_port", "target_port", "fabric", "speed_gbps"):
             if key in edge and (not isinstance(edge[key], str) or len(edge[key]) > 4096):
                 raise ValueError("Propriété liaison invalide : " + key)
