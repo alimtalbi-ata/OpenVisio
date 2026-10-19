@@ -23,6 +23,13 @@ class HistoryTests(unittest.TestCase):
         self.assertIsNone(h.undo())
         self.assertEqual(h.current, {"nodes": [], "edges": []})
 
+    def test_reset_rejects_invalid_document_without_erasing_history(self):
+        h = History({"nodes": [], "edges": []})
+        h.record({"nodes": [{"id": "a", "x": 1, "y": 2}], "edges": []})
+        with self.assertRaises(ValueError):
+            h.reset({"nodes": [], "edges": [{"id": "orphan", "from": "x", "to": "y"}]})
+        self.assertEqual(h.current["nodes"][0]["id"], "a")
+
     def test_limit(self):
         h = History({"nodes": [], "edges": []}, limit=2)
         for i in range(1, 5):
