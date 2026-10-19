@@ -35,6 +35,7 @@ class Editor(tk.Tk):
         self._drag_anchor = None
         self._marquee_start = None
         self._marquee_end = None
+        self._marquee_previous = set()
         self._clipboard = None
         self._paste_count = 0
         self.history = History(self.document)
@@ -186,10 +187,11 @@ class Editor(tk.Tk):
             x1, y1 = self._marquee_end
             if abs(x1-x0) >= 4 or abs(y1-y0) >= 4:
                 ids = nodes_in_rectangle(self.document["nodes"], x0, y0, x1, y1)
-                self.selected_nodes = self.selected_nodes | ids if (event.state & 0x0001) else ids
+                self.selected_nodes = self._marquee_previous | ids if (event.state & 0x0001) else ids
                 self.selected = next(iter(self.selected_nodes), None) if len(self.selected_nodes)==1 else None
                 self.selected_edge = None
         self._marquee_start = self._marquee_end = None
+        self._marquee_previous.clear()
         self._drag_anchor = None
         self._record_change()
         self.draw()
@@ -231,6 +233,7 @@ class Editor(tk.Tk):
         if document is not None:
             self.document = document
             self.selected = self.selected_edge = None
+            self.selected_nodes.clear()
             self.draw()
     def _snapshot(self):
         return json.dumps(self.document, sort_keys=True, ensure_ascii=False)
@@ -273,6 +276,7 @@ class Editor(tk.Tk):
         return edge_at(self.document["nodes"], self.document["edges"], *self.viewport.world(x, y), tolerance=9/self.viewport.zoom)
     def click(self, event):
         node = self.node_at(event.x, event.y)
+        self._marquee_previous = set(self.selected_nodes)
         if self.link_start is not None and node is not None:
             if node["id"] != self.link_start:
                 self.document["edges"].append({"id": uuid4().hex, "from": self.link_start, "to": node["id"]})
@@ -292,7 +296,7 @@ class Editor(tk.Tk):
                 self.selected_nodes = {node["id"]} if node else set()
         self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
         self._drag_anchor = self.viewport.world(event.x, event.y) if node and not (event.state & 0x0004) else None
-        self._marquee_start = self.viewport.world(event.x, event.y) if node is None else None
+        self._marquee_start = self.viewport.world(event.x, event.y) if node is None and self.selected_edge is None else None
         self._marquee_end = None
         self.draw()
     def drag(self, event):
@@ -425,6 +429,8 @@ class Editor(tk.Tk):
             self.current_path = path
             self.selected = None
             self.selected_edge = None
+            self.selected_nodes.clear()
+            self.link_start = None
             self.saved_snapshot = self._snapshot()
             self.history.reset(self.document)
             self.draw()
