@@ -36,4 +36,4 @@ class History:
     def reset(self, document):
         self.past.clear()
         self.future.clear()
-        self.current = deepcopy(document)
+        self.current = deepcopy(validate(document))
