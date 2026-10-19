@@ -442,22 +442,26 @@ class Editor(tk.Tk):
             x1, y1 = self.viewport.screen(*self._marquee_end)
             self.canvas.create_rectangle(x0, y0, x1, y1, outline="#2563eb", dash=(5, 3), width=2)
     def open(self):
+        path = filedialog.askopenfilename(filetypes=[("OpenVisio JSON", "*.ovjson *.json")])
+        if not path:
+            return
+        try:
+            document = load(path)
+        except (ValueError, OSError, UnicodeError) as exc:
+            messagebox.showerror("Ouverture impossible", str(exc))
+            return
         if not self._confirm_discard():
             return
-        path = filedialog.askopenfilename(filetypes=[("OpenVisio JSON", "*.ovjson *.json")])
-        if not path: return
-        try:
-            self.document = load(path)
-            self.current_path = path
-            self.selected = None
-            self.selected_edge = None
-            self.selected_nodes.clear()
-            self.link_start = None
-            self.saved_snapshot = self._snapshot()
-            self.history.reset(self.document)
-            self.draw()
-        except (ValueError, OSError) as exc:
-            messagebox.showerror("Ouverture impossible", str(exc))
+        # Commit the validated document only after user confirmation.
+        self.history.reset(document)
+        self.document = document
+        self.current_path = path
+        self.selected = None
+        self.selected_edge = None
+        self.selected_nodes.clear()
+        self.link_start = None
+        self.saved_snapshot = self._snapshot()
+        self.draw()
     def store(self):
         if not self.current_path: return self.store_as()
         try:
