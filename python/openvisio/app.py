@@ -481,12 +481,16 @@ class Editor(tk.Tk):
             messagebox.showerror("Export impossible", str(exc))
     def store_as(self):
         path = filedialog.asksaveasfilename(defaultextension=".ovjson", filetypes=[("OpenVisio", "*.ovjson")])
-        if path:
-            previous_path = self.current_path
-            self.current_path = path
-            self.store()
-            if self._snapshot() != self.saved_snapshot:
-                self.current_path = previous_path
+        if not path:
+            return
+        try:
+            save(path, self.document)
+        except (ValueError, OSError) as exc:
+            messagebox.showerror("Enregistrement impossible", str(exc))
+            return
+        self.current_path = path
+        self.saved_snapshot = self._snapshot()
+        self.status.set("Enregistré : " + path)
 
 def main():
     Editor().mainloop()
