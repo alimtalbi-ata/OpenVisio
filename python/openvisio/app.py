@@ -502,7 +502,9 @@ class Editor(tk.Tk):
         self.selected = None
         self.selected_edge = None
         self.selected_nodes.clear()
+        self.link_start = None
         self._record_change()
+        self.status.set("Sélection supprimée ; liaison en attente annulée")
         self.draw()
     def draw(self):
         draw_document(self.canvas, self.document, self.selected, self.selected_edge, self.viewport, grid=self.grid_enabled, selected_nodes=self.selected_nodes)
