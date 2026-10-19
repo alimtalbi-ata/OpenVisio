@@ -27,6 +27,7 @@ def load(path):
 def save(path, data):
     import os
     import tempfile
+    import shutil
     path = Path(path)
     validated = validate(data)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -36,6 +37,23 @@ def save(path, data):
             json.dump(validated, stream, ensure_ascii=False, indent=2)
             stream.flush()
             os.fsync(stream.fileno())
+        # Keep the last on-disk version before atomic replacement.
+        # A failed backup aborts the save without touching the original.
+        if path.is_file():
+            backup = path.with_name(path.name + ".bak")
+            backup_fd, backup_tmp = tempfile.mkstemp(
+                prefix=".openvisio-backup-", suffix=".tmp", dir=path.parent
+            )
+            try:
+                with os.fdopen(backup_fd, "wb") as backup_stream:
+                    with path.open("rb") as original:
+                        shutil.copyfileobj(original, backup_stream)
+                    backup_stream.flush()
+                    os.fsync(backup_stream.fileno())
+                os.replace(backup_tmp, backup)
+            finally:
+                if os.path.exists(backup_tmp):
+                    os.unlink(backup_tmp)
         os.replace(tmp, path)
         # Flush the directory entry on POSIX for crash-resistant rename.
         if os.name == "posix":
