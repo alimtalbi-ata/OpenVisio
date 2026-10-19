@@ -6,9 +6,9 @@ import zipfile
 
 root = Path(__file__).resolve().parents[1]
 dist = root / "dist"
-portable = dist / "OpenVisio-v42.1-Windows-x64-Portable.exe"
-installer = dist / "installer" / "OpenVisio-Setup-v42.1-x64.exe"
-docs = [dist / "documentation" / f"OpenVisio-v42.1-Guide-Windows.{ext}" for ext in ("docx", "pdf")]
+portable = dist / "OpenVisio-v42.2-Windows-x64-Portable.exe"
+installer = dist / "installer" / "OpenVisio-Setup-v42.2-x64.exe"
+docs = [dist / "documentation" / f"OpenVisio-v42.2-Guide-Windows.{ext}" for ext in ("docx", "pdf")]
 required = [portable, installer, *docs]
 for file in required:
     if not file.is_file() or file.stat().st_size < 1000:
@@ -17,10 +17,10 @@ binary = root / "binary"
 binary.mkdir(exist_ok=True)
 for file in (portable, installer):
     (binary / file.name).write_bytes(file.read_bytes())
-manifest = {"version": "42.1.0", "author": "Abdelhalim Talbi", "status": "built-not-qualified-on-clean-PC", "artifacts": [
+manifest = {"version": "42.2.0", "author": "Abdelhalim Talbi", "status": "built-not-qualified-on-clean-PC", "artifacts": [
     {"name": p.name, "size": p.stat().st_size, "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in required]}
 (binary / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-target = dist / "OpenVisio-v42.1-Windows-Cumulative.zip"
+target = dist / "OpenVisio-v42.2-Windows-Cumulative.zip"
 with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
     for file in sorted((root / "openvisio").rglob("*.py")):
         archive.write(file, "03-Sources/" + str(file.relative_to(root)))
@@ -40,7 +40,7 @@ with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.write(root / "scripts" / script, "02-Compilation/scripts/" + script)
     for script in ("Smoke-Portable-Windows.ps1", "Smoke-Installer-Windows.ps1"):
         archive.write(root / "scripts" / script, "04-Tests/" + script)
-    archive.writestr("06-Historique/README.txt", "OpenVisio 42.1.0 - Auteur : Abdelhalim Talbi\nCommits : https://github.com/alimtalbi-ata/OpenVisio/commits/develop/openvisio-python-v42/\nQualification : CI Windows ; installation PC tiers non certifiee.\n")
+    archive.writestr("06-Historique/README.txt", "OpenVisio 42.2.0 - Auteur : Abdelhalim Talbi\nCommits : https://github.com/alimtalbi-ata/OpenVisio/commits/develop/openvisio-python-v42/\nQualification : CI Windows ; installation PC tiers non certifiee.\n")
 with zipfile.ZipFile(target) as archive:
     if archive.testzip() is not None:
         raise SystemExit("ZIP integrity check failed")
