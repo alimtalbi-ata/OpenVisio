@@ -24,6 +24,26 @@ jobs:
       - name: Build and test
         shell: cmd
         run: call 02-Compilation\Build-Windows.cmd
+      - name: Verify ZIP contents and hashes
+        shell: pwsh
+        run: |
+          $zip = "02-Compilation/dist/OpenVisio-v42.6-Windows-Cumulative.zip"
+          if (!(Test-Path $zip)) { throw "Missing Windows ZIP" }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $archive = [IO.Compression.ZipFile]::OpenRead((Resolve-Path $zip))
+          try {
+            $names = @($archive.Entries | ForEach-Object FullName)
+            foreach ($pattern in @("01-Application/binary/*Portable.exe", "01-Application/binary/*Setup*.exe", "05-Documentation/*.pdf", "05-Documentation/*.docx", "03-Sources/openvisio/app.py", "07-Manifestes/manifest.json")) {
+              if (-not @($names | Where-Object { $_ -like $pattern }).Count) { throw "Missing archive content: $pattern" }
+            }
+            foreach ($entry in $archive.Entries) {
+              if ($entry.Length -gt 0) {
+                $stream = $entry.Open()
+                try { $buffer = New-Object byte[] 65536; while ($stream.Read($buffer, 0, $buffer.Length) -gt 0) {} } finally { $stream.Dispose() }
+              }
+            }
+          } finally { $archive.Dispose() }
+          Get-FileHash $zip -Algorithm SHA256 | Format-List
       - name: Upload Windows release
         uses: actions/upload-artifact@v4
         with:
