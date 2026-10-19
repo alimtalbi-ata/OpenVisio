@@ -10,6 +10,20 @@ class ModelTests(unittest.TestCase):
             path = Path(tmp) / "diagram.ovjson"
             save(path, data)
             self.assertEqual(load(path), data)
+    def test_corrupt_json_reports_value_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "broken.ovjson"
+            path.write_text('{"nodes": [', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "JSON invalide"):
+                load(path)
+
+    def test_invalid_utf8_reports_value_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "invalid.ovjson"
+            path.write_bytes(b"\\xff\\xfe")
+            with self.assertRaisesRegex(ValueError, "illisible"):
+                load(path)
+
     def test_duplicate_ids(self):
         with self.assertRaises(ValueError):
             validate({"nodes":[{"id":"a","x":1,"y":2},{"id":"a","x":1,"y":2}],"edges":[]})
