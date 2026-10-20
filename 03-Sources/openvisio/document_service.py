@@ -18,14 +18,12 @@ def restore_previous(path):
 def inspect_previous(path):
     backup = backup_path(path)
     before = snapshot(backup)
-    document = read_backup(path)
-    verify_snapshot(before)
+    from .recovery_guard import guarded_backup_read
+    document = guarded_backup_read(backup, before)
     return document, before
 
 def restore_inspected(path, expected):
     if expected.path.resolve() != backup_path(path).resolve():
         raise ValueError("Sauvegarde non associée à ce document")
-    verify_snapshot(expected)
-    document = read_backup(path)
-    verify_snapshot(expected)
-    return document
+    from .recovery_guard import guarded_backup_read
+    return guarded_backup_read(backup_path(path), expected)
