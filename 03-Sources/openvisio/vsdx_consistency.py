@@ -45,13 +45,21 @@ def inspect(path):
         names = archive.namelist()
         if len(names) != len({name.casefold() for name in names}):
             raise ValueError("Entrées VSDX dupliquées")
-        if "openvisio/manifest.json" not in names or "openvisio/document.json" not in names:
+        has_manifest = "openvisio/manifest.json" in names
+        has_document = "openvisio/document.json" in names
+        if has_manifest != has_document:
+            raise ValueError("Paquet OpenVisio/VSDX incomplet")
+        if not has_manifest:
+            if not any(name.startswith("visio/pages/") and name.endswith(".xml") and "/_rels/" not in name for name in names):
+                raise ValueError("Archive sans page Visio : fichier VSDX invalide")
             return {"status": "external", "visual_consistency": "not_applicable"}
         if archive.getinfo("openvisio/manifest.json").file_size > 1_000_000:
             raise ValueError("Manifeste VSDX trop volumineux")
         if archive.getinfo("openvisio/document.json").file_size > 10_000_000:
             raise ValueError("Document VSDX trop volumineux")
         manifest = json.loads(archive.read("openvisio/manifest.json"))
+        if not isinstance(manifest, dict):
+            raise ValueError("Manifeste VSDX invalide")
         payload = archive.read("openvisio/document.json")
         if manifest.get("sha256") != hashlib.sha256(payload).hexdigest():
             return {"status": "corrupted_payload", "visual_consistency": "unknown"}
