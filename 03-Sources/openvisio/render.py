@@ -1,0 +1,74 @@
+"""Canvas rendering and geometry, independent from editor state. Author: Abdelhalim Talbi."""
+from math import hypot
+from .shapes import get_shape
+
+NODE_HALF_WIDTH = 70
+NODE_HALF_HEIGHT = 30
+
+def node_at(nodes, x, y):
+    for node in reversed(nodes):
+        if abs(node["x"] - x) <= NODE_HALF_WIDTH and abs(node["y"] - y) <= NODE_HALF_HEIGHT:
+            return node
+    return None
+
+def edge_at(nodes, edges, x, y, tolerance=9):
+    by_id = {n["id"]: n for n in nodes}
+    for edge in reversed(edges):
+        a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
+        if not a or not b:
+            continue
+        dx, dy = b["x"] - a["x"], b["y"] - a["y"]
+        length_sq = dx * dx + dy * dy
+        if not length_sq:
+            continue
+        t = max(0, min(1, ((x - a["x"]) * dx + (y - a["y"]) * dy) / length_sq))
+        if hypot(x - (a["x"] + t * dx), y - (a["y"] + t * dy)) <= tolerance:
+            return edge
+    return None
+
+def draw_document(canvas, document, selected_node=None, selected_edge=None, viewport=None, grid=False, grid_spacing=20, selected_nodes=None):
+    import tkinter as tk
+    canvas.delete("all")
+    def xy(x, y):
+        return viewport.screen(x, y) if viewport is not None else (x, y)
+    scale = viewport.zoom if viewport is not None else 1.0
+    if grid:
+        width, height = canvas.winfo_width(), canvas.winfo_height()
+        zoom = viewport.zoom if viewport is not None else 1
+        if zoom * grid_spacing >= 8:
+            x0, y0 = viewport.world(0, 0) if viewport is not None else (0, 0)
+            x1, y1 = viewport.world(width, height) if viewport is not None else (width, height)
+            import math
+            for i in range(math.floor(x0 / grid_spacing), math.ceil(x1 / grid_spacing) + 1):
+                sx = xy(i * grid_spacing, 0)[0]
+                canvas.create_line(sx, 0, sx, height, fill="#e2e8f0")
+            for i in range(math.floor(y0 / grid_spacing), math.ceil(y1 / grid_spacing) + 1):
+                sy = xy(0, i * grid_spacing)[1]
+                canvas.create_line(0, sy, width, sy, fill="#e2e8f0")
+    by_id = {n["id"]: n for n in document["nodes"]}
+    for edge in document["edges"]:
+        a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
+        if a and b:
+            selected = edge.get("id") == selected_edge
+            canvas.create_line(*xy(a["x"], a["y"]), *xy(b["x"], b["y"]), fill="#dc2626" if selected else "#2563eb", width=(4 if selected else 2) * scale, arrow=tk.LAST)
+            details = []
+            protocol = str(edge.get("protocol", "")).strip()
+            if protocol:
+                details.append(protocol)
+            speed = str(edge.get("speed_gbps", "")).strip()
+            if speed:
+                details.append(speed + " Gbit/s")
+            fabric = str(edge.get("fabric", "")).strip()
+            if fabric:
+                details.append("Fabric " + fabric)
+            ports = " → ".join(str(edge.get(key, "")).strip() for key in ("source_port", "target_port") if str(edge.get(key, "")).strip())
+            if ports:
+                details.append(ports)
+            if details:
+                mx, my = xy((a["x"] + b["x"]) / 2, (a["y"] + b["y"]) / 2)
+                canvas.create_text(mx, my - 9 * scale, text=" · ".join(details)[:72], fill="#991b1b" if selected else "#334155", font=("Arial", max(6, int(9 * scale))), tags=("edge-label",))
+    for node in document["nodes"]:
+        x, y = node["x"], node["y"]
+        selected = node["id"] == selected_node or node["id"] in (selected_nodes or ())
+        canvas.create_rectangle(*xy(x-70, y-30), *xy(x+70, y+30), fill="#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"], outline="#1d4ed8", width=(3 if selected else 1) * scale)
+        canvas.create_text(*xy(x, y), text=node.get("label", "Équipement")[:40], fill="#172554", font=("Arial", max(6, int(10 * scale))))

@@ -1,0 +1,46 @@
+name: OpenVisio V42.6 Windows build
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop/v42.6-windows-qualification]
+jobs:
+  build:
+    runs-on: windows-2022
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify cumulative source tree
+        shell: pwsh
+        run: |
+          $required = @('03-Sources/openvisio/app.py', '03-Sources/run_openvisio.py', '04-Tests/tests', '02-Compilation/Build-Windows.cmd')
+          foreach ($item in $required) { if (-not (Test-Path $item)) { throw "Missing source tree component: $item. Publish cumulative sources to this branch before building." } }
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+      - name: Build and test
+        shell: cmd
+        run: call 02-Compilation\Build-Windows.cmd
+      - name: Check Windows artifact ZIP
+        shell: pwsh
+        run: |
+          $zip = "02-Compilation/dist/OpenVisio-v42.6-Windows-Cumulative.zip"
+          if (!(Test-Path $zip)) { throw "Missing release ZIP" }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $archive = [IO.Compression.ZipFile]::OpenRead((Resolve-Path $zip))
+          try {
+            $names = @($archive.Entries | ForEach-Object FullName)
+            foreach ($pattern in @("01-Application/binary/*Portable.exe", "01-Application/binary/*Setup*.exe", "05-Documentation/*.pdf", "05-Documentation/*.docx")) {
+              if (-not @($names | Where-Object { $_ -like $pattern }).Count) { throw "Missing ZIP content: $pattern" }
+            }
+          } finally { $archive.Dispose() }
+      - name: Upload Windows release
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V42.6-Windows-Cumulative
+          path: 02-Compilation/dist/OpenVisio-v42.6-Windows-Cumulative.zip
+          if-no-files-found: error
+          retention-days: 30
