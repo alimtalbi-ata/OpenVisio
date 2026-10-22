@@ -115,6 +115,8 @@ def import_external_pages(archive):
     rotated_count = 0
     grouped_children_omitted = 0
     grouped_children_imported = 0
+    page_extent_expanded = 0
+    page_bottom_overflow_total = 0.0
     MAX_GROUP_DEPTH = 16
     for index, (page_name, part, declared_height) in enumerate(pages, 1):
         page = _parse_xml(archive, part)
@@ -177,9 +179,25 @@ def import_external_pages(archive):
 
         for shape in page.findall(f"./{{{V}}}Shapes/{{{V}}}Shape"):
             visit(shape)
-        inferred_height = max((candidate[3] + candidate[7] / 2
-                               for candidate in candidates), default=0) + 96
-        height = declared_height if declared_height is not None else max(600, inferred_height)
+        top_extent = max((candidate[3] + candidate[7] / 2
+                          for candidate in candidates), default=0)
+        bottom_extent = min((candidate[3] - candidate[7] / 2
+                             for candidate in candidates), default=0)
+        # Visio Y increases upwards. Shapes below the page's zero line map
+        # below the OpenVisio display band, so the NEXT page needs additional
+        # clearance; growing only the current band's height cannot fix this.
+        bottom_overflow = max(0.0, -bottom_extent)
+        page_bottom_overflow_total += bottom_overflow
+        inferred_height = top_extent + 96
+        # Preserve coordinates on valid pages. Expand the band above the
+        # page only for actual top overflow; reserve bottom overflow in the
+        # following page offset without shifting the current page's shapes.
+        if declared_height is not None and top_extent <= declared_height:
+            height = max(600.0, declared_height)
+        else:
+            height = max(600.0, inferred_height, declared_height or 0.0)
+        if (declared_height is not None and top_extent > declared_height) or bottom_overflow:
+            page_extent_expanded += 1
         for ident, sid, x, pin_y, label, kind, width, shape_height, parent_id in candidates:
             node = {"id": ident, "x": round(x, 3),
                     "y": round(offset + height - pin_y, 3),
@@ -216,19 +234,23 @@ def import_external_pages(archive):
                 if sid in connector_captions:
                     edge["label"] = connector_captions[sid]
                 edges.append(edge)
-        offset += max(height, 600) + 96
+        offset += max(height, 600) + 96 + bottom_overflow
     metadata = {"import_format": "VSDX", "page_count": len(pages),
                 "import_mode": "flattened-pages",
                 "limitations": ["masters", "group-rotation", "rotation", "styles", "formulas"],
                 "rotated_shapes_as_bounding_boxes": rotated_count,
                 "group_children_omitted": grouped_children_omitted,
-                "group_children_imported": grouped_children_imported}
-    if rotated_count or grouped_children_omitted or grouped_children_imported:
+                "group_children_imported": grouped_children_imported,
+                "page_extent_expanded": page_extent_expanded,
+                "page_bottom_overflow_px_total": round(page_bottom_overflow_total, 3)}
+    if rotated_count or grouped_children_omitted or grouped_children_imported or page_extent_expanded:
         metadata["fidelity_warnings"] = (
             [f"{rotated_count} rotated Visio shape(s) approximated by axis-aligned bounding boxes"]
             if rotated_count else []) + (
             [f"{grouped_children_omitted} nested group child shape(s) omitted: local transforms unsupported"]
             if grouped_children_omitted else []) + (
             [f"{grouped_children_imported} nested group child shape(s) imported with hierarchy; exact group transforms/rotation not preserved"]
-            if grouped_children_imported else [])
+            if grouped_children_imported else []) + (
+            [f"{page_extent_expanded} Visio page(s) expanded to contain out-of-page shapes; page layout is approximate"]
+            if page_extent_expanded else [])
     return validate({"nodes": nodes, "edges": edges, "layers": layers, "metadata": metadata})
