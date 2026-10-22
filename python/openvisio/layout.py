@@ -1,6 +1,8 @@
-"""Group-safe alignment/distribution for infrastructure diagrams.
+"""Grid, alignment and distribution for infrastructure diagrams.
 
-Groups and descendants use absolute document coordinates. Author: Abdelhalim Talbi.
+Native Visio-style groups are positioned in absolute document coordinates:
+translating a group envelope must translate all descendants by the same
+amount. Author: Abdelhalim Talbi.
 """
 
 
@@ -11,6 +13,12 @@ def snap(value, spacing=20):
 
 
 def _selection_roots(nodes, identifiers):
+    """Selected objects, excluding children of another selected ancestor.
+
+    A selected parent owns the movement of its descendants. If both parent and
+    child are selected, the child is translated exactly once, and it is not
+    counted as an independent alignment/distribution anchor.
+    """
     ids = set(identifiers)
     by_id = {node["id"]: node for node in nodes}
     roots = []
@@ -30,6 +38,7 @@ def _selection_roots(nodes, identifiers):
 
 
 def _translate_subtrees(nodes, shifts, axis):
+    """Apply independent root deltas to descendants without double-moving."""
     children = {}
     for node in nodes:
         parent = node.get("visio_group_parent")
@@ -70,6 +79,7 @@ def align(nodes, identifiers, axis, mode="center"):
 
 
 def distribute(nodes, identifiers, axis):
+    """Evenly distribute >=3 independent objects, preserving nested groups."""
     if axis not in ("x", "y"):
         raise ValueError("Unknown distribution axis")
     selected = sorted(_selection_roots(nodes, identifiers),
@@ -87,17 +97,24 @@ def distribute(nodes, identifiers, axis):
 
 
 def move_group(nodes, identifiers, dx, dy, spacing=None):
-    ids = set(identifiers)
-    selected = [node for node in nodes if node["id"] in ids]
-    if not selected or (dx == 0 and dy == 0):
+    """Translate selected shapes and complete nested groups as one operation.
+
+    Callers may supply only a group envelope or a selection already expanded
+    with descendants. In both cases each descendant moves exactly once.
+    Snapping uses the first independent selection root as the common anchor;
+    all relative positions and connector endpoint IDs remain unchanged.
+    """
+    roots = _selection_roots(nodes, identifiers)
+    if not roots or (dx == 0 and dy == 0):
         return False
     if spacing is not None:
-        anchor = selected[0]
+        anchor = roots[0]
         dx = snap(anchor["x"] + dx, spacing) - anchor["x"]
         dy = snap(anchor["y"] + dy, spacing) - anchor["y"]
     if dx == 0 and dy == 0:
         return False
-    for node in selected:
-        node["x"] += dx
-        node["y"] += dy
+    shifts_x = {node["id"]: dx for node in roots}
+    shifts_y = {node["id"]: dy for node in roots}
+    _translate_subtrees(nodes, shifts_x, "x")
+    _translate_subtrees(nodes, shifts_y, "y")
     return True
