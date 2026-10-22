@@ -31,6 +31,10 @@ class LabelLayout:
 
 def edge_label_text(edge):
     """Return the same bounded, human-readable text on every output surface."""
+    # Visio connector captions are free-form text. Do not reinterpret them
+    # as SAN metadata or replace them with a generated protocol/port summary.
+    if edge.get("label"):
+        return str(edge["label"]).strip()[:72]
     parts = []
     for key in ('protocol',):
         value = str(edge.get(key, '')).strip()

@@ -188,6 +188,17 @@ def import_external_pages(archive):
             if parent_id is not None:
                 node["visio_group_parent"] = parent_id
             nodes.append(node)
+        # Visio connectors are separate Shape elements. Their public Text
+        # must survive a source-free import, including formatted Text runs.
+        # The label is a caption, not evidence of physical FC port metadata.
+        connector_captions = {}
+        for connector in page.findall(f"./{{{V}}}Shapes/{{{V}}}Shape"):
+            sid = connector.get("ID")
+            text_element = connector.find(f"./{{{V}}}Text")
+            if sid and text_element is not None:
+                caption = "".join(text_element.itertext()).strip()
+                if caption:
+                    connector_captions[sid] = caption[:4096]
         connections = {}
         for link in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect"):
             source, target = link.get("FromSheet"), link.get("ToSheet")
@@ -199,9 +210,12 @@ def import_external_pages(archive):
                 # Distinct Visio connector sheets represent distinct links,
                 # even when both terminate on the same pair of devices.
                 # Never invent FC port numbers during a geometric import.
-                edges.append({"id": f"visio-p{index}-link-{sid}",
-                              "from": a, "to": b, "layer": layer_id,
-                              "visio_connector_sheet_id": str(sid)})
+                edge = {"id": f"visio-p{index}-link-{sid}",
+                        "from": a, "to": b, "layer": layer_id,
+                        "visio_connector_sheet_id": str(sid)}
+                if sid in connector_captions:
+                    edge["label"] = connector_captions[sid]
+                edges.append(edge)
         offset += max(height, 600) + 96
     metadata = {"import_format": "VSDX", "page_count": len(pages),
                 "import_mode": "flattened-pages",
