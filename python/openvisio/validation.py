@@ -37,7 +37,7 @@ def validate_document(data):
             raise ValueError("Liaison vers un équipement inexistant")
         if source == target:
             raise ValueError("Une liaison ne peut pas relier un équipement à lui-même")
-        for key in ("protocol", "source_port", "target_port", "fabric", "speed_gbps", "visio_connector_sheet_id"):
+        for key in ("protocol", "source_port", "target_port", "fabric", "speed_gbps", "visio_connector_sheet_id, "label"):
             if key in edge and (not isinstance(edge[key], str) or len(edge[key]) > 4096):
                 raise ValueError("Propriété liaison invalide : " + key)
         directed_pairs.add(source, target, edge)
