@@ -1,0 +1,49 @@
+name: OpenVisio V42.52 source checkout qualification
+on:
+  push:
+    branches:
+      - 'develop/v42.52-*'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-parity-and-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify 57 real Python engine modules and exact source mirror
+        shell: pwsh
+        run: |
+          @'
+          from pathlib import Path
+          import hashlib
+          p = Path('python/openvisio')
+          q = Path('03-Sources/openvisio')
+          files = sorted(p.glob('*.py'))
+          assert len(files) == 57, f'expected 57 real modules, found {len(files)}'
+          assert sorted(x.name for x in files) == sorted(x.name for x in q.glob('*.py'))
+          for f in files:
+              assert hashlib.sha256(f.read_bytes()).digest() == hashlib.sha256((q / f.name).read_bytes()).digest(), f.name
+          print('MIRROR PASS:', len(files), 'real Python modules')
+          '@ | python -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Run repository Python tests (not a Microsoft Visio fidelity qualification)
+        shell: pwsh
+        env:
+          PYTHONPATH: python
+        run: |
+          python -m unittest discover -s python/tests -q
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Compile source bytecode
+        shell: pwsh
+        run: |
+          python -m compileall -q python/openvisio
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
