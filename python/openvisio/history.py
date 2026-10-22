@@ -44,7 +44,11 @@ class History:
         except (TypeError, ValueError, UnicodeError):
             # Extension fields may not be JSON-compatible until saved. Preserve
             # the legacy in-memory behavior rather than losing undo state.
-            return (False, deepcopy(document), len(repr(document).encode("utf-8")))
+            return (False, deepcopy(document), len(repr(document).encode("utf-8", errors="replace")))
+        # JSON may silently coerce tuples to lists or integer mapping keys
+        # to strings. Preserve exact undo semantics for such extensions.
+        if json.loads(payload) != document:
+            return (False, deepcopy(document), len(payload))
         if len(payload) >= self.compression_threshold:
             packed = zlib.compress(payload, level=1)
             return (True, packed, len(packed))
