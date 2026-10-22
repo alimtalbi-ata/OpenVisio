@@ -205,5 +205,3 @@ def _export_vsdx_unlocked(path, document, check_revision, require_absent, *,
         if os.path.exists(staging):
             os.unlink(staging)
     return output
-
-

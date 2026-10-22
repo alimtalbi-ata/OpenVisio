@@ -57,7 +57,7 @@ def export_vsdx(path, document, *, expected_sha256=None, require_absent=False, l
 def import_vsdx(path, *, changed_pages="reject"):
     """Import VSDX, refusing to silently discard edits made in Visio.
 
-    For a VSDX exported with schema 2, changed drawing XML raises
+    For a VSDX exported with schema 2/3, changed drawing XML raises
     VsdxExternalChangesError. Set changed_pages="flatten" explicitly to
     recover supported external geometry with documented fidelity limitations.
     Legacy schema-1 VSDX files lack page checksums and cannot be verified.
@@ -91,14 +91,14 @@ def import_vsdx(path, *, changed_pages="reject"):
             if not isinstance(manifest, dict):
                 raise ValueError("Manifeste OpenVisio/VSDX invalide : objet JSON attendu")
             schema = manifest.get("schema")
-            if schema not in (1, 2) or manifest.get("sha256") != hashlib.sha256(payload).hexdigest():
+            if schema not in (1, 2, 3) or manifest.get("sha256") != hashlib.sha256(payload).hexdigest():
                 raise ValueError("Intégrité OpenVisio/VSDX invalide")
-            if schema == 2:
+            if schema in (2, 3):
                 changed = changed_visual_parts(archive, manifest)
                 if changed:
                     if changed_pages == "reject":
                         raise VsdxExternalChangesError(
-                            "Pages VSDX modifiées depuis l'export OpenVisio : "
+                            "Parties VSDX modifiées depuis l'export OpenVisio : "
                             + ", ".join(changed)
                             + ". L'import du modèle embarqué ignorerait ces changements. "
                               "Choisissez explicitement l'import géométrique partiel.")
