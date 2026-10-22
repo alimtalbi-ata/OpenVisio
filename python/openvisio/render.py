@@ -1,29 +1,42 @@
 """Canvas rendering and geometry, independent from editor state. Author: Abdelhalim Talbi."""
 from math import hypot
 from .shapes import get_shape
+from .routing import routing_scene, RoutingError
+from .node_geometry import node_half_sizes
+from .connector_geometry import lane_endpoints
+from .viewport_visibility import view_window, rect_visible, polyline_visible
+from .parallel_geometry import display_edges
+from .connector_labels import layout_connector_labels
 
 NODE_HALF_WIDTH = 70
 NODE_HALF_HEIGHT = 30
 
 def node_at(nodes, x, y):
     for node in reversed(nodes):
-        if abs(node["x"] - x) <= NODE_HALF_WIDTH and abs(node["y"] - y) <= NODE_HALF_HEIGHT:
+        hw, hh = node_half_sizes(node)
+        if abs(node["x"] - x) <= hw and abs(node["y"] - y) <= hh:
             return node
     return None
 
 def edge_at(nodes, edges, x, y, tolerance=9):
     by_id = {n["id"]: n for n in nodes}
-    for edge in reversed(edges):
+    scene = routing_scene(nodes)
+    for edge in reversed(display_edges(edges, nodes)):
         a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
         if not a or not b:
             continue
-        dx, dy = b["x"] - a["x"], b["y"] - a["y"]
-        length_sq = dx * dx + dy * dy
-        if not length_sq:
-            continue
-        t = max(0, min(1, ((x - a["x"]) * dx + (y - a["y"]) * dy) / length_sq))
-        if hypot(x - (a["x"] + t * dx), y - (a["y"] + t * dy)) <= tolerance:
-            return edge
+        try:
+            points = scene.route_points(edge)
+        except RoutingError:
+            continue  # Invalid paths are never selectable as valid connectors.
+        for (ax, ay), (bx, by) in zip(points, points[1:]):
+            dx, dy = bx - ax, by - ay
+            length_sq = dx * dx + dy * dy
+            if not length_sq:
+                continue
+            t = max(0, min(1, ((x - ax) * dx + (y - ay) * dy) / length_sq))
+            if hypot(x - (ax + t * dx), y - (ay + t * dy)) <= tolerance:
+                return edge
     return None
 
 def draw_document(canvas, document, selected_node=None, selected_edge=None, viewport=None, grid=False, grid_spacing=20, selected_nodes=None):
@@ -32,6 +45,10 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
     def xy(x, y):
         return viewport.screen(x, y) if viewport is not None else (x, y)
     scale = viewport.zoom if viewport is not None else 1.0
+    # Viewport culling is intentionally restricted to Tk drawing. The complete
+    # topology remains available to routing, selection, SVG and VSDX export.
+    window = (view_window(viewport, canvas.winfo_width(), canvas.winfo_height())
+              if viewport is not None else None)
     if grid:
         width, height = canvas.winfo_width(), canvas.winfo_height()
         zoom = viewport.zoom if viewport is not None else 1
@@ -41,34 +58,76 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
             import math
             for i in range(math.floor(x0 / grid_spacing), math.ceil(x1 / grid_spacing) + 1):
                 sx = xy(i * grid_spacing, 0)[0]
-                canvas.create_line(sx, 0, sx, height, fill="#e2e8f0")
+                canvas.create_line(sx, 0, sx, height, fill="#e2e8f0", tags=(f"ov:grid:v:{i}",))
             for i in range(math.floor(y0 / grid_spacing), math.ceil(y1 / grid_spacing) + 1):
                 sy = xy(0, i * grid_spacing)[1]
-                canvas.create_line(0, sy, width, sy, fill="#e2e8f0")
+                canvas.create_line(0, sy, width, sy, fill="#e2e8f0", tags=(f"ov:grid:h:{i}",))
     by_id = {n["id"]: n for n in document["nodes"]}
-    for edge in document["edges"]:
+    scene = routing_scene(document["nodes"])
+    label_layout = layout_connector_labels(document["nodes"], document["edges"], scene=scene)
+    visible_ids = None
+    if window is not None:
+        # Scene geometry already owns a cached, exact rectangle index. Reuse it
+        # instead of constructing an independent O(N log N) index per redraw.
+        visible_ids = ({node_id for node_id, _ in scene.geometry()[3].query_items(window)}
+                       if document["nodes"] else set())
+    for edge_index, edge in enumerate(display_edges(document["edges"], document["nodes"])):
         a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
         if a and b:
             selected = edge.get("id") == selected_edge
-            canvas.create_line(*xy(a["x"], a["y"]), *xy(b["x"], b["y"]), fill="#dc2626" if selected else "#2563eb", width=(4 if selected else 2) * scale, arrow=tk.LAST)
-            details = []
-            protocol = str(edge.get("protocol", "")).strip()
-            if protocol:
-                details.append(protocol)
-            speed = str(edge.get("speed_gbps", "")).strip()
-            if speed:
-                details.append(speed + " Gbit/s")
-            fabric = str(edge.get("fabric", "")).strip()
-            if fabric:
-                details.append("Fabric " + fabric)
-            ports = " → ".join(str(edge.get(key, "")).strip() for key in ("source_port", "target_port") if str(edge.get(key, "")).strip())
-            if ports:
-                details.append(ports)
-            if details:
-                mx, my = xy((a["x"] + b["x"]) / 2, (a["y"] + b["y"]) / 2)
-                canvas.create_text(mx, my - 9 * scale, text=" · ".join(details)[:72], fill="#991b1b" if selected else "#334155", font=("Arial", max(6, int(9 * scale))), tags=("edge-label",))
+            edge_key = str(edge.get("id", f"unnamed-{edge_index}"))
+            # Straight paths are entirely enclosed by their endpoint AABB.
+            # This cheap rejection avoids even asking the routing engine for
+            # edges that cannot touch the screen. Orthogonal paths MUST still
+            # be computed: they can detour into view from offscreen endpoints.
+            if window is not None and edge.get("routing", "straight") != "orthogonal":
+                endpoints = lane_endpoints(a, b, edge.get('_lane_offset', 0.0))
+                if not polyline_visible(endpoints, window):
+                    continue
+            try:
+                points = scene.route_points(edge)
+            except RoutingError:
+                error_x, error_y = (a["x"] + b["x"]) / 2, (a["y"] + b["y"]) / 2
+                if window is None or rect_visible((error_x, error_y, error_x, error_y), window):
+                    mx, my = xy(error_x, error_y)
+                    canvas.create_text(mx, my, text="⚠ Routage impossible : repositionnez les équipements",
+                                       fill="#b91c1c", font=("Arial", max(8, int(10 * scale))),
+                                       tags=(f"ov:edge:{edge_key}:error",))
+                continue
+            if window is not None and not polyline_visible(points, window):
+                continue
+            coords = [v for point in points for v in xy(*point)]
+            canvas.create_line(*coords, fill="#dc2626" if selected else "#2563eb", width=(4 if selected else 2) * scale, arrow=tk.LAST, tags=(f"ov:edge:{edge_key}:path",))
+            label = label_layout.labels.get(edge.get("id"))
+            if label is not None and (window is None or rect_visible(label.bounds, window)):
+                lx, ly = xy(label.x, label.y)
+                canvas.create_text(lx, ly, text=label.text,
+                                   fill="#991b1b" if selected else "#334155",
+                                   font=("Arial", max(6, int(9 * scale))),
+                                   tags=(f"ov:edge:{edge_key}:label",))
     for node in document["nodes"]:
+        if visible_ids is not None and node["id"] not in visible_ids:
+            continue
         x, y = node["x"], node["y"]
         selected = node["id"] == selected_node or node["id"] in (selected_nodes or ())
-        canvas.create_rectangle(*xy(x-70, y-30), *xy(x+70, y+30), fill="#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"], outline="#1d4ed8", width=(3 if selected else 1) * scale)
-        canvas.create_text(*xy(x, y), text=node.get("label", "Équipement")[:40], fill="#172554", font=("Arial", max(6, int(10 * scale))))
+        hw, hh = node_half_sizes(node)
+        is_group = node.get("shape") == "visio-group"
+        canvas.create_rectangle(*xy(x-hw, y-hh), *xy(x+hw, y+hh),
+                                fill="" if is_group else ("#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"]),
+                                outline="#64748b" if is_group else "#1d4ed8",
+                                dash=(6, 3) if is_group else (),
+                                width=(3 if selected else 1) * scale,
+                                tags=(f"ov:node:{node['id']}:rect",))
+        label_x, label_y = (x - hw + 10, y - hh + 12) if is_group else (x, y)
+        canvas.create_text(*xy(label_x, label_y), text=node.get("label", "Équipement")[:40],
+                           anchor="w" if is_group else "center",
+                           fill="#334155" if is_group else "#172554",
+                           font=("Arial", max(6, int(10 * scale))),
+                           tags=(f"ov:node:{node['id']}:label",))
+
+    if label_layout.hidden:
+        # Never present an omitted metadata label as if it were drawn.
+        canvas.create_text(12, 16, anchor="nw",
+                           text=f"{len(label_layout.hidden)} étiquette(s) masquée(s) : espace insuffisant",
+                           fill="#92400e", font=("Arial", 9),
+                           tags=("ov:labels:warning",))
