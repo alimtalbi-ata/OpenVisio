@@ -24,6 +24,10 @@ def connector_endpoints(source, target, half_width=70.0, half_height=30.0):
     shw, shh = node_half_sizes(source) if "width" in source or "height" in source else (half_width, half_height)
     thw, thh = node_half_sizes(target) if "width" in target or "height" in target else (half_width, half_height)
     dx, dy = bx - ax, by - ay
+    # Finite Visio coordinates can still overflow during subtraction. Never
+    # emit NaN attachment points into Tk/SVG/VSDX connector geometry.
+    if not isfinite(dx) or not isfinite(dy):
+        raise ValueError("Écart entre équipements hors limites")
     if dx == 0 and dy == 0:
         return (ax, ay), (bx, by)
     def fraction(hw, hh):
@@ -41,6 +45,8 @@ def connector_endpoints(source, target, half_width=70.0, half_height=30.0):
 
 def lane_endpoints(source, target, lane=0.0):
     """Shift each straight-link anchor *along* its equipment boundary."""
+    if isinstance(lane, bool) or not isinstance(lane, (int, float)) or not isfinite(lane):
+        raise ValueError("Décalage de voie SAN invalide")
     start, end = connector_endpoints(source, target)
     if not lane:
         return start, end
