@@ -52,13 +52,27 @@ def _pages(archive):
     relations = {}
     if rels_xml in names:
         relroot = _parse_xml(archive, rels_xml)
+        seen_relation_ids = set()
         for rel in relroot.findall(f"{{{R}}}Relationship"):
+            rid = rel.get("Id")
+            # OPC relationship IDs are unique within a .rels part. Silently
+            # overwriting one changes which Visio page a layer imports.
+            if rid:
+                if rid in seen_relation_ids:
+                    raise ValueError("Identifiant de relation VSDX dupliqué : " + rid)
+                seen_relation_ids.add(rid)
             if rel.get("TargetMode", "Internal").lower() == "external":
                 continue
-            if rel.get("Id"):
-                relations[rel.get("Id")] = _part_target(rel.get("Target"))
+            if rid:
+                relations[rid] = _part_target(rel.get("Target"))
     result = []
+    seen_page_ids = set()
     for i, page in enumerate(pages.findall(f"{{{V}}}Page"), 1):
+        page_id = page.get("ID")
+        if page_id:
+            if page_id in seen_page_ids:
+                raise ValueError("Identifiant de page VSDX dupliqué : " + page_id)
+            seen_page_ids.add(page_id)
         rel = page.find(f"{{{V}}}Rel")
         rid = rel.get(f"{{{OR}}}id") if rel is not None else None
         part = relations.get(rid)
