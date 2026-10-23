@@ -1,7 +1,7 @@
 """Document persistence service, independent of Tkinter. Author: Abdelhalim Talbi."""
 from pathlib import Path
 from hashlib import sha256
-from .model import load, load_bytes, save
+from .model import load, load_bytes, save, _read_document_bytes
 from .document_recovery import read_backup
 
 def open_document(path):
@@ -15,7 +15,7 @@ def open_document_with_revision(path):
     writer to change it between the two operations, silently misidentifying
     the document currently displayed by the editor.
     """
-    raw = Path(path).read_bytes()
+    raw = _read_document_bytes(path)
     return load_bytes(raw), sha256(raw).hexdigest()
 
 
