@@ -9,6 +9,7 @@ import hashlib
 import json
 from zipfile import ZipFile, BadZipFile
 from pathlib import PurePosixPath
+from .model import _unique_json_object, _reject_nonfinite_json
 
 PRIVATE_PARTS = frozenset({"openvisio/document.json", "openvisio/manifest.json"})
 
@@ -94,16 +95,26 @@ def inspect(path):
             raise ValueError("Manifeste VSDX trop volumineux")
         if archive.getinfo("openvisio/document.json").file_size > 10_000_000:
             raise ValueError("Document VSDX trop volumineux")
-        manifest = json.loads(archive.read("openvisio/manifest.json"))
+        # Use the same strict JSON contract as import_vsdx. A diagnostic
+        # reporting "consistent" must never accept a package the importer
+        # rejects for ambiguous keys, NaN/Infinity, or boolean schema values.
+        try:
+            manifest = json.loads(
+                archive.read("openvisio/manifest.json"),
+                object_pairs_hook=_unique_json_object,
+                parse_constant=_reject_nonfinite_json)
+        except (ValueError, UnicodeError, RecursionError) as exc:
+            raise ValueError("Manifeste VSDX JSON invalide") from exc
         if not isinstance(manifest, dict):
             raise ValueError("Manifeste VSDX invalide")
+        schema = manifest.get("schema")
+        if type(schema) is not int or schema not in (1, 2, 3):
+            raise ValueError("Version du manifeste VSDX inconnue")
         payload = archive.read("openvisio/document.json")
         if manifest.get("sha256") != hashlib.sha256(payload).hexdigest():
             return {"status": "corrupted_payload", "visual_consistency": "unknown"}
-        if manifest.get("schema") == 1:
+        if schema == 1:
             return {"status": "legacy", "visual_consistency": "unverifiable"}
-        if manifest.get("schema") not in (2, 3):
-            raise ValueError("Version du manifeste VSDX inconnue")
         changed = changed_visual_parts(archive, manifest)
         return {"status": "modified" if changed else "consistent",
                 "visual_consistency": "mismatch" if changed else "matched",

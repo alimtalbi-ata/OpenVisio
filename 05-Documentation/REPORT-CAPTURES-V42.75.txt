@@ -1,0 +1,5 @@
+OpenVisio V42.75 — statut des captures
+Auteur : Abdelhalim Talbi
+Aucune capture d'écran réelle de Windows V42.75 n'a été produite.
+Le diagramme d'architecture du ZIP est un schéma conceptuel, pas une capture d'application.
+Preuves Windows : logs du run GitHub Actions 39955521581 et manifestes SHA-256 des exécutables.
