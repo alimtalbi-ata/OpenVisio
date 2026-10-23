@@ -1,0 +1,8 @@
+OpenVisio V42.75 — Windows source candidate
+Auteur : Abdelhalim Talbi
+HEAD CI qualifié : 1ff3c3096036033c36e91ca0b6e44b4906bd9712
+CI : https://github.com/alimtalbi-ata/OpenVisio/actions/runs/39955521581
+Résultat : 381 tests, 16 ignorés, 0 échec ; PyInstaller x64 PASS ; Inno Setup PASS.
+Smoke portable et application installée : PASS.
+Binaire et installateur : disponibles comme artifacts de ce run, SHA-256 vérifiés.
+Numéro interne : 42.50.0 (non harmonisé). Microsoft Visio réel : non qualifié.

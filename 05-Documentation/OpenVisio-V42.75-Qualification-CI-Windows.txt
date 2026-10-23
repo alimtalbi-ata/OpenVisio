@@ -1,0 +1,30 @@
+OpenVisio V42.75 — qualification Windows et Linux
+Auteur : Abdelhalim Talbi | 23 octobre 2026
+
+Branche : develop/v42.75-vsdx-inspector-parity-20261023
+PR brouillon : https://github.com/alimtalbi-ata/OpenVisio/pull/8
+HEAD qualifié par CI : 1ff3c3096036033c36e91ca0b6e44b4906bd9712
+CI Windows réussie : https://github.com/alimtalbi-ata/OpenVisio/actions/runs/39955521581
+Premier run échoué (miroir de tests mal placé), corrigé : https://github.com/alimtalbi-ata/OpenVisio/actions/runs/39955413339
+
+Qualification locale Linux cumulative :
+- 7 tests V42.75 avant correction : 5 échecs reproduits
+- 7/7 tests ciblés après correction : PASS
+- 720 tests, 41 ignorés, 0 échec dans chaque arborescence
+- 57 modules moteur et 150 fichiers de tests : miroirs conformes
+
+Qualification CI Windows 2022 / Python 3.12 :
+- Checkout indépendant : PASS
+- 57 modules moteur et 90 tests par miroir : PASS
+- 381 tests, 16 ignorés, 0 échec : PASS
+- PyInstaller 6.16.0 et Inno Setup 6.7.1 : PASS
+- Smoke portable isolé + interface Tk : PASS
+- Smoke installateur + exécutable installé : PASS
+- Artifact GitHub Actions ID : 12501304409
+- Binaires récupérés et SHA-256 contrôlés dans le ZIP cumulatif V42.75
+
+Limites : 60 tests historiques du ZIP encore absents du dépôt GitHub.
+Version interne de l'application : 42.50.0 (candidate externe V42.75).
+Fidélité avec de véritables fichiers Microsoft Visio : non qualifiée.
+Captures Windows V42.75 : absentes. Linux/macOS : non compilés.
+Aucune fusion automatique ni changement de main.
