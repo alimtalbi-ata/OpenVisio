@@ -8,6 +8,7 @@ recreated; numeric nested group transforms are flattened to bounding boxes. Auth
 import math
 import posixpath
 from xml.etree import ElementTree as ET
+from xml.parsers import expat
 from .vsdx_geometry import (shape_center_inches, shape_axis_aligned_dimensions_inches,
                             nested_shape_geometry_inches)
 
@@ -19,12 +20,24 @@ PX_PER_IN = 96.0
 
 def _parse_xml(archive, name):
     payload = archive.read(name)
-    upper = payload.upper()
-    if b"<!DOCTYPE" in upper or b"<!ENTITY" in upper:
+    # A raw-byte <!DOCTYPE check is insufficient: UTF-16 Visio XML can
+    # encode every ASCII character with a NUL byte. ElementTree would then
+    # expand internal entities before the importer validates the page.
+    # Expat recognizes the XML declaration/encoding and rejects any DTD at
+    # the parser level, independently of UTF-8/UTF-16 byte representation.
+    # Run the preflight before constructing an ElementTree from untrusted XML.
+    parser = expat.ParserCreate()
+
+    def reject_dtd(*_args):
         raise ValueError("XML VSDX avec entités externes interdit")
+
+    parser.StartDoctypeDeclHandler = reject_dtd
+    parser.EntityDeclHandler = reject_dtd
+    parser.ExternalEntityRefHandler = reject_dtd
     try:
+        parser.Parse(payload, True)
         return ET.fromstring(payload)
-    except ET.ParseError as exc:
+    except (expat.ExpatError, ET.ParseError) as exc:
         raise ValueError("XML VSDX invalide : " + name) from exc
 
 
