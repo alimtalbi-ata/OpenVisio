@@ -51,12 +51,14 @@ def changed_visual_parts(archive, manifest):
             or (schema == 2 and set(expected) != set(VISUAL_PARTS))
             or len(expected) > 5000
             or (schema == 3 and any(name in PRIVATE_PARTS or not isinstance(name, str)
-                                    or not name for name in expected))
+                                    or not name or name.endswith("/") for name in expected))
             or any(not isinstance(digest, str) or len(digest) != 64
                    or any(c not in "0123456789abcdef" for c in digest)
                    for digest in expected.values())):
         raise ValueError("Manifeste visuel OpenVisio/VSDX invalide")
-    names = set(archive.namelist())
+    # Explicit ZIP directory markers are not OPC package parts. Visio and
+    # third-party ZIP writers may add them without changing any drawing XML.
+    names = {entry.filename for entry in archive.infolist() if not entry.is_dir()}
     if schema == 2:
         return [name for name in VISUAL_PARTS if name not in names
                 or hashlib.sha256(archive.read(name)).hexdigest() != expected[name]]
