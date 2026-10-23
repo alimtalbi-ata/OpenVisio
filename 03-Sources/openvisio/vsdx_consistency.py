@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 from zipfile import ZipFile, BadZipFile
+from .vsdx_manifest_schema import validate_manifest_schema
 
 VISUAL_PARTS = (
     "visio/pages/pages.xml",
@@ -42,6 +43,12 @@ def changed_visual_parts(archive, manifest):
 def inspect(path):
     """Inspect an exported VSDX without importing or executing its contents."""
     with ZipFile(path) as archive:
+        entries = archive.infolist()
+        if len(entries) > 5000 or sum(entry.file_size for entry in entries) > 50_000_000:
+            raise ValueError("VSDX trop volumineux")
+        for entry in entries:
+            if entry.file_size > 10_000_000 or (entry.file_size > 1_000_000 and entry.file_size > max(1, entry.compress_size) * 200):
+                raise ValueError("Entrée VSDX suspecte")
         names = archive.namelist()
         if len(names) != len({name.casefold() for name in names}):
             raise ValueError("Entrées VSDX dupliquées")
@@ -63,9 +70,10 @@ def inspect(path):
         payload = archive.read("openvisio/document.json")
         if manifest.get("sha256") != hashlib.sha256(payload).hexdigest():
             return {"status": "corrupted_payload", "visual_consistency": "unknown"}
-        if manifest.get("schema") == 1:
+        schema = validate_manifest_schema(manifest)
+        if schema == 1:
             return {"status": "legacy", "visual_consistency": "unverifiable"}
-        if manifest.get("schema") != 2:
+        if schema != 2:
             raise ValueError("Version du manifeste VSDX inconnue")
         changed = changed_visual_parts(archive, manifest)
         return {"status": "modified" if changed else "consistent",
