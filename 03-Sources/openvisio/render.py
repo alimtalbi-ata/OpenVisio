@@ -11,18 +11,59 @@ def node_at(nodes, x, y):
             return node
     return None
 
+
+def edge_routes(nodes, edges, spacing=18):
+    """Return stable, distinct routes for physical links sharing endpoints."""
+    groups = {}
+    by_id = {node["id"]: node for node in nodes}
+    for edge in edges:
+        groups.setdefault(tuple(sorted((edge["from"], edge["to"]))), []).append(edge)
+    routes = {}
+    for group in groups.values():
+        for index, edge in enumerate(group):
+            a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
+            if a is None or b is None:
+                continue
+            dx, dy = b["x"] - a["x"], b["y"] - a["y"]
+            length = hypot(dx, dy)
+            if length == 0:
+                continue
+            sign = 1 if edge["from"] < edge["to"] else -1
+            lane = (index - (len(group) - 1) / 2) * spacing
+            ox, oy = -dy / length * lane * sign, dx / length * lane * sign
+            routes[edge["id"]] = ((a["x"] + ox, a["y"] + oy), (b["x"] + ox, b["y"] + oy))
+    return routes
+
+def clip_route_to_nodes(route, source, target):
+    """Attach lane endpoints to equipment rectangles, including wide lanes."""
+    (ax, ay), (bx, by) = route
+    dx, dy = bx - ax, by - ay
+    if dx == 0 and dy == 0:
+        return route
+    def boundary(cx, cy, px, py, vx, vy):
+        rx, ry = px - cx, py - cy
+        if abs(rx) <= NODE_HALF_WIDTH and abs(ry) <= NODE_HALF_HEIGHT:
+            tx = (NODE_HALF_WIDTH - abs(rx)) / abs(vx) if vx else float("inf")
+            ty = (NODE_HALF_HEIGHT - abs(ry)) / abs(vy) if vy else float("inf")
+            return (px + vx * max(0, min(tx, ty)), py + vy * max(0, min(tx, ty)))
+        return (max(cx-NODE_HALF_WIDTH, min(cx+NODE_HALF_WIDTH, px)),
+                max(cy-NODE_HALF_HEIGHT, min(cy+NODE_HALF_HEIGHT, py)))
+    return boundary(source["x"],source["y"],ax,ay,dx,dy), boundary(target["x"],target["y"],bx,by,-dx,-dy)
+
 def edge_at(nodes, edges, x, y, tolerance=9):
     by_id = {n["id"]: n for n in nodes}
+    routes = edge_routes(nodes, edges)
     for edge in reversed(edges):
-        a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
-        if not a or not b:
+        route = routes.get(edge["id"])
+        if route is None:
             continue
-        dx, dy = b["x"] - a["x"], b["y"] - a["y"]
-        length_sq = dx * dx + dy * dy
+        (ax, ay), (bx, by) = clip_route_to_nodes(route, by_id[edge["from"]], by_id[edge["to"]])
+        dx, dy = bx - ax, by - ay
+        length_sq = dx*dx + dy*dy
         if not length_sq:
             continue
-        t = max(0, min(1, ((x - a["x"]) * dx + (y - a["y"]) * dy) / length_sq))
-        if hypot(x - (a["x"] + t * dx), y - (a["y"] + t * dy)) <= tolerance:
+        t = max(0, min(1, ((x-ax)*dx+(y-ay)*dy)/length_sq))
+        if hypot(x-(ax+t*dx), y-(ay+t*dy)) <= tolerance:
             return edge
     return None
 
@@ -46,11 +87,13 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
                 sy = xy(0, i * grid_spacing)[1]
                 canvas.create_line(0, sy, width, sy, fill="#e2e8f0")
     by_id = {n["id"]: n for n in document["nodes"]}
+    routes = edge_routes(document["nodes"], document["edges"])
     for edge in document["edges"]:
-        a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
-        if a and b:
+        route = routes.get(edge["id"])
+        if route is not None:
+            (ax, ay), (bx, by) = clip_route_to_nodes(route, by_id[edge["from"]], by_id[edge["to"]])
             selected = edge.get("id") == selected_edge
-            canvas.create_line(*xy(a["x"], a["y"]), *xy(b["x"], b["y"]), fill="#dc2626" if selected else "#2563eb", width=(4 if selected else 2) * scale, arrow=tk.LAST)
+            canvas.create_line(*xy(ax, ay), *xy(bx, by), fill="#dc2626" if selected else "#2563eb", width=(4 if selected else 2) * scale, arrow=tk.LAST)
             details = []
             protocol = str(edge.get("protocol", "")).strip()
             if protocol:
@@ -65,7 +108,7 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
             if ports:
                 details.append(ports)
             if details:
-                mx, my = xy((a["x"] + b["x"]) / 2, (a["y"] + b["y"]) / 2)
+                mx, my = xy((ax + bx) / 2, (ay + by) / 2)
                 canvas.create_text(mx, my - 9 * scale, text=" · ".join(details)[:72], fill="#991b1b" if selected else "#334155", font=("Arial", max(6, int(9 * scale))), tags=("edge-label",))
     for node in document["nodes"]:
         x, y = node["x"], node["y"]
