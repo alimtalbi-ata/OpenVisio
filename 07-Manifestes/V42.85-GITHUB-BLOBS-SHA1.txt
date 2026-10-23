@@ -1,0 +1,9 @@
+V42.85 GitHub source blob SHA-1 parity — 24 Oct 2026
+python/openvisio/vsdx_external.py d061cda3f3db6e08743e9250256c3cec9fda19ba
+03-Sources/openvisio/vsdx_external.py d061cda3f3db6e08743e9250256c3cec9fda19ba
+python/tests/test_vsdx_san_shape_identity_v4285.py 62d29f78f4c0652cd4bf4cab094ff9d599baf736
+04-Tests/tests/test_vsdx_san_shape_identity_v4285.py 62d29f78f4c0652cd4bf4cab094ff9d599baf736
+python/tests/test_layers_persistence_v426.py 24f5fb982a38ecf84201099dd7101d9741f60887
+04-Tests/tests/test_layers_persistence_v426.py 24f5fb982a38ecf84201099dd7101d9741f60887
+python/tests/test_vsdx_multipage_v426.py c3e207351773e636be01259965b41dd49849cab4
+04-Tests/tests/test_vsdx_multipage_v426.py c3e207351773e636be01259965b41dd49849cab4
