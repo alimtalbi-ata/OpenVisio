@@ -7,6 +7,7 @@ recreated; numeric nested group transforms are flattened to bounding boxes. Auth
 """
 import math
 import posixpath
+import re
 from xml.etree import ElementTree as ET
 from xml.parsers import expat
 from .vsdx_geometry import (shape_center_inches, shape_axis_aligned_dimensions_inches,
@@ -120,6 +121,16 @@ def _kind(name):
         if kind in SHAPES:
             return kind
     n = name.lower()
+    # External Visio NameU values are not OpenVisio catalogue IDs. Preserve
+    # explicitly named FC/SAN fabric equipment instead of treating every
+    # occurrence of "switch" as a LAN switch. Require adjacent SAN tokens so
+    # location names such as "San Francisco Switch" are not misclassified.
+    if (re.search(r"\b(?:san[\s_-]*(?:switch|fabric|director)|"
+                  r"(?:switch|fabric|director)[\s_-]*san)\b", n)
+            or re.search(r"\bfc[\s_-]*(?:switch|fabric|director)\b", n)
+            or (re.search(r"\b(?:fibre|fiber)[\s_-]+channel\b", n)
+                and re.search(r"\b(?:switch|fabric|director)\b", n))):
+        return "san-switch"
     if "storage" in n or "array" in n or "disk" in n:
         return "storage"
     if "nas" in n or "fileserver" in n:
