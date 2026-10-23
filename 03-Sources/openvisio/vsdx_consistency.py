@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 from zipfile import ZipFile, BadZipFile
+from pathlib import PurePosixPath
 from .vsdx_manifest_schema import validate_manifest_schema
 
 VISUAL_PARTS = (
@@ -44,14 +45,17 @@ def inspect(path):
     """Inspect an exported VSDX without importing or executing its contents."""
     with ZipFile(path) as archive:
         entries = archive.infolist()
+        names = [entry.filename for entry in entries]
         if len(entries) > 5000 or sum(entry.file_size for entry in entries) > 50_000_000:
             raise ValueError("VSDX trop volumineux")
         for entry in entries:
-            if entry.file_size > 10_000_000 or (entry.file_size > 1_000_000 and entry.file_size > max(1, entry.compress_size) * 200):
-                raise ValueError("Entrée VSDX suspecte")
-        names = archive.namelist()
-        if any(name.startswith("/") or "\\\\" in name or ".." in name.split("/") for name in names):
-            raise ValueError("Chemin VSDX non sûr")
+            normalized = entry.filename.replace("\\", "/")
+            parts = PurePosixPath(normalized).parts
+            if (entry.file_size > 10_000_000 or ".." in parts or normalized.startswith("/")
+                    or "\\" in entry.filename or (parts and ":" in parts[0])):
+                raise ValueError("Entrée VSDX non sûre")
+            if entry.file_size > 1_000_000 and entry.file_size > max(1, entry.compress_size) * 200:
+                raise ValueError("Compression VSDX suspecte")
         if len(names) != len({name.casefold() for name in names}):
             raise ValueError("Entrées VSDX dupliquées")
         has_manifest = "openvisio/manifest.json" in names
