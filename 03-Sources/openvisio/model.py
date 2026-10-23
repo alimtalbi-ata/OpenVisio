@@ -13,16 +13,19 @@ MAX_DOCUMENT_BYTES = 128 * 1024 * 1024
 def validate(data):
     return validate_document(data)
 
-def load(path):
-    """Read at most one byte beyond the accepted document size.
+def _read_document_bytes(path):
+    """Read a single bounded snapshot for both editor and API load paths.
 
-    ``Path.read_bytes()`` previously loaded an arbitrarily large file before
-    ``load_bytes`` could enforce MAX_DOCUMENT_BYTES. A bounded read avoids
-    exhausting memory when opening a malformed or unexpectedly large diagram.
+    Callers may hash these exact bytes to obtain the revision of the document
+    they actually displayed, without a second potentially racing disk read.
     """
     with Path(path).open("rb") as stream:
-        payload = stream.read(MAX_DOCUMENT_BYTES + 1)
-    return load_bytes(payload)
+        return stream.read(MAX_DOCUMENT_BYTES + 1)
+
+
+def load(path):
+    """Load a validated document without an unbounded file read."""
+    return load_bytes(_read_document_bytes(path))
 
 def _unique_json_object(pairs):
     """Reject duplicate JSON keys instead of silently changing diagram topology."""

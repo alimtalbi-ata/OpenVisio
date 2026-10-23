@@ -6,6 +6,7 @@ all working files are confined to a temporary directory. The normal GUI is
 never started in this mode. Author: Abdelhalim Talbi.
 """
 import json
+import hashlib
 import os
 import sys
 import tempfile
@@ -14,6 +15,7 @@ from xml.etree import ElementTree as ET
 
 from . import __version__
 from .model import load, save, SaveConflict
+from .document_service import open_document_with_revision
 from .export import export_svg
 from .vsdx import export_vsdx, import_vsdx
 from .vsdx_fidelity import audit_public_vsdx
@@ -54,6 +56,10 @@ def exercise_document_io(directory):
     if reopened != source:
         raise ReleaseSmokeError('OVJSON save/reopen mismatch')
     checks.append('ovjson-save-reopen')
+    editor_doc, editor_revision = open_document_with_revision(native)
+    if editor_doc != source or editor_revision != hashlib.sha256(native.read_bytes()).hexdigest():
+        raise ReleaseSmokeError('Editor bounded open/revision mismatch')
+    checks.append('editor-bounded-open-revision')
     export_svg(svg, reopened)
     svg_root = ET.parse(svg).getroot()
     if not svg_root.tag.endswith('svg') or len(svg_root) < 5:
