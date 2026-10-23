@@ -19,8 +19,17 @@ def node_at(nodes, x, y):
     return None
 
 def edge_at(nodes, edges, x, y, tolerance=9):
+    """Select the *nearest* visible connector within the hit tolerance.
+
+    In dense SAN fabrics, adjacent parallel lanes can be closer than the
+    click tolerance. Returning the first matching line made most paths
+    impossible to select. On exact ties, preserve reverse draw order (the
+    topmost line wins), consistent with historical single-link behavior.
+    """
     by_id = {n["id"]: n for n in nodes}
     scene = routing_scene(nodes)
+    best_edge = None
+    best_distance = float("inf")
     for edge in reversed(display_edges(edges, nodes)):
         a, b = by_id.get(edge["from"]), by_id.get(edge["to"])
         if not a or not b:
@@ -35,9 +44,10 @@ def edge_at(nodes, edges, x, y, tolerance=9):
             if not length_sq:
                 continue
             t = max(0, min(1, ((x - ax) * dx + (y - ay) * dy) / length_sq))
-            if hypot(x - (ax + t * dx), y - (ay + t * dy)) <= tolerance:
-                return edge
-    return None
+            distance = hypot(x - (ax + t * dx), y - (ay + t * dy))
+            if distance <= tolerance and distance < best_distance:
+                best_edge, best_distance = edge, distance
+    return best_edge
 
 def draw_document(canvas, document, selected_node=None, selected_edge=None, viewport=None, grid=False, grid_spacing=20, selected_nodes=None):
     import tkinter as tk
