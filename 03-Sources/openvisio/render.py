@@ -1,6 +1,7 @@
 """Canvas rendering and geometry, independent from editor state. Author: Abdelhalim Talbi."""
 from math import hypot
 from .shapes import get_shape
+from .symbols import draw_symbol
 
 NODE_HALF_WIDTH = 70
 NODE_HALF_HEIGHT = 30
@@ -113,5 +114,5 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
     for node in document["nodes"]:
         x, y = node["x"], node["y"]
         selected = node["id"] == selected_node or node["id"] in (selected_nodes or ())
-        canvas.create_rectangle(*xy(x-70, y-30), *xy(x+70, y+30), fill="#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"], outline="#1d4ed8", width=(3 if selected else 1) * scale)
-        canvas.create_text(*xy(x, y), text=node.get("label", "Équipement")[:40], fill="#172554", font=("Arial", max(6, int(10 * scale))))
+        draw_symbol(canvas, node.get("shape", "server"), x, y, xy, scale, selected)
+        canvas.create_text(*xy(x, y+33), text=node.get("label", "Équipement")[:40], fill="#172554", font=("Arial", max(6, int(10 * scale))))
