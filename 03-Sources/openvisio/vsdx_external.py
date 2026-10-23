@@ -19,7 +19,7 @@ R = "http://schemas.openxmlformats.org/package/2006/relationships"
 PX_PER_IN = 96.0
 
 
-def _parse_xml(archive, name):
+def _parse_xml(archive, name, *, expected_root=None):
     payload = archive.read(name)
     # A raw-byte <!DOCTYPE check is insufficient: UTF-16 Visio XML can
     # encode every ASCII character with a NUL byte. ElementTree would then
@@ -37,7 +37,10 @@ def _parse_xml(archive, name):
     parser.ExternalEntityRefHandler = reject_dtd
     try:
         parser.Parse(payload, True)
-        return ET.fromstring(payload)
+        root = ET.fromstring(payload)
+        if expected_root is not None and root.tag != expected_root:
+            raise ValueError("racine XML VSDX invalide : " + name)
+        return root
     except (expat.ExpatError, ET.ParseError) as exc:
         raise ValueError("XML VSDX invalide : " + name) from exc
 
@@ -62,10 +65,10 @@ def _pages(archive):
         if "visio/pages/page1.xml" not in names:
             raise ValueError("Page Visio absente")
         return [("Page 1", "visio/pages/page1.xml", None)]
-    pages = _parse_xml(archive, pages_xml)
+    pages = _parse_xml(archive, pages_xml, expected_root=f"{{{V}}}Pages")
     relations = {}
     if rels_xml in names:
-        relroot = _parse_xml(archive, rels_xml)
+        relroot = _parse_xml(archive, rels_xml, expected_root=f"{{{R}}}Relationships")
         seen_relation_ids = set()
         for rel in relroot.findall(f"{{{R}}}Relationship"):
             rid = rel.get("Id")
@@ -160,7 +163,7 @@ def import_external_pages(archive):
     page_bottom_overflow_total = 0.0
     MAX_GROUP_DEPTH = 16
     for index, (page_name, part, declared_height) in enumerate(pages, 1):
-        page = _parse_xml(archive, part)
+        page = _parse_xml(archive, part, expected_root=f"{{{V}}}PageContents")
         layer_id = f"vsdx-page-{index}"
         layers.append({"id": layer_id, "name": page_name[:256], "visible": True})
         candidates = []
