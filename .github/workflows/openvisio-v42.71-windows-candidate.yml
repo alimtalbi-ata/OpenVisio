@@ -1,7 +1,7 @@
 name: OpenVisio V42.71 Windows native source candidate
 on:
   push:
-    branches: ['develop/v42.71-bounded-editor-open-20261023', 'develop/v42.72-version-integrity-tests-20261023']
+    branches: ['develop/v42.71-bounded-editor-open-20261023', 'develop/v42.72-version-integrity-tests-20261023', 'develop/v42.73-historical-test-recovery-20261023']
   workflow_dispatch:
 permissions:
   contents: read
