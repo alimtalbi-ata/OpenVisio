@@ -76,7 +76,10 @@ def _pages(archive):
         rel = page.find(f"{{{V}}}Rel")
         rid = rel.get(f"{{{OR}}}id") if rel is not None else None
         part = relations.get(rid)
-        if part is None and not relations:
+        # Legacy sequential fallback is valid only when the page does not
+        # declare an OPC relationship. A missing/empty/external .rels entry
+        # must never silently redirect a named page to page{i}.xml.
+        if part is None and not relations and rel is None:
             part = f"visio/pages/page{i}.xml"
         if not part or part not in names:
             raise ValueError("Relation de page VSDX absente ou invalide")
