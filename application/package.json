@@ -1,6 +1,6 @@
 {
   "name": "openvisio-windows",
-  "version": "41.72.0",
+  "version": "41.77.0",
   "private": true,
   "type": "module",
   "description": "OpenVisio Windows : édition de diagrammes, analyse et recommandations SAN déterministes",

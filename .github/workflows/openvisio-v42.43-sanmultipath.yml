@@ -1,0 +1,26 @@
+name: OpenVisio V42.43 SAN validation regression
+on:
+  push:
+    branches: ['develop/v42.43-san-multipath-linear-validation-*']
+    paths: ['python/openvisio/validation.py', 'python/openvisio/san_multipath.py', 'python/tests/test_parallel_link_scalability_v4243.py', '.github/workflows/openvisio-v42.43-sanmultipath.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  san-validation:
+    strategy:
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run SAN validator tests on the checked-out source
+        shell: pwsh
+        working-directory: python
+        run: |
+          $env:PYTHONPATH = '.'
+          python -m unittest discover -s tests -p 'test_parallel_link_scalability_v4243.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'SAN validator regression failed' }

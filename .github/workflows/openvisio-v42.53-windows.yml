@@ -1,0 +1,31 @@
+name: OpenVisio V42.53 Windows portable build
+on:
+  push:
+    branches: ['develop/v42.53-*']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-portable:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Build Windows portable
+        shell: pwsh
+        run: |
+          python -m pip install pyinstaller
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name OpenVisio-v42.53-Windows-x64-Portable --paths python python/run_openvisio.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (!(Test-Path dist/OpenVisio-v42.53-Windows-x64-Portable.exe)) { throw 'Missing EXE' }
+          Get-FileHash dist/OpenVisio-v42.53-Windows-x64-Portable.exe -Algorithm SHA256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V42.53-Windows-Portable
+          path: dist/OpenVisio-v42.53-Windows-x64-Portable.exe
+          if-no-files-found: error
