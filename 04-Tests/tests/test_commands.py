@@ -29,12 +29,13 @@ class EditingCommandsTests(unittest.TestCase):
         self.assertEqual(cleaned["edges"], [])
         self.assertEqual(len(linked["edges"]), 1)
 
-    def test_duplicate_and_self_link_rejected(self):
+    def test_parallel_links_allowed_but_self_link_rejected(self):
         a, _ = add_equipment(self.empty, 0, 0, ident="a")
         b, _ = add_equipment(a, 10, 0, ident="b")
         linked = connect_equipment(b, "a", "b")
-        with self.assertRaises(ValueError):
-            connect_equipment(linked, "a", "b")
+        parallel = connect_equipment(linked, "a", "b")
+        self.assertEqual(len(parallel["edges"]), 2)
+        self.assertNotEqual(parallel["edges"][0]["id"], parallel["edges"][1]["id"])
         with self.assertRaises(ValueError):
             connect_equipment(linked, "a", "a")
         with self.assertRaises(ValueError):
