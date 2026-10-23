@@ -241,8 +241,25 @@ def import_external_pages(archive):
         # malformed Connects table can otherwise fabricate an edge from a
         # device sheet or an ID that does not exist in the page at all.
         # Nested group connectors are included in this inventory.
-        page_sheet_ids = {shape.get("ID") for shape in page.findall(f".//{{{V}}}Shape")
-                          if shape.get("ID")}
+        page_shapes = page.findall(f".//{{{V}}}Shape")
+        page_sheet_ids = {shape.get("ID") for shape in page_shapes if shape.get("ID")}
+        # Visio Connects references a sheet ID, not an individual XML element.
+        # If two connector shapes share that ID, their captions and physical
+        # SAN links collapse into one ambiguous edge. Reject only duplicate
+        # IDs used as connector sources; legacy duplicate non-connector group
+        # children are still handled by the existing omission policy.
+        connector_sources = {
+            row.get("FromSheet")
+            for row in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect")
+            if row.get("FromCell") in ("BeginX", "EndX") and row.get("FromSheet")
+        }
+        seen_connector_sources = set()
+        for shape in page_shapes:
+            sid = shape.get("ID")
+            if sid in connector_sources:
+                if sid in seen_connector_sources:
+                    raise ValueError("Identifiant de connecteur VSDX dupliqué : " + sid)
+                seen_connector_sources.add(sid)
         connections = {}
         for link in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect"):
             source, target = link.get("FromSheet"), link.get("ToSheet")
