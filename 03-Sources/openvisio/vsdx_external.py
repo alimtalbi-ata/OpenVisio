@@ -210,18 +210,42 @@ def import_external_pages(archive):
         # must survive a source-free import, including formatted Text runs.
         # The label is a caption, not evidence of physical FC port metadata.
         connector_captions = {}
-        for connector in page.findall(f"./{{{V}}}Shapes/{{{V}}}Shape"):
+        # Visio connectors can be nested inside group Shapes. The Connects
+        # relationship table still references their page-global sheet IDs;
+        # searching only top-level shapes silently loses their SAN captions.
+        for connector in page.findall(f".//{{{V}}}Shape"):
             sid = connector.get("ID")
             text_element = connector.find(f"./{{{V}}}Text")
             if sid and text_element is not None:
                 caption = "".join(text_element.itertext()).strip()
                 if caption:
                     connector_captions[sid] = caption[:4096]
+        # Only an existing connector sheet may originate a SAN link. A
+        # malformed Connects table can otherwise fabricate an edge from a
+        # device sheet or an ID that does not exist in the page at all.
+        # Nested group connectors are included in this inventory.
+        page_sheet_ids = {shape.get("ID") for shape in page.findall(f".//{{{V}}}Shape")
+                          if shape.get("ID")}
         connections = {}
         for link in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect"):
             source, target = link.get("FromSheet"), link.get("ToSheet")
             if source and target in by_sheet and link.get("FromCell") in ("BeginX", "EndX"):
-                connections.setdefault(source, {})[link.get("FromCell")] = by_sheet[target]
+                if source in by_sheet or source not in page_sheet_ids:
+                    raise ValueError(
+                        "Connexion VSDX invalide : feuille de connecteur absente "
+                        f"ou équipement utilisé comme connecteur ({source})")
+                # A connector end may appear more than once in external Visio
+                # Connects tables. Identical rows are harmless, but competing
+                # targets would silently change the SAN topology depending on
+                # XML ordering. Never invent a winner for an ambiguous link.
+                end = link.get("FromCell")
+                destination = by_sheet[target]
+                previous = connections.setdefault(source, {}).get(end)
+                if previous is not None and previous != destination:
+                    raise ValueError(
+                        "Connexion VSDX ambiguë : extrémité de connecteur "
+                        f"{source}/{end} reliée à plusieurs équipements")
+                connections[source][end] = destination
         for sid, ends in connections.items():
             a, b = ends.get("BeginX"), ends.get("EndX")
             if a and b and a != b:
