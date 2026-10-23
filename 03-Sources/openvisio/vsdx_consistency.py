@@ -9,7 +9,7 @@ import hashlib
 import json
 from zipfile import ZipFile, BadZipFile
 from pathlib import PurePosixPath
-from .model import _unique_json_object, _reject_nonfinite_json
+from .model import _unique_json_object, _reject_nonfinite_json, load_bytes
 
 PRIVATE_PARTS = frozenset({"openvisio/document.json", "openvisio/manifest.json"})
 
@@ -113,6 +113,13 @@ def inspect(path):
         payload = archive.read("openvisio/document.json")
         if manifest.get("sha256") != hashlib.sha256(payload).hexdigest():
             return {"status": "corrupted_payload", "visual_consistency": "unknown"}
+        # A matching checksum proves byte consistency, not that the embedded
+        # diagram is usable. Mirror import_vsdx's strict JSON and model checks
+        # before ever claiming "consistent" (or "legacy").
+        try:
+            load_bytes(payload)
+        except ValueError as exc:
+            raise ValueError("Document OpenVisio embarqué invalide") from exc
         if schema == 1:
             return {"status": "legacy", "visual_consistency": "unverifiable"}
         changed = changed_visual_parts(archive, manifest)
