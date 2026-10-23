@@ -1,7 +1,7 @@
 name: OpenVisio V42.86 Windows native source candidate
 on:
   push:
-    branches: ['develop/v42.86-external-san-shape-identity-20261024']
+    branches: ['develop/v42.86-vsdx-root-identity-20261024']
   workflow_dispatch:
 permissions:
   contents: read

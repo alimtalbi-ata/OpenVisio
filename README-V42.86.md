@@ -13,6 +13,6 @@ Previously, a syntactically valid but wrong page root could silently import zero
 
 ## Evidence and limits
 
-Before patch: four failures among five new synthetic regression tests. After patch: five pass. Local Linux cumulative Python suite: **762 tests, 41 skipped, 0 failures**. Existing engine mirrors are identical; core module Git blob SHA values checked. Two historical test files restored per GitHub test mirror (page-gap and nested parallel SAN connector captions). Windows CI is configured to build a **V42.86 source candidate**, not a production release; do not claim its result until the Actions run completes.
+Before patch: four failures among five new synthetic regression tests. After patch: five pass. Local Linux cumulative Python suite: **762 tests, 41 skipped, 0 failures**. Existing engine mirrors are identical; core module Git blob SHA values checked. One historical test file restored per GitHub test mirror (nested parallel SAN connector captions); the existing page-gap test was reverified. GitHub now contains 108 tests per mirror versus 161 locally, leaving 53 historical test files absent. Windows CI is configured to build a **V42.86 source candidate**, not a production release; do not claim its result until the Actions run completes.
 
 No real Microsoft Visio desktop interoperability validation. No Windows V42.86 UI screenshots at the time of this commit. The historical V43.4 ZIP is unavailable, so complete parity with it cannot be claimed. Remaining historical tests on GitHub must be audited and restored. Never merge to main automatically.
