@@ -26,14 +26,14 @@ try {
         --paths python python/run_openvisio.py
     if ($LASTEXITCODE -ne 0) { throw 'PyInstaller failed' }
     if (!(Test-Path -LiteralPath $portable)) { throw 'Portable EXE absent' }
-    & (Join-Path $root '04-Tests/Smoke-Portable-Windows.ps1') -Executable $portable
+    & (Join-Path $root '04-Tests/Smoke-Portable-V42.71.ps1') -Executable $portable
     if ($LASTEXITCODE -ne 0) { throw 'Frozen functional smoke failed' }
     $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
     if (!(Test-Path -LiteralPath $iscc)) { throw 'Inno Setup 6 absent' }
     & $iscc '02-Compilation/installer/OpenVisio-V42.71-Candidate.iss'
     if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed' }
     if (!(Test-Path -LiteralPath $installer)) { throw 'Installer EXE absent' }
-    & (Join-Path $root '04-Tests/Smoke-Installer-Windows.ps1') -Installer $installer
+    & (Join-Path $root '04-Tests/Smoke-Installer-V42.71.ps1') -Installer $installer
     if ($LASTEXITCODE -ne 0) { throw 'Installer functional smoke failed' }
     $manifest = Join-Path $root 'dist/OpenVisio-V42.71-Source-Candidate-Windows-SHA256.txt'
     @($portable, $installer) | ForEach-Object {
