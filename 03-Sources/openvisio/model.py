@@ -100,6 +100,10 @@ def save(path, data, *, expected_sha256=None, require_absent=False, lock_timeout
     # Hashing the destination after publication can accidentally adopt an
     # external writer's revision as our own (a data-loss race).
     payload = json.dumps(validated, ensure_ascii=False, indent=2, allow_nan=False).encode("utf-8")
+    # A successful save must always produce a document load() can reopen.
+    # Reject before taking the lock or touching the primary/backup files.
+    if len(payload) > MAX_DOCUMENT_BYTES:
+        raise ValueError("Document OpenVisio trop volumineux pour être rouvert")
     published_sha256 = hashlib.sha256(payload).hexdigest()
     if require_absent and expected_sha256 is not None:
         raise ValueError("Préconditions de sauvegarde incompatibles")
