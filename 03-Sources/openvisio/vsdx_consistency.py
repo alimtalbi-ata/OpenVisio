@@ -50,6 +50,8 @@ def inspect(path):
             if entry.file_size > 10_000_000 or (entry.file_size > 1_000_000 and entry.file_size > max(1, entry.compress_size) * 200):
                 raise ValueError("Entrée VSDX suspecte")
         names = archive.namelist()
+        if any(name.startswith("/") or "\\\\" in name or ".." in name.split("/") for name in names):
+            raise ValueError("Chemin VSDX non sûr")
         if len(names) != len({name.casefold() for name in names}):
             raise ValueError("Entrées VSDX dupliquées")
         has_manifest = "openvisio/manifest.json" in names
