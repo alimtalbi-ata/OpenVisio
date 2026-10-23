@@ -26,15 +26,13 @@ def remove_selection(document, node_ids=(), edge_id=None):
     return result
 
 def connect_equipment(document, source_id, target_id, *, ident=None):
-    """Create a link between existing, distinct equipment; reject duplicate direction."""
+    """Create an independent physical link; parallel links have unique IDs."""
     if source_id == target_id:
         raise ValueError("Une liaison ne peut pas relier un équipement à lui-même")
     result = deepcopy(document)
     ids = {node["id"] for node in result["nodes"]}
     if source_id not in ids or target_id not in ids:
         raise ValueError("Équipement source ou cible introuvable")
-    if any(edge["from"] == source_id and edge["to"] == target_id for edge in result["edges"]):
-        raise ValueError("Cette liaison existe déjà")
     result["edges"].append({"id": ident or uuid4().hex, "from": source_id, "to": target_id})
     validate(result)
     return result
