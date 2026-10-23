@@ -1,0 +1,1 @@
+OpenVisio V42.85 — external SAN/FC VSDX switch classification, 3 new tests, 2 historical regressions restored, Windows CI candidate. Author: Abdelhalim Talbi. See 05-Documentation/V42.85/QUALIFICATION.md.
