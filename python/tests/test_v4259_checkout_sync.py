@@ -21,7 +21,7 @@ TESTS = {
 
 
 def blob_sha(path):
-    content = path.read_bytes()
+    content = path.read_bytes().replace(b"\r\n", b"\n")
     return hashlib.sha1(b"blob " + str(len(content)).encode() + b"\0" + content).hexdigest()
 
 
