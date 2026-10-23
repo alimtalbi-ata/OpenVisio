@@ -91,7 +91,7 @@ def import_vsdx(path, *, changed_pages="reject"):
             if not isinstance(manifest, dict):
                 raise ValueError("Manifeste OpenVisio/VSDX invalide : objet JSON attendu")
             schema = manifest.get("schema")
-            if schema not in (1, 2, 3) or manifest.get("sha256") != hashlib.sha256(payload).hexdigest():
+            if type(schema) is not int or schema not in (1, 2, 3) or manifest.get("sha256") != hashlib.sha256(payload).hexdigest():
                 raise ValueError("Intégrité OpenVisio/VSDX invalide")
             if schema in (2, 3):
                 changed = changed_visual_parts(archive, manifest)
