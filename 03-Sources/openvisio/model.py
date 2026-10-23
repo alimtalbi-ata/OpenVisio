@@ -7,21 +7,52 @@ from pathlib import Path
 
 from .validation import validate_document
 
+# Reject unexpectedly large files before JSON decoding allocates additional memory.
+MAX_DOCUMENT_BYTES = 128 * 1024 * 1024
+
 def validate(data):
     return validate_document(data)
 
 def load(path):
-    return load_bytes(Path(path).read_bytes())
+    """Read at most one byte beyond the accepted document size.
+
+    ``Path.read_bytes()`` previously loaded an arbitrarily large file before
+    ``load_bytes`` could enforce MAX_DOCUMENT_BYTES. A bounded read avoids
+    exhausting memory when opening a malformed or unexpectedly large diagram.
+    """
+    with Path(path).open("rb") as stream:
+        payload = stream.read(MAX_DOCUMENT_BYTES + 1)
+    return load_bytes(payload)
+
+def _unique_json_object(pairs):
+    """Reject duplicate JSON keys instead of silently changing diagram topology."""
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"Document OpenVisio invalide : clé JSON dupliquée {key!r}")
+        result[key] = value
+    return result
+
+
+def _reject_nonfinite_json(value):
+    raise ValueError(f"Document OpenVisio invalide : constante JSON interdite {value}")
+
 
 def load_bytes(payload):
+    if not isinstance(payload, bytes):
+        raise ValueError("Document OpenVisio : contenu binaire attendu")
+    if len(payload) > MAX_DOCUMENT_BYTES:
+        raise ValueError("Document OpenVisio trop volumineux")
     try:
-        data = json.loads(payload.decode("utf-8"))
-    except (json.JSONDecodeError, UnicodeError) as exc:
+        data = json.loads(payload.decode("utf-8"),
+                          object_pairs_hook=_unique_json_object,
+                          parse_constant=_reject_nonfinite_json)
+    except (json.JSONDecodeError, UnicodeError, RecursionError) as exc:
         raise ValueError("Document OpenVisio illisible ou JSON invalide") from exc
     if isinstance(data, dict) and isinstance(data.get("edges", []), list):
         # Backward compatibility with earlier diagrams lacking edge IDs.
         edges = []
-        for index, edge in enumerate(data["edges"]):
+        for index, edge in enumerate(data.get("edges", [])):
             if isinstance(edge, dict) and "id" not in edge:
                 key = str(index) + ":" + str(edge.get("from")) + ":" + str(edge.get("to"))
                 edge = {**edge, "id": "legacy-" + uuid5(NAMESPACE_URL, key).hex}
