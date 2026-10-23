@@ -263,6 +263,13 @@ def import_external_pages(archive):
         connections = {}
         for link in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect"):
             source, target = link.get("FromSheet"), link.get("ToSheet")
+            if source in connector_sources and target not in page_sheet_ids:
+                # Do not silently drop a SAN fabric endpoint pointing at a
+                # nonexistent Visio sheet. Existing but unsupported grouped
+                # children still follow the conservative omission policy.
+                raise ValueError(
+                    "Connexion VSDX invalide : extrémité SAN absente "
+                    f"({source} -> {target})")
             if source and target in by_sheet and link.get("FromCell") in ("BeginX", "EndX"):
                 if source in by_sheet or source not in page_sheet_ids:
                     raise ValueError(
