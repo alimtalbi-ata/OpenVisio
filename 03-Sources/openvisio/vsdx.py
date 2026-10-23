@@ -7,7 +7,8 @@ import hashlib
 import json
 from pathlib import Path, PurePosixPath
 from zipfile import ZipFile
-from .model import validate, load_bytes, SaveConflict, _sha256
+from .model import (validate, load_bytes, SaveConflict, _sha256,
+                    _unique_json_object, _reject_nonfinite_json)
 from .save_lock import exclusive_document_lock
 from .vsdx_consistency import VISUAL_PARTS, changed_visual_parts
 from .vsdx_polyline import connector_polyline
@@ -87,7 +88,16 @@ def import_vsdx(path, *, changed_pages="reject"):
             payload = archive.read("openvisio/document.json")
             if "openvisio/manifest.json" not in archive.namelist():
                 raise ValueError("Manifeste OpenVisio/VSDX manquant")
-            manifest = json.loads(archive.read("openvisio/manifest.json"))
+            # Reject ambiguous manifest keys and non-JSON numeric constants.
+            # Otherwise the last duplicate SHA/schema silently wins, defeating
+            # deterministic VSDX provenance and cross-reader agreement.
+            try:
+                manifest = json.loads(
+                    archive.read("openvisio/manifest.json"),
+                    object_pairs_hook=_unique_json_object,
+                    parse_constant=_reject_nonfinite_json)
+            except (ValueError, UnicodeError, RecursionError) as exc:
+                raise ValueError("Manifeste OpenVisio/VSDX JSON invalide") from exc
             if not isinstance(manifest, dict):
                 raise ValueError("Manifeste OpenVisio/VSDX invalide : objet JSON attendu")
             schema = manifest.get("schema")
