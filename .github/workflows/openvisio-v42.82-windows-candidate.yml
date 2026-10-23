@@ -1,7 +1,7 @@
 name: OpenVisio V42.82 Windows native source candidate
 on:
   push:
-    branches: ['develop/v42.82-vsdx-missing-page-relations-20261023']
+    branches: ['develop/v42.82-sanitize-duplicate-san-connectors-20261023']
   workflow_dispatch:
 permissions:
   contents: read
