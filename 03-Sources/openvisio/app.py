@@ -13,6 +13,7 @@ from .properties import normalize_properties
 from .links import normalize_link, PROTOCOLS
 from .history import History
 from .render import node_at, edge_at, draw_document
+from .layers import project_visible
 from .viewport import Viewport
 from .layout import snap, align, distribute, move_group
 from .clipboard import copy_selection, paste_selection
