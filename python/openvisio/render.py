@@ -12,10 +12,32 @@ from .shape_icons import equipment_icon
 NODE_HALF_WIDTH = 70
 NODE_HALF_HEIGHT = 30
 
-def node_at(nodes, x, y):
+def node_at(nodes, x, y, group_border_tolerance=6.0):
+    """Hit solid equipment first; Visio groups are transparent outlines.
+
+    Imported groups are drawn with ``fill=""``. Treating their entire
+    bounding rectangles as clickable prevented selecting equipment and SAN
+    connectors enclosed by a group (especially when the group was last in
+    the document). Only the group's visible frame is selectable.
+    """
+    # Equipment wins over any overlapping transparent group frame.
     for node in reversed(nodes):
+        if node.get("shape") == "visio-group":
+            continue
         hw, hh = node_half_sizes(node)
         if abs(node["x"] - x) <= hw and abs(node["y"] - y) <= hh:
+            return node
+    for node in reversed(nodes):
+        if node.get("shape") != "visio-group":
+            continue
+        hw, hh = node_half_sizes(node)
+        dx, dy = abs(node["x"] - x), abs(node["y"] - y)
+        # Never allow the zoom-adjusted border tolerance to consume the
+        # entire group interior at very low zoom.
+        border = max(0.0, min(group_border_tolerance, min(hw, hh) / 3))
+        if dx <= hw + border and dy <= hh + border and (
+            abs(dx - hw) <= border or abs(dy - hh) <= border
+        ):
             return node
     return None
 

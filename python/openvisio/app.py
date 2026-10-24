@@ -714,7 +714,8 @@ class Editor(tk.Tk):
     def add_node(self, event):
         self.create_node(*self.viewport.world(event.x, event.y))
     def node_at(self, x, y):
-        return node_at(project_editable(self.document)["nodes"], *self.viewport.world(x, y))
+        return node_at(project_editable(self.document)["nodes"], *self.viewport.world(x, y),
+                       group_border_tolerance=6 / self.viewport.zoom)
     def edge_at(self, x, y):
         editable = project_editable(self.document)
         return edge_at(editable["nodes"], editable["edges"], *self.viewport.world(x, y), tolerance=9/self.viewport.zoom)
