@@ -88,6 +88,65 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
     return '\n'.join(lines)
 
 
-def export_svg(path, data, *, include_hidden_layers=False):
-    Path(path).write_text(
-        to_svg(data, include_hidden_layers=include_hidden_layers), encoding='utf-8')
+def export_svg(path, data, *, include_hidden_layers=False,
+               expected_sha256=None, require_absent=False, lock_timeout=5.0):
+    """Atomically export SVG with optional optimistic/no-clobber guards.
+
+    Rendering completes before taking the destination lock. A failed SVG
+    rendering never truncates an existing diagram. The lock serializes
+    cooperating OpenVisio writers; external writers ignoring it are not
+    guaranteed to be serialized. Return SHA-256 of the published bytes.
+    """
+    import hashlib
+    import os
+    import tempfile
+    from .model import SaveConflict, _sha256
+    from .save_lock import exclusive_document_lock
+
+    if require_absent and expected_sha256 is not None:
+        raise ValueError("Préconditions SVG incompatibles")
+    if expected_sha256 is not None and (
+            not isinstance(expected_sha256, str) or len(expected_sha256) != 64
+            or any(ch not in "0123456789abcdef" for ch in expected_sha256)):
+        raise ValueError("Empreinte SVG invalide")
+    payload = to_svg(data, include_hidden_layers=include_hidden_layers).encode("utf-8")
+    revision = hashlib.sha256(payload).hexdigest()
+    destination = Path(path)
+
+    def check_revision():
+        if require_absent:
+            if destination.exists() or destination.is_symlink():
+                raise SaveConflict("Le SVG de destination existe déjà")
+        elif expected_sha256 is not None:
+            try:
+                current = _sha256(destination)
+            except FileNotFoundError as exc:
+                raise SaveConflict("Le SVG a disparu depuis son ouverture") from exc
+            if current != expected_sha256:
+                raise SaveConflict("Le SVG a changé depuis son ouverture")
+
+    try:
+        with exclusive_document_lock(destination, timeout=lock_timeout):
+            check_revision()
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            fd, temporary = tempfile.mkstemp(
+                prefix=".openvisio-svg-", suffix=".tmp", dir=destination.parent)
+            try:
+                with os.fdopen(fd, "wb") as stream:
+                    stream.write(payload)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                check_revision()
+                if require_absent:
+                    try:
+                        os.link(temporary, destination)
+                    except FileExistsError as exc:
+                        raise SaveConflict("Le SVG a été créé pendant l'export") from exc
+                else:
+                    os.replace(temporary, destination)
+                return revision
+            finally:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
+    except TimeoutError as exc:
+        raise SaveConflict(str(exc)) from exc

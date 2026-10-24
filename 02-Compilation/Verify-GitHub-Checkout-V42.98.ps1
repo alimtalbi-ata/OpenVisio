@@ -1,0 +1,54 @@
+# Reproducible independent checkout of the OpenVisio V42.98 candidate.
+# Author: Abdelhalim Talbi. Does not modify main or production.
+[CmdletBinding()]
+param([string]$Destination = (Join-Path $env:TEMP 'openvisio-v4298-verify'))
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+$branch = 'develop/v42.98-svg-atomic-export-20261024'
+$repo = 'https://github.com/alimtalbi-ata/OpenVisio.git'
+if (Test-Path -LiteralPath $Destination) {
+    throw "Destination must not exist; choose an empty path: $Destination"
+}
+git clone --single-branch --branch $branch --depth 1 $repo $Destination
+if ($LASTEXITCODE -ne 0) { throw 'GitHub checkout failed' }
+Push-Location $Destination
+try {
+    $head = (git rev-parse HEAD).Trim()
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot resolve checkout HEAD' }
+    if ($env:GITHUB_SHA -and $head -ne $env:GITHUB_SHA) {
+        throw "Independent checkout $head differs from workflow commit $env:GITHUB_SHA"
+    }
+    $expected = @{
+        'python/openvisio/model.py' = '747522deae7dbd5eee321726cc2df2095f9f7601'
+        'python/openvisio/vsdx.py' = '0f5d8f4d2b0f23bef065d4700e0487a6b45a9af6'
+        'python/openvisio/render.py' = 'f27dec0e2a96de9a86d34c4b669faaef45e88f9f'
+        'python/openvisio/export.py' = '01d420c4d6f0206a46fa2f0487da1d43923382da'
+        'python/openvisio/retained_canvas.py' = '5c2d81ba7def18a00f6bf2a7f0b3d6dd047c04bf'
+        'python/openvisio/shape_icons.py' = '4dc8bb45938f6908af09fa4c0045e89e244205f4'
+        'python/openvisio/connector_labels.py' = '3740ae616d608ad15b9d851ebc067ba8656a376d'
+        'python/openvisio/app.py' = 'b9fe39769387b87198e12319f65893f9d89ed521'
+        'python/openvisio/commands.py' = '1036c435e0b91355469510f741cfea95f3a87796'
+        'python/tests/test_san_parallel_fabric_layer_v4295.py' = 'e56da80b12edc4bbd1f79dbcea7135cc59985035'
+        'python/tests/test_svg_layer_visibility_v4296.py' = 'b51176e999fb689eda282680cf8ff674198cecb4'
+        'python/tests/test_svg_atomic_export_v4298.py' = 'b0ab6e2b9cb4231eb088eb8f80412397311ec7e7'
+        'python/tests/test_svg_dimension_integrity_v4297.py' = '1c58f2faab5c2313acd8a23b310413fedda6a510'
+        'python/tests/test_connector_null_metadata_v4294.py' = 'd996a948d51ded222d38cf46bdd82154d0872348'
+    }
+    foreach ($path in $expected.Keys) {
+        if (!(Test-Path -LiteralPath $path -PathType Leaf)) {
+            throw "Critical checkout file missing: $path"
+        }
+        $actual = (git hash-object -- $path).Trim()
+        if ($LASTEXITCODE -ne 0 -or $actual -ne $expected[$path]) {
+            throw "Git blob mismatch: $path expected $($expected[$path]) got $actual"
+        }
+    }
+    $env:PYTHONPATH = Join-Path $Destination 'python'
+    python verify_source_parity.py
+    if ($LASTEXITCODE -ne 0) { throw 'Mirror parity failed' }
+    python -m unittest discover -s python/tests -p 'test_*.py' -q
+    if ($LASTEXITCODE -ne 0) { throw 'Python checkout tests failed' }
+    Write-Host "PASS: independent GitHub checkout $head, critical engine SHA, mirrors and tests"
+} finally {
+    Pop-Location
+}
