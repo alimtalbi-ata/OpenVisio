@@ -158,6 +158,10 @@ def import_vsdx(path, *, changed_pages="reject"):
         if "openvisio/manifest.json" in archive.namelist() and "openvisio/document.json" not in archive.namelist():
             raise ValueError("Document OpenVisio/VSDX manquant pour le manifeste présent")
         if "openvisio/document.json" in archive.namelist():
+            if archive.getinfo("openvisio/document.json").file_size > 10_000_000:
+                raise ValueError("Document OpenVisio/VSDX trop volumineux")
+            if archive.getinfo("openvisio/manifest.json").file_size > 1_000_000:
+                raise ValueError("Manifeste OpenVisio/VSDX trop volumineux")
             payload = archive.read("openvisio/document.json")
             if "openvisio/manifest.json" not in archive.namelist():
                 raise ValueError("Manifeste OpenVisio/VSDX manquant")
