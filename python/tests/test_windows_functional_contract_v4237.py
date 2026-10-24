@@ -63,8 +63,21 @@ class WindowsFunctionalContract(unittest.TestCase):
         self.assertIn('unins000.exe', installed)
 
     def test_no_false_current_windows_binary(self):
-        self.assertFalse(any('V42.94' in p.name for p in
-                             (ROOT / '01-Application').rglob('*.exe')))
+        # A source-only checkout has no candidate binary. A cumulative ZIP may
+        # include the two REAL CI-built binaries, but only with matching hashes.
+        binaries = list((ROOT / '01-Application').rglob('*V42.94*.exe'))
+        if not binaries:
+            return
+        import hashlib
+        manifest = ROOT / '01-Application/V42.94/OpenVisio-V42.94-Source-Candidate-Windows-SHA256.txt'
+        self.assertTrue(manifest.is_file(), 'Candidate binaries require CI hashes')
+        expected = dict(line.split(None, 1) for line in manifest.read_text().splitlines())
+        self.assertEqual(len(binaries), 2, 'Exactly portable and installer are allowed')
+        for binary in binaries:
+            self.assertIn(binary.name, expected.values(), binary.name)
+            actual = hashlib.sha256(binary.read_bytes()).hexdigest()
+            recorded = next(h for h, name in expected.items() if name == binary.name)
+            self.assertEqual(actual.lower(), recorded.lower(), binary.name)
 
 
 if __name__ == '__main__':
