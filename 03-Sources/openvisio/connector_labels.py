@@ -29,29 +29,34 @@ class LabelLayout:
     hidden: tuple
 
 
+def _metadata_text(value):
+    """Render optional imported metadata without inventing a literal 'None'."""
+    return '' if value is None else str(value).strip()
+
+
 def edge_label_text(edge):
     """Return the same bounded, human-readable text on every output surface."""
     # Visio connector captions are free-form text. Do not reinterpret them
     # as SAN metadata or replace them with a generated protocol/port summary.
     # A whitespace-only caption is not an intentional override: keep the
     # physical FC fabric/port metadata visible in Tk, SVG and public VSDX.
-    explicit = str(edge.get("label", "")).strip()
+    explicit = _metadata_text(edge.get("label"))
     if explicit:
         return explicit[:72]
     parts = []
     for key in ('protocol',):
-        value = str(edge.get(key, '')).strip()
+        value = _metadata_text(edge.get(key))
         if value:
             parts.append(value)
-    speed = str(edge.get('speed_gbps', '')).strip()
+    speed = _metadata_text(edge.get('speed_gbps'))
     if speed:
         parts.append(speed + ' Gbit/s')
-    fabric = str(edge.get('fabric', '')).strip()
+    fabric = _metadata_text(edge.get('fabric'))
     if fabric:
         parts.append('Fabric ' + fabric)
-    ports = ' → '.join(str(edge.get(key, '')).strip()
+    ports = ' → '.join(_metadata_text(edge.get(key))
                        for key in ('source_port', 'target_port')
-                       if str(edge.get(key, '')).strip())
+                       if _metadata_text(edge.get(key)))
     if ports:
         parts.append(ports)
     return ' · '.join(parts)[:72]
