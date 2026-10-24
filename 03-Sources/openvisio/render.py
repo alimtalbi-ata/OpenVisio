@@ -83,6 +83,27 @@ def edge_at(nodes, edges, x, y, tolerance=9):
                 best_edge, best_distance = edge, distance
     return best_edge
 
+
+def object_at(nodes, edges, x, y, *, node_tolerance=6.0, edge_tolerance=9.0):
+    """Select FC links crossing imported transparent Visio group frames.
+
+    Solid equipment has priority; a group frame only wins if no connector
+    lies under the pointer. Shared by click and context-menu resolution.
+    """
+    node = node_at(nodes, x, y, group_border_tolerance=node_tolerance)
+    edge = (None if node is not None and node.get("shape") != "visio-group"
+            else edge_at(nodes, edges, x, y, tolerance=edge_tolerance))
+    return resolve_hit(node, edge)
+
+
+def resolve_hit(node, edge):
+    """Consistent object priority for the editor and pure geometry tests."""
+    if node is not None and node.get("shape") != "visio-group":
+        return node, None
+    if edge is not None:
+        return None, edge
+    return node, None
+
 def draw_document(canvas, document, selected_node=None, selected_edge=None, viewport=None, grid=False, grid_spacing=20, selected_nodes=None):
     import tkinter as tk
     canvas.delete("all")
