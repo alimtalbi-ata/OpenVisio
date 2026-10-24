@@ -1,5 +1,6 @@
 """Native Python SVG export with adaptive viewBox. Author: Abdelhalim Talbi."""
 from pathlib import Path
+from math import isfinite
 from xml.sax.saxutils import escape
 from .model import validate
 from .render import edge_routes, clip_route_to_nodes
@@ -18,7 +19,7 @@ def to_svg(data, width=None, height=None, margin=80):
     natural_width, natural_height = max_x - min_x, max_y - min_y
     width = natural_width if width is None else width
     height = natural_height if height is None else height
-    if not isinstance(width, (int, float)) or not isinstance(height, (int, float)) or width <= 0 or height <= 0:
+    if not isinstance(width, (int, float)) or not isinstance(height, (int, float)) or not isfinite(width) or not isfinite(height) or width <= 0 or height <= 0:
         raise ValueError("Dimensions SVG invalides")
     lines = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="{min_x} {min_y} {natural_width} {natural_height}">', f'<rect x="{min_x}" y="{min_y}" width="{natural_width}" height="{natural_height}" fill="#f8fafc"/>']
     lines.append('<defs><marker id="ov-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/></marker></defs>')
