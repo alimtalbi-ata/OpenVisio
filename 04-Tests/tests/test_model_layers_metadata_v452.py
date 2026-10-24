@@ -23,6 +23,11 @@ class LayerPersistenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate({"nodes": [{"id": "n1", "x": 0, "y": 0, "layer": "missing"}], "edges": [], "layers": []})
 
+    def test_orphaned_reference_without_layer_collection_is_rejected(self):
+        doc = {"nodes": [{"id": "n1", "x": 0, "y": 0, "layer": "missing"}], "edges": []}
+        with self.assertRaises(ValueError):
+            validate(doc)
+
     def test_hidden_layer_excludes_nodes(self):
         doc = {"nodes": [{"id": "n1", "x": 0, "y": 0}], "edges": []}
         doc, lid = create_layer(doc, "Private")
