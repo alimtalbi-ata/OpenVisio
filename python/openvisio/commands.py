@@ -41,7 +41,7 @@ def remove_selection(document, node_ids=(), edge_id=None):
     validate(result)
     return result
 
-def connect_equipment(document, source_id, target_id, *, ident=None, link=None):
+def connect_equipment(document, source_id, target_id, *, ident=None, link=None, layer=None):
     """Create a link; parallel SAN paths require distinct, explicit port pairs.
 
     ``link`` is an optional dictionary of real connection metadata. Unqualified
@@ -58,6 +58,17 @@ def connect_equipment(document, source_id, target_id, *, ident=None, link=None):
     if any(node["id"] in (source_id, target_id)
            and node.get("layer") in locked_layers for node in result["nodes"]):
         raise ValueError("Connexion interdite : équipement sur calque verrouillé")
+    # A newly created physical path belongs to the selected fabric layer,
+    # not the unlayered default. Validate the destination *before* mutation.
+    # In particular, a locked layer must never acquire a new connector via
+    # a programmatic caller bypassing the GUI hit-test projection.
+    if layer is not None:
+        matching = next((item for item in result.get("layers", [])
+                         if item["id"] == layer), None)
+        if matching is None:
+            raise ValueError("Calque de liaison inexistant")
+        if matching.get("locked", False):
+            raise ValueError("Connexion interdite : calque de liaison verrouillé")
     if link is not None:
         if not isinstance(link, dict) or any(key not in (
                 "protocol", "source_port", "target_port", "fabric", "speed_gbps") for key in link):
@@ -66,7 +77,10 @@ def connect_equipment(document, source_id, target_id, *, ident=None, link=None):
         metadata = normalize_link(**link)
     else:
         metadata = {}
-    result["edges"].append({"id": ident or uuid4().hex,
-                            "from": source_id, "to": target_id, **metadata})
+    new_edge = {"id": ident or uuid4().hex,
+                "from": source_id, "to": target_id, **metadata}
+    if layer is not None:
+        new_edge["layer"] = layer
+    result["edges"].append(new_edge)
     validate(result)
     return result
