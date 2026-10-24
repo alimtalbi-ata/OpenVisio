@@ -398,7 +398,10 @@ class Editor(tk.Tk):
         self.selected_nodes = {node_id}
         self.draw()
     def add_node(self, event):
-        if self.node_at(event.x, event.y) is not None:
+        # Locked but visible equipment must also block overlapping insertion.
+        visible_nodes = project_visible(self.document)["nodes"]
+        if node_at(visible_nodes, *self.viewport.world(event.x, event.y)) is not None:
+            self.status.set("Insertion annulée : emplacement occupé")
             return
         self.create_node(*self.viewport.world(event.x, event.y), kind=self._palette_selected_kind())
     def node_at(self, x, y):
