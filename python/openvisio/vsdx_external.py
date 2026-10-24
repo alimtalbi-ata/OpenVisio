@@ -84,6 +84,7 @@ def _pages(archive):
                 relations[rid] = _part_target(rel.get("Target"))
     result = []
     seen_page_ids = set()
+    seen_page_parts = set()
     for i, page in enumerate(pages.findall(f"{{{V}}}Page"), 1):
         page_id = page.get("ID")
         if page_id:
@@ -100,6 +101,11 @@ def _pages(archive):
             part = f"visio/pages/page{i}.xml"
         if not part or part not in names:
             raise ValueError("Relation de page VSDX absente ou invalide")
+        # Distinct logical pages must not alias one XML part: duplicate imports
+        # would fabricate SAN equipment and FC connections.
+        if part in seen_page_parts:
+            raise ValueError("Partie de page VSDX réutilisée par plusieurs pages : " + part)
+        seen_page_parts.add(part)
         height = None
         for cell in page.findall(f"./{{{V}}}PageSheet/{{{V}}}Cell"):
             if cell.get("N") == "PageHeight":
