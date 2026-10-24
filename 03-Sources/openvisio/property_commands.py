@@ -4,7 +4,8 @@ from .model import validate
 from .properties import normalize_properties
 from .links import normalize_link
 from .shapes import SHAPES
-from .node_geometry import checked_size
+from .node_geometry import checked_size, node_dimensions
+from .geometry_lock import assert_geometry_editable
 
 
 def _locked_layers(document):
@@ -22,6 +23,8 @@ def update_equipment(document, equipment_id, fields, shape, *, width=None, heigh
         raise ValueError("Équipement introuvable")
     if node.get("layer") in _locked_layers(updated):
         raise ValueError("Modification interdite : calque équipement verrouillé")
+    old_shape = node.get("shape", "server")
+    old_size = node_dimensions(node)
     node.update(normalized)
     node["shape"] = shape
     for key, value in (("width", width), ("height", height)):
@@ -31,6 +34,8 @@ def update_equipment(document, equipment_id, fields, shape, *, width=None, heigh
             except (ValueError, TypeError, OverflowError) as exc:
                 raise ValueError("Dimension " + key + " invalide") from exc
             node[key] = checked_size(parsed, key)
+    if node["shape"] != old_shape or node_dimensions(node) != old_size:
+        assert_geometry_editable(updated, {equipment_id})
     return validate(updated)
 
 def update_connection(document, connection_id, fields):
