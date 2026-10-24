@@ -14,3 +14,7 @@ class MetadataSerializationTests(unittest.TestCase):
     def test_accept_nested_json(self):
         doc = {"nodes": [], "edges": [], "metadata": {"tags": ["a", "b"], "nested": {"n": 1}}}
         self.assertEqual(validate(doc)["metadata"], doc["metadata"])
+
+    def test_reject_non_string_metadata_key(self):
+        with self.assertRaisesRegex(ValueError, "Clé de métadonnée non textuelle"):
+            validate({"nodes": [], "edges": [], "metadata": {1: "numeric-key"}})
