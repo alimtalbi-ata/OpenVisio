@@ -43,6 +43,8 @@ def validate_document(data):
             if key in edge and (not isinstance(edge[key], str) or len(edge[key]) > 4096):
                 raise ValueError("Propriété liaison invalide : " + key)
     result = {"nodes": nodes, "edges": edges}
+    if "layers" not in data and any("layer" in item for item in nodes + edges):
+        raise ValueError("Référence à un calque sans collection de calques")
     if "layers" in data:
         layers = data["layers"]
         if not isinstance(layers, list) or len(layers) > 1024:
