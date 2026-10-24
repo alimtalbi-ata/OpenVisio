@@ -42,4 +42,31 @@ def validate_document(data):
         for key in ("protocol", "source_port", "target_port", "fabric", "speed_gbps"):
             if key in edge and (not isinstance(edge[key], str) or len(edge[key]) > 4096):
                 raise ValueError("Propriété liaison invalide : " + key)
-    return {"nodes": nodes, "edges": edges}
+    result = {"nodes": nodes, "edges": edges}
+    if "layers" in data:
+        layers = data["layers"]
+        if not isinstance(layers, list) or len(layers) > 1024:
+            raise ValueError("Collection de calques invalide")
+        layer_ids = set()
+        for layer in layers:
+            if not isinstance(layer, dict):
+                raise ValueError("Calque invalide")
+            ident, name = layer.get("id"), layer.get("name")
+            if not isinstance(ident, str) or not ident or len(ident) > 256 or ident in layer_ids:
+                raise ValueError("Identifiant calque invalide ou dupliqué")
+            if not isinstance(name, str) or not name.strip() or len(name) > 256:
+                raise ValueError("Nom de calque invalide")
+            for key in ("visible", "locked"):
+                if key in layer and not isinstance(layer[key], bool):
+                    raise ValueError("Propriété calque invalide : " + key)
+            layer_ids.add(ident)
+        for item in nodes + edges:
+            if "layer" in item and item["layer"] not in layer_ids:
+                raise ValueError("Référence à un calque inexistant")
+        result["layers"] = layers
+    if "metadata" in data:
+        metadata = data["metadata"]
+        if not isinstance(metadata, dict) or len(metadata) > 128:
+            raise ValueError("Métadonnées invalides")
+        result["metadata"] = metadata
+    return result
