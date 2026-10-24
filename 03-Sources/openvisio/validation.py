@@ -85,7 +85,9 @@ def validate_document(data):
                         check_json_keys(child, seen)
                 finally:
                     seen.remove(id(value))
-            elif isinstance(value, (list, tuple)):
+            elif isinstance(value, tuple):
+                raise ValueError("Tuple interdit dans les métadonnées JSON")
+            elif isinstance(value, list):
                 if id(value) in seen:
                     raise ValueError("Référence circulaire dans les métadonnées")
                 seen.add(id(value))
@@ -94,7 +96,10 @@ def validate_document(data):
                         check_json_keys(child, seen)
                 finally:
                     seen.remove(id(value))
-        check_json_keys(metadata, set())
+        try:
+            check_json_keys(metadata, set())
+        except RecursionError as exc:
+            raise ValueError("Métadonnées trop profondément imbriquées") from exc
         try:
             json.dumps(metadata, allow_nan=False)
         except (TypeError, ValueError, OverflowError, RecursionError) as exc:
