@@ -894,7 +894,8 @@ class Editor(tk.Tk):
                 messagebox.showerror('Chemin SAN', 'Deux ports physiques sont obligatoires', parent=dialog)
                 return
             try:
-                new_document = connect_equipment(self.document, edge['from'], edge['to'], link=metadata)
+                new_document = connect_equipment(self.document, edge['from'], edge['to'],
+                                                 link=metadata, layer=edge.get('layer'))
             except ValueError as exc:
                 messagebox.showerror('Chemin SAN', str(exc), parent=dialog)
                 return
