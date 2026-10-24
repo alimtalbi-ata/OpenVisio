@@ -1,5 +1,6 @@
 """Strict diagram integrity checks. Author: Abdelhalim Talbi."""
 import math
+import json
 
 def validate_document(data):
     if not isinstance(data, dict):
@@ -72,5 +73,9 @@ def validate_document(data):
         metadata = data["metadata"]
         if not isinstance(metadata, dict) or len(metadata) > 128:
             raise ValueError("Métadonnées invalides")
+        try:
+            json.dumps(metadata, allow_nan=False)
+        except (TypeError, ValueError, OverflowError, RecursionError) as exc:
+            raise ValueError("Métadonnées non sérialisables en JSON") from exc
         result["metadata"] = metadata
     return result
