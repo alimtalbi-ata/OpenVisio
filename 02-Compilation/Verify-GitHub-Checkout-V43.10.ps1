@@ -39,8 +39,8 @@ try {
         '03-Sources/openvisio/geometry_lock.py' = '4905c6cbbe8e94a2f06a84491457baea48570a78'
         'python/openvisio/routing.py' = '15de75b0b4db520e92ca6d1df0e273ed022b607a'
         '03-Sources/openvisio/routing.py' = '15de75b0b4db520e92ca6d1df0e273ed022b607a'
-        'python/tests/test_routing_layer_lock_v4310.py' = 'fb585215fe1c6bc0ab916efc243eeb587d1b6d41'
-        '04-Tests/tests/test_routing_layer_lock_v4310.py' = 'fb585215fe1c6bc0ab916efc243eeb587d1b6d41'
+        'python/tests/test_routing_layer_lock_v4309.py' = 'fb585215fe1c6bc0ab916efc243eeb587d1b6d41'
+        '04-Tests/tests/test_routing_layer_lock_v4309.py' = 'fb585215fe1c6bc0ab916efc243eeb587d1b6d41'
         'python/tests/test_locked_san_geometry_v4308.py' = 'feeb497eb7da6a713cc4c8d1181368e0af797bb2'
         '04-Tests/tests/test_locked_san_geometry_v4308.py' = 'feeb497eb7da6a713cc4c8d1181368e0af797bb2'
     }
