@@ -30,9 +30,19 @@ def to_svg(data, width=None, height=None, margin=80):
         a, b = nodes[edge["from"]], nodes[edge["to"]]
         (ax, ay), (bx, by) = clip_route_to_nodes(route, a, b)
         lines.append(f'<line x1="{ax:g}" y1="{ay:g}" x2="{bx:g}" y2="{by:g}" stroke="#2563eb" stroke-width="2" marker-end="url(#ov-arrow)"/>')
-        details = [str(edge[k]).strip() for k in ("protocol", "fabric") if edge.get(k)]
-        if edge.get("speed_gbps"):
-            details.append(str(edge["speed_gbps"]) + " Gbit/s")
+        details = []
+        protocol = str(edge.get("protocol", "")).strip()
+        if protocol:
+            details.append(protocol)
+        speed = str(edge.get("speed_gbps", "")).strip()
+        if speed:
+            details.append(speed + " Gbit/s")
+        fabric = str(edge.get("fabric", "")).strip()
+        if fabric:
+            details.append("Fabric " + fabric)
+        ports = " → ".join(str(edge.get(key, "")).strip() for key in ("source_port", "target_port") if str(edge.get(key, "")).strip())
+        if ports:
+            details.append(ports)
         if details:
             label = escape(" · ".join(details)[:72])
             lines.append(f'<text x="{(ax+bx)/2:g}" y="{(ay+by)/2-9:g}" text-anchor="middle" font-family="Arial" font-size="9" fill="#334155">{label}</text>')
