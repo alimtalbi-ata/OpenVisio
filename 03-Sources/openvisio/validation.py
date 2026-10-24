@@ -73,6 +73,8 @@ def validate_document(data):
         metadata = data["metadata"]
         if not isinstance(metadata, dict) or len(metadata) > 128:
             raise ValueError("Métadonnées invalides")
+        if any(not isinstance(key, str) for key in metadata):
+            raise ValueError("Clé de métadonnée non textuelle")
         try:
             json.dumps(metadata, allow_nan=False)
         except (TypeError, ValueError, OverflowError, RecursionError) as exc:
