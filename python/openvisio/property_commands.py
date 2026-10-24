@@ -5,7 +5,7 @@ from .properties import normalize_properties
 from .links import normalize_link
 from .shapes import SHAPES
 from .node_geometry import checked_size, node_dimensions
-from .geometry_lock import assert_geometry_editable
+from .geometry_lock import assert_geometry_editable, assert_link_editable
 
 
 def _locked_layers(document):
@@ -44,12 +44,6 @@ def update_connection(document, connection_id, fields):
     edge = next((e for e in updated["edges"] if e["id"] == connection_id), None)
     if edge is None:
         raise ValueError("Connexion introuvable")
-    locked = _locked_layers(updated)
-    # Match project_editable(): an unlocked link cannot bypass a locked
-    # endpoint merely because its own link layer is still editable.
-    if (edge.get("layer") in locked or any(
-            node["id"] in (edge["from"], edge["to"])
-            and node.get("layer") in locked for node in updated["nodes"])):
-        raise ValueError("Modification interdite : liaison ou équipement verrouillé")
+    assert_link_editable(updated, edge)
     edge.update(normalized)
     return validate(updated)

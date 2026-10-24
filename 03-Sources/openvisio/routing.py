@@ -17,6 +17,7 @@ from .parallel_geometry import display_edges
 from .lane_clearance import lane_clearance, expanded_intermediate_bounds
 from .node_geometry import (node_bounds, node_half_sizes,
                             DEFAULT_WIDTH, DEFAULT_HEIGHT)
+from .geometry_lock import assert_link_editable
 
 HALF_WIDTH = 70.0
 HALF_HEIGHT = 30.0
@@ -476,6 +477,9 @@ def set_edge_routing(document, edge_id, mode):
     edge = next((item for item in updated['edges'] if item['id'] == edge_id), None)
     if edge is None:
         raise ValueError('Liaison introuvable')
+    # Protect the physical SAN path even when this command is invoked outside
+    # the Tk editor (which already filters locked links from selection).
+    assert_link_editable(updated, edge)
     edge['routing'] = mode
     for display_edge in display_edges(updated['edges'], updated['nodes']):
         if display_edge['id'] == edge_id:
