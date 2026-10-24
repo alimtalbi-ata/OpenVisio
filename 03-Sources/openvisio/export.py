@@ -4,7 +4,30 @@ from math import isfinite
 from xml.sax.saxutils import escape
 from .model import validate
 from .render import edge_routes, clip_route_to_nodes
-from .svg_symbols import symbol_svg
+from .symbols import draw_symbol
+
+class _SVGCanvas:
+    """Tk canvas adapter: SVG uses exactly the editor's symbol geometry."""
+    def __init__(self):
+        self.elements = []
+
+    def _style(self, style):
+        from xml.sax.saxutils import quoteattr
+        fields = []
+        for key, attribute in (("fill", "fill"), ("outline", "stroke"), ("width", "stroke-width")):
+            if key in style:
+                fields.append(f'{attribute}={quoteattr(str(style[key] or "none"))}')
+        return " ".join(fields)
+
+    def create_rectangle(self, x1, y1, x2, y2, **style):
+        self.elements.append(f'<rect x="{min(x1,x2):g}" y="{min(y1,y2):g}" width="{abs(x2-x1):g}" height="{abs(y2-y1):g}" {self._style(style)}/>')
+
+    def create_oval(self, x1, y1, x2, y2, **style):
+        self.elements.append(f'<ellipse cx="{(x1+x2)/2:g}" cy="{(y1+y2)/2:g}" rx="{abs(x2-x1)/2:g}" ry="{abs(y2-y1)/2:g}" {self._style(style)}/>')
+
+    def create_line(self, *coords, **style):
+        points = " ".join(f"{coords[i]:g},{coords[i+1]:g}" for i in range(0,len(coords),2))
+        self.elements.append(f'<polyline points="{points}" {self._style({**style, "fill": "none"})}/>')
 
 def to_svg(data, width=None, height=None, margin=80):
     data = validate(data)
@@ -47,11 +70,13 @@ def to_svg(data, width=None, height=None, margin=80):
         if details:
             label = escape(" · ".join(details)[:72])
             lines.append(f'<text x="{(ax+bx)/2:g}" y="{(ay+by)/2-9:g}" text-anchor="middle" font-family="Arial" font-size="9" fill="#334155">{label}</text>')
+    canvas = _SVGCanvas()
     for node in data["nodes"]:
         x, y = node["x"], node["y"]
         label = escape(str(node.get("label", "Équipement"))[:40])
-        lines.append(symbol_svg(node.get("shape", "server"), x, y))
+        draw_symbol(canvas, node.get("shape", "server"), x, y, lambda xx, yy: (xx, yy))
         lines.append(f'<text x="{x}" y="{y+43}" text-anchor="middle" font-family="Arial" font-size="10" fill="#172554">{label}</text>')
+    lines.extend(canvas.elements)
     lines.append("</svg>")
     return "\n".join(lines)
 
