@@ -92,7 +92,18 @@ def inspect(path):
         if has_manifest != has_document:
             raise ValueError("Paquet OpenVisio/VSDX incomplet")
         if not has_manifest:
-            return {"status": "external", "visual_consistency": "not_applicable"}
+            # A ZIP with no OpenVisio payload is not necessarily a usable
+            # external Visio document. Apply the same conservative structural
+            # and topology validation as import_vsdx before reporting success.
+            # This is an importability check, NOT a Microsoft Visio fidelity
+            # certification: unsupported styling/rotation may still be lost.
+            from .vsdx_external import import_external_pages
+            document = import_external_pages(archive)
+            metadata = document.get("metadata", {})
+            return {"status": "external", "visual_consistency": "not_applicable",
+                    "page_count": metadata.get("page_count"),
+                    "fidelity_warnings": metadata.get("fidelity_warnings", []),
+                    "importability": "supported_geometry"}
         if archive.getinfo("openvisio/manifest.json").file_size > 1_000_000:
             raise ValueError("Manifeste VSDX trop volumineux")
         if archive.getinfo("openvisio/document.json").file_size > 10_000_000:
