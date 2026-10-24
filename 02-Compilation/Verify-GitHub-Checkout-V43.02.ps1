@@ -42,9 +42,9 @@ try {
         'python/tests/test_svg_dimension_integrity_v4297.py' = '1c58f2faab5c2313acd8a23b310413fedda6a510'
         'python/tests/test_svg_xml10_integrity_v4299.py' = '5b2d34d94f38b871fd7d7e9ff0792e164ca28924'
         'python/tests/test_connector_null_metadata_v4294.py' = 'd996a948d51ded222d38cf46bdd82154d0872348'
-    }
         'python/tests/test_vsdx_vendor_san_identity_v4302.py' = '26712b957039f5ab9a87e7a07fd344edf0c48ff8'
         '04-Tests/tests/test_vsdx_vendor_san_identity_v4302.py' = '26712b957039f5ab9a87e7a07fd344edf0c48ff8'
+    }
     foreach ($path in $expected.Keys) {
         if (!(Test-Path -LiteralPath $path -PathType Leaf)) {
             throw "Critical checkout file missing: $path"
