@@ -33,7 +33,7 @@ def _relationships(*items):
     for index, (kind, target) in enumerate(items, 1):
         ET.SubElement(root, f"{{{R}}}Relationship", {
             "Id": f"rId{index}",
-            "Type": f"http://schemas.microsoft.com/visio/2010/relationships/{kind}",
+            "Type": ("http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" if kind == "document" else f"http://schemas.microsoft.com/visio/2010/relationships/{kind}"),
             "Target": target,
         })
     return _xml(root)
