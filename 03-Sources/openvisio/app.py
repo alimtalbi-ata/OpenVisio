@@ -28,6 +28,7 @@ from .viewport import Viewport
 from .layout import snap, align, distribute, move_group
 from .layers import (create_layer, assign_nodes, set_visibility, set_locked,
                      rename_layer, delete_layer, project_visible, project_editable)
+from .geometry_lock import assert_geometry_editable
 from .clipboard import copy_selection, paste_selection
 from .templates import TEMPLATES, create_template
 from .selection import nodes_in_rectangle
@@ -551,8 +552,14 @@ class Editor(tk.Tk):
         """Do not translate hidden/locked descendants through their parent."""
         editable_ids = {n["id"] for n in project_editable(self.document)["nodes"]}
         selected = set(self.selected_nodes)
-        if not selected or not group_members(self.document["nodes"], selected).issubset(editable_ids):
+        expanded = group_members(self.document["nodes"], selected)
+        if not selected or not expanded.issubset(editable_ids):
             self.status.set("Alignement/distribution refusé : membre verrouillé ou masqué")
+            return None
+        try:
+            assert_geometry_editable(self.document, expanded)
+        except ValueError as exc:
+            self.status.set(str(exc))
             return None
         return selected
 
@@ -766,6 +773,11 @@ class Editor(tk.Tk):
         # A locked or hidden descendant must never be moved through its parent.
         if not expanded.issubset(editable_ids):
             self.status.set("Déplacement refusé : un membre du groupe est verrouillé ou masqué")
+            return
+        try:
+            assert_geometry_editable(self.document, expanded)
+        except ValueError as exc:
+            self.status.set(str(exc))
             return
         changed = move_group(self.document["nodes"], expanded, dx, dy, 20 if self.snap_enabled else None)
         if changed:
