@@ -2,8 +2,8 @@
 from pathlib import Path
 from xml.sax.saxutils import escape
 from .model import validate
-from .shapes import get_shape
 from .render import edge_routes, clip_route_to_nodes
+from .svg_symbols import symbol_svg
 
 def to_svg(data, width=None, height=None, margin=80):
     data = validate(data)
@@ -12,7 +12,7 @@ def to_svg(data, width=None, height=None, margin=80):
         min_x = min(n["x"] - 70 for n in nodes.values()) - margin
         max_x = max(n["x"] + 70 for n in nodes.values()) + margin
         min_y = min(n["y"] - 30 for n in nodes.values()) - margin
-        max_y = max(n["y"] + 30 for n in nodes.values()) + margin
+        max_y = max(n["y"] + 43 for n in nodes.values()) + margin
     else:
         min_x, min_y, max_x, max_y = 0, 0, 800, 600
     natural_width, natural_height = max_x - min_x, max_y - min_y
@@ -49,8 +49,8 @@ def to_svg(data, width=None, height=None, margin=80):
     for node in data["nodes"]:
         x, y = node["x"], node["y"]
         label = escape(str(node.get("label", "Équipement")))
-        fill = get_shape(node.get("shape", "server"))["fill"]
-        lines.extend([f'<rect x="{x-70}" y="{y-30}" width="140" height="60" rx="8" fill="{fill}" stroke="#1d4ed8"/>', f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{label}</text>'])
+        lines.append(symbol_svg(node.get("shape", "server"), x, y))
+        lines.append(f'<text x="{x}" y="{y+43}" text-anchor="middle" font-family="Arial" font-size="10" fill="#172554">{label[:40]}</text>')
     lines.append("</svg>")
     return "\n".join(lines)
 
