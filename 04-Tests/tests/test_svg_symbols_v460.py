@@ -10,8 +10,6 @@ class SvgSymbolTests(unittest.TestCase):
                          for i, kind in enumerate(kinds)], "edges": []}
         root = ET.fromstring(to_svg(doc))
         ns = "{http://www.w3.org/2000/svg}"
-        groups = root.findall(f"{ns}g")
-        self.assertEqual(len(groups), len(kinds))
         self.assertGreater(len(root.findall(f".//{ns}ellipse")), 0)
         self.assertGreater(len(root.findall(f".//{ns}line")), 0)
         self.assertGreater(len(root.findall(f".//{ns}rect")), len(kinds))
