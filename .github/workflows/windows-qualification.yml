@@ -52,6 +52,37 @@ jobs:
             if ($f.LastWriteTimeUtc -lt (Get-Date).ToUniversalTime().AddMinutes(-90)) { throw "STALE artifact: $($f.FullName)" }
             Get-FileHash -Algorithm SHA256 $f.FullName
           }
+      - name: Verify cumulative Windows ZIP and version-current documentation
+        shell: pwsh
+        run: |
+          $release = '02-Compilation/dist/OpenVisio-v42.7-Windows-Cumulative.zip'
+          $docs = @(
+            '02-Compilation/dist/documentation/OpenVisio-v42.7-Guide-Windows.docx',
+            '02-Compilation/dist/documentation/OpenVisio-v42.7-Guide-Windows.pdf'
+          )
+          foreach ($item in @($release) + $docs) {
+            if (-not (Test-Path -LiteralPath $item -PathType Leaf)) { throw "Missing release output: $item" }
+            if ((Get-Item -LiteralPath $item).Length -lt 1000) { throw "Empty release output: $item" }
+          }
+          @'
+          import zipfile
+          path = "02-Compilation/dist/OpenVisio-v42.7-Windows-Cumulative.zip"
+          with zipfile.ZipFile(path) as archive:
+              bad = archive.testzip()
+              if bad is not None:
+                  raise SystemExit("ZIP CRC failure: " + bad)
+              names = set(archive.namelist())
+              required = {
+                  "01-Application/binary/OpenVisio-v42.7-Windows-x64-Portable.exe",
+                  "01-Application/binary/OpenVisio-Setup-v42.7-x64.exe",
+                  "07-Manifestes/manifest.json",
+                  "07-Manifestes/SHA256SUMS.txt",
+              }
+              missing = required - names
+              if missing:
+                  raise SystemExit("Incomplete cumulative ZIP: " + str(sorted(missing)))
+          print("PASS: cumulative ZIP integrity and required Windows outputs")
+          '@ | python -
       - name: Smoke test isolated Windows portable executable
         shell: pwsh
         run: |
@@ -75,4 +106,5 @@ jobs:
             02-Compilation/dist/OpenVisio-v42.7-Windows-x64-Portable.exe
             02-Compilation/dist/installer/OpenVisio-Setup-v42.7-x64.exe
             02-Compilation/dist/SHA256SUMS.txt
+            02-Compilation/dist/OpenVisio-v42.7-Windows-Cumulative.zip
           if-no-files-found: error
