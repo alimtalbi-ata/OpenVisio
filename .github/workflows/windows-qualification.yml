@@ -45,8 +45,8 @@ jobs:
       - name: Verify actual Windows outputs
         shell: pwsh
         run: |
-          $portable = @(Get-ChildItem '02-Compilation' -Recurse -Filter '*Portable.exe' -File)
-          $installer = @(Get-ChildItem '02-Compilation' -Recurse -Filter '*Setup*.exe' -File)
+          $portable = @(Get-Item '02-Compilation/dist/OpenVisio-v42.8-Windows-x64-Portable.exe' -ErrorAction SilentlyContinue)
+          $installer = @(Get-Item '02-Compilation/dist/installer/OpenVisio-Setup-v42.8-x64.exe' -ErrorAction SilentlyContinue)
           if (!$portable.Count -or !$installer.Count) { throw 'BLOCKED: portable or installer not produced' }
           foreach ($f in ($portable + $installer)) {
             if ($f.LastWriteTimeUtc -lt (Get-Date).ToUniversalTime().AddMinutes(-90)) { throw "STALE artifact: $($f.FullName)" }
@@ -56,6 +56,6 @@ jobs:
         with:
           name: OpenVisio-Windows-qualified-build
           path: |
-            02-Compilation/**/OpenVisio*Portable.exe
-            02-Compilation/**/OpenVisio*Setup*.exe
+            02-Compilation/dist/OpenVisio-v42.8-Windows-x64-Portable.exe
+            02-Compilation/dist/installer/OpenVisio-Setup-v42.8-x64.exe
           if-no-files-found: error
