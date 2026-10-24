@@ -45,8 +45,8 @@ jobs:
       - name: Verify actual Windows outputs
         shell: pwsh
         run: |
-          $portable = @(Get-Item '02-Compilation/dist/OpenVisio-v42.8-Windows-x64-Portable.exe' -ErrorAction SilentlyContinue)
-          $installer = @(Get-Item '02-Compilation/dist/installer/OpenVisio-Setup-v42.8-x64.exe' -ErrorAction SilentlyContinue)
+          $portable = @(Get-Item '02-Compilation/dist/OpenVisio-v42.7-Windows-x64-Portable.exe' -ErrorAction SilentlyContinue)
+          $installer = @(Get-Item '02-Compilation/dist/installer/OpenVisio-Setup-v42.7-x64.exe' -ErrorAction SilentlyContinue)
           if (!$portable.Count -or !$installer.Count) { throw 'BLOCKED: portable or installer not produced' }
           foreach ($f in ($portable + $installer)) {
             if ($f.LastWriteTimeUtc -lt (Get-Date).ToUniversalTime().AddMinutes(-90)) { throw "STALE artifact: $($f.FullName)" }
@@ -55,13 +55,13 @@ jobs:
       - name: Smoke test isolated Windows portable executable
         shell: pwsh
         run: |
-          & '04-Tests/Smoke-Portable-Windows.ps1' -Executable '02-Compilation/dist/OpenVisio-v42.8-Windows-x64-Portable.exe'
+          & '04-Tests/Smoke-Portable-Windows.ps1' -Executable '02-Compilation/dist/OpenVisio-v42.7-Windows-x64-Portable.exe'
       - name: Publish reproducible binary checksums
         shell: pwsh
         run: |
           $outputs = @(
-            '02-Compilation/dist/OpenVisio-v42.8-Windows-x64-Portable.exe',
-            '02-Compilation/dist/installer/OpenVisio-Setup-v42.8-x64.exe'
+            '02-Compilation/dist/OpenVisio-v42.7-Windows-x64-Portable.exe',
+            '02-Compilation/dist/installer/OpenVisio-Setup-v42.7-x64.exe'
           )
           $outputs | ForEach-Object {
             $f = Get-Item -LiteralPath $_ -ErrorAction Stop
@@ -72,7 +72,7 @@ jobs:
         with:
           name: OpenVisio-Windows-qualified-build
           path: |
-            02-Compilation/dist/OpenVisio-v42.8-Windows-x64-Portable.exe
-            02-Compilation/dist/installer/OpenVisio-Setup-v42.8-x64.exe
+            02-Compilation/dist/OpenVisio-v42.7-Windows-x64-Portable.exe
+            02-Compilation/dist/installer/OpenVisio-Setup-v42.7-x64.exe
             02-Compilation/dist/SHA256SUMS.txt
           if-no-files-found: error
