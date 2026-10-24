@@ -3,6 +3,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 from .model import validate
 from .shapes import get_shape
+from .render import edge_routes, clip_route_to_nodes
 
 def to_svg(data, width=None, height=None, margin=80):
     data = validate(data)
@@ -20,9 +21,21 @@ def to_svg(data, width=None, height=None, margin=80):
     if not isinstance(width, (int, float)) or not isinstance(height, (int, float)) or width <= 0 or height <= 0:
         raise ValueError("Dimensions SVG invalides")
     lines = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="{min_x} {min_y} {natural_width} {natural_height}">', f'<rect x="{min_x}" y="{min_y}" width="{natural_width}" height="{natural_height}" fill="#f8fafc"/>']
+    lines.append('<defs><marker id="ov-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/></marker></defs>')
+    routes = edge_routes(data["nodes"], data["edges"])
     for edge in data["edges"]:
+        route = routes.get(edge["id"])
+        if route is None:
+            continue
         a, b = nodes[edge["from"]], nodes[edge["to"]]
-        lines.append(f'<line x1="{a["x"]}" y1="{a["y"]}" x2="{b["x"]}" y2="{b["y"]}" stroke="#2563eb" stroke-width="2"/>')
+        (ax, ay), (bx, by) = clip_route_to_nodes(route, a, b)
+        lines.append(f'<line x1="{ax:g}" y1="{ay:g}" x2="{bx:g}" y2="{by:g}" stroke="#2563eb" stroke-width="2" marker-end="url(#ov-arrow)"/>')
+        details = [str(edge[k]).strip() for k in ("protocol", "fabric") if edge.get(k)]
+        if edge.get("speed_gbps"):
+            details.append(str(edge["speed_gbps"]) + " Gbit/s")
+        if details:
+            label = escape(" · ".join(details)[:72])
+            lines.append(f'<text x="{(ax+bx)/2:g}" y="{(ay+by)/2-9:g}" text-anchor="middle" font-family="Arial" font-size="9" fill="#334155">{label}</text>')
     for node in data["nodes"]:
         x, y = node["x"], node["y"]
         label = escape(str(node.get("label", "Équipement")))
