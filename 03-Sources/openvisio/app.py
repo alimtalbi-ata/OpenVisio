@@ -51,6 +51,19 @@ class Editor(tk.Tk):
         self.saved_snapshot = self._snapshot()
         self.protocol("WM_DELETE_WINDOW", self.close_safely)
         self.canvas = tk.Canvas(self, bg="#f8fafc", highlightthickness=0)
+        self.palette = tk.Frame(self, width=188, bg="#e8eef6")
+        self.palette.pack(side="left", fill="y")
+        self.palette.pack_propagate(False)
+        tk.Label(self.palette, text="BIBLIOTHÈQUE", bg="#e8eef6", font=("Arial", 11, "bold")).pack(pady=(12, 6))
+        self.shape_list = tk.Listbox(self.palette, exportselection=False, font=("Arial", 10))
+        self._palette_kinds = list(SHAPES)
+        for kind in self._palette_kinds:
+            self.shape_list.insert("end", SHAPES[kind]["label"])
+        self.shape_list.pack(fill="both", expand=True, padx=8, pady=4)
+        self.shape_list.selection_set(0)
+        self.shape_list.bind("<Double-Button-1>", self._palette_place_center)
+        self.shape_list.bind("<ButtonRelease-1>", self._palette_drop)
+        tk.Button(self.palette, text="Placer au centre", command=self._palette_place_center).pack(fill="x", padx=8, pady=(4, 12))
         self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Button-3>", self.show_context_menu)
         self.canvas.bind("<Double-Button-1>", self.add_node)
@@ -358,6 +371,26 @@ class Editor(tk.Tk):
         self.link_start = None
         self.saved_snapshot = self._snapshot()
         self.draw()
+    def _palette_selected_kind(self):
+        selection = self.shape_list.curselection()
+        return self._palette_kinds[selection[0]] if selection else "server"
+
+    def _place_kind_center(self, kind):
+        from .palette_placement import next_free_position
+        center = self.viewport.world(self.canvas.winfo_width()/2, self.canvas.winfo_height()/2)
+        self.create_node(*next_free_position(center, self.document["nodes"]), kind=kind)
+
+    def _palette_place_center(self, event=None):
+        self._place_kind_center(self._palette_selected_kind())
+
+    def _palette_drop(self, event):
+        x = event.x_root - self.canvas.winfo_rootx()
+        y = event.y_root - self.canvas.winfo_rooty()
+        if 0 <= x < self.canvas.winfo_width() and 0 <= y < self.canvas.winfo_height():
+            from .palette_placement import next_free_position
+            desired = self.viewport.world(x, y)
+            self.create_node(*next_free_position(desired, self.document["nodes"]), kind=self._palette_selected_kind())
+
     def create_node(self, x, y, kind="server"):
         self.document, node_id = add_equipment(self.document, x, y, kind)
         self._record_change()
@@ -365,7 +398,9 @@ class Editor(tk.Tk):
         self.selected_nodes = {node_id}
         self.draw()
     def add_node(self, event):
-        self.create_node(*self.viewport.world(event.x, event.y))
+        if self.node_at(event.x, event.y) is not None:
+            return
+        self.create_node(*self.viewport.world(event.x, event.y), kind=self._palette_selected_kind())
     def node_at(self, x, y):
         return node_at(self.document["nodes"], *self.viewport.world(x, y))
     def edge_at(self, x, y):
