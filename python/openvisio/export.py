@@ -16,6 +16,21 @@ from .connector_labels import layout_connector_labels
 from .shape_icons import equipment_icon
 
 
+def _xml10_text(value):
+    """Replace XML 1.0 forbidden code points without mutating source captions.
+
+    Imported Visio/VSDX text can contain control characters or unpaired
+    surrogates. XML escaping alone does not make those characters legal SVG.
+    """
+    return ''.join(
+        char if (char in "\t\n\r" or 0x20 <= ord(char) <= 0xD7FF
+                 or 0xE000 <= ord(char) <= 0xFFFD
+                 or 0x10000 <= ord(char) <= 0x10FFFF)
+        else "\ufffd"
+        for char in str(value)
+    )
+
+
 def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=False):
     """Export the diagram as displayed in the editor by default.
 
@@ -65,23 +80,23 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
             poly = ' '.join(f'{x},{y}' for x, y in points)
             lines.append(f'<polyline points="{poly}" fill="none" stroke="#2563eb" stroke-width="2"/>')
     for label in label_layout.labels.values():
-        lines.append(f'<text data-openvisio-edge={quoteattr(label.edge_id)} '
+        lines.append(f'<text data-openvisio-edge={quoteattr(_xml10_text(label.edge_id))} '
                      f'x="{label.x:g}" y="{label.y:g}" text-anchor="middle" '
                      f'font-family="Arial" font-size="9" fill="#334155" '
-                     f'dominant-baseline="central">{escape(label.text)}</text>')
+                     f'dominant-baseline="central">{escape(_xml10_text(label.text))}</text>')
     if label_layout.hidden:
         hidden = ', '.join(label_layout.hidden)
-        lines.append(f'<desc>Connector labels omitted for insufficient space: {escape(hidden)}</desc>')
+        lines.append(f'<desc>Connector labels omitted for insufficient space: {escape(_xml10_text(hidden))}</desc>')
     for node in data['nodes']:
         x, y = node['x'], node['y']
-        label = escape(str(node.get('label', 'Équipement')))
+        label = escape(_xml10_text(node.get('label', 'Équipement')))
         fill = get_shape(node.get('shape', 'server'))['fill']
         w, h = node_dimensions(node)
         lines.append(f'<rect x="{x-w/2:g}" y="{y-h/2:g}" width="{w:g}" height="{h:g}" rx="8" fill="{fill}" stroke="#1d4ed8"/>')
         icon = equipment_icon(node)
         if icon is not None:
             points = ' '.join(f'{px:g},{py:g}' for px, py in icon)
-            lines.append(f'<polygon data-openvisio-node-icon={quoteattr(str(node["id"]))} '
+            lines.append(f'<polygon data-openvisio-node-icon={quoteattr(_xml10_text(node["id"]))} '
                          f'points="{points}" fill="#f8fafc" stroke="#334155"/>')
         lines.append(f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{label}</text>')
     lines.append('</svg>')
