@@ -105,4 +105,10 @@ def validate_document(data):
         except (TypeError, ValueError, OverflowError, RecursionError) as exc:
             raise ValueError("Métadonnées non sérialisables en JSON") from exc
         result["metadata"] = metadata
+    # Nodes, edges and layers may also contain extension fields. Validate the
+    # complete persisted payload, not just metadata, before atomic replacement.
+    try:
+        json.dumps(result, ensure_ascii=False, allow_nan=False)
+    except (TypeError, ValueError, OverflowError, RecursionError) as exc:
+        raise ValueError("Document non sérialisable en JSON") from exc
     return result
