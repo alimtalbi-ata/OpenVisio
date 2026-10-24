@@ -3,6 +3,7 @@
 Author: Abdelhalim Talbi.
 """
 from pathlib import Path
+from math import isfinite
 from xml.sax.saxutils import escape, quoteattr
 
 from .model import validate
@@ -22,6 +23,9 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
     the visual export. The opt-in full export preserves the previous behavior.
     This projection does not alter the persisted document or undo history.
     """
+    if (isinstance(margin, bool) or not isinstance(margin, (int, float))
+            or not isfinite(margin) or margin < 0):
+        raise ValueError("Marge SVG invalide")
     data = validate(data)
     if not include_hidden_layers:
         data = project_visible(data)
@@ -47,8 +51,9 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
     natural_width, natural_height = max_x - min_x, max_y - min_y
     width = natural_width if width is None else width
     height = natural_height if height is None else height
-    if (not isinstance(width, (int, float)) or not isinstance(height, (int, float))
-            or width <= 0 or height <= 0):
+    if (any(isinstance(value, bool) or not isinstance(value, (int, float))
+            or not isfinite(value) or value <= 0
+            for value in (width, height, natural_width, natural_height))):
         raise ValueError('Dimensions SVG invalides')
     lines = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="{min_x} {min_y} {natural_width} {natural_height}">',
              f'<rect x="{min_x}" y="{min_y}" width="{natural_width}" height="{natural_height}" fill="#f8fafc"/>']
