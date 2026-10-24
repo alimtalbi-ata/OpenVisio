@@ -6,6 +6,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape, quoteattr
 
 from .model import validate
+from .layers import project_visible
 from .shapes import get_shape
 from .routing import routing_scene
 from .node_geometry import node_bounds, node_dimensions
@@ -14,8 +15,16 @@ from .connector_labels import layout_connector_labels
 from .shape_icons import equipment_icon
 
 
-def to_svg(data, width=None, height=None, margin=80):
+def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=False):
+    """Export the diagram as displayed in the editor by default.
+
+    Hidden layers and edges attached to hidden equipment must not leak into
+    the visual export. The opt-in full export preserves the previous behavior.
+    This projection does not alter the persisted document or undo history.
+    """
     data = validate(data)
+    if not include_hidden_layers:
+        data = project_visible(data)
     nodes = {n['id']: n for n in data['nodes']}
     scene = routing_scene(data['nodes'])
     routed = [(edge, scene.route_points(edge))
@@ -74,5 +83,6 @@ def to_svg(data, width=None, height=None, margin=80):
     return '\n'.join(lines)
 
 
-def export_svg(path, data):
-    Path(path).write_text(to_svg(data), encoding='utf-8')
+def export_svg(path, data, *, include_hidden_layers=False):
+    Path(path).write_text(
+        to_svg(data, include_hidden_layers=include_hidden_layers), encoding='utf-8')
