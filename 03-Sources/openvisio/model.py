@@ -99,7 +99,13 @@ def save(path, data, *, expected_sha256=None, require_absent=False, lock_timeout
     # Compute the revision from the exact bytes that will be published.
     # Hashing the destination after publication can accidentally adopt an
     # external writer's revision as our own (a data-loss race).
-    payload = json.dumps(validated, ensure_ascii=False, indent=2, allow_nan=False).encode("utf-8")
+    # External VSDX text can contain lone UTF-16 surrogates. Plain UTF-8
+    # encoding raises UnicodeEncodeError and prevents saving the entire SAN
+    # diagram. JSON's \uXXXX escapes are losslessly decoded by load_bytes;
+    # backslashreplace escapes only invalid code points, preserving readable
+    # UTF-8 accents and valid Unicode in the native document.
+    payload = json.dumps(validated, ensure_ascii=False, indent=2,
+                         allow_nan=False).encode("utf-8", errors="backslashreplace")
     # A successful save must always produce a document load() can reopen.
     # Reject before taking the lock or touching the primary/backup files.
     if len(payload) > MAX_DOCUMENT_BYTES:
