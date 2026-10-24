@@ -130,6 +130,18 @@ def _kind(name):
         if kind in SHAPES:
             return kind
     n = name.lower()
+    # External vendor stencils frequently use product IDs without the words
+    # "SAN", "FC" or "switch". Keep a narrow, model-number-based allowlist:
+    # a bare vendor name or an unrelated management/server label is not enough.
+    # These are shape identity hints, not evidence of hardware connectivity.
+    if any(re.search(pattern, n) for pattern in (
+            r"\b(?:cisco[\s_-]+)?mds[\s_-]*\d{4}[a-z]?\b",
+            r"\bbrocade[\s_-]+(?:g\d{3,4}|dcx(?:[\s_-]*\d{4})?)\b",
+            r"\bconnectrix[\s_-]+ds[\s_-]*\d{4}[a-z]?\b",
+            r"\bhpe[\s_-]+sn\d{4}[a-z]?\b",
+            r"\bibm[\s_-]+san\d{3,4}[a-z]?(?:-\d+)?\b",
+    )):
+        return "san-switch"
     # External Visio NameU values are not OpenVisio catalogue IDs. Preserve
     # explicitly named FC/SAN fabric equipment instead of treating every
     # occurrence of "switch" as a LAN switch. Require adjacent SAN tokens so
