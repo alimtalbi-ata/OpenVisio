@@ -10,6 +10,21 @@ from .model import validate
 from .node_geometry import node_bounds, node_dimensions, checked_size
 
 
+def _locked_layers(document):
+    """IDs of layers whose diagram content cannot be edited."""
+    return {layer["id"] for layer in document.get("layers", [])
+            if layer.get("locked", False)}
+
+
+def _reject_locked_nodes(document, node_ids):
+    locked = _locked_layers(document)
+    if any(node["id"] in node_ids and node.get("layer") in locked
+           for node in document["nodes"]):
+        raise ValueError("Modification de groupe interdite : calque verrouillé")
+
+
+
+
 def group_members(nodes, selected_ids):
     """Return selected nodes plus all recursive descendants, without mutation."""
     selected = set(selected_ids)
@@ -41,6 +56,7 @@ def group_selection(document, node_ids, *, ident=None, label='Groupe'):
     layers = {nodes[i].get('layer') for i in chosen}
     if len(parents) != 1 or len(layers) != 1:
         raise ValueError('Les équipements doivent partager le même groupe parent et le même calque')
+    _reject_locked_nodes(original, chosen)
     if any(n.get('shape') == 'visio-group' for n in (nodes[i] for i in chosen)):
         # Existing nested groups are supported; selected peers only.
         pass
@@ -76,6 +92,7 @@ def ungroup_selection(document, group_ids):
     nodes = {n['id']: n for n in original['nodes']}
     if not chosen or not chosen.issubset(nodes) or any(nodes[i].get('shape') != 'visio-group' for i in chosen):
         raise ValueError('Sélectionnez uniquement des groupes existants')
+    _reject_locked_nodes(original, chosen)
     if any(e['from'] in chosen or e['to'] in chosen for e in original['edges']):
         raise ValueError('Groupe connecté : déconnectez ses liaisons avant de le dissocier')
     result = deepcopy(original)
@@ -103,6 +120,14 @@ def resize_group(document, group_id, width, height):
     old_w, old_h = node_dimensions(root)
     sx, sy = width/old_w, height/old_h
     ids = group_members(original['nodes'], {group_id})
+    _reject_locked_nodes(original, ids)
+    locked = _locked_layers(original)
+    # Resizing a group moves its children and therefore the endpoints of any
+    # incident links. A protected SAN link must not be rerouted indirectly.
+    if any(edge.get('layer') in locked and
+           (edge['from'] in ids or edge['to'] in ids)
+           for edge in original['edges']):
+        raise ValueError('Redimensionnement interdit : liaison sur calque verrouillé')
     result = deepcopy(original)
     for node in result['nodes']:
         if node['id'] not in ids:
