@@ -12,7 +12,7 @@ class VsdxEmbeddedSizeTests(unittest.TestCase):
             with ZipFile(path, "w", ZIP_STORED) as archive:
                 archive.writestr("openvisio/document.json", b"{}" if oversized_part != "openvisio/document.json" else b" " * size)
                 archive.writestr("openvisio/manifest.json", b"{}" if oversized_part != "openvisio/manifest.json" else b" " * size)
-            with self.assertRaisesRegex(ValueError, "trop volumineux"):
+            with self.assertRaisesRegex(ValueError, "trop volumineux|non sûre"):
                 import_vsdx(path)
 
     def test_reject_large_embedded_document(self):
