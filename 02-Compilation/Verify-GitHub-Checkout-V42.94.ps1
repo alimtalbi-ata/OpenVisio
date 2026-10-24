@@ -23,7 +23,7 @@ try {
         'python/openvisio/retained_canvas.py' = '5c2d81ba7def18a00f6bf2a7f0b3d6dd047c04bf'
         'python/openvisio/shape_icons.py' = '4dc8bb45938f6908af09fa4c0045e89e244205f4'
         'python/openvisio/connector_labels.py' = '3740ae616d608ad15b9d851ebc067ba8656a376d'
-        'python/tests/test_connector_blank_label_v4294.py' = '731ef7de52a9fcc12b9c78b167506adc1442df0d'
+        'python/tests/test_connector_null_metadata_v4294.py' = 'd996a948d51ded222d38cf46bdd82154d0872348'
     }
     foreach ($path in $expected.Keys) {
         $actual = (git hash-object -- $path).Trim()
