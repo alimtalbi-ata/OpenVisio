@@ -28,3 +28,17 @@ class MetadataSerializationTests(unittest.TestCase):
         cyclic["self"] = cyclic
         with self.assertRaisesRegex(ValueError, "Référence circulaire"):
             validate({"nodes": [], "edges": [], "metadata": cyclic})
+
+    def test_reject_tuple_that_would_change_to_list(self):
+        with self.assertRaisesRegex(ValueError, "Tuple interdit"):
+            validate({"nodes": [], "edges": [], "metadata": {"coordinates": (1, 2)}})
+
+    def test_deep_nesting_reports_value_error(self):
+        nested = []
+        root = nested
+        for _ in range(1200):
+            child = []
+            nested.append(child)
+            nested = child
+        with self.assertRaises(ValueError):
+            validate({"nodes": [], "edges": [], "metadata": {"root": root}})
