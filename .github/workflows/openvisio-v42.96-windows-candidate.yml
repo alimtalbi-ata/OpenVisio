@@ -1,0 +1,37 @@
+name: OpenVisio V42.96 Windows native source candidate
+on:
+  push:
+    branches: ['develop/v42.96-svg-visible-fabrics-20261024']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-native-candidate:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Verify independent GitHub checkout and source parity
+        shell: pwsh
+        run: ./02-Compilation/Verify-GitHub-Checkout-V42.96.ps1
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
+      - name: Build and qualify native candidate
+        shell: pwsh
+        run: ./02-Compilation/Build-Windows-V42.96-Candidate.ps1
+      - name: Upload Windows candidates only after successful qualification
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V42.96-Windows-Source-Candidate
+          path: |
+            dist/OpenVisio-V42.96-Source-Candidate-Windows-x64-Portable.exe
+            dist/installer/OpenVisio-V42.96-Source-Candidate-Setup-x64.exe
+            dist/OpenVisio-V42.96-Source-Candidate-Windows-SHA256.txt
+          if-no-files-found: error
