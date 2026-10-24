@@ -63,8 +63,10 @@ def validate_document(data):
                     raise ValueError("Propriété calque invalide : " + key)
             layer_ids.add(ident)
         for item in nodes + edges:
-            if "layer" in item and item["layer"] not in layer_ids:
-                raise ValueError("Référence à un calque inexistant")
+            if "layer" in item:
+                layer_ref = item["layer"]
+                if not isinstance(layer_ref, str) or layer_ref not in layer_ids:
+                    raise ValueError("Référence à un calque inexistante ou invalide")
         result["layers"] = layers
     if "metadata" in data:
         metadata = data["metadata"]
