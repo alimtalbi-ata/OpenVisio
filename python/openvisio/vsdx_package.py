@@ -23,6 +23,7 @@ from .vsdx_polyline import connector_polyline
 from .routing import routing_scene
 from .parallel_geometry import display_edges
 from .connector_labels import edge_label_text
+from .export import _xml10_text
 from .vsdx_page_extent import page_extent
 from .vsdx_consistency import VISUAL_PARTS, build_manifest, changed_visual_parts
 
@@ -102,7 +103,7 @@ def _export_vsdx_unlocked(path, document, check_revision, require_absent, *,
             row = ET.SubElement(geom, f"{{{V}}}Row", {"T": kind, "IX": str(index)})
             _cell(row, "X", f"{x:.6f}")
             _cell(row, "Y", f"{y:.6f}")
-        ET.SubElement(shape, f"{{{V}}}Text").text = node.get("label", node["id"])
+        ET.SubElement(shape, f"{{{V}}}Text").text = _xml10_text(node.get("label", node["id"]))
         if is_group and children.get(node["id"]):
             nested = ET.SubElement(shape, f"{{{V}}}Shapes")
             for child in children[node["id"]]:
@@ -142,7 +143,7 @@ def _export_vsdx_unlocked(path, document, check_revision, require_absent, *,
         # not only to consumers of the embedded OpenVisio JSON payload.
         public_label = edge_label_text(edge)
         if public_label:
-            ET.SubElement(shape, f"{{{V}}}Text").text = public_label
+            ET.SubElement(shape, f"{{{V}}}Text").text = _xml10_text(public_label)
         for cell, target in (("BeginX", identifiers[edge["from"]]),
                              ("EndX", identifiers[edge["to"]])):
             ET.SubElement(connects, f"{{{V}}}Connect", {
@@ -166,7 +167,10 @@ def _export_vsdx_unlocked(path, document, check_revision, require_absent, *,
                                ("/visio/pages/pages.xml", "application/vnd.ms-visio.pages+xml"),
                                ("/visio/pages/page1.xml", "application/vnd.ms-visio.page+xml")):
         ET.SubElement(types, f"{{{CT}}}Override", {"PartName": part, "ContentType": content_type})
-    payload = json.dumps(doc, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    # ASCII JSON escapes unpaired UTF-16 surrogates from imported captions;
+    # their exact Python string value survives the private round-trip, while
+    # public Visio XML uses the XML 1.0-safe visual projection.
+    payload = json.dumps(doc, ensure_ascii=True, separators=(",", ":")).encode("utf-8")
     output = Path(path)
     output.parent.mkdir(parents=True, exist_ok=True)
     fd, staging = tempfile.mkstemp(prefix=".openvisio-vsdx-", suffix=".tmp", dir=output.parent)

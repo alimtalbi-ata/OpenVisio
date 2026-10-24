@@ -8,6 +8,7 @@ from pathlib import Path
 from collections import Counter
 from zipfile import ZipFile
 from .model import validate
+from .export import _xml10_text
 
 
 class PublicVsdxFidelityError(ValueError):
@@ -63,7 +64,7 @@ def audit_public_vsdx(archive_path, document, *, tolerance=0.005):
                 (target['y'] - dy, source['y']),
                 (tw, sw), (th, sh))):
             raise PublicVsdxFidelityError('Géométrie publique VSDX modifiée : ' + source['id'])
-        expected_label = source.get('label', source['id'])
+        expected_label = _xml10_text(source.get('label', source['id']))
         if target['label'] != expected_label:
             raise PublicVsdxFidelityError('Libellé public VSDX modifié : ' + source['id'])
     # A set would collapse two FC paths with the same endpoints. Compare
@@ -93,7 +94,7 @@ def audit_public_vsdx(archive_path, document, *, tolerance=0.005):
                 raise PublicVsdxFidelityError('Connecteur public VSDX absent : ' + edge['id'])
             text_element = shape.find(f'{{{V}}}Text')
             actual_label = ''.join(text_element.itertext()) if text_element is not None else ''
-            if actual_label != edge_label_text(edge):
+            if actual_label != _xml10_text(edge_label_text(edge)):
                 raise PublicVsdxFidelityError('Libellé du connecteur public VSDX modifié : ' + edge['id'])
     except (ET.ParseError, KeyError, OSError, RuntimeError) as exc:
         raise PublicVsdxFidelityError('Texte des connecteurs publics VSDX illisible') from exc
