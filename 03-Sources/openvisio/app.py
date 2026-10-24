@@ -63,7 +63,8 @@ class Editor(tk.Tk):
         self.shape_list.pack(fill="both", expand=True, padx=8, pady=4)
         self.shape_list.selection_set(0)
         self.shape_list.bind("<Double-Button-1>", self._palette_place_center)
-        self.shape_list.bind("<ButtonRelease-1>", self._palette_drop)
+        self.shape_list.bind("<ButtonPress-1>", self._palette_drag_start)
+        self.bind_all("<ButtonRelease-1>", self._palette_drop, add="+")
         tk.Button(self.palette, text="Placer au centre", command=self._palette_place_center).pack(fill="x", padx=8, pady=(4, 12))
         self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Button-3>", self.show_context_menu)
@@ -384,7 +385,16 @@ class Editor(tk.Tk):
     def _palette_place_center(self, event=None):
         self._place_kind_center(self._palette_selected_kind())
 
+    def _palette_drag_start(self, event):
+        self._palette_drag_origin = (event.x_root, event.y_root)
+
     def _palette_drop(self, event):
+        origin = getattr(self, "_palette_drag_origin", None)
+        self._palette_drag_origin = None
+        if origin is None:
+            return
+        if abs(event.x_root - origin[0]) + abs(event.y_root - origin[1]) < 12:
+            return
         x = event.x_root - self.canvas.winfo_rootx()
         y = event.y_root - self.canvas.winfo_rooty()
         if 0 <= x < self.canvas.winfo_width() and 0 <= y < self.canvas.winfo_height():
