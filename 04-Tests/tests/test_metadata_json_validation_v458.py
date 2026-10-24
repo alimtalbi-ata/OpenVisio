@@ -1,0 +1,16 @@
+"""Metadata must be JSON-serializable before save/export."""
+import unittest
+from openvisio.model import validate
+
+class MetadataSerializationTests(unittest.TestCase):
+    def test_reject_set(self):
+        with self.assertRaisesRegex(ValueError, "non sérialisables"):
+            validate({"nodes": [], "edges": [], "metadata": {"tags": {"a", "b"}}})
+
+    def test_reject_nan(self):
+        with self.assertRaisesRegex(ValueError, "non sérialisables"):
+            validate({"nodes": [], "edges": [], "metadata": {"confidence": float("nan")}})
+
+    def test_accept_nested_json(self):
+        doc = {"nodes": [], "edges": [], "metadata": {"tags": ["a", "b"], "nested": {"n": 1}}}
+        self.assertEqual(validate(doc)["metadata"], doc["metadata"])
