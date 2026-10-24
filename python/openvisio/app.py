@@ -21,7 +21,7 @@ from .shapes import SHAPES, get_shape
 from .properties import normalize_properties
 from .links import normalize_link, PROTOCOLS
 from .history import History
-from .render import node_at, edge_at
+from .render import node_at, edge_at, resolve_hit
 from .retained_canvas import RetainedCanvasRenderer
 from .routing import set_edge_routing, RoutingError
 from .viewport import Viewport
@@ -318,7 +318,9 @@ class Editor(tk.Tk):
     def show_context_menu(self, event):
         """Context actions follow the object under the pointer."""
         node = self.node_at(event.x, event.y)
-        edge = None if node else self.edge_at(event.x, event.y)
+        edge = (None if node is not None and node.get("shape") != "visio-group"
+                else self.edge_at(event.x, event.y))
+        node, edge = resolve_hit(node, edge)
         self.selected_nodes, self.selected, self.selected_edge = context_selection(
             node["id"] if node is not None else None,
             edge["id"] if edge is not None else None,
@@ -714,12 +716,16 @@ class Editor(tk.Tk):
     def add_node(self, event):
         self.create_node(*self.viewport.world(event.x, event.y))
     def node_at(self, x, y):
-        return node_at(project_editable(self.document)["nodes"], *self.viewport.world(x, y))
+        return node_at(project_editable(self.document)["nodes"], *self.viewport.world(x, y),
+                       group_border_tolerance=6 / self.viewport.zoom)
     def edge_at(self, x, y):
         editable = project_editable(self.document)
         return edge_at(editable["nodes"], editable["edges"], *self.viewport.world(x, y), tolerance=9/self.viewport.zoom)
     def click(self, event):
         node = self.node_at(event.x, event.y)
+        edge = (None if node is not None and node.get("shape") != "visio-group"
+                else self.edge_at(event.x, event.y))
+        node, edge = resolve_hit(node, edge)
         self._marquee_previous = set(self.selected_nodes)
         if self.link_start is not None and node is not None:
             if node["id"] != self.link_start:
@@ -740,7 +746,7 @@ class Editor(tk.Tk):
                 self.selected_nodes, node["id"] if node else None,
                 ctrl=bool(event.state & 0x0004),
             )
-        self.selected_edge = None if node else (self.edge_at(event.x, event.y) or {}).get("id")
+        self.selected_edge = (edge or {}).get("id")
         self._drag_anchor = self.viewport.world(event.x, event.y) if node and not (event.state & 0x0004) else None
         self._marquee_start = self.viewport.world(event.x, event.y) if node is None and self.selected_edge is None else None
         self._marquee_end = None

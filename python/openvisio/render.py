@@ -12,10 +12,32 @@ from .shape_icons import equipment_icon
 NODE_HALF_WIDTH = 70
 NODE_HALF_HEIGHT = 30
 
-def node_at(nodes, x, y):
+def node_at(nodes, x, y, group_border_tolerance=6.0):
+    """Hit solid equipment first; Visio groups are transparent outlines.
+
+    Imported groups are drawn with ``fill=""``. Treating their entire
+    bounding rectangles as clickable prevented selecting equipment and SAN
+    connectors enclosed by a group (especially when the group was last in
+    the document). Only the group's visible frame is selectable.
+    """
+    # Equipment wins over any overlapping transparent group frame.
     for node in reversed(nodes):
+        if node.get("shape") == "visio-group":
+            continue
         hw, hh = node_half_sizes(node)
         if abs(node["x"] - x) <= hw and abs(node["y"] - y) <= hh:
+            return node
+    for node in reversed(nodes):
+        if node.get("shape") != "visio-group":
+            continue
+        hw, hh = node_half_sizes(node)
+        dx, dy = abs(node["x"] - x), abs(node["y"] - y)
+        # Never allow the zoom-adjusted border tolerance to consume the
+        # entire group interior at very low zoom.
+        border = max(0.0, min(group_border_tolerance, min(hw, hh) / 3))
+        if dx <= hw + border and dy <= hh + border and (
+            abs(dx - hw) <= border or abs(dy - hh) <= border
+        ):
             return node
     return None
 
@@ -60,6 +82,27 @@ def edge_at(nodes, edges, x, y, tolerance=9):
             if distance <= tolerance and distance < best_distance:
                 best_edge, best_distance = edge, distance
     return best_edge
+
+
+def object_at(nodes, edges, x, y, *, node_tolerance=6.0, edge_tolerance=9.0):
+    """Select FC links crossing imported transparent Visio group frames.
+
+    Solid equipment has priority; a group frame only wins if no connector
+    lies under the pointer. Shared by click and context-menu resolution.
+    """
+    node = node_at(nodes, x, y, group_border_tolerance=node_tolerance)
+    edge = (None if node is not None and node.get("shape") != "visio-group"
+            else edge_at(nodes, edges, x, y, tolerance=edge_tolerance))
+    return resolve_hit(node, edge)
+
+
+def resolve_hit(node, edge):
+    """Consistent object priority for the editor and pure geometry tests."""
+    if node is not None and node.get("shape") != "visio-group":
+        return node, None
+    if edge is not None:
+        return None, edge
+    return node, None
 
 def draw_document(canvas, document, selected_node=None, selected_edge=None, viewport=None, grid=False, grid_spacing=20, selected_nodes=None):
     import tkinter as tk
