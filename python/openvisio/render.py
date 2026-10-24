@@ -29,6 +29,17 @@ def edge_at(nodes, edges, x, y, tolerance=9):
     """
     by_id = {n["id"]: n for n in nodes}
     scene = routing_scene(nodes)
+    # Connector captions are drawn above paths and often deliberately offset
+    # more than the line's hit tolerance to avoid SAN fabric congestion.
+    # Select their actual edge when clicked, not an unrelated nearby lane.
+    # Use the same pure layout as Tk/SVG; hidden captions are not clickable.
+    captions = layout_connector_labels(nodes, edges, scene=scene).labels
+    for edge in reversed(edges):
+        label = captions.get(edge["id"])
+        if label is not None:
+            x0, y0, x1, y1 = label.bounds
+            if x0 <= x <= x1 and y0 <= y <= y1:
+                return edge
     best_edge = None
     best_distance = float("inf")
     for edge in reversed(display_edges(edges, nodes)):
