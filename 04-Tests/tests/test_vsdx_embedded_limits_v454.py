@@ -2,14 +2,14 @@
 import tempfile
 import unittest
 from pathlib import Path
-from zipfile import ZipFile, ZIP_DEFLATED
+from zipfile import ZipFile, ZIP_STORED
 from openvisio.vsdx import import_vsdx
 
 class VsdxEmbeddedSizeTests(unittest.TestCase):
     def _assert_rejected(self, oversized_part, size):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "oversized.vsdx"
-            with ZipFile(path, "w", ZIP_DEFLATED) as archive:
+            with ZipFile(path, "w", ZIP_STORED) as archive:
                 archive.writestr("openvisio/document.json", b"{}" if oversized_part != "openvisio/document.json" else b" " * size)
                 archive.writestr("openvisio/manifest.json", b"{}" if oversized_part != "openvisio/manifest.json" else b" " * size)
             with self.assertRaisesRegex(ValueError, "trop volumineux"):
