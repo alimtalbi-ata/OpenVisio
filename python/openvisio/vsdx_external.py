@@ -270,6 +270,23 @@ def import_external_pages(archive):
         # Nested group connectors are included in this inventory.
         page_shapes = page.findall(f".//{{{V}}}Shape")
         page_sheet_ids = {shape.get("ID") for shape in page_shapes if shape.get("ID")}
+        # A duplicate equipment sheet ID referenced by a connector is not a
+        # harmless decorative duplicate: the first shape wins in by_sheet,
+        # silently rewiring the SAN edge to an arbitrary physical endpoint.
+        # Keep compatibility with unused duplicate decorative shapes, but
+        # refuse any ambiguous endpoint actually used by the topology.
+        referenced_endpoints = {
+            row.get("ToSheet")
+            for row in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect")
+            if row.get("FromCell") in ("BeginX", "EndX") and row.get("ToSheet")
+        }
+        seen_endpoints = set()
+        for shape in page_shapes:
+            sid = shape.get("ID")
+            if sid in referenced_endpoints:
+                if sid in seen_endpoints:
+                    raise ValueError("Identifiant d'équipement VSDX dupliqué : " + sid)
+                seen_endpoints.add(sid)
         # Visio Connects references a sheet ID, not an individual XML element.
         # If two connector shapes share that ID, their captions and physical
         # SAN links collapse into one ambiguous edge. Reject only duplicate
