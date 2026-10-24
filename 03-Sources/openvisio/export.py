@@ -11,6 +11,7 @@ from .routing import routing_scene
 from .node_geometry import node_bounds, node_dimensions
 from .parallel_geometry import display_edges
 from .connector_labels import layout_connector_labels
+from .shape_icons import equipment_icon
 
 
 def to_svg(data, width=None, height=None, margin=80):
@@ -62,8 +63,13 @@ def to_svg(data, width=None, height=None, margin=80):
         label = escape(str(node.get('label', 'Équipement')))
         fill = get_shape(node.get('shape', 'server'))['fill']
         w, h = node_dimensions(node)
-        lines.extend([f'<rect x="{x-w/2:g}" y="{y-h/2:g}" width="{w:g}" height="{h:g}" rx="8" fill="{fill}" stroke="#1d4ed8"/>',
-                      f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{label}</text>'])
+        lines.append(f'<rect x="{x-w/2:g}" y="{y-h/2:g}" width="{w:g}" height="{h:g}" rx="8" fill="{fill}" stroke="#1d4ed8"/>')
+        icon = equipment_icon(node)
+        if icon is not None:
+            points = ' '.join(f'{px:g},{py:g}' for px, py in icon)
+            lines.append(f'<polygon data-openvisio-node-icon={quoteattr(str(node["id"]))} '
+                         f'points="{points}" fill="#f8fafc" stroke="#334155"/>')
+        lines.append(f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{label}</text>')
     lines.append('</svg>')
     return '\n'.join(lines)
 
