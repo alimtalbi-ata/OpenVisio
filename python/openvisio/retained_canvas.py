@@ -51,6 +51,9 @@ class _CaptureCanvas:
     def create_rectangle(self, *coords, **options):
         self._append('rectangle', coords, options)
 
+    def create_polygon(self, *coords, **options):
+        self._append('polygon', coords, options)
+
     def create_text(self, *coords, **options):
         self._append('text', coords, options)
 
