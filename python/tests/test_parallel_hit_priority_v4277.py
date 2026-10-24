@@ -51,7 +51,9 @@ class DenseSanSelectionTests(unittest.TestCase):
 
     def test_click_outside_tolerance_returns_none(self):
         doc = fabric()
-        self.assertIsNone(edge_at(doc['nodes'], doc['edges'], 200, 70, tolerance=9))
+        # V43.04: metadata labels are clickable, so test a point outside both
+        # the physical lanes and every displayed SAN caption.
+        self.assertIsNone(edge_at(doc['nodes'], doc['edges'], 200, 500, tolerance=9))
 
 
 if __name__ == '__main__':
