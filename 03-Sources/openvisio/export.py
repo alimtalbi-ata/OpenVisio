@@ -49,9 +49,9 @@ def to_svg(data, width=None, height=None, margin=80):
             lines.append(f'<text x="{(ax+bx)/2:g}" y="{(ay+by)/2-9:g}" text-anchor="middle" font-family="Arial" font-size="9" fill="#334155">{label}</text>')
     for node in data["nodes"]:
         x, y = node["x"], node["y"]
-        label = escape(str(node.get("label", "Équipement")))
+        label = escape(str(node.get("label", "Équipement"))[:40])
         lines.append(symbol_svg(node.get("shape", "server"), x, y))
-        lines.append(f'<text x="{x}" y="{y+43}" text-anchor="middle" font-family="Arial" font-size="10" fill="#172554">{label[:40]}</text>')
+        lines.append(f'<text x="{x}" y="{y+43}" text-anchor="middle" font-family="Arial" font-size="10" fill="#172554">{label}</text>')
     lines.append("</svg>")
     return "\n".join(lines)
 
