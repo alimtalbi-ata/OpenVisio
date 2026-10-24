@@ -33,8 +33,11 @@ def edge_label_text(edge):
     """Return the same bounded, human-readable text on every output surface."""
     # Visio connector captions are free-form text. Do not reinterpret them
     # as SAN metadata or replace them with a generated protocol/port summary.
-    if edge.get("label"):
-        return str(edge["label"]).strip()[:72]
+    # A whitespace-only caption is not an intentional override: keep the
+    # physical FC fabric/port metadata visible in Tk, SVG and public VSDX.
+    explicit = str(edge.get("label", "")).strip()
+    if explicit:
+        return explicit[:72]
     parts = []
     for key in ('protocol',):
         value = str(edge.get(key, '')).strip()
