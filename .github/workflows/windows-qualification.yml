@@ -102,6 +102,10 @@ jobs:
         shell: pwsh
         run: |
           & '04-Tests/Smoke-Portable-Windows.ps1' -Executable '02-Compilation/dist/OpenVisio-v42.7-Windows-x64-Portable.exe'
+      - name: Smoke test installed Windows application
+        shell: pwsh
+        run: |
+          & '04-Tests/Smoke-Installer-Windows.ps1' -Installer '02-Compilation/dist/installer/OpenVisio-Setup-v42.7-x64.exe'
       - name: Publish reproducible binary checksums
         shell: pwsh
         run: |
