@@ -1,5 +1,5 @@
 import unittest
-from openvisio.viewport import Viewport
+from openvisio.viewport import MIN_ZOOM, Viewport
 
 class ViewportTests(unittest.TestCase):
     def test_roundtrip(self):
@@ -15,7 +15,7 @@ class ViewportTests(unittest.TestCase):
         v.zoom_at(100, 0, 0)
         self.assertEqual(v.zoom, 4)
         v.zoom_at(0.0001, 0, 0)
-        self.assertEqual(v.zoom, 0.2)
+        self.assertEqual(v.zoom, MIN_ZOOM)
     def test_pan(self):
         v = Viewport()
         v.pan(30, -20)

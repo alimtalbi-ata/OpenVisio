@@ -608,7 +608,9 @@ class Editor(tk.Tk):
         self.viewport = Viewport()
         self.draw()
     def fit_view(self):
-        self.viewport.fit(project_visible(self.document)["nodes"], self.canvas.winfo_width(), self.canvas.winfo_height())
+        visible = project_visible(self.document)
+        self.viewport.fit_scene(visible["nodes"], visible["edges"],
+                                self.canvas.winfo_width(), self.canvas.winfo_height())
         self.draw()
     def start_pan(self, event):
         self._pan_anchor = (event.x, event.y)
