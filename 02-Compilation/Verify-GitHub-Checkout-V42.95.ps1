@@ -29,9 +29,12 @@ try {
         'python/openvisio/app.py' = 'b9fe39769387b87198e12319f65893f9d89ed521'
         'python/openvisio/commands.py' = '1036c435e0b91355469510f741cfea95f3a87796'
         'python/tests/test_san_parallel_fabric_layer_v4295.py' = 'e56da80b12edc4bbd1f79dbcea7135cc59985035'
-        'python/tests/test_connector_null_metadata_v4295.py' = 'd996a948d51ded222d38cf46bdd82154d0872348'
+        'python/tests/test_connector_null_metadata_v4294.py' = 'd996a948d51ded222d38cf46bdd82154d0872348'
     }
     foreach ($path in $expected.Keys) {
+        if (!(Test-Path -LiteralPath $path -PathType Leaf)) {
+            throw "Critical checkout file missing: $path"
+        }
         $actual = (git hash-object -- $path).Trim()
         if ($LASTEXITCODE -ne 0 -or $actual -ne $expected[$path]) {
             throw "Git blob mismatch: $path expected $($expected[$path]) got $actual"
