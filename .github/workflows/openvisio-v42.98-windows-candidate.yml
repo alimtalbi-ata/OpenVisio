@@ -18,6 +18,18 @@ jobs:
       - name: Verify independent GitHub checkout and source parity
         shell: pwsh
         run: ./02-Compilation/Verify-GitHub-Checkout-V42.98.ps1
+      - name: Archive exact checked-out source revision
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          git archive --format=zip --output=dist/OpenVisio-V42.98-Source-Checkout.zip HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'Git source archive failed' }
+      - name: Upload verified source checkout
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V42.98-GitHub-Source-Checkout
+          path: dist/OpenVisio-V42.98-Source-Checkout.zip
+          if-no-files-found: error
       - name: Install Inno Setup
         shell: pwsh
         run: |
