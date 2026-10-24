@@ -73,8 +73,28 @@ def validate_document(data):
         metadata = data["metadata"]
         if not isinstance(metadata, dict) or len(metadata) > 128:
             raise ValueError("Métadonnées invalides")
-        if any(not isinstance(key, str) for key in metadata):
-            raise ValueError("Clé de métadonnée non textuelle")
+        def check_json_keys(value, seen):
+            if isinstance(value, dict):
+                if id(value) in seen:
+                    raise ValueError("Référence circulaire dans les métadonnées")
+                seen.add(id(value))
+                try:
+                    for key, child in value.items():
+                        if not isinstance(key, str):
+                            raise ValueError("Clé de métadonnée non textuelle")
+                        check_json_keys(child, seen)
+                finally:
+                    seen.remove(id(value))
+            elif isinstance(value, (list, tuple)):
+                if id(value) in seen:
+                    raise ValueError("Référence circulaire dans les métadonnées")
+                seen.add(id(value))
+                try:
+                    for child in value:
+                        check_json_keys(child, seen)
+                finally:
+                    seen.remove(id(value))
+        check_json_keys(metadata, set())
         try:
             json.dumps(metadata, allow_nan=False)
         except (TypeError, ValueError, OverflowError, RecursionError) as exc:
