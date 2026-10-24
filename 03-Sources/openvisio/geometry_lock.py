@@ -29,3 +29,18 @@ def assert_geometry_editable(document, node_ids):
                 or by_id[source].get('layer') in locked
                 or by_id[target].get('layer') in locked):
             raise ValueError('Géométrie non modifiable : liaison SAN verrouillée')
+
+
+def assert_link_editable(document, edge):
+    """Reject changes to a link or either endpoint on a locked layer.
+
+    This applies to routing as well as metadata edits. GUI hit-testing is not
+    a security boundary: commands may be called headlessly or after a layer
+    is locked while a dialog is open.
+    """
+    locked = {layer['id'] for layer in document.get('layers', [])
+              if layer.get('locked', False)}
+    if edge.get('layer') in locked or any(
+            node['id'] in (edge['from'], edge['to'])
+            and node.get('layer') in locked for node in document['nodes']):
+        raise ValueError('Modification interdite : liaison ou équipement verrouillé')
