@@ -214,15 +214,30 @@ def import_external_pages(archive):
             if not math.isclose(math.remainder(total_angle, math.tau), 0.0, abs_tol=1e-10):
                 rotated_count += 1
             ident = f"visio-p{index}-s{sid}"
-            name = shape.get("NameU") or shape.get("Name") or ident
+            name_u = shape.get("NameU") or ""
+            display_name = shape.get("Name") or ""
+            name = name_u or display_name or ident
             # OpenVisio keeps the stable NameU="OpenVisio node" for older
             # consumers, while the public Name encodes the infrastructure kind.
-            if name == "OpenVisio node" and (shape.get("Name") or "").startswith("OpenVisio "):
-                name = shape.get("Name")
+            if name == "OpenVisio node" and display_name.startswith("OpenVisio "):
+                name = display_name
+            # Visio stencils can retain a generic NameU (e.g. Sheet.42) while
+            # the visible Name identifies the physical FC switch. Consider
+            # both names, but never infer hardware identity from arbitrary
+            # user-entered caption text or overwrite a specific NameU kind.
+            kind = _kind(name)
+            if kind == "server" and display_name and display_name != name:
+                visible_kind = _kind(display_name)
+                if visible_kind != "server":
+                    kind = visible_kind
             text_element = shape.find(f"./{{{V}}}Text")
             label = "".join(text_element.itertext()).strip() if text_element is not None else ""
+            # A synthetic Sheet.N identifier is not a useful visible label.
+            fallback_label = (display_name if display_name and re.fullmatch(
+                r"Sheet\.\d+", name, flags=re.IGNORECASE) else name)
             candidates.append((ident, sid, x_in * PX_PER_IN, y_in * PX_PER_IN,
-                               (label or name)[:4096], "visio-group" if children or shape.get("Type") == "Group" else _kind(name),
+                               (label or fallback_label)[:4096],
+                               "visio-group" if children or shape.get("Type") == "Group" else kind,
                                width_in * PX_PER_IN, height_in * PX_PER_IN, parent_id))
             by_sheet[sid] = ident
             if parent_id is not None:
