@@ -7,6 +7,7 @@ from .connector_geometry import lane_endpoints
 from .viewport_visibility import view_window, rect_visible, polyline_visible
 from .parallel_geometry import display_edges
 from .connector_labels import layout_connector_labels
+from .shape_icons import equipment_icon
 
 NODE_HALF_WIDTH = 70
 NODE_HALF_HEIGHT = 30
@@ -128,6 +129,13 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
                                 dash=(6, 3) if is_group else (),
                                 width=(3 if selected else 1) * scale,
                                 tags=(f"ov:node:{node['id']}:rect",))
+        # A dedicated, stable retained item makes equipment types distinguishable
+        # without replacing the node hit box or changing connector attachments.
+        icon = equipment_icon(node)
+        if icon is not None and hasattr(canvas, "create_polygon"):
+            canvas.create_polygon(*(coord for point in icon for coord in xy(*point)),
+                                  fill="#f8fafc", outline="#334155", width=max(1, scale),
+                                  tags=(f"ov:node:{node['id']}:icon",))
         label_x, label_y = (x - hw + 10, y - hh + 12) if is_group else (x, y)
         canvas.create_text(*xy(label_x, label_y), text=node.get("label", "Équipement")[:40],
                            anchor="w" if is_group else "center",
