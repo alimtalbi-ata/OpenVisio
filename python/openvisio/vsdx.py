@@ -5,6 +5,7 @@ imports and the GUI share one stable API. Author: Abdelhalim Talbi.
 """
 import hashlib
 import json
+import re
 from pathlib import Path, PurePosixPath
 from zipfile import ZipFile
 from .model import (validate, load_bytes, SaveConflict, _sha256,
@@ -59,6 +60,37 @@ def export_vsdx(path, document, *, expected_sha256=None, require_absent=False, l
         raise SaveConflict(str(exc)) from exc
 
 
+_WINDOWS_RESERVED_PART = re.compile(
+    r"^(?:CON|PRN|AUX|NUL|CONIN\$|CONOUT\$|CLOCK\$|COM[1-9¹²³]|LPT[1-9¹²³])$",
+    re.IGNORECASE,
+)
+_WINDOWS_FORBIDDEN_PART_CHARS = frozenset('<>:"|?*')
+
+
+def _portable_windows_part(part):
+    """Reject OPC member segments that Win32 rejects, trims or aliases."""
+    if not part or part[-1] in " .":
+        return False
+    if any(ord(char) < 32 or ord(char) == 127 or char in _WINDOWS_FORBIDDEN_PART_CHARS
+           for char in part):
+        return False
+    stem = part.split(".", 1)[0].rstrip(" .").upper()
+    return _WINDOWS_RESERVED_PART.fullmatch(stem) is None
+
+
+def _canonical_vsdx_member_name(name):
+    """Return a portable collision key; reject non-canonical OPC member paths."""
+    if (not isinstance(name, str) or not name or "\x00" in name
+            or "\\" in name or name.startswith("/")):
+        raise ValueError("Entrée VSDX non sûre")
+    raw = name[:-1] if name.endswith("/") else name
+    parts = raw.split("/")
+    if not raw or any(part in ("", ".", "..") or not _portable_windows_part(part)
+                     for part in parts):
+        raise ValueError("Entrée VSDX non sûre")
+    return "/".join(parts).casefold()
+
+
 def import_vsdx(path, *, changed_pages="reject"):
     """Import VSDX, refusing to silently discard edits made in Visio.
 
@@ -73,19 +105,19 @@ def import_vsdx(path, *, changed_pages="reject"):
         entries = archive.infolist()
         if len(entries) > 5000 or sum(entry.file_size for entry in entries) > 50_000_000:
             raise ValueError("VSDX trop volumineux")
-        if len({entry.filename.replace("\\", "/").casefold() for entry in entries}) != len(entries):
-            raise ValueError("Entrées VSDX dupliquées")
+        seen_member_paths = set()
         for entry in entries:
             # Bound decompression amplification before extracting attacker-controlled XML/JSON.
             if entry.file_size > 1_000_000 and entry.file_size > max(1, entry.compress_size) * 200:
                 raise ValueError("VSDX à compression suspecte")
-            # ZIP members use forward slashes. Reject Windows backslash traversal too.
-            name = entry.filename.replace("\\", "/")
-            parts = PurePosixPath(name).parts
-            if (entry.file_size > 10_000_000 or ".." in parts
-                    or name.startswith("/") or "\\" in entry.filename
-                    or (parts and ":" in parts[0])):
+            if entry.file_size > 10_000_000:
                 raise ValueError("Entrée VSDX non sûre")
+            canonical_name = _canonical_vsdx_member_name(entry.filename)
+            # Also reject Windows case-folding collisions and syntactic aliases:
+            # never let two ZIP members represent one logical Open Packaging part.
+            if canonical_name in seen_member_paths:
+                raise ValueError("Entrées VSDX dupliquées ou aliasées")
+            seen_member_paths.add(canonical_name)
         if "openvisio/manifest.json" in archive.namelist() and "openvisio/document.json" not in archive.namelist():
             raise ValueError("Document OpenVisio/VSDX manquant pour le manifeste présent")
         if "openvisio/document.json" in archive.namelist():

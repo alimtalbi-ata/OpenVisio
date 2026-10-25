@@ -1,0 +1,7 @@
+# Keep engine, tests and release metadata byte-stable across Windows/Linux checkouts.
+*.py   text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.md   text eol=lf
+*.svg  text eol=lf
+*.txt  text eol=lf
