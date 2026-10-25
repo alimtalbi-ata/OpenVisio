@@ -41,7 +41,7 @@ for source in docs:
 
 entries["01-Application/BUILD-STATUS.txt"] = (
     "Real Windows binaries built in CI. Windows smoke and external Microsoft Visio "
-    "fidelity are separate qualification gates.\\n"
+    "fidelity are separate qualification gates.\n"
 ).encode("utf-8")
 
 # Cover every payload file in the manifest before serializing the manifest itself.
@@ -54,7 +54,7 @@ manifest = {
 entries["07-Manifestes/manifest.json"] = json.dumps(manifest, ensure_ascii=False, indent=2).encode("utf-8")
 # The checksum list covers payload plus manifest; it intentionally excludes itself.
 entries["07-Manifestes/SHA256SUMS.txt"] = "".join(
-    f"{sha256(data).hexdigest()}  {name}\\n" for name, data in sorted(entries.items())
+    f"{sha256(data).hexdigest()}  {name}\n" for name, data in sorted(entries.items())
 ).encode("utf-8")
 target = out / "OpenVisio-v42.7-Windows-Cumulative.zip"
 with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
