@@ -61,6 +61,18 @@ class VsdxCanonicalMemberPathTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Entrée VSDX non sûre"):
                 import_vsdx(path)
 
+    def test_windows_reserved_device_names_trailing_aliases_and_illegal_chars_are_rejected(self):
+        unsafe_members = (
+            "openvisio/CON", "openvisio/NUL.txt", "visio/COM1.xml", "visio/LPT³.xml",
+            "openvisio/name.", "openvisio/name ", "visio/bad?.xml", "visio/control\x01.xml",
+        )
+        for member in unsafe_members:
+            with self.subTest(member=member), tempfile.TemporaryDirectory() as folder:
+                path = Path(folder) / "unsafe-member.vsdx"
+                make_vsdx(path, member)
+                with self.assertRaisesRegex(ValueError, "Entrée VSDX non sûre"):
+                    import_vsdx(path)
+
 
 if __name__ == "__main__":
     unittest.main()

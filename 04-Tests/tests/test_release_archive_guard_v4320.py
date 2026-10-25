@@ -23,7 +23,7 @@ ENGINE = {
 
 def build_zip(path, *, version=VERSION, changed_mirror=False, missing_dependency=False,
               missing_checksum=False, corrupt_hash=False, duplicate_path=False,
-              traversal=False, noncanonical_path=False):
+              traversal=False, noncanonical_path=False, unsafe_member=None):
     payload = {}
     for name, data in ENGINE.items():
         if missing_dependency and name == "routing.py":
@@ -64,6 +64,8 @@ def build_zip(path, *, version=VERSION, changed_mirror=False, missing_dependency
         if noncanonical_path:
             # PurePosixPath would normalize away this raw dot segment.
             archive.writestr("03-Sources/./openvisio/alias.py", b"unsafe")
+        if unsafe_member is not None:
+            archive.writestr(unsafe_member, b"unsafe")
 
 
 class ReleaseArchiveGuardTests(unittest.TestCase):
@@ -123,6 +125,31 @@ class ReleaseArchiveGuardTests(unittest.TestCase):
         self.assertFalse(report["ok"])
         self.assertTrue(any("chemin non sûr" in err for err in report["errors"]))
 
+
+    def test_windows_reserved_names_trailing_aliases_and_metacharacters_are_rejected(self):
+        unsafe_names = (
+            "03-Sources/openvisio/CON", "03-Sources/openvisio/NUL.txt",
+            "03-Sources/openvisio/COM1.log", "03-Sources/openvisio/LPT³.data",
+            "03-Sources/openvisio/trailing-dot.", "03-Sources/openvisio/trailing-space ",
+            "03-Sources/openvisio/bad?.py", "03-Sources/openvisio/control\x01.py",
+        )
+        for member in unsafe_names:
+            with self.subTest(member=member), tempfile.TemporaryDirectory() as folder:
+                report = self.audit(folder, unsafe_member=member)
+            self.assertFalse(report["ok"], member)
+            self.assertTrue(any("chemin non sûr" in err for err in report["errors"]), report["errors"])
+
+    def test_windows_casefold_and_file_directory_aliases_are_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "test.zip"
+            build_zip(path)
+            with ZipFile(path, "a", ZIP_DEFLATED) as archive:
+                archive.writestr("03-Sources/openvisio/MODEL.PY", b"case alias")
+                archive.writestr("alias-folder/", b"")
+                archive.writestr("alias-folder", b"file alias")
+            report = GUARD.audit_archive(path, VERSION)
+        self.assertFalse(report["ok"])
+        self.assertTrue(any("dupliqués ou aliasés" in err for err in report["errors"]), report["errors"])
 
     def test_noncanonical_raw_path_segments_are_rejected(self):
         for spelling in ("dot segment", "repeated separator"):

@@ -128,6 +128,20 @@ def main() -> int:
         raise SystemExit("Versioned Windows candidate workflow is missing")
     payload[workflow.relative_to(root).as_posix()] = workflow.read_bytes()
 
+    # Repository contract tests read these legacy workflow/smoke assets directly.
+    # Include them so the test suite remains runnable after extracting the ZIP.
+    for relative in (
+        ".gitattributes",
+        ".github/workflows/openvisio-v42.93-windows-candidate.yml",
+        ".github/workflows/openvisio-v42.94-windows-candidate.yml",
+        "04-Tests/Smoke-Portable-V42.71.ps1",
+        "04-Tests/Smoke-Installer-V42.71.ps1",
+    ):
+        support = root / relative
+        if not support.is_file():
+            raise SystemExit(f"Required packaged test support file is missing: {relative}")
+        payload[relative] = support.read_bytes()
+
     payload[f"01-Application/binary/OpenVisio-{VERSION}-Windows-x64-Portable.exe"] = portable.read_bytes()
     payload[f"01-Application/binary/OpenVisio-Setup-{VERSION}-x64.exe"] = installer.read_bytes()
     payload[f"05-Documentation/OpenVisio-{VERSION}-Architecture-and-Qualification.docx"] = docx_path.read_bytes()

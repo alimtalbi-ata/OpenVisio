@@ -119,14 +119,16 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         Spacer(1, 2*mm),
         Paragraph("Functional change", styles["OVH1"]),
         Paragraph(
-            "The two mirrored VSDX importers now reject raw ZIP member names with backslashes, "
-            "absolute paths, NULs, empty or dot segments, parent traversal, colon-based path "
-            "syntax, and case-insensitive aliases. This prevents path spellings that normalize "
-            "differently across ZIP readers and Windows/Linux file APIs.", styles["OVBody"]),
+            "The two mirrored VSDX importers reject raw ZIP member names with backslashes, "
+            "absolute paths, NUL/control characters, empty or dot segments, parent traversal, "
+            "colon syntax, reserved Windows device names, forbidden Win32 characters, trailing "
+            "dots/spaces, and case-folding aliases. Compression-amplification and member-size "
+            "limits remain active.", styles["OVBody"]),
         Paragraph(
-            "The cumulative ZIP validator applies the same raw-path rule before comparing "
-            "engine/test mirrors, validates required engine dependencies, checks duplicate "
-            "archive paths and verifies SHA-256 coverage.", styles["OVBody"]),
+            "The cumulative ZIP validator checks file and directory entries for unsafe paths, "
+            "Windows case-fold collisions and file/directory aliases before checking source/test "
+            "mirror parity, engine dependencies and complete SHA-256 coverage. CI also extracts "
+            "the built ZIP to a clean directory and reruns the full bundled test suite.", styles["OVBody"]),
         Paragraph("Source and dependency layout", styles["OVH1"]),
         Paragraph(
             "03-Sources/openvisio and python/openvisio are compared byte-for-byte (line endings "
@@ -217,9 +219,11 @@ def _docx(output: Path, report: dict, commit: str):
     document.add_heading("Functional improvement", level=1)
     document.add_paragraph(
         "Both VSDX importer mirrors reject ZIP member names with backslashes, absolute paths, "
-        "NULs, empty or dot segments, parent traversal, colon-based path syntax, and "
-        "case-insensitive aliases. The release ZIP validator applies equivalent raw-path rules "
-        "before validating mirror parity, required engine dependencies and SHA-256 coverage."
+        "NUL/control characters, empty or dot segments, parent traversal, colon syntax, Windows "
+        "reserved device names, forbidden Win32 characters, trailing dots/spaces, and "
+        "case-insensitive aliases. The release ZIP validator additionally checks directory "
+        "entries and file/directory collisions, then validates mirror parity, required engine "
+        "dependencies and SHA-256 coverage. CI reruns the bundled suite from a clean ZIP extraction."
     )
     document.add_heading("Source layout", level=1)
     document.add_paragraph(

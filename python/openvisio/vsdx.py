@@ -5,6 +5,7 @@ imports and the GUI share one stable API. Author: Abdelhalim Talbi.
 """
 import hashlib
 import json
+import re
 from pathlib import Path, PurePosixPath
 from zipfile import ZipFile
 from .model import (validate, load_bytes, SaveConflict, _sha256,
@@ -59,18 +60,33 @@ def export_vsdx(path, document, *, expected_sha256=None, require_absent=False, l
         raise SaveConflict(str(exc)) from exc
 
 
+_WINDOWS_RESERVED_PART = re.compile(
+    r"^(?:CON|PRN|AUX|NUL|CONIN\$|CONOUT\$|CLOCK\$|COM[1-9¹²³]|LPT[1-9¹²³])$",
+    re.IGNORECASE,
+)
+_WINDOWS_FORBIDDEN_PART_CHARS = frozenset('<>:"|?*')
+
+
+def _portable_windows_part(part):
+    """Reject OPC member segments that Win32 rejects, trims or aliases."""
+    if not part or part[-1] in " .":
+        return False
+    if any(ord(char) < 32 or ord(char) == 127 or char in _WINDOWS_FORBIDDEN_PART_CHARS
+           for char in part):
+        return False
+    stem = part.split(".", 1)[0].rstrip(" .").upper()
+    return _WINDOWS_RESERVED_PART.fullmatch(stem) is None
+
+
 def _canonical_vsdx_member_name(name):
     """Return a portable collision key; reject non-canonical OPC member paths."""
     if (not isinstance(name, str) or not name or "\x00" in name
             or "\\" in name or name.startswith("/")):
         raise ValueError("Entrée VSDX non sûre")
-    # Directory entries may end in one slash; internal empty segments, dot
-    # segments, parent segments, and Windows alternate-stream/drive syntax
-    # are not canonical OPC part names and can alias differently per platform.
     raw = name[:-1] if name.endswith("/") else name
     parts = raw.split("/")
-    if (not raw or any(part in ("", ".", "..") for part in parts)
-            or any(":" in part for part in parts)):
+    if not raw or any(part in ("", ".", "..") or not _portable_windows_part(part)
+                     for part in parts):
         raise ValueError("Entrée VSDX non sûre")
     return "/".join(parts).casefold()
 

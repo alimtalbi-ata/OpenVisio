@@ -18,6 +18,11 @@ TEST_DIRS = ("04-Tests/tests", "python/tests")
 REQUIRED_ENGINE = ("model.py", "vsdx.py", "render.py", "routing.py", "parallel_geometry.py")
 MANIFEST_PATH = "07-Manifestes/manifest.json"
 HEX256 = re.compile(r"^[0-9a-fA-F]{64}$")
+_WINDOWS_RESERVED = re.compile(
+    r"^(?:CON|PRN|AUX|NUL|CONIN\$|CONOUT\$|CLOCK\$|COM[1-9¹²³]|LPT[1-9¹²³])$",
+    re.IGNORECASE,
+)
+_WINDOWS_FORBIDDEN = frozenset('<>:"|?*')
 
 
 def _normal(data: bytes) -> bytes:
@@ -81,16 +86,33 @@ def audit_checkout(root: Path) -> dict:
         "required_engine_modules": len(REQUIRED_ENGINE)}}
 
 
-def _safe_member(name: str) -> bool:
-    """Check the raw ZIP path, before path-library normalization can hide aliases."""
-    if not isinstance(name, str) or not name or "\\" in name or name.startswith("/") or name.endswith("/"):
+def _safe_windows_segment(part: str) -> bool:
+    """Reject names that are illegal, lossy or device aliases on Windows."""
+    if not part or part[-1] in " .":
+        return False  # Win32 commonly strips trailing dots/spaces on extraction.
+    if any(ord(char) < 32 or ord(char) == 127 or char in _WINDOWS_FORBIDDEN for char in part):
+        return False
+    stem = part.split(".", 1)[0].rstrip(" .").upper()
+    return _WINDOWS_RESERVED.fullmatch(stem) is None
+
+
+def _safe_member(name: str, *, is_dir: bool = False) -> bool:
+    """Check a raw ZIP member before normalization and for Win32 extraction safety."""
+    if not isinstance(name, str) or not name or "\\" in name or name.startswith("/") or "\x00" in name:
+        return False
+    if is_dir:
+        if not name.endswith("/"):
+            return False
+        name = name[:-1]
+    elif name.endswith("/"):
         return False
     parts = name.split("/")
-    # PurePosixPath normalizes away '.' segments and repeated separators. A
-    # release ZIP must reject those spellings instead of treating distinct ZIP
-    # names as equivalent paths in downstream tools and Windows extraction.
-    return (all(part not in ("", ".", "..") for part in parts)
-            and not any(":" in part for part in parts))
+    return all(part not in ("", ".", "..") and _safe_windows_segment(part) for part in parts)
+
+
+def _portable_member_key(name: str, *, is_dir: bool = False) -> str:
+    raw = name[:-1] if is_dir and name.endswith("/") else name
+    return raw.casefold()
 
 
 def audit_archive(path: Path, expected_version: str) -> dict:
@@ -99,14 +121,27 @@ def audit_archive(path: Path, expected_version: str) -> dict:
     details: dict[str, object] = {"archive": str(path), "expected_version": expected_version}
     try:
         with zipfile.ZipFile(path) as archive:
-            info = [item for item in archive.infolist() if not item.is_dir()]
+            all_members = archive.infolist()
+            info = [item for item in all_members if not item.is_dir()]
             names_list = [item.filename for item in info]
             names = set(names_list)
             if len(names_list) != len(names):
                 errors.append("Archive: chemins de fichiers dupliqués")
-            unsafe = [name for name in names_list if not _safe_member(name)]
-            if unsafe:
-                errors.append("Archive: chemin non sûr: " + ", ".join(unsafe[:8]))
+            unsafe_members = [item for item in all_members
+                              if not _safe_member(item.filename, is_dir=item.is_dir())]
+            unsafe = {item.filename for item in unsafe_members if not item.is_dir()}
+            if unsafe_members:
+                errors.append("Archive: chemin non sûr: " + ", ".join(
+                    item.filename for item in unsafe_members[:8]))
+            portable_keys = {}
+            for item in all_members:
+                if _safe_member(item.filename, is_dir=item.is_dir()):
+                    key = _portable_member_key(item.filename, is_dir=item.is_dir())
+                    prior = portable_keys.get(key)
+                    if prior is not None:
+                        errors.append(f"Archive: chemins dupliqués ou aliasés: {prior!r} / {item.filename!r}")
+                    else:
+                        portable_keys[key] = item.filename
             crc_error = archive.testzip()
             if crc_error is not None:
                 errors.append(f"Archive: CRC invalide: {crc_error}")
