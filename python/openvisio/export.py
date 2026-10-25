@@ -31,6 +31,27 @@ def _xml10_text(value):
     )
 
 
+def _svg_text_content(value, x):
+    """Render explicit line breaks as positioned SVG text spans.
+
+    SVG collapses literal newlines in ordinary text. Tk's ``create_text``
+    keeps them, so external SVG views previously turned multi-line equipment
+    labels and connector captions into a single crowded line. Single-line
+    output stays byte-for-byte compatible; multi-line spans are vertically
+    centred and each line receives an explicit x coordinate.
+    """
+    text = _xml10_text(value).replace("\r\n", "\n").replace("\r", "\n")
+    lines = text.split("\n")
+    if len(lines) == 1:
+        return escape(lines[0])
+    first_dy = -0.6 * (len(lines) - 1)
+    spans = []
+    for index, line in enumerate(lines):
+        dy = first_dy if index == 0 else 1.2
+        spans.append(f'<tspan x="{x:g}" dy="{dy:g}em">{escape(line)}</tspan>')
+    return ''.join(spans)
+
+
 def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=False):
     """Export the diagram as displayed in the editor by default.
 
@@ -98,10 +119,11 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
                          f'points="{poly}" fill="none" stroke="#2563eb" '
                          'stroke-width="2" marker-end="url(#openvisio-san-arrow)"/>')
     for label in label_layout.labels.values():
+        content = _svg_text_content(label.text, label.x)
         lines.append(f'<text data-openvisio-edge={quoteattr(_xml10_text(label.edge_id))} '
                      f'x="{label.x:g}" y="{label.y:g}" text-anchor="middle" '
                      f'font-family="Arial" font-size="9" fill="#334155" '
-                     f'dominant-baseline="central">{escape(_xml10_text(label.text))}</text>')
+                     f'dominant-baseline="central">{content}</text>')
     if label_layout.hidden:
         hidden = ', '.join(label_layout.hidden)
         lines.append(f'<desc>Connector labels omitted for insufficient space: {escape(_xml10_text(hidden))}</desc>')
@@ -116,7 +138,8 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
             points = ' '.join(f'{px:g},{py:g}' for px, py in icon)
             lines.append(f'<polygon data-openvisio-node-icon={quoteattr(_xml10_text(node["id"]))} '
                          f'points="{points}" fill="#f8fafc" stroke="#334155"/>')
-        lines.append(f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{label}</text>')
+        node_label = _svg_text_content(node.get('label', 'Équipement'), x)
+        lines.append(f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{node_label}</text>')
     lines.append('</svg>')
     return '\n'.join(lines)
 
