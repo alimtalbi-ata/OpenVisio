@@ -43,6 +43,7 @@ try {
         '05-Documentation/V43.21-CANONICAL-PATHS.md' = '7e7f3e73f8054754b92302dc2d199497361d034f'
         '05-Documentation/V43.21-CANONICAL-PATHS.svg' = 'ced9ec833ba56b19ac45751a070972d6ef2972c9'
         '05-Documentation/V43.21-WINDOWS-SCREENSHOTS-STATUS.md' = '66f504a440fb108d6310ae0fd9eb6f6249de2107'
+        '.github/workflows/openvisio-v43.21-windows-candidate.yml' = 'e7236f816f0922a26fc40d4c58963c522b1e7b85'
         'verify_source_parity.py' = '7b392e310452c37c26f4f254f2860fbea4f7dbae'
     }
     foreach ($path in $expected.Keys) {
