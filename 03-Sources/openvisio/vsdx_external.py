@@ -204,6 +204,20 @@ def _master_shape_kinds(archive):
     return kinds
 
 
+def _connector_endpoint_cell(cell):
+    """Normalize Visio's X/Y glue cells to one physical connector end.
+
+    Visio Connects rows may glue BeginY/EndY rather than BeginX/EndX,
+    or glue both axes of the same end. Never treat the two axes as two
+    independent FC links, and reject conflicting endpoint destinations.
+    """
+    if cell in ("BeginX", "BeginY"):
+        return "BeginX"
+    if cell in ("EndX", "EndY"):
+        return "EndX"
+    return None
+
+
 def import_external_pages(archive):
     """Return validated OpenVisio diagram; pages become separate visible layers."""
     from .model import validate
@@ -367,7 +381,7 @@ def import_external_pages(archive):
         referenced_endpoints = {
             row.get("ToSheet")
             for row in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect")
-            if row.get("FromCell") in ("BeginX", "EndX") and row.get("ToSheet")
+            if _connector_endpoint_cell(row.get("FromCell")) and row.get("ToSheet")
         }
         seen_endpoints = set()
         for shape in page_shapes:
@@ -384,7 +398,7 @@ def import_external_pages(archive):
         connector_sources = {
             row.get("FromSheet")
             for row in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect")
-            if row.get("FromCell") in ("BeginX", "EndX") and row.get("FromSheet")
+            if _connector_endpoint_cell(row.get("FromCell")) and row.get("FromSheet")
         }
         seen_connector_sources = set()
         for shape in page_shapes:
@@ -396,14 +410,15 @@ def import_external_pages(archive):
         connections = {}
         for link in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect"):
             source, target = link.get("FromSheet"), link.get("ToSheet")
-            if source in connector_sources and target not in page_sheet_ids:
+            end = _connector_endpoint_cell(link.get("FromCell"))
+            if end is not None and source in connector_sources and target not in page_sheet_ids:
                 # Do not silently drop a SAN fabric endpoint pointing at a
                 # nonexistent Visio sheet. Existing but unsupported grouped
                 # children still follow the conservative omission policy.
                 raise ValueError(
                     "Connexion VSDX invalide : extrémité SAN absente "
                     f"({source} -> {target})")
-            if source and target in by_sheet and link.get("FromCell") in ("BeginX", "EndX"):
+            if source and target in by_sheet and end is not None:
                 if source in by_sheet or source not in page_sheet_ids:
                     raise ValueError(
                         "Connexion VSDX invalide : feuille de connecteur absente "
@@ -412,7 +427,6 @@ def import_external_pages(archive):
                 # Connects tables. Identical rows are harmless, but competing
                 # targets would silently change the SAN topology depending on
                 # XML ordering. Never invent a winner for an ambiguous link.
-                end = link.get("FromCell")
                 destination = by_sheet[target]
                 previous = connections.setdefault(source, {}).get(end)
                 if previous is not None and previous != destination:
