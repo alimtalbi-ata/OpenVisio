@@ -303,6 +303,10 @@ def import_external_pages(archive):
     offset = 0.0
     rotated_count = 0
     orthogonal_routes_approximated = 0
+    # External Visio pages may contain one-ended or unsupported connectors.
+    # Never silently report a complete topology when those links are omitted.
+    skipped_connectors = {"incomplete": 0, "self_loop": 0, "unresolved": 0}
+    skipped_connector_examples = []
     grouped_children_omitted = 0
     grouped_children_imported = 0
     page_extent_expanded = 0
@@ -476,6 +480,13 @@ def import_external_pages(archive):
             for row in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect")
             if _connector_endpoint_cell(row.get("FromCell")) and row.get("FromSheet")
         }
+        # Validate every referenced connector source, even when its target
+        # is a grouped/unsupported shape that cannot become an OpenVisio node.
+        for sid in connector_sources:
+            if sid not in page_sheet_ids or sid in by_sheet:
+                raise ValueError(
+                    "Connexion VSDX invalide : feuille de connecteur absente "
+                    f"ou équipement utilisé comme connecteur ({sid})")
         seen_connector_sources = set()
         for shape in page_shapes:
             sid = shape.get("ID")
@@ -516,7 +527,8 @@ def import_external_pages(archive):
                         "Connexion VSDX ambiguë : extrémité de connecteur "
                         f"{source}/{end} reliée à plusieurs équipements")
                 connections[source][end] = destination
-        for sid, ends in connections.items():
+        for sid in sorted(connector_sources):
+            ends = connections.get(sid, {})
             a, b = ends.get("BeginX"), ends.get("EndX")
             if a and b and a != b:
                 # Distinct Visio connector sheets represent distinct links,
@@ -533,19 +545,32 @@ def import_external_pages(archive):
                     edge["routing"] = "orthogonal"
                     orthogonal_routes_approximated += 1
                 edges.append(edge)
+            else:
+                # A one-ended or self-connected Visio link cannot be represented
+                # as an OpenVisio equipment-to-equipment edge. Keep the import
+                # usable but make the missing physical path visible in the GUI.
+                reason = ("self_loop" if a and b else
+                          "incomplete" if a or b else "unresolved")
+                skipped_connectors[reason] += 1
+                if len(skipped_connector_examples) < 12:
+                    skipped_connector_examples.append(f"page {index} / sheet {sid}: {reason}")
         offset += max(height, 600) + 96 + bottom_overflow
     metadata = {"import_format": "VSDX", "page_count": len(pages),
                 "import_mode": "flattened-pages",
                 "limitations": ["masters", "group-rotation", "rotation", "styles", "formulas",
                                 "connector-waypoints"],
                 "orthogonal_connector_routes_approximated": orthogonal_routes_approximated,
+                "connector_links_skipped": sum(skipped_connectors.values()),
+                "connector_links_skipped_by_reason": skipped_connectors,
+                "connector_links_skipped_examples": skipped_connector_examples,
                 "rotated_shapes_as_bounding_boxes": rotated_count,
                 "group_children_omitted": grouped_children_omitted,
                 "group_children_imported": grouped_children_imported,
                 "page_extent_expanded": page_extent_expanded,
                 "page_bottom_overflow_px_total": round(page_bottom_overflow_total, 3)}
     if (rotated_count or grouped_children_omitted or grouped_children_imported
-            or page_extent_expanded or orthogonal_routes_approximated):
+            or page_extent_expanded or orthogonal_routes_approximated
+            or sum(skipped_connectors.values())):
         metadata["fidelity_warnings"] = (
             [f"{rotated_count} rotated Visio shape(s) approximated by axis-aligned bounding boxes"]
             if rotated_count else []) + (
@@ -557,5 +582,11 @@ def import_external_pages(archive):
             if page_extent_expanded else []) + (
             [f"{orthogonal_routes_approximated} orthogonal Visio connector(s) "
              "re-routed; original bend coordinates not preserved"]
-            if orthogonal_routes_approximated else [])
+            if orthogonal_routes_approximated else []) + (
+            [f"{sum(skipped_connectors.values())} Visio connector(s) omitted: "
+             f"{skipped_connectors['incomplete']} incomplete, "
+             f"{skipped_connectors['self_loop']} self-linked, "
+             f"{skipped_connectors['unresolved']} unsupported endpoints; "
+             "review connector_links_skipped_examples before relying on SAN topology"]
+            if sum(skipped_connectors.values()) else [])
     return validate({"nodes": nodes, "edges": edges, "layers": layers, "metadata": metadata})
