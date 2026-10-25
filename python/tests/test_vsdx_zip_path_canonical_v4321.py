@@ -47,6 +47,13 @@ class VsdxCanonicalMemberPathTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Entrée VSDX non sûre"):
                 import_vsdx(path)
 
+    def test_case_insensitive_member_alias_is_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "case-alias.vsdx"
+            make_vsdx(path, "OPENVisio/MANIFEST.json")
+            with self.assertRaisesRegex(ValueError, "Entrées VSDX dupliquées ou aliasées"):
+                import_vsdx(path)
+
     def test_windows_alternate_stream_name_is_rejected(self):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / "alternate-stream.vsdx"
