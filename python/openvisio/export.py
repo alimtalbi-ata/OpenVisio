@@ -14,6 +14,7 @@ from .node_geometry import node_bounds, node_dimensions
 from .parallel_geometry import display_edges
 from .connector_labels import layout_connector_labels
 from .shape_icons import equipment_icon
+from .node_labels import label_char_limit, wrap_label_lines
 
 
 def _xml10_text(value):
@@ -138,7 +139,11 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
             points = ' '.join(f'{px:g},{py:g}' for px, py in icon)
             lines.append(f'<polygon data-openvisio-node-icon={quoteattr(_xml10_text(node["id"]))} '
                          f'points="{points}" fill="#f8fafc" stroke="#334155"/>')
-        node_label = _svg_text_content(node.get('label', 'Équipement'), x)
+        raw_label = _xml10_text(node.get('label', 'Équipement'))
+        label_padding = 20 if node.get('shape') == 'visio-group' else 12
+        max_chars = label_char_limit(w, font_size=13, padding=label_padding)
+        visual_label = "\n".join(wrap_label_lines(raw_label, max_chars))
+        node_label = _svg_text_content(visual_label, x)
         lines.append(f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{node_label}</text>')
     lines.append('</svg>')
     return '\n'.join(lines)

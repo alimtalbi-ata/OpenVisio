@@ -8,6 +8,7 @@ from .viewport_visibility import view_window, rect_visible, polyline_visible
 from .parallel_geometry import display_edges
 from .connector_labels import layout_connector_labels
 from .shape_icons import equipment_icon
+from .node_labels import label_char_limit, wrap_label_lines
 
 NODE_HALF_WIDTH = 70
 NODE_HALF_HEIGHT = 30
@@ -191,10 +192,18 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
                                   fill="#f8fafc", outline="#334155", width=max(1, scale),
                                   tags=(f"ov:node:{node['id']}:icon",))
         label_x, label_y = (x - hw + 10, y - hh + 12) if is_group else (x, y)
-        canvas.create_text(*xy(label_x, label_y), text=node.get("label", "Équipement")[:40],
+        font_size = max(6, int(10 * scale))
+        inner_padding = 20 if is_group else 12
+        logical_limit = label_char_limit(2 * hw, font_size=13, padding=inner_padding)
+        pixel_width = max(1.0, (2 * hw - inner_padding) * scale)
+        zoom_limit = max(1, int(pixel_width / (font_size * 0.62)))
+        visual_label = "\n".join(wrap_label_lines(
+            node.get("label", "Équipement"), min(logical_limit, zoom_limit)))
+        canvas.create_text(*xy(label_x, label_y), text=visual_label,
+                           width=pixel_width, justify="left" if is_group else "center",
                            anchor="w" if is_group else "center",
                            fill="#334155" if is_group else "#172554",
-                           font=("Arial", max(6, int(10 * scale))),
+                           font=("Arial", font_size),
                            tags=(f"ov:node:{node['id']}:label",))
 
     if label_layout.hidden:
