@@ -175,7 +175,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         table,
         Spacer(1, 3*mm),
         Paragraph("Candidate provenance", styles["OVH1"]),
-        Paragraph(f"Branch: develop/v43.21-canonical-archive-paths-20261025", styles["OVBody"]),
+        Paragraph(f"Branch: develop/v43.22-vsdx-private-part-case-guard-20261026", styles["OVBody"]),
         Paragraph(f"Source commit: {commit}", styles["OVBody"]),
         Paragraph(f"Generated on: {date.today().isoformat()}", styles["OVBody"]),
         Paragraph("Known limits", styles["OVH1"]),
@@ -257,7 +257,7 @@ def _docx(output: Path, report: dict, commit: str):
         for cell, value in zip(cells, values):
             cell.text = value
     document.add_heading("Provenance", level=1)
-    document.add_paragraph("Branch: develop/v43.21-canonical-archive-paths-20261025")
+    document.add_paragraph("Branch: develop/v43.22-vsdx-private-part-case-guard-20261026")
     document.add_paragraph(f"Source commit: {commit}")
     document.add_paragraph(f"Generated on: {date.today().isoformat()}")
     document.add_paragraph("Internal application version remains 42.50.0 due to legacy build contracts.")

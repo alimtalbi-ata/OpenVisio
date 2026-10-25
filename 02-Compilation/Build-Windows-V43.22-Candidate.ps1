@@ -91,7 +91,7 @@ try {
     $qualification = [ordered]@{
         version = 'V43.22'
         author = 'Abdelhalim Talbi'
-        source_branch = 'develop/v43.21-canonical-archive-paths-20261025'
+        source_branch = 'develop/v43.22-vsdx-private-part-case-guard-20261026'
         source_commit = $sourceCommit
         generated_utc = [DateTime]::UtcNow.ToString('o')
         runner = 'GitHub Actions windows-2022'
