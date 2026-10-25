@@ -24,6 +24,7 @@ from reportlab.platypus import (
     PageBreak, KeepTogether, Flowable,
 )
 import fitz
+from release_document_guard import audit_document_artifacts
 
 
 class PipelineDiagram(Flowable):
@@ -324,13 +325,29 @@ def main():
         "pdf_visible_characters": visible_chars,
         "pdf_page_renders": page_renders,
         "docx_generated": docx_path.name,
-        "docx_structural_status": "PASS",
+        "docx_structural_status": "PENDING_VALIDATION",
         "docx_visual_render_status": "NOT_PERFORMED_BY_THIS_SCRIPT",
         "note": "PDF pages rendered and checked for text bounds. PNGs are document QA previews, not app screenshots."
     }
+    validation = audit_document_artifacts(
+        docx_path,
+        pdf_path,
+        pdf_pages=pdf.page_count,
+        pdf_visible_characters=visible_chars,
+    )
+    qa["docx_structural_status"] = validation["docx_status"]
+    qa["pdf_artifact_status"] = validation["pdf_status"]
+    qa["docx_bytes"] = validation["docx_bytes"]
+    qa["pdf_bytes"] = validation["pdf_bytes"]
+    qa["docx_text_characters"] = validation["docx_text_characters"]
+    qa["artifact_validation"] = validation
+    if validation["pdf_status"] != "PASS":
+        qa["pdf_render_status"] = "FAIL"
     (out / "document-qa.json").write_text(json.dumps(qa, indent=2) + "\n", encoding="utf-8")
-    if docx_path.stat().st_size < 5000 or pdf_path.stat().st_size < 5000:
-        raise SystemExit("Generated release documentation appears incomplete")
+    if not validation["ok"]:
+        raise SystemExit(
+            "Generated release document structural QA failed: " + "; ".join(validation["errors"])
+        )
     print(json.dumps({"docx": str(docx_path), "pdf": str(pdf_path), "qa": qa}, indent=2))
 
 
