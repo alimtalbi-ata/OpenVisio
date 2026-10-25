@@ -1,11 +1,5 @@
 """Synthetic source-release guard regressions. Author: Abdelhalim Talbi."""
-import hashlib
-import importlib.util
-import json
-import sys
-import tempfile
-import unittest
-import warnings
+import hashlib, importlib.util, json, sys, tempfile, unittest, warnings
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
@@ -71,8 +65,11 @@ def build_zip(path, *, version=VERSION, changed_mirror=False, missing_dependency
 class ReleaseArchiveGuardTests(unittest.TestCase):
     def audit(self, folder, **kwargs):
         path = Path(folder) / "test.zip"
-        build_zip(path, **kwargs)
-        return GUARD.audit_archive(path, kwargs.get("version", VERSION))
+        manifest_version = kwargs.pop("version", VERSION)
+        build_zip(path, version=manifest_version, **kwargs)
+        # Always compare against the expected release, not the version supplied
+        # to the synthetic archive. This is essential to test version rejection.
+        return GUARD.audit_archive(path, VERSION)
 
     def test_valid_archive_passes(self):
         with tempfile.TemporaryDirectory() as folder:
