@@ -2,6 +2,8 @@ name: OpenVisio V43.20 Windows native source candidate
 on:
   push:
     branches: ['develop/v43.20-source-reconciliation-20261025']
+  pull_request:
+    branches: ['develop/v43.19-no-label-truncation-20261025']
   workflow_dispatch:
 permissions:
   contents: read
