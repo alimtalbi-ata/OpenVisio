@@ -189,8 +189,18 @@ def _master_shape_kinds(archive):
         # Stable NameU is preferred, but a generic stencil NameU may coexist
         # with a descriptive display Name (e.g. Brocade G720).
         hints = (master.get("NameU") or "", master.get("Name") or "")
-        kinds[ident] = next((kind for hint in hints
-                             if (kind := _kind(hint)) != "server"), "server")
+        # OpenVisio's explicit public type remains authoritative. In external
+        # vendor stencils, a generic NameU="Network Switch" may coexist with
+        # a specific display Name="Brocade G720". The latter is more precise
+        # than the generic network class and must not be discarded.
+        explicit = next((hint for hint in hints if hint.startswith("OpenVisio ")), None)
+        if explicit is not None:
+            kinds[ident] = _kind(explicit)
+        else:
+            classifications = [_kind(hint) for hint in hints]
+            kinds[ident] = ("san-switch" if "san-switch" in classifications
+                            else next((kind for kind in classifications
+                                       if kind != "server"), "server"))
     return kinds
 
 
@@ -264,7 +274,15 @@ def import_external_pages(archive):
             # identity; never reclassify an explicit LAN switch as FC/SAN.
             explicit_kind = any(value.startswith("OpenVisio ") for value in
                                 (name_u, display_name))
-            generic_switch = bool(re.fullmatch(r"Switch\.\d+", name, re.IGNORECASE))
+            # A generic Sheet.N or Switch.N stencil identity plus a generic
+            # display caption "Switch" does not prove LAN connectivity. A
+            # precise FC/SAN Master is authoritative in this narrow case.
+            def weak_switch_hint(value):
+                return bool(re.fullmatch(r"(?:Sheet\.\d+|Switch(?:\.\d+)?|Generic Switch)",
+                                         value.strip(), flags=re.IGNORECASE))
+
+            generic_switch = (weak_switch_hint(name_u or name)
+                              and (not display_name or weak_switch_hint(display_name)))
             if (not explicit_kind and master_kind and master_kind != "server"
                     and (kind == "server" or (generic_switch and kind == "network-switch"))):
                 kind = master_kind
