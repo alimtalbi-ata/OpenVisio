@@ -91,6 +91,25 @@ def _canonical_vsdx_member_name(name):
     return "/".join(parts).casefold()
 
 
+def _require_canonical_openvisio_parts(member_names):
+    """Reject case aliases of OpenVisio's reserved payload parts.
+
+    A case-variant ``openvisio/document.json`` previously bypassed the private
+    payload branch on case-sensitive systems and silently fell back to the
+    lossy public-Visio geometry importer. Keep the custom-part names exact so
+    an archive can never appear to import successfully while dropping editor
+    metadata, layers, or other model fields.
+    """
+    expected_parts = ("openvisio/document.json", "openvisio/manifest.json")
+    by_casefold = {}
+    for name in member_names:
+        by_casefold.setdefault(name.casefold(), []).append(name)
+    for expected in expected_parts:
+        for actual in by_casefold.get(expected, ()):
+            if actual != expected:
+                raise ValueError("Nom de partie OpenVisio non canonique : " + actual)
+
+
 def import_vsdx(path, *, changed_pages="reject"):
     """Import VSDX, refusing to silently discard edits made in Visio.
 
@@ -118,11 +137,14 @@ def import_vsdx(path, *, changed_pages="reject"):
             if canonical_name in seen_member_paths:
                 raise ValueError("Entrées VSDX dupliquées ou aliasées")
             seen_member_paths.add(canonical_name)
-        if "openvisio/manifest.json" in archive.namelist() and "openvisio/document.json" not in archive.namelist():
+        member_names = [entry.filename for entry in entries]
+        _require_canonical_openvisio_parts(member_names)
+        member_name_set = set(member_names)
+        if "openvisio/manifest.json" in member_name_set and "openvisio/document.json" not in member_name_set:
             raise ValueError("Document OpenVisio/VSDX manquant pour le manifeste présent")
-        if "openvisio/document.json" in archive.namelist():
+        if "openvisio/document.json" in member_name_set:
             payload = archive.read("openvisio/document.json")
-            if "openvisio/manifest.json" not in archive.namelist():
+            if "openvisio/manifest.json" not in member_name_set:
                 raise ValueError("Manifeste OpenVisio/VSDX manquant")
             # Reject ambiguous manifest keys and non-JSON numeric constants.
             # Otherwise the last duplicate SHA/schema silently wins, defeating

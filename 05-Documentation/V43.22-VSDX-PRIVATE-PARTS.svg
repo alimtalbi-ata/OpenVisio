@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="300" viewBox="0 0 1040 300">
+<rect width="1040" height="300" fill="#f7f9fc"/>
+<text x="32" y="38" font-family="Segoe UI,Arial" font-size="23" font-weight="700" fill="#17324d">OpenVisio V43.22 — VSDX private-part identity guard</text>
+<g font-family="Segoe UI,Arial" font-size="15" fill="#17324d">
+<rect x="32" y="78" width="210" height="112" rx="12" fill="#e7f0fb" stroke="#4c78a8" stroke-width="2"/>
+<text x="50" y="105" font-weight="700">1. ZIP member list</text><text x="50" y="133">Raw path safety</text><text x="50" y="157">Case-fold collisions</text>
+<path d="M242 134 H282" stroke="#4c78a8" stroke-width="3" fill="none"/><path d="M273 127 L282 134 L273 141" stroke="#4c78a8" stroke-width="3" fill="none"/>
+<rect x="282" y="78" width="260" height="112" rx="12" fill="#e7f0fb" stroke="#4c78a8" stroke-width="2"/>
+<text x="300" y="105" font-weight="700">2. Reserved OPC parts</text><text x="300" y="133">document.json</text><text x="300" y="157">manifest.json</text>
+<path d="M542 116 H584" stroke="#31845b" stroke-width="3" fill="none"/><path d="M575 109 L584 116 L575 123" stroke="#31845b" stroke-width="3" fill="none"/>
+<path d="M542 158 H565 V224 H584" stroke="#bd4141" stroke-width="3" fill="none"/><path d="M575 217 L584 224 L575 231" stroke="#bd4141" stroke-width="3" fill="none"/>
+<rect x="584" y="83" width="210" height="66" rx="10" fill="#e3f4e8" stroke="#31845b" stroke-width="2"/>
+<text x="601" y="109" font-weight="700" fill="#246b46">Canonical exact name</text><text x="601" y="132">Verify manifest / load</text>
+<rect x="584" y="190" width="210" height="66" rx="10" fill="#fbe8e8" stroke="#bd4141" stroke-width="2"/>
+<text x="601" y="216" font-weight="700" fill="#9e2929">Case alias</text><text x="601" y="239">Reject, never flatten</text>
+<path d="M794 116 H828 V169 H846" stroke="#31845b" stroke-width="3" fill="none"/><path d="M838 162 L846 169 L838 176" stroke="#31845b" stroke-width="3" fill="none"/>
+<rect x="846" y="134" width="164" height="70" rx="10" fill="#e3f4e8" stroke="#31845b" stroke-width="2"/>
+<text x="860" y="159" font-weight="700">Lossless model</text><text x="860" y="181">Metadata + layers</text>
+</g></svg>
