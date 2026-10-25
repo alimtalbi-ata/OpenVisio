@@ -8,6 +8,7 @@ from .viewport_visibility import view_window, rect_visible, polyline_visible
 from .parallel_geometry import display_edges
 from .connector_labels import layout_connector_labels
 from .shape_icons import equipment_icon
+from .node_labels import fit_node_label
 
 NODE_HALF_WIDTH = 70
 NODE_HALF_HEIGHT = 30
@@ -190,11 +191,28 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
             canvas.create_polygon(*(coord for point in icon for coord in xy(*point)),
                                   fill="#f8fafc", outline="#334155", width=max(1, scale),
                                   tags=(f"ov:node:{node['id']}:icon",))
-        label_x, label_y = (x - hw + 10, y - hh + 12) if is_group else (x, y)
-        canvas.create_text(*xy(label_x, label_y), text=node.get("label", "Équipement")[:40],
+        inner_padding = 20 if is_group else 12
+        font_size = max(6, int(10 * scale))
+        label_value = node.get("label", "Équipement")
+        label_rows, font_size = fit_node_label(
+            label_value, 2 * hw * scale, 2 * hh * scale,
+            font_size=font_size, padding=inner_padding * scale,
+            vertical_padding=8 * scale, minimum_font_size=6)
+        icon_reserve = 32.0 if icon is not None and not is_group and len(label_rows) > 1 else 0.0
+        if icon_reserve:
+            label_rows, font_size = fit_node_label(
+                label_value, (2 * hw - icon_reserve) * scale, 2 * hh * scale,
+                font_size=font_size, padding=inner_padding * scale,
+                vertical_padding=8 * scale, minimum_font_size=6)
+        label_x, label_y = ((x - hw + 10, y - hh + 12) if is_group
+                            else (x + icon_reserve / 2, y))
+        pixel_width = max(1.0, (2 * hw - inner_padding - icon_reserve) * scale)
+        visual_label = "\n".join(label_rows)
+        canvas.create_text(*xy(label_x, label_y), text=visual_label,
+                           width=pixel_width, justify="left" if is_group else "center",
                            anchor="w" if is_group else "center",
                            fill="#334155" if is_group else "#172554",
-                           font=("Arial", max(6, int(10 * scale))),
+                           font=("Arial", font_size),
                            tags=(f"ov:node:{node['id']}:label",))
 
     if label_layout.hidden:
