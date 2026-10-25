@@ -1,0 +1,49 @@
+name: OpenVisio V43.20 Windows native source candidate
+on:
+  push:
+    branches: ['develop/v43.20-source-reconciliation-20261025']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-native-candidate:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Verify independent GitHub checkout and source parity
+        shell: pwsh
+        run: ./02-Compilation/Verify-GitHub-Checkout-V43.20.ps1
+      - name: Archive exact checked-out source revision
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          git archive --format=zip --output=dist/OpenVisio-V43.20-Source-Checkout.zip HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'Git source archive failed' }
+      - name: Upload verified source checkout
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V43.20-GitHub-Source-Checkout
+          path: dist/OpenVisio-V43.20-Source-Checkout.zip
+          if-no-files-found: error
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
+      - name: Build and qualify native candidate
+        shell: pwsh
+        run: ./02-Compilation/Build-Windows-V43.20-Candidate.ps1
+      - name: Upload Windows candidates only after successful qualification
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V43.20-Windows-Source-Candidate
+          path: |
+            dist/OpenVisio-V43.20-Source-Candidate-Windows-x64-Portable.exe
+            dist/installer/OpenVisio-V43.20-Source-Candidate-Setup-x64.exe
+            dist/OpenVisio-V43.20-Source-Candidate-Windows-SHA256.txt
+          if-no-files-found: error
