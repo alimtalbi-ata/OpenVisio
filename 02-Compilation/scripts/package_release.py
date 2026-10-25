@@ -70,9 +70,18 @@ with zipfile.ZipFile(target) as archive:
         assert len(payload) == expected["bytes"], f"Manifest size mismatch: {name}"
         assert sha256(payload).hexdigest() == expected["sha256"], f"Manifest SHA-256 mismatch: {name}"
     checksums = archive.read("07-Manifestes/SHA256SUMS.txt").decode("utf-8").splitlines()
+    checksum_names = set()
     for line in checksums:
         digest, name = line.split("  ", 1)
+        assert name not in checksum_names, f"Duplicate checksum entry: {name}"
+        checksum_names.add(name)
         assert name in archive_names, f"Checksum entry missing from ZIP: {name}"
         assert sha256(archive.read(name)).hexdigest() == digest, f"Checksum mismatch: {name}"
+    expected_checksum_names = set(loaded_manifest["files"]) | {"07-Manifestes/manifest.json"}
+    assert checksum_names == expected_checksum_names, (
+        "SHA256SUMS coverage mismatch: "
+        f"missing={sorted(expected_checksum_names - checksum_names)}, "
+        f"unexpected={sorted(checksum_names - expected_checksum_names)}"
+    )
     assert "01-Application/BUILD-STATUS.txt" in loaded_manifest["files"], "Build status is not manifest-covered"
 print("Verified Windows ZIP, manifest and SHA-256 list:", target)
