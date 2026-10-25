@@ -26,6 +26,7 @@ from .connector_labels import edge_label_text
 from .export import _xml10_text
 from .vsdx_page_extent import page_extent
 from .vsdx_consistency import VISUAL_PARTS, build_manifest, changed_visual_parts
+from .shapes import SHAPES
 
 V = "http://schemas.microsoft.com/office/visio/2011/1/core"
 R = "http://schemas.openxmlformats.org/package/2006/relationships"
@@ -55,11 +56,33 @@ def _relationships(*items):
     return _xml(root)
 
 
+class UnsupportedVsdxShapeError(ValueError):
+    """A native shape has no honest public VSDX category mapping."""
+
+
+def _require_public_shape_identity(nodes):
+    """Fail before staging rather than silently substitute a server or SAN device.
+
+    Native .ovjson intentionally permits custom shape identifiers; the public
+    VSDX importer only recognizes catalogue kinds and Visio group containers.
+    """
+    for node in nodes:
+        kind = node.get("shape", "server")
+        if kind != "visio-group" and kind not in SHAPES:
+            raise UnsupportedVsdxShapeError(
+                "Forme non prise en charge par l'export VSDX public : "
+                + repr(kind) + " (équipement " + repr(node["id"]) + "). "
+                "Le document natif .ovjson reste valide ; choisissez une forme "
+                "du catalogue (ex. switch, san-switch, network-switch) "
+                "avant d'exporter. Aucune conversion implicite en serveur/SAN.")
+
+
 def _export_vsdx_unlocked(path, document, check_revision, require_absent, *,
                           archive_type=ZipFile, polyline_builder=connector_polyline):
     """Construct and audit a staged VSDX; publish only after rechecking disk."""
     doc = validate(document)
     nodes = doc["nodes"]
+    _require_public_shape_identity(nodes)
     min_x, min_y, width, height, scene = page_extent(nodes, doc["edges"])
     page = ET.Element(f"{{{V}}}PageContents")
     shapes = ET.SubElement(page, f"{{{V}}}Shapes")

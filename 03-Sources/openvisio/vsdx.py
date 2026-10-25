@@ -13,7 +13,8 @@ from .save_lock import exclusive_document_lock
 from .vsdx_consistency import VISUAL_PARTS, changed_visual_parts
 from .vsdx_polyline import connector_polyline
 from .vsdx_package import (V, R, OR, CT, PX_PER_IN, ET, _cell, _xml,
-                           _relationships, _export_vsdx_unlocked)
+                           _relationships, _export_vsdx_unlocked, _require_public_shape_identity,
+                           UnsupportedVsdxShapeError)
 
 class VsdxExternalChangesError(ValueError):
     """Embedded OpenVisio data no longer matches the Visio drawing pages."""
@@ -46,6 +47,9 @@ def export_vsdx(path, document, *, expected_sha256=None, require_absent=False, l
             if current != expected_sha256:
                 raise SaveConflict("Le VSDX a été modifié pendant l'export ; remplacement refusé")
 
+    # Validate the public shape mapping before acquiring the lock: the lock
+    # helper may create the output directory, even if export then fails.
+    _require_public_shape_identity(validate(document)["nodes"])
     try:
         with exclusive_document_lock(output, timeout=lock_timeout):
             check_revision()
