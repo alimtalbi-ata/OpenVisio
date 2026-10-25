@@ -218,6 +218,81 @@ def _connector_endpoint_cell(cell):
     return None
 
 
+
+def _public_orthogonal_connector(shape):
+    """Recognize a *verifiable* axis-aligned public Visio connector route.
+
+    This recovers only the orthogonal routing preference, never the original
+    waypoints: OpenVisio recomputes safe bends around its own equipment. A
+    third-party Visio shape with unsupported geometry is left untouched rather
+    than being silently reinterpreted as an orthogonal SAN connection.
+    """
+    endpoint_cells = shape.findall(f"./{{{V}}}Cell")
+    if any(cell.get("F") is not None for cell in endpoint_cells
+           if cell.get("N") in ("BeginX", "BeginY", "EndX", "EndY")):
+        return False  # Evaluating Visio formulas is outside this importer.
+    cells = {cell.get("N"): cell.get("V") for cell in endpoint_cells}
+    try:
+        bx, by, ex, ey = (float(cells[key]) for key in
+                          ("BeginX", "BeginY", "EndX", "EndY"))
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return False
+    if not all(math.isfinite(v) and abs(v) <= 100000 for v in (bx, by, ex, ey)):
+        return False
+    dx, dy = ex - bx, ey - by
+    length = math.hypot(dx, dy)
+    if length <= 1e-8:
+        return False
+    ux, uy = dx / length, dy / length
+    for section in shape.findall(f"./{{{V}}}Section"):
+        if section.get("N") != "Geometry":
+            continue
+        rows = section.findall(f"./{{{V}}}Row")
+        if not 3 <= len(rows) <= 2048:
+            continue
+        if rows[0].get("T") != "MoveTo" or any(
+                row.get("T") != "LineTo" for row in rows[1:]):
+            continue
+        local = []
+        try:
+            for row in rows:
+                row_cells = row.findall(f"./{{{V}}}Cell")
+                if any(cell.get("F") is not None for cell in row_cells):
+                    raise ValueError("formula-driven connector geometry")
+                coords = {cell.get("N"): cell.get("V") for cell in row_cells}
+                x, y = float(coords["X"]), float(coords["Y"])
+                if not math.isfinite(x) or not math.isfinite(y):
+                    raise ValueError("non-finite connector geometry")
+                local.append((x, y))
+        except (KeyError, TypeError, ValueError, OverflowError):
+            continue
+        # This explicit local frame is the one emitted by OpenVisio's public
+        # VSDX writer. Arbitrary Visio formulas and rotated frames are not
+        # assumed to follow it, even when their geometry has several rows.
+        tolerance = 0.001  # inches, less than one tenth of a display pixel
+        if (math.hypot(*local[0]) > tolerance or
+                math.hypot(local[-1][0] - length, local[-1][1]) > tolerance):
+            continue
+        points = [(bx + x * ux - y * uy, by + x * uy + y * ux)
+                  for x, y in local]
+        orientations = set()
+        valid = True
+        for (x1, y1), (x2, y2) in zip(points, points[1:]):
+            sx, sy = abs(x2 - x1), abs(y2 - y1)
+            if max(sx, sy) <= tolerance:
+                continue
+            if sx <= tolerance:
+                orientations.add("vertical")
+            elif sy <= tolerance:
+                orientations.add("horizontal")
+            else:
+                valid = False
+                break
+        if valid and len(orientations) == 2:
+            return True
+    return False
+
+
 def import_external_pages(archive):
     """Return validated OpenVisio diagram; pages become separate visible layers."""
     from .model import validate
@@ -227,6 +302,7 @@ def import_external_pages(archive):
     nodes, edges, layers = [], [], []
     offset = 0.0
     rotated_count = 0
+    orthogonal_routes_approximated = 0
     grouped_children_omitted = 0
     grouped_children_imported = 0
     page_extent_expanded = 0
@@ -407,6 +483,12 @@ def import_external_pages(archive):
                 if sid in seen_connector_sources:
                     raise ValueError("Identifiant de connecteur VSDX dupliqué : " + sid)
                 seen_connector_sources.add(sid)
+        connector_route_modes = {
+            shape.get("ID"): "orthogonal"
+            for shape in page_shapes
+            if shape.get("ID") in connector_sources
+            and _public_orthogonal_connector(shape)
+        }
         connections = {}
         for link in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect"):
             source, target = link.get("FromSheet"), link.get("ToSheet")
@@ -445,17 +527,25 @@ def import_external_pages(archive):
                         "visio_connector_sheet_id": str(sid)}
                 if sid in connector_captions:
                     edge["label"] = connector_captions[sid]
+                if sid in connector_route_modes:
+                    # Semantic preference only: exact Visio bend coordinates
+                    # cannot be represented by the current OpenVisio model.
+                    edge["routing"] = "orthogonal"
+                    orthogonal_routes_approximated += 1
                 edges.append(edge)
         offset += max(height, 600) + 96 + bottom_overflow
     metadata = {"import_format": "VSDX", "page_count": len(pages),
                 "import_mode": "flattened-pages",
-                "limitations": ["masters", "group-rotation", "rotation", "styles", "formulas"],
+                "limitations": ["masters", "group-rotation", "rotation", "styles", "formulas",
+                                "connector-waypoints"],
+                "orthogonal_connector_routes_approximated": orthogonal_routes_approximated,
                 "rotated_shapes_as_bounding_boxes": rotated_count,
                 "group_children_omitted": grouped_children_omitted,
                 "group_children_imported": grouped_children_imported,
                 "page_extent_expanded": page_extent_expanded,
                 "page_bottom_overflow_px_total": round(page_bottom_overflow_total, 3)}
-    if rotated_count or grouped_children_omitted or grouped_children_imported or page_extent_expanded:
+    if (rotated_count or grouped_children_omitted or grouped_children_imported
+            or page_extent_expanded or orthogonal_routes_approximated):
         metadata["fidelity_warnings"] = (
             [f"{rotated_count} rotated Visio shape(s) approximated by axis-aligned bounding boxes"]
             if rotated_count else []) + (
@@ -464,5 +554,8 @@ def import_external_pages(archive):
             [f"{grouped_children_imported} nested group child shape(s) imported with hierarchy; exact group transforms/rotation not preserved"]
             if grouped_children_imported else []) + (
             [f"{page_extent_expanded} Visio page(s) expanded to contain out-of-page shapes; page layout is approximate"]
-            if page_extent_expanded else [])
+            if page_extent_expanded else []) + (
+            [f"{orthogonal_routes_approximated} orthogonal Visio connector(s) "
+             "re-routed; original bend coordinates not preserved"]
+            if orthogonal_routes_approximated else [])
     return validate({"nodes": nodes, "edges": edges, "layers": layers, "metadata": metadata})
