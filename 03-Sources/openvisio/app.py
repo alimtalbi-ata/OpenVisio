@@ -30,7 +30,7 @@ from .commands import add_equipment, remove_selection, connect_equipment
 class Editor(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("OpenVisio 42.5 — Python natif")
+        self.title("OpenVisio 42.7.0 — Python natif")
         self.geometry("1100x720")
         self.document = {"nodes": [], "edges": []}
         self.current_path = None
@@ -158,7 +158,7 @@ class Editor(tk.Tk):
     def _refresh_document_status(self):
         """Present unsaved state and selection without hiding action feedback."""
         dirty = document_dirty(self._snapshot(), self.saved_snapshot)
-        self.title("OpenVisio 42.5 — " + ("* " if dirty else "") + (str(self.current_path) if self.current_path else "Sans titre"))
+        self.title("OpenVisio 42.7.0 — " + ("* " if dirty else "") + (str(self.current_path) if self.current_path else "Sans titre"))
         self.document_status.set(document_summary(
             self.document, self.selected_nodes, self.selected_edge, dirty, self.current_path
         ))
