@@ -142,6 +142,20 @@ class RoutingScene:
         return self._routing_index
 
     def route_points(self, edge):
+        # Public static VSDX waypoints are used only while they remain attached
+        # to the exact imported endpoint geometry and do not cross equipment.
+        # This happens before memoization because two parallel connectors may
+        # carry distinct imported routes for identical endpoint pairs.
+        if isinstance(edge, dict) and edge.get('visio_route') is not None:
+            try:
+                source = self.nodes[edge['from']]
+                target = self.nodes[edge['to']]
+                from .visio_route import active_visio_route
+                preserved = active_visio_route(edge, source, target, self.nodes.values())
+            except (KeyError, TypeError, ValueError, OverflowError):
+                preserved = None
+            if preserved is not None:
+                return list(preserved)
         key = (edge['from'], edge['to'], edge.get('routing', 'straight'))
         lane = float(edge.get('_lane_offset', 0.0))
         if lane:

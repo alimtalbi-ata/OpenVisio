@@ -15,7 +15,7 @@ from pathlib import Path, PurePosixPath
 
 ENGINE_DIRS = ("03-Sources/openvisio", "python/openvisio")
 TEST_DIRS = ("04-Tests/tests", "python/tests")
-REQUIRED_ENGINE = ("model.py", "vsdx.py", "render.py", "routing.py", "parallel_geometry.py")
+REQUIRED_ENGINE = ("model.py", "vsdx.py", "render.py", "routing.py", "parallel_geometry.py", "visio_route.py")
 MANIFEST_PATH = "07-Manifestes/manifest.json"
 HEX256 = re.compile(r"^[0-9a-fA-F]{64}$")
 _WINDOWS_RESERVED = re.compile(

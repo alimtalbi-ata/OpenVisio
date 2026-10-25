@@ -1,3 +1,12 @@
+## V43.22 candidate — static VSDX waypoints with geometry-safe fallback (25 October 2026)
+
+- The external VSDX importer preserves static bend coordinates only for the constrained public, formula-free orthogonal connector format it can verify; it does not evaluate arbitrary Visio formulas, dynamic glue or unsupported coordinate frames.
+- Each preserved `visio_route` records a schema version, endpoint geometry snapshots and bounded waypoints. Moving/resizing either endpoint or introducing an intersecting obstacle invalidates the stored route and delegates to the regular obstacle-avoiding router.
+- Parallel SAN paths retain their individually imported routes rather than being collapsed to one cached route. Malformed, diagonal, non-finite or overlong route records are rejected by the normal document validation contract.
+- CI runs the full Python test suite and targeted static-route regressions, then builds and smoke-tests Windows x64 portable/installable binaries and a cumulative archive from the exact checkout. Microsoft Visio Desktop round-trip remains explicitly NOT TESTED.
+- Build scripts: `02-Compilation/Build-Windows-V43.22-Candidate.ps1`; workflow: `.github/workflows/openvisio-v43.22-windows-candidate.yml`. All generated binaries must come from this workflow, not be represented by local stubs.
+- Author: Abdelhalim Talbi.
+
 # OpenVisio - cumulative source and Windows candidate
 
 ## V43.21 candidate (25 October 2026)

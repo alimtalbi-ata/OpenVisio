@@ -18,6 +18,7 @@ ENGINE = {
     "render.py": b"# renderer\n",
     "routing.py": b"# router\n",
     "parallel_geometry.py": b"# lane geometry\n",
+    "visio_route.py": b"# validated static VSDX route support\n",
 }
 
 
