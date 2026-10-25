@@ -110,7 +110,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
     doc.addPageTemplates([PageTemplate(id="all", frames=[frame], onPage=_footer)])
     story = [
         Paragraph("OpenVisio V43.22", styles["OVTitle"]),
-        Paragraph("Canonical VSDX paths and reproducible Windows candidate", styles["OVH1"]),
+        Paragraph("Lossless VSDX private-part identity and reproducible Windows candidate", styles["OVH1"]),
         Paragraph(
             "Release candidate brief. This package contains the real Python engine source, "
             "tests, build scripts, and Windows executables produced by the associated CI job. "
@@ -119,11 +119,11 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         Spacer(1, 2*mm),
         Paragraph("Functional change", styles["OVH1"]),
         Paragraph(
-            "The two mirrored VSDX importers reject raw ZIP member names with backslashes, "
-            "absolute paths, NUL/control characters, empty or dot segments, parent traversal, "
-            "colon syntax, reserved Windows device names, forbidden Win32 characters, trailing "
-            "dots/spaces, and case-folding aliases. Compression-amplification and member-size "
-            "limits remain active.", styles["OVBody"]),
+            "The two mirrored VSDX importers reject case variants of reserved "
+            "openvisio/document.json and openvisio/manifest.json members. Those aliases previously "
+            "missed the lossless embedded-model path and could fall back to flattened public Visio "
+            "geometry, dropping editor metadata, layers and other model-only fields. Raw path, "
+            "Win32 alias, collision and decompression-amplification checks remain active.", styles["OVBody"]),
         Paragraph(
             "The cumulative ZIP validator checks file and directory entries for unsafe paths, "
             "Windows case-fold collisions and file/directory aliases before checking source/test "
@@ -196,7 +196,7 @@ def _docx(output: Path, report: dict, commit: str):
     document = Document()
     document.core_properties.title = "OpenVisio V43.22 - Architecture and Qualification"
     document.core_properties.author = "Abdelhalim Talbi"
-    document.core_properties.subject = "VSDX package path validation and Windows candidate"
+    document.core_properties.subject = "VSDX embedded-part case guard and Windows candidate"
     section = document.sections[0]
     section.top_margin = Inches(0.62)
     section.bottom_margin = Inches(0.62)
@@ -208,7 +208,7 @@ def _docx(output: Path, report: dict, commit: str):
     normal.paragraph_format.space_after = Pt(4)
     title = document.add_heading("OpenVisio V43.22", 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    subtitle = document.add_paragraph("Canonical VSDX paths and reproducible Windows candidate")
+    subtitle = document.add_paragraph("Lossless VSDX private-part identity and reproducible Windows candidate")
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
     subtitle.runs[0].bold = True
     p = document.add_paragraph(
@@ -218,12 +218,12 @@ def _docx(output: Path, report: dict, commit: str):
     )
     document.add_heading("Functional improvement", level=1)
     document.add_paragraph(
-        "Both VSDX importer mirrors reject ZIP member names with backslashes, absolute paths, "
-        "NUL/control characters, empty or dot segments, parent traversal, colon syntax, Windows "
-        "reserved device names, forbidden Win32 characters, trailing dots/spaces, and "
-        "case-insensitive aliases. The release ZIP validator additionally checks directory "
-        "entries and file/directory collisions, then validates mirror parity, required engine "
-        "dependencies and SHA-256 coverage. CI reruns the bundled suite from a clean ZIP extraction."
+        "Both VSDX importer mirrors reject case variants of reserved "
+        "openvisio/document.json and openvisio/manifest.json members. Those aliases previously "
+        "missed embedded JSON import and could silently trigger a lossy public-geometry fallback. "
+        "The regression tests verify that canonical names preserve metadata, nodes and links, "
+        "while case variants are rejected. The release validator also checks paths, source/test "
+        "parity and SHA-256 coverage; CI reruns the complete suite from an extracted ZIP."
     )
     document.add_heading("Source layout", level=1)
     document.add_paragraph(
