@@ -82,10 +82,15 @@ def audit_checkout(root: Path) -> dict:
 
 
 def _safe_member(name: str) -> bool:
-    if "\\" in name:
+    """Check the raw ZIP path, before path-library normalization can hide aliases."""
+    if not isinstance(name, str) or not name or "\\" in name or name.startswith("/") or name.endswith("/"):
         return False
-    path = PurePosixPath(name)
-    return not path.is_absolute() and all(part not in ("", ".", "..") for part in path.parts)
+    parts = name.split("/")
+    # PurePosixPath normalizes away '.' segments and repeated separators. A
+    # release ZIP must reject those spellings instead of treating distinct ZIP
+    # names as equivalent paths in downstream tools and Windows extraction.
+    return (all(part not in ("", ".", "..") for part in parts)
+            and not any(":" in part for part in parts))
 
 
 def audit_archive(path: Path, expected_version: str) -> dict:
