@@ -167,11 +167,39 @@ def _kind(name):
     return "server"
 
 
+def _master_shape_kinds(archive):
+    """Resolve external Visio stencil identities from the public master index.
+
+    Generic Shape NameU values such as Sheet.42 carry no equipment identity.
+    The Visio Master attribute points to a named stencil in masters.xml;
+    captions are deliberately excluded from classification. This is a
+    conservative name-based mapping, not master geometry/style fidelity.
+    """
+    part = "visio/masters/masters.xml"
+    if part not in archive.namelist():
+        return {}
+    root = _parse_xml(archive, part, expected_root=f"{{{V}}}Masters")
+    kinds = {}
+    for master in root.findall(f"{{{V}}}Master"):
+        ident = master.get("ID")
+        if not ident:
+            continue
+        if ident in kinds:
+            raise ValueError("Identifiant Master VSDX dupliqué : " + ident)
+        # Stable NameU is preferred, but a generic stencil NameU may coexist
+        # with a descriptive display Name (e.g. Brocade G720).
+        hints = (master.get("NameU") or "", master.get("Name") or "")
+        kinds[ident] = next((kind for hint in hints
+                             if (kind := _kind(hint)) != "server"), "server")
+    return kinds
+
+
 def import_external_pages(archive):
     """Return validated OpenVisio diagram; pages become separate visible layers."""
     from .model import validate
 
     pages = _pages(archive)
+    master_kinds = _master_shape_kinds(archive)
     nodes, edges, layers = [], [], []
     offset = 0.0
     rotated_count = 0
@@ -230,6 +258,16 @@ def import_external_pages(archive):
                 visible_kind = _kind(display_name)
                 if visible_kind != "server":
                     kind = visible_kind
+            master_kind = master_kinds.get(shape.get("Master"))
+            # A named public OpenVisio kind wins over any stale Master value.
+            # Only generic/unknown sheet identities may inherit the stencil
+            # identity; never reclassify an explicit LAN switch as FC/SAN.
+            explicit_kind = any(value.startswith("OpenVisio ") for value in
+                                (name_u, display_name))
+            generic_switch = bool(re.fullmatch(r"Switch\.\d+", name, re.IGNORECASE))
+            if (not explicit_kind and master_kind and master_kind != "server"
+                    and (kind == "server" or (generic_switch and kind == "network-switch"))):
+                kind = master_kind
             text_element = shape.find(f"./{{{V}}}Text")
             label = "".join(text_element.itertext()).strip() if text_element is not None else ""
             # A synthetic Sheet.N identifier is not a useful visible label.
