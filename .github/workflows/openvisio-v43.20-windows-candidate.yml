@@ -19,6 +19,8 @@ jobs:
           architecture: x64
       - name: Verify independent GitHub checkout and source parity
         shell: pwsh
+        env:
+          OPENVISIO_EXPECTED_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: ./02-Compilation/Verify-GitHub-Checkout-V43.20.ps1
       - name: Archive exact checked-out source revision
         shell: pwsh
