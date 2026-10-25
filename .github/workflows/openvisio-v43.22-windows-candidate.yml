@@ -1,0 +1,122 @@
+name: OpenVisio V43.22 Windows cumulative candidate
+on:
+  push:
+    branches: ['develop/v43.22-static-vsdx-waypoints-20261025']
+  pull_request:
+    branches: ['develop/v43.21-canonical-archive-paths-20261025']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  windows-native-candidate:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Materialize reviewed V43.22 source patch (one-time bootstrap)
+        shell: pwsh
+        run: |
+          $patchChunks = @('.automation/openvisio-v43.22-source.patch.gz.b64.00', '.automation/openvisio-v43.22-source.patch.gz.b64.01', '.automation/openvisio-v43.22-source.patch.gz.b64.02', '.automation/openvisio-v43.22-source.patch.gz.b64.03')
+          if (($patchChunks | Where-Object { !(Test-Path -LiteralPath $_ -PathType Leaf) }).Count -eq 0) {
+            $encodedPatch = (($patchChunks | ForEach-Object { (Get-Content -LiteralPath $_ -Raw).Trim() }) -join '')
+            $sourceBytes = [Convert]::FromBase64String($encodedPatch)
+            $inputStream = [IO.MemoryStream]::new($sourceBytes)
+            $gzip = [IO.Compression.GZipStream]::new($inputStream, [IO.Compression.CompressionMode]::Decompress)
+            $outputStream = [IO.MemoryStream]::new()
+            try { $gzip.CopyTo($outputStream) } finally { $gzip.Dispose(); $inputStream.Dispose() }
+            $patchPath = Join-Path $env:TEMP 'openvisio-v4322-source.patch'
+            [IO.File]::WriteAllBytes($patchPath, $outputStream.ToArray())
+            $outputStream.Dispose()
+            git apply --index $patchPath
+            if ($LASTEXITCODE -ne 0) { throw 'Reviewed V43.22 source patch failed to apply' }
+            git rm -- $patchChunks
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'feat(vsdx): preserve safe static orthogonal waypoint geometry'
+            if ($LASTEXITCODE -ne 0) { throw 'Could not commit reviewed V43.22 source patch' }
+            git push origin "HEAD:$env:GITHUB_REF_NAME"
+            if ($LASTEXITCODE -ne 0) { throw 'Could not publish materialized V43.22 source commit' }
+            "OPENVISIO_EXPECTED_SOURCE_SHA=$(git rev-parse HEAD)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+            Write-Host "PASS materialized source commit $(git rev-parse HEAD)"
+          } else {
+            Write-Host 'No bootstrap patch present; verifying and building checked-in source as-is.'
+          }
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Verify independent checkout and pinned source blobs
+        shell: pwsh
+        env:
+          OPENVISIO_EXPECTED_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: ./02-Compilation/Verify-GitHub-Checkout-V43.22.ps1
+      - name: Archive the exact checked-out source
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          git archive --format=zip --output=dist/OpenVisio-V43.22-GitHub-Source-Checkout.zip HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'Git source archive failed' }
+      - name: Upload exact source checkout
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V43.22-GitHub-Source-Checkout
+          path: dist/OpenVisio-V43.22-GitHub-Source-Checkout.zip
+          if-no-files-found: error
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
+      - name: Build Windows portable, installer, docs and cumulative ZIP
+        shell: pwsh
+        run: ./02-Compilation/Build-Windows-V43.22-Candidate.ps1
+      - name: Run the complete bundled test suite from a clean extracted ZIP
+        shell: pwsh
+        run: |
+          $archive = 'dist/OpenVisio-V43.22-Cumulative-Windows-x64.zip'
+          if (!(Test-Path -LiteralPath $archive -PathType Leaf)) { throw 'Cumulative ZIP missing before packaged-suite gate' }
+          $extract = Join-Path $env:TEMP ('openvisio-v4322-extracted-' + [guid]::NewGuid().ToString('N'))
+          New-Item -ItemType Directory -Path $extract -Force | Out-Null
+          try {
+            Expand-Archive -LiteralPath $archive -DestinationPath $extract -Force
+            $env:PYTHONPATH = Join-Path $extract 'python'
+            python (Join-Path $extract 'verify_source_parity.py')
+            if ($LASTEXITCODE -ne 0) { throw 'Source/test parity failed in extracted ZIP' }
+            python -m unittest discover -s (Join-Path $extract 'python/tests') -p 'test_*.py' -q
+            if ($LASTEXITCODE -ne 0) { throw 'Bundled test suite failed when run from extracted cumulative ZIP' }
+            Write-Host 'PASS: bundled full Python suite from clean cumulative ZIP extraction'
+          } finally {
+            Remove-Item -LiteralPath $extract -Recurse -Force -ErrorAction SilentlyContinue
+          }
+      - name: Independently re-audit final cumulative ZIP and sidecar
+        shell: pwsh
+        run: |
+          $zip = 'dist/OpenVisio-V43.22-Cumulative-Windows-x64.zip'
+          $sidecar = "$zip.sha256"
+          if (!(Test-Path -LiteralPath $zip) -or !(Test-Path -LiteralPath $sidecar)) { throw 'Cumulative ZIP or SHA-256 sidecar absent' }
+          $actual = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          $line = (Get-Content -LiteralPath $sidecar -Raw).Trim()
+          if (!$line.StartsWith($actual + '  ')) { throw 'Cumulative ZIP SHA-256 sidecar mismatch' }
+          python 02-Compilation/verify_release_archive.py --archive $zip --version V43.22 --json-report dist/V43.22-final-archive-audit.json
+          if ($LASTEXITCODE -ne 0) { throw 'Independent cumulative ZIP audit failed' }
+          Write-Host "PASS cumulative ZIP SHA256=$actual"
+      - name: Upload one cumulative Windows release kit
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V43.22-Cumulative-Windows-Release
+          path: |
+            dist/OpenVisio-V43.22-Cumulative-Windows-x64.zip
+            dist/OpenVisio-V43.22-Cumulative-Windows-x64.zip.sha256
+            dist/V43.22-cumulative-archive-validation.json
+            dist/V43.22-final-archive-audit.json
+          if-no-files-found: error
+      - name: Upload PDF render QA previews (not application screenshots)
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V43.22-PDF-Document-QA-Previews
+          path: |
+            dist/release-docs/pdf-page-renders/*.png
+            dist/release-docs/document-qa.json
+          if-no-files-found: error
