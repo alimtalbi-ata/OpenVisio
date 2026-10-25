@@ -152,8 +152,12 @@ def layout_connector_labels(nodes, edges, scene=None):
     visible.sort(key=lambda item: str(item[0]['id']))
     labels, hidden = {}, []
     for edge, points, text in visible:
-        width = max(24.0, len(text) * 5.2 + 10.0)
-        height = 15.0
+        # Tk draws explicit newlines on separate rows. Use the longest line
+        # for horizontal clearance and reserve one line-height per row so the
+        # collision index protects the full visible caption in both Tk and SVG.
+        text_lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+        width = max(24.0, max(len(line) for line in text_lines) * 5.2 + 10.0)
+        height = 15.0 * len(text_lines)
         ranked = sorted(enumerate(zip(points, points[1:])),
                         key=lambda entry: (-hypot(entry[1][1][0]-entry[1][0][0],
                                                    entry[1][1][1]-entry[1][0][1]), entry[0]))
