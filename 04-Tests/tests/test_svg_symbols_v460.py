@@ -11,6 +11,8 @@ class SvgSymbolTests(unittest.TestCase):
         root = ET.fromstring(to_svg(doc))
         ns = "{http://www.w3.org/2000/svg}"
         self.assertGreater(len(root.findall(f".//{ns}ellipse")), 0)
-        self.assertGreater(len(root.findall(f".//{ns}line")), 0)
+        polylines = root.findall(f".//{ns}polyline")
+        self.assertGreater(len(polylines), 0)
+        self.assertTrue(all(line.get("stroke") not in (None, "none") for line in polylines))
         self.assertGreater(len(root.findall(f".//{ns}rect")), len(kinds))
         self.assertEqual(len(root.findall(f"{ns}text")), len(kinds))
