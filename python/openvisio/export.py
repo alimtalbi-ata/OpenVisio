@@ -14,7 +14,7 @@ from .node_geometry import node_bounds, node_dimensions
 from .parallel_geometry import display_edges
 from .connector_labels import layout_connector_labels
 from .shape_icons import equipment_icon
-from .node_labels import label_char_limit, wrap_label_lines
+from .node_labels import fit_node_label
 
 
 def _xml10_text(value):
@@ -141,10 +141,18 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
                          f'points="{points}" fill="#f8fafc" stroke="#334155"/>')
         raw_label = _xml10_text(node.get('label', 'Équipement'))
         label_padding = 20 if node.get('shape') == 'visio-group' else 12
-        max_chars = label_char_limit(w, font_size=13, padding=label_padding)
-        visual_label = "\n".join(wrap_label_lines(raw_label, max_chars))
-        node_label = _svg_text_content(visual_label, x)
-        lines.append(f'<text x="{x}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="13" fill="#172554">{node_label}</text>')
+        visual_rows, label_font_size = fit_node_label(
+            raw_label, w, h, font_size=13, padding=label_padding,
+            vertical_padding=8, minimum_font_size=6)
+        icon_reserve = 32.0 if icon is not None and node.get('shape') != 'visio-group' and len(visual_rows) > 1 else 0.0
+        if icon_reserve:
+            visual_rows, label_font_size = fit_node_label(
+                raw_label, w - icon_reserve, h, font_size=label_font_size,
+                padding=label_padding, vertical_padding=8, minimum_font_size=6)
+        label_x = x if not icon_reserve else x + icon_reserve / 2
+        visual_label = "\n".join(visual_rows)
+        node_label = _svg_text_content(visual_label, label_x)
+        lines.append(f'<text x="{label_x:g}" y="{y+5}" text-anchor="middle" font-family="Arial" font-size="{label_font_size}" fill="#172554">{node_label}</text>')
     lines.append('</svg>')
     return '\n'.join(lines)
 

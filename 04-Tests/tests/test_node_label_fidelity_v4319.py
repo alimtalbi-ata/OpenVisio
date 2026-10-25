@@ -8,7 +8,7 @@ import unittest
 from xml.etree import ElementTree as ET
 
 from openvisio.export import to_svg
-from openvisio.node_labels import label_char_limit, wrap_label_lines
+from openvisio.node_labels import fit_node_label, label_char_limit, wrap_label_lines
 from openvisio.render import draw_document
 
 SVG = "{http://www.w3.org/2000/svg}"
@@ -46,6 +46,12 @@ class NodeLabelFidelityTests(unittest.TestCase):
         self.assertEqual(wrap_label_lines("a\r\n\r\nb\n", 12),
                          ("a", "", "b", ""))
 
+    def test_long_label_font_scales_to_fit_shape_height_without_dropping_text(self):
+        rows, font_size = fit_node_label(LONG_LABEL, 140, 60, font_size=13)
+        self.assertLess(font_size, 13)
+        self.assertEqual("".join(rows), LONG_LABEL)
+        self.assertLessEqual(len(rows) * font_size * 1.35, 52)
+
     def test_width_estimator_rejects_invalid_geometry(self):
         self.assertGreaterEqual(label_char_limit(140), 1)
         for args in ((0,), (-1,), (True,), (float("inf"),)):
@@ -75,7 +81,8 @@ class NodeLabelFidelityTests(unittest.TestCase):
         spans = text.findall(SVG + "tspan")
         self.assertGreater(len(spans), 1)
         self.assertEqual("".join(span.text or "" for span in spans), LONG_LABEL)
-        self.assertTrue(all(span.get("x") == text.get("x") for span in spans))
+        self.assertTrue(all(float(span.get("x")) == float(text.get("x")) for span in spans))
+        self.assertGreater(float(text.get("x")), data["nodes"][0]["x"])
         self.assertEqual(data, before)
 
     def test_custom_shape_width_controls_wrapping_without_changing_model(self):
