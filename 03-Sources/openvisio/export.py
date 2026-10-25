@@ -27,7 +27,10 @@ class _SVGCanvas:
 
     def create_line(self, *coords, **style):
         points = " ".join(f"{coords[i]:g},{coords[i+1]:g}" for i in range(0,len(coords),2))
-        self.elements.append(f'<polyline points="{points}" {self._style({**style, "fill": "none"})}/>')
+        line_style = dict(style)
+        if "fill" in line_style:
+            line_style["outline"] = line_style.pop("fill")
+        self.elements.append(f'<polyline points="{points}" {self._style({**line_style, "fill": "none"})}/>')
 
 def to_svg(data, width=None, height=None, margin=80):
     data = validate(data)
