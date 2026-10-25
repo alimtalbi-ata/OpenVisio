@@ -27,13 +27,21 @@ def add_file(source, archive_name):
 
 for folder in ("02-Compilation", "03-Sources", "04-Tests", "05-Documentation", "06-Historique"):
     for source in sorted((project / folder).rglob("*")):
+        relative = source.relative_to(project)
         if not source.is_file() or source.suffix in (".pyc", ".exe", ".zip"):
             continue
-        if any(part in (".venv", "dist", "build", "__pycache__") for part in source.relative_to(project).parts):
+        if any(part in (".venv", "dist", "build", "__pycache__") for part in relative.parts):
             continue
-        if folder == "02-Compilation" and source.name == "package_release.py":
-            pass
-        add_file(source, source.relative_to(project))
+        # Build-Windows.cmd historically staged duplicate source/docs/tests here.
+        # Package the canonical project folders only; stale deleted files must not
+        # survive in the cumulative ZIP from a previous build.
+        if relative.parts[0] == "02-Compilation" and (
+            (len(relative.parts) > 1 and relative.parts[1] in {"openvisio", "tests", "docs"})
+            or relative.parts[1:] == ("run_openvisio.py",)
+            or relative.name in {"Smoke-Portable-Windows.ps1", "Smoke-Installer-Windows.ps1"}
+        ):
+            continue
+        add_file(source, relative)
 for source in (portable, installer):
     add_file(source, "01-Application/binary/" + source.name)
 for source in docs:
