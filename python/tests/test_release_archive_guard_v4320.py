@@ -22,7 +22,8 @@ ENGINE = {
 
 
 def build_zip(path, *, version=VERSION, changed_mirror=False, missing_dependency=False,
-              missing_checksum=False, corrupt_hash=False, duplicate_path=False, traversal=False):
+              missing_checksum=False, corrupt_hash=False, duplicate_path=False,
+              traversal=False, noncanonical_path=False):
     payload = {}
     for name, data in ENGINE.items():
         if missing_dependency and name == "routing.py":
@@ -60,6 +61,9 @@ def build_zip(path, *, version=VERSION, changed_mirror=False, missing_dependency
                 archive.writestr("03-Sources/openvisio/model.py", b"duplicate")
         if traversal:
             archive.writestr("../outside.py", b"unsafe")
+        if noncanonical_path:
+            # PurePosixPath would normalize away this raw dot segment.
+            archive.writestr("03-Sources/./openvisio/alias.py", b"unsafe")
 
 
 class ReleaseArchiveGuardTests(unittest.TestCase):
@@ -118,6 +122,20 @@ class ReleaseArchiveGuardTests(unittest.TestCase):
             report = self.audit(folder, traversal=True)
         self.assertFalse(report["ok"])
         self.assertTrue(any("chemin non sûr" in err for err in report["errors"]))
+
+
+    def test_noncanonical_raw_path_segments_are_rejected(self):
+        for spelling in ("dot segment", "repeated separator"):
+            with self.subTest(spelling=spelling), tempfile.TemporaryDirectory() as folder:
+                path = Path(folder) / "test.zip"
+                build_zip(path)
+                alias = ("03-Sources/./openvisio/alias.py" if spelling == "dot segment"
+                         else "03-Sources//openvisio/alias.py")
+                with ZipFile(path, "a", ZIP_DEFLATED) as archive:
+                    archive.writestr(alias, b"unsafe")
+                report = GUARD.audit_archive(path, VERSION)
+                self.assertFalse(report["ok"])
+                self.assertTrue(any("chemin non sûr" in err for err in report["errors"]))
 
 
 if __name__ == "__main__":
