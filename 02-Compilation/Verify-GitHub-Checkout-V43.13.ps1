@@ -21,8 +21,8 @@ try {
     $expected = @{
         'python/openvisio/vsdx_external.py' = 'd2a08b36a8b4580fca78df7231b74a49bd3a1d51'
         '03-Sources/openvisio/vsdx_external.py' = 'd2a08b36a8b4580fca78df7231b74a49bd3a1d51'
-        'python/tests/test_vsdx_master_identity_v4313.py' = 'c089f6fab06b753e90b3e3b72be01a377eebb0a3'
-        '04-Tests/tests/test_vsdx_master_identity_v4313.py' = 'c089f6fab06b753e90b3e3b72be01a377eebb0a3'
+        'python/tests/test_vsdx_master_identity_v4312.py' = 'c089f6fab06b753e90b3e3b72be01a377eebb0a3'
+        '04-Tests/tests/test_vsdx_master_identity_v4312.py' = 'c089f6fab06b753e90b3e3b72be01a377eebb0a3'
         'python/tests/test_vsdx_master_precedence_v4313.py' = '045afc922ff1eea6911a9167eb2b79b2290cb2e7'
         '04-Tests/tests/test_vsdx_master_precedence_v4313.py' = '045afc922ff1eea6911a9167eb2b79b2290cb2e7'
         'python/openvisio/viewport.py' = 'd4544a28fe446a4e8e163f17e3d4c2c6714272f8'
