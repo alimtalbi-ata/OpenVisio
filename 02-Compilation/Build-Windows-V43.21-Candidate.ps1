@@ -39,29 +39,21 @@ try {
     $skipCount = if ($skipMatch.Success) { [int]$skipMatch.Groups[1].Value } else { 0 }
     Write-Host "PASS full Python suite: $unitCount tests; $skipCount skipped; $unitDuration seconds"
 
-    Invoke-UnitPattern -Pattern 'test_release_archive_guard_v4321.py'
-    Invoke-UnitPattern -Pattern 'test_low_zoom_label_lod_v4321.py'
+    Invoke-UnitPattern -Pattern 'test_release_archive_guard_v4320.py'
+    Invoke-UnitPattern -Pattern 'test_vsdx_zip_path_canonical_v4321.py'
+    Invoke-UnitPattern -Pattern 'test_low_zoom_label_lod_v4320.py'
     # Exercise real Tk callbacks on the Windows runner, not only headless model tests.
     $env:OPENVISIO_GUI_TESTS = '1'
     try {
-        python -m unittest discover -s python/tests -p 'test_scene_navigation_v4310.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'Native Tk navigation regression failed' }
-        python -m unittest discover -s python/tests -p 'test_vsdx_shape_identity_v4311.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'VSDX switch shape regression failed' }
-        python -m unittest discover -s python/tests -p 'test_vsdx_master_identity_v4312.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'VSDX external master identity regression failed' }
-        python -m unittest discover -s python/tests -p 'test_vsdx_master_precedence_v4313.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'VSDX V43.21 master precedence regression failed' }
-        python -m unittest discover -s python/tests -p 'test_vsdx_y_anchor_connectors_v4314.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'VSDX V43.21 Y-axis SAN glue regression failed' }
-        python -m unittest discover -s python/tests -p 'test_vsdx_external_orthogonal_v4315.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'V43.21 public orthogonal route regression failed' }
-        python -m unittest discover -s python/tests -p 'test_vsdx_connector_loss_v4316.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'V43.21 public connector loss accounting regression failed' }
-        python -m unittest discover -s python/tests -p 'test_svg_direction_v4317.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'V43.21 SVG SAN direction regression failed' }
-        python -m unittest discover -s python/tests -p 'test_svg_multiline_labels_v4318.py' -q
-        if ($LASTEXITCODE -ne 0) { throw 'V43.21 SVG multiline-label regression failed' }
+        Invoke-UnitPattern -Pattern 'test_scene_navigation_v4310.py'
+        Invoke-UnitPattern -Pattern 'test_vsdx_shape_identity_v4311.py'
+        Invoke-UnitPattern -Pattern 'test_vsdx_master_identity_v4312.py'
+        Invoke-UnitPattern -Pattern 'test_vsdx_master_precedence_v4313.py'
+        Invoke-UnitPattern -Pattern 'test_vsdx_y_anchor_connectors_v4314.py'
+        Invoke-UnitPattern -Pattern 'test_vsdx_external_orthogonal_v4315.py'
+        Invoke-UnitPattern -Pattern 'test_vsdx_connector_loss_v4316.py'
+        Invoke-UnitPattern -Pattern 'test_svg_direction_v4317.py'
+        Invoke-UnitPattern -Pattern 'test_svg_multiline_labels_v4318.py'
     } finally {
         Remove-Item Env:OPENVISIO_GUI_TESTS -ErrorAction SilentlyContinue
     }
@@ -93,11 +85,7 @@ try {
         "$($hash.Hash.ToLowerInvariant())  $([IO.Path]::GetFileName($_))"
     } | Set-Content -LiteralPath $manifest -Encoding ascii
     $sourceCommit = (git rev-parse HEAD).Trim()
-    if ($LASTEXITCODE -ne 0 -or $sourceCommit -notmatch '^[0-9a-f]{40}
-} finally {
-    Pop-Location
-}
-) { throw 'Unable to identify exact source commit' }
+    if ($LASTEXITCODE -ne 0 -or $sourceCommit -notmatch '^[0-9a-f]{40}$') { throw 'Unable to identify exact source commit' }
     $qualificationPath = Join-Path $root 'dist/V43.21-Windows-Qualification.json'
     $qualification = [ordered]@{
         version = 'V43.21'
