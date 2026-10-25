@@ -1,6 +1,8 @@
 """V43.20: zoom-aware label LOD avoids oversized captions in overview."""
 from copy import deepcopy
 import unittest
+import xml.etree.ElementTree as ET
+
 from openvisio.export import to_svg
 from openvisio.render import draw_document
 
@@ -47,8 +49,10 @@ class NodeLabelLowZoomTests(unittest.TestCase):
         self.assertEqual(node_label_calls(canvas), [])
         self.assertEqual(len(canvas.rectangles), 1)
         self.assertEqual(doc, before)
-        # Low zoom is a Tk display-level optimisation, not a model/export mutation.
-        self.assertIn(LONG_LABEL, to_svg(doc))
+        # SVG wraps a visual label across <tspan> elements; compare the XML
+        # text stream, not the raw serialized markup, which inserts tags.
+        svg = ET.fromstring(to_svg(doc))
+        self.assertIn(LONG_LABEL, "".join(svg.itertext()))
 
     def test_normal_zoom_keeps_complete_label_visible(self):
         doc = make_document()
