@@ -11,7 +11,7 @@ git clone --single-branch --branch $branch --depth 1 $repo $Destination
 if ($LASTEXITCODE -ne 0) { throw 'Independent checkout failed' }
 Push-Location $Destination
 try {
-    $head = (git rev-parse HEAD).Trim()
+    $head = (@(git rev-parse HEAD) -join '').Trim()
     if ($LASTEXITCODE -ne 0) { throw 'Cannot resolve checkout HEAD' }
     if ($env:OPENVISIO_EXPECTED_SOURCE_SHA -and $head -ne $env:OPENVISIO_EXPECTED_SOURCE_SHA) { throw "Independent branch checkout $head differs from expected source SHA $env:OPENVISIO_EXPECTED_SOURCE_SHA" }
     $expected = @{
@@ -48,10 +48,10 @@ try {
     }
     foreach ($path in $expected.Keys) {
         if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing critical source: $path" }
-        $actual = (git rev-parse "HEAD:$path").Trim()
+        $actual = (@(git rev-parse "HEAD:$path") -join '').Trim()
         if ($LASTEXITCODE -ne 0 -or $actual -ne $expected[$path]) { throw "Git blob mismatch: $path expected $($expected[$path]) got $actual" }
     }
-    $status = (git status --porcelain).Trim()
+    $status = (@(git status --porcelain) -join '').Trim()
     if ($LASTEXITCODE -ne 0) { throw 'Unable to inspect checkout status' }
     if ($status) { throw "Checkout is not clean: $status" }
     $env:PYTHONPATH = Join-Path $Destination 'python'
