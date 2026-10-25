@@ -13,7 +13,7 @@ Push-Location $Destination
 try {
     $head = (git rev-parse HEAD).Trim()
     if ($LASTEXITCODE -ne 0) { throw 'Cannot resolve checkout HEAD' }
-    if ($env:GITHUB_SHA -and $head -ne $env:GITHUB_SHA) { throw "Checkout $head differs from CI commit $env:GITHUB_SHA" }
+    if ($env:OPENVISIO_EXPECTED_SOURCE_SHA -and $head -ne $env:OPENVISIO_EXPECTED_SOURCE_SHA) { throw "Independent branch checkout $head differs from expected source SHA $env:OPENVISIO_EXPECTED_SOURCE_SHA" }
     $expected = @{
         'python/openvisio/model.py' = 'e4d0a90ba71f6237a1597c1318aac165db242016'
         '03-Sources/openvisio/model.py' = 'e4d0a90ba71f6237a1597c1318aac165db242016'
