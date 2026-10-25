@@ -39,6 +39,12 @@ for source in (portable, installer):
 for source in docs:
     add_file(source, "05-Documentation/" + source.name)
 
+entries["01-Application/BUILD-STATUS.txt"] = (
+    "Real Windows binaries built in CI. Windows smoke and external Microsoft Visio "
+    "fidelity are separate qualification gates.\\n"
+).encode("utf-8")
+
+# Cover every payload file in the manifest before serializing the manifest itself.
 manifest = {
     "version": "42.7.0", "author": "Abdelhalim Talbi",
     "qualification": "windows-built; functional-fidelity-pending",
@@ -46,19 +52,27 @@ manifest = {
               for name, data in sorted(entries.items())}
 }
 entries["07-Manifestes/manifest.json"] = json.dumps(manifest, ensure_ascii=False, indent=2).encode("utf-8")
+# The checksum list covers payload plus manifest; it intentionally excludes itself.
 entries["07-Manifestes/SHA256SUMS.txt"] = "".join(
-    f"{sha256(data).hexdigest()}  {name}\n" for name, data in sorted(entries.items())
-).encode("utf-8")
-entries["01-Application/BUILD-STATUS.txt"] = (
-    "Real Windows binaries built in CI. Windows smoke and external Microsoft Visio "
-    "fidelity are separate qualification gates.\n"
+    f"{sha256(data).hexdigest()}  {name}\\n" for name, data in sorted(entries.items())
 ).encode("utf-8")
 target = out / "OpenVisio-v42.7-Windows-Cumulative.zip"
 with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as archive:
     for name, content in sorted(entries.items()):
         archive.writestr(name, content)
 with zipfile.ZipFile(target) as archive:
-    assert archive.testzip() is None
-    for name, expected in manifest["files"].items():
-        assert sha256(archive.read(name)).hexdigest() == expected["sha256"]
-print("Verified Windows ZIP:", target)
+    assert archive.testzip() is None, "ZIP CRC validation failed"
+    archive_names = set(archive.namelist())
+    loaded_manifest = json.loads(archive.read("07-Manifestes/manifest.json"))
+    for name, expected in loaded_manifest["files"].items():
+        assert name in archive_names, f"Manifest entry missing from ZIP: {name}"
+        payload = archive.read(name)
+        assert len(payload) == expected["bytes"], f"Manifest size mismatch: {name}"
+        assert sha256(payload).hexdigest() == expected["sha256"], f"Manifest SHA-256 mismatch: {name}"
+    checksums = archive.read("07-Manifestes/SHA256SUMS.txt").decode("utf-8").splitlines()
+    for line in checksums:
+        digest, name = line.split("  ", 1)
+        assert name in archive_names, f"Checksum entry missing from ZIP: {name}"
+        assert sha256(archive.read(name)).hexdigest() == digest, f"Checksum mismatch: {name}"
+    assert "01-Application/BUILD-STATUS.txt" in loaded_manifest["files"], "Build status is not manifest-covered"
+print("Verified Windows ZIP, manifest and SHA-256 list:", target)
