@@ -44,7 +44,7 @@ try {
     } finally {
         Remove-Item Env:OPENVISIO_GUI_TESTS -ErrorAction SilentlyContinue
     }
-    python -m unittest discover -s python/tests -p 'test_node_label_fidelity_v4320.py' -q
+    python -m unittest discover -s python/tests -p 'test_node_label_fidelity_v4319.py' -q
     if ($LASTEXITCODE -ne 0) { throw 'V43.20 long equipment label regression failed' }
     python -m pip install --disable-pip-version-check -r '02-Compilation/requirements-build.txt'
     if ($LASTEXITCODE -ne 0) { throw 'Pinned PyInstaller installation failed' }
