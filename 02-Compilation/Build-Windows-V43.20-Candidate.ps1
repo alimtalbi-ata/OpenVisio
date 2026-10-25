@@ -1,0 +1,78 @@
+# OpenVisio V43.20 source candidate — native Windows x64 build and smoke.
+# Internal application version remains 42.50.0 due to legacy build contracts.
+# Candidate only: NOT a production release or Microsoft Visio certification.
+# Author: Abdelhalim Talbi.
+[CmdletBinding()]
+param()
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+$root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+Push-Location $root
+try {
+    $env:PYTHONPATH = Join-Path $root 'python'
+    python verify_source_parity.py
+    if ($LASTEXITCODE -ne 0) { throw 'Source mirrors differ' }
+    python 02-Compilation/verify_release_archive.py --checkout $root --version V43.20 --json-report (Join-Path $root 'dist/V43.20-checkout-integrity.json')
+    if ($LASTEXITCODE -ne 0) { throw 'Release/source archive integrity gate failed' }
+    python -m unittest discover -s python/tests -p 'test_*.py' -q
+    if ($LASTEXITCODE -ne 0) { throw 'Python suite failed' }
+    python -m unittest discover -s python/tests -p 'test_release_archive_guard_v4320.py' -q
+    if ($LASTEXITCODE -ne 0) { throw 'Cumulative archive integrity regression failed' }
+    python -m unittest discover -s python/tests -p 'test_low_zoom_label_lod_v4320.py' -q
+    if ($LASTEXITCODE -ne 0) { throw 'Low-zoom label visibility regression failed' }
+    # Exercise real Tk callbacks on the Windows runner, not only headless model tests.
+    $env:OPENVISIO_GUI_TESTS = '1'
+    try {
+        python -m unittest discover -s python/tests -p 'test_scene_navigation_v4310.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'Native Tk navigation regression failed' }
+        python -m unittest discover -s python/tests -p 'test_vsdx_shape_identity_v4311.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'VSDX switch shape regression failed' }
+        python -m unittest discover -s python/tests -p 'test_vsdx_master_identity_v4312.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'VSDX external master identity regression failed' }
+        python -m unittest discover -s python/tests -p 'test_vsdx_master_precedence_v4313.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'VSDX V43.20 master precedence regression failed' }
+        python -m unittest discover -s python/tests -p 'test_vsdx_y_anchor_connectors_v4314.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'VSDX V43.20 Y-axis SAN glue regression failed' }
+        python -m unittest discover -s python/tests -p 'test_vsdx_external_orthogonal_v4315.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'V43.20 public orthogonal route regression failed' }
+        python -m unittest discover -s python/tests -p 'test_vsdx_connector_loss_v4316.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'V43.20 public connector loss accounting regression failed' }
+        python -m unittest discover -s python/tests -p 'test_svg_direction_v4317.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'V43.20 SVG SAN direction regression failed' }
+        python -m unittest discover -s python/tests -p 'test_svg_multiline_labels_v4318.py' -q
+        if ($LASTEXITCODE -ne 0) { throw 'V43.20 SVG multiline-label regression failed' }
+    } finally {
+        Remove-Item Env:OPENVISIO_GUI_TESTS -ErrorAction SilentlyContinue
+    }
+    python -m unittest discover -s python/tests -p 'test_node_label_fidelity_v4320.py' -q
+    if ($LASTEXITCODE -ne 0) { throw 'V43.20 long equipment label regression failed' }
+    python -m pip install --disable-pip-version-check -r '02-Compilation/requirements-build.txt'
+    if ($LASTEXITCODE -ne 0) { throw 'Pinned PyInstaller installation failed' }
+    $portable = Join-Path $root 'dist/OpenVisio-V43.20-Source-Candidate-Windows-x64-Portable.exe'
+    $installer = Join-Path $root 'dist/installer/OpenVisio-V43.20-Source-Candidate-Setup-x64.exe'
+    foreach ($file in @($portable, $installer)) {
+        if (Test-Path -LiteralPath $file) { Remove-Item -LiteralPath $file -Force }
+    }
+    python -m PyInstaller --noconfirm --clean --onefile --windowed `
+        --name OpenVisio-V43.20-Source-Candidate-Windows-x64-Portable `
+        --paths python python/run_openvisio.py
+    if ($LASTEXITCODE -ne 0) { throw 'PyInstaller failed' }
+    if (!(Test-Path -LiteralPath $portable)) { throw 'Portable EXE absent' }
+    & (Join-Path $root '04-Tests/Smoke-Portable-V42.71.ps1') -Executable $portable
+    if ($LASTEXITCODE -ne 0) { throw 'Frozen functional smoke failed' }
+    $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+    if (!(Test-Path -LiteralPath $iscc)) { throw 'Inno Setup 6 absent' }
+    & $iscc '02-Compilation/installer/OpenVisio-V43.20-Candidate.iss'
+    if ($LASTEXITCODE -ne 0) { throw 'Inno Setup compilation failed' }
+    if (!(Test-Path -LiteralPath $installer)) { throw 'Installer EXE absent' }
+    & (Join-Path $root '04-Tests/Smoke-Installer-V42.71.ps1') -Installer $installer
+    if ($LASTEXITCODE -ne 0) { throw 'Installer functional smoke failed' }
+    $manifest = Join-Path $root 'dist/OpenVisio-V43.20-Source-Candidate-Windows-SHA256.txt'
+    @($portable, $installer) | ForEach-Object {
+        $hash = Get-FileHash -LiteralPath $_ -Algorithm SHA256
+        "$($hash.Hash.ToLowerInvariant())  $([IO.Path]::GetFileName($_))"
+    } | Set-Content -LiteralPath $manifest -Encoding ascii
+    Write-Host 'PASS: Windows source candidate compiled and functional smoke completed'
+} finally {
+    Pop-Location
+}
