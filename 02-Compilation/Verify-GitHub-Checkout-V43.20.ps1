@@ -34,8 +34,8 @@ try {
         '02-Compilation/verify_release_archive.py' = '6299b9c2e84d7bca285d119dd9039b7b19a64c55'
         'python/tests/test_release_archive_guard_v4320.py' = '630a2288de31622a45c6b17682f9312e04f617ec'
         '04-Tests/tests/test_release_archive_guard_v4320.py' = '630a2288de31622a45c6b17682f9312e04f617ec'
-        'python/tests/test_low_zoom_label_lod_v4320.py' = '292d89c3763f32ecad39908067a36fcf1b42c80d'
-        '04-Tests/tests/test_low_zoom_label_lod_v4320.py' = '292d89c3763f32ecad39908067a36fcf1b42c80d'
+        'python/tests/test_low_zoom_label_lod_v4320.py' = 'f27363d69717142015065ea5613a34d769704d05'
+        '04-Tests/tests/test_low_zoom_label_lod_v4320.py' = 'f27363d69717142015065ea5613a34d769704d05'
     }
     foreach ($path in $expected.Keys) {
         if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing critical source: $path" }
