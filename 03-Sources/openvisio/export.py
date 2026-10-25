@@ -72,13 +72,31 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
         raise ValueError('Dimensions SVG invalides')
     lines = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="{min_x} {min_y} {natural_width} {natural_height}">',
              f'<rect x="{min_x}" y="{min_y}" width="{natural_width}" height="{natural_height}" fill="#f8fafc"/>']
+    if routed:
+        # Tk draws arrow=tk.LAST for every connector. SVG previously omitted
+        # direction entirely: bidirectional FC paths were indistinguishable
+        # outside the editor. A single reusable marker preserves the final
+        # segment direction for straight and orthogonal routes alike.
+        lines.append('<defs><marker id="openvisio-san-arrow" markerWidth="10" '
+                     'markerHeight="8" refX="9" refY="4" orient="auto" '
+                     'markerUnits="userSpaceOnUse">'
+                     '<path d="M 0 0 L 10 4 L 0 8 z" fill="#2563eb"/>'
+                     '</marker></defs>')
     for edge, points in routed:
+        # Separate path identity from caption metadata: blank connector
+        # labels must remain blank, while each parallel FC path is traceable.
+        connector_id = quoteattr(_xml10_text(edge['id']))
         if len(points) == 2:
             (ax, ay), (bx, by) = points
-            lines.append(f'<line x1="{ax:g}" y1="{ay:g}" x2="{bx:g}" y2="{by:g}" stroke="#2563eb" stroke-width="2"/>')
+            lines.append(f'<line data-openvisio-connector={connector_id} '
+                         f'x1="{ax:g}" y1="{ay:g}" x2="{bx:g}" y2="{by:g}" '
+                         'stroke="#2563eb" stroke-width="2" '
+                         'marker-end="url(#openvisio-san-arrow)"/>')
         else:
             poly = ' '.join(f'{x},{y}' for x, y in points)
-            lines.append(f'<polyline points="{poly}" fill="none" stroke="#2563eb" stroke-width="2"/>')
+            lines.append(f'<polyline data-openvisio-connector={connector_id} '
+                         f'points="{poly}" fill="none" stroke="#2563eb" '
+                         'stroke-width="2" marker-end="url(#openvisio-san-arrow)"/>')
     for label in label_layout.labels.values():
         lines.append(f'<text data-openvisio-edge={quoteattr(_xml10_text(label.edge_id))} '
                      f'x="{label.x:g}" y="{label.y:g}" text-anchor="middle" '
