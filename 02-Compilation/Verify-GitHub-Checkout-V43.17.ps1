@@ -4,7 +4,7 @@
 param([string]$Destination = (Join-Path $env:TEMP 'openvisio-v4317-verify'))
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$branch = 'develop/v43.17-connector-loss-accounting-20261025'
+$branch = 'develop/v43.17-svg-san-direction-20261025'
 $repo = 'https://github.com/alimtalbi-ata/OpenVisio.git'
 if (Test-Path -LiteralPath $Destination) {
     throw "Destination must not exist: $Destination"

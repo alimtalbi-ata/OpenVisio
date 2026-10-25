@@ -1,7 +1,7 @@
 name: OpenVisio V43.17 Windows native source candidate
 on:
   push:
-    branches: ['develop/v43.17-connector-loss-accounting-20261025']
+    branches: ['develop/v43.17-svg-san-direction-20261025']
   workflow_dispatch:
 permissions:
   contents: read
