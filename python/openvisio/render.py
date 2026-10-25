@@ -191,6 +191,15 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
             canvas.create_polygon(*(coord for point in icon for coord in xy(*point)),
                                   fill="#f8fafc", outline="#334155", width=max(1, scale),
                                   tags=(f"ov:node:{node['id']}:icon",))
+        # Level of detail: once a node is physically too small on screen,
+        # its caption overwhelms neighbouring equipment in an overview. Hide
+        # only this Tk text item; persisted labels, geometry, hit testing,
+        # connector routing, SVG and VSDX exports remain unchanged. A selected
+        # node keeps its caption available even at low zoom.
+        screen_width = 2 * hw * scale
+        screen_height = 2 * hh * scale
+        if not selected and (screen_width < 40.0 or screen_height < 18.0):
+            continue
         inner_padding = 20 if is_group else 12
         font_size = max(6, int(10 * scale))
         label_value = node.get("label", "Équipement")
