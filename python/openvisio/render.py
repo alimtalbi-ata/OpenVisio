@@ -7,7 +7,7 @@ from .connector_geometry import lane_endpoints
 from .viewport_visibility import view_window, rect_visible, polyline_visible
 from .parallel_geometry import display_edges
 from .connector_labels import layout_connector_labels
-from .shape_icons import equipment_icon
+from .shape_icons import equipment_icon, equipment_outline, equipment_detail_primitives
 from .node_labels import fit_node_label
 
 NODE_HALF_WIDTH = 70
@@ -178,19 +178,41 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
         selected = node["id"] == selected_node or node["id"] in (selected_nodes or ())
         hw, hh = node_half_sizes(node)
         is_group = node.get("shape") == "visio-group"
-        canvas.create_rectangle(*xy(x-hw, y-hh), *xy(x+hw, y+hh),
-                                fill="" if is_group else ("#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"]),
-                                outline="#64748b" if is_group else "#1d4ed8",
-                                dash=(6, 3) if is_group else (),
-                                width=(3 if selected else 1) * scale,
-                                tags=(f"ov:node:{node['id']}:rect",))
-        # A dedicated, stable retained item makes equipment types distinguishable
-        # without replacing the node hit box or changing connector attachments.
+        fill = "" if is_group else ("#bfdbfe" if selected else get_shape(node.get("shape", "server"))["fill"])
+        outline = equipment_outline(node) if not is_group else None
+        if outline is not None and hasattr(canvas, "create_polygon"):
+            # Keep a transparent rectangular compatibility item for older tooling;
+            # the visible outline and fill are the shape-specific polygon below.
+            canvas.create_rectangle(*xy(x-hw, y-hh), *xy(x+hw, y+hh),
+                                    fill="", outline="", width=0,
+                                    tags=(f"ov:node:{node['id']}:rect",))
+            canvas.create_polygon(*(coord for point in outline for coord in xy(*point)),
+                                  fill=fill, outline="#1d4ed8", width=(3 if selected else 1) * scale,
+                                  tags=(f"ov:node:{node['id']}:body",))
+        else:
+            canvas.create_rectangle(*xy(x-hw, y-hh), *xy(x+hw, y+hh),
+                                    fill=fill, outline="#64748b" if is_group else "#1d4ed8",
+                                    dash=(6, 3) if is_group else (),
+                                    width=(3 if selected else 1) * scale,
+                                    tags=(f"ov:node:{node['id']}:rect",))
+        # Small badge and internal port/rack details stay separate retained items.
         icon = equipment_icon(node)
         if icon is not None and hasattr(canvas, "create_polygon"):
             canvas.create_polygon(*(coord for point in icon for coord in xy(*point)),
                                   fill="#f8fafc", outline="#334155", width=max(1, scale),
                                   tags=(f"ov:node:{node['id']}:icon",))
+            for detail_index, detail in enumerate(equipment_detail_primitives(node)):
+                detail_coords = [coord for point in detail["points"] for coord in xy(*point)]
+                detail_tags = (f"ov:node:{node['id']}:detail:{detail_index}",)
+                if detail["kind"] == "line":
+                    canvas.create_line(*detail_coords, fill=detail["stroke"],
+                                       width=max(.8, detail["width"] * max(scale, .75)),
+                                       tags=detail_tags)
+                elif detail["kind"] == "polygon":
+                    canvas.create_polygon(*detail_coords, fill=detail["fill"],
+                                          outline=detail["stroke"],
+                                          width=max(.6, detail["width"] * max(scale, .75)),
+                                          tags=detail_tags)
         # Level of detail: once a node is physically too small on screen,
         # its caption overwhelms neighbouring equipment in an overview. Hide
         # only this Tk text item; persisted labels, geometry, hit testing,
@@ -207,7 +229,7 @@ def draw_document(canvas, document, selected_node=None, selected_edge=None, view
             label_value, 2 * hw * scale, 2 * hh * scale,
             font_size=font_size, padding=inner_padding * scale,
             vertical_padding=8 * scale, minimum_font_size=6)
-        icon_reserve = 32.0 if icon is not None and not is_group and len(label_rows) > 1 else 0.0
+        icon_reserve = 34.0 if icon is not None and not is_group and len(label_rows) > 1 else 0.0
         if icon_reserve:
             label_rows, font_size = fit_node_label(
                 label_value, (2 * hw - icon_reserve) * scale, 2 * hh * scale,
