@@ -1,3 +1,15 @@
+# OpenVisio — cumulative source and Windows candidate
+
+## V43.23 combined candidate — static VSDX waypoints + canonical private-part protection (26 October 2026)
+
+- Integrates static waypoint preservation for a constrained, public, formula-free orthogonal VSDX connector representation with the V43.22 private payload case guard.
+- Each preserved route records a schema version, endpoint geometry signatures and bounded page-space points. The routing scene accepts the stored path only when both endpoints remain unchanged and no unrelated equipment rectangle is crossed; otherwise it invokes the normal obstacle-avoiding router.
+- Preserves routes per edge, including parallel SAN links. Invalid schemas, non-finite/out-of-range coordinates, duplicate points, diagonal segments, excessive points and unsupported/formula-driven connector geometries are not trusted.
+- The reserved private package entries `openvisio/document.json` and `openvisio/manifest.json` retain strict canonical case; this prevents a casing alias from silently falling back to lossy public geometry.
+- The source and test trees are byte-identical mirrors. A separate Windows workflow pins important Git blobs, starts from an independent checkout, runs the full test suite and targeted regressions, builds and smoke-tests portable/installable Windows x64 outputs, generates Word/PDF, and audits the extracted cumulative ZIP.
+- **Scope limit:** fixtures are synthetic; Microsoft Visio Desktop import/export round-trip is not tested. No manual Windows UI acceptance or real OpenVisio screenshot is claimed. The original V43.4 ZIP was not available for a new binary comparison in this run; prior audit findings are recorded in PR #54.
+- Author: Abdelhalim Talbi.
+
 # OpenVisio - cumulative source and Windows candidate
 
 ## V43.21 candidate (25 October 2026)

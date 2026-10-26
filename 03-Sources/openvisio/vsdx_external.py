@@ -219,30 +219,30 @@ def _connector_endpoint_cell(cell):
 
 
 
-def _public_orthogonal_connector(shape):
-    """Recognize a *verifiable* axis-aligned public Visio connector route.
+def _public_orthogonal_connector_points(shape):
+    """Extract verifiable static waypoints from OpenVisio's public VSDX form.
 
-    This recovers only the orthogonal routing preference, never the original
-    waypoints: OpenVisio recomputes safe bends around its own equipment. A
-    third-party Visio shape with unsupported geometry is left untouched rather
-    than being silently reinterpreted as an orthogonal SAN connection.
+    The returned tuples are page-space inches. Arbitrary Visio formulas,
+    unsupported local coordinate frames and non-orthogonal segments are not
+    evaluated or guessed. Callers must still bind the route to its endpoint
+    geometry and revalidate it against current obstacles before displaying it.
     """
     endpoint_cells = shape.findall(f"./{{{V}}}Cell")
     if any(cell.get("F") is not None for cell in endpoint_cells
            if cell.get("N") in ("BeginX", "BeginY", "EndX", "EndY")):
-        return False  # Evaluating Visio formulas is outside this importer.
+        return None  # Evaluating Visio formulas is outside this importer.
     cells = {cell.get("N"): cell.get("V") for cell in endpoint_cells}
     try:
         bx, by, ex, ey = (float(cells[key]) for key in
                           ("BeginX", "BeginY", "EndX", "EndY"))
     except (KeyError, TypeError, ValueError, OverflowError):
-        return False
+        return None
     if not all(math.isfinite(v) and abs(v) <= 100000 for v in (bx, by, ex, ey)):
-        return False
+        return None
     dx, dy = ex - bx, ey - by
     length = math.hypot(dx, dy)
     if length <= 1e-8:
-        return False
+        return None
     ux, uy = dx / length, dy / length
     for section in shape.findall(f"./{{{V}}}Section"):
         if section.get("N") != "Geometry":
@@ -261,36 +261,38 @@ def _public_orthogonal_connector(shape):
                     raise ValueError("formula-driven connector geometry")
                 coords = {cell.get("N"): cell.get("V") for cell in row_cells}
                 x, y = float(coords["X"]), float(coords["Y"])
-                if not math.isfinite(x) or not math.isfinite(y):
-                    raise ValueError("non-finite connector geometry")
+                if not math.isfinite(x) or not math.isfinite(y) or abs(x) > 100000 or abs(y) > 100000:
+                    raise ValueError("out-of-range connector geometry")
                 local.append((x, y))
         except (KeyError, TypeError, ValueError, OverflowError):
             continue
-        # This explicit local frame is the one emitted by OpenVisio's public
-        # VSDX writer. Arbitrary Visio formulas and rotated frames are not
-        # assumed to follow it, even when their geometry has several rows.
+        # This explicit local frame is emitted by OpenVisio's public VSDX
+        # writer. Do not assume arbitrary Visio formulas or rotated frames.
         tolerance = 0.001  # inches, less than one tenth of a display pixel
         if (math.hypot(*local[0]) > tolerance or
                 math.hypot(local[-1][0] - length, local[-1][1]) > tolerance):
             continue
         points = [(bx + x * ux - y * uy, by + x * uy + y * ux)
                   for x, y in local]
-        orientations = set()
         valid = True
+        orientations = set()
         for (x1, y1), (x2, y2) in zip(points, points[1:]):
             sx, sy = abs(x2 - x1), abs(y2 - y1)
             if max(sx, sy) <= tolerance:
-                continue
-            if sx <= tolerance:
-                orientations.add("vertical")
-            elif sy <= tolerance:
-                orientations.add("horizontal")
-            else:
                 valid = False
                 break
+            if sx > tolerance and sy > tolerance:
+                valid = False
+                break
+            orientations.add("horizontal" if sy <= tolerance else "vertical")
         if valid and len(orientations) == 2:
-            return True
-    return False
+            return points
+    return None
+
+
+def _public_orthogonal_connector(shape):
+    """Compatibility predicate for the verifiable static-route subset."""
+    return _public_orthogonal_connector_points(shape) is not None
 
 
 def import_external_pages(archive):
@@ -302,6 +304,7 @@ def import_external_pages(archive):
     nodes, edges, layers = [], [], []
     offset = 0.0
     rotated_count = 0
+    orthogonal_routes_preserved = 0
     orthogonal_routes_approximated = 0
     # External Visio pages may contain one-ended or unsupported connectors.
     # Never silently report a complete topology when those links are omitted.
@@ -494,11 +497,15 @@ def import_external_pages(archive):
                 if sid in seen_connector_sources:
                     raise ValueError("Identifiant de connecteur VSDX dupliqué : " + sid)
                 seen_connector_sources.add(sid)
-        connector_route_modes = {
-            shape.get("ID"): "orthogonal"
+        # Preserve only public, static, formula-free route geometry. The
+        # active route record is endpoint-bound and the routing engine rejects
+        # it after node edits or if a new obstacle intersects a segment.
+        connector_route_points = {
+            shape.get("ID"): route
             for shape in page_shapes
             if shape.get("ID") in connector_sources
-            and _public_orthogonal_connector(shape)
+            for route in [_public_orthogonal_connector_points(shape)]
+            if route is not None
         }
         connections = {}
         for link in page.findall(f".//{{{V}}}Connects/{{{V}}}Connect"):
@@ -539,11 +546,31 @@ def import_external_pages(archive):
                         "visio_connector_sheet_id": str(sid)}
                 if sid in connector_captions:
                     edge["label"] = connector_captions[sid]
-                if sid in connector_route_modes:
-                    # Semantic preference only: exact Visio bend coordinates
-                    # cannot be represented by the current OpenVisio model.
-                    edge["routing"] = "orthogonal"
-                    orthogonal_routes_approximated += 1
+                if sid in connector_route_points:
+                    from .visio_route import node_route_signature, validate_visio_route
+                    # Visio page coordinates are inches with Y increasing up;
+                    # OpenVisio uses pixels with Y increasing down. Store the
+                    # converted route only after endpoint IDs resolve to the
+                    # flattened nodes created for this page.
+                    page_nodes = {node["id"]: node for node in nodes}
+                    source_node, target_node = page_nodes.get(a), page_nodes.get(b)
+                    if source_node is not None and target_node is not None:
+                        route = {
+                            "schema": 1,
+                            "source": node_route_signature(source_node),
+                            "target": node_route_signature(target_node),
+                            "points": [[round(x * PX_PER_IN, 3),
+                                        round(offset + height - y * PX_PER_IN, 3)]
+                                       for x, y in connector_route_points[sid]],
+                        }
+                        # Reuse the same strict bounds and orthogonality rules
+                        # applied to user-opened JSON documents.
+                        edge["visio_route"] = validate_visio_route(route)
+                        edge["routing"] = "orthogonal"
+                        orthogonal_routes_preserved += 1
+                    else:
+                        edge["routing"] = "orthogonal"
+                        orthogonal_routes_approximated += 1
                 edges.append(edge)
             else:
                 # A one-ended or self-connected Visio link cannot be represented
@@ -559,7 +586,11 @@ def import_external_pages(archive):
                 "import_mode": "flattened-pages",
                 "limitations": ["masters", "group-rotation", "rotation", "styles", "formulas",
                                 "connector-waypoints"],
+                "orthogonal_connector_routes_preserved": orthogonal_routes_preserved,
                 "orthogonal_connector_routes_approximated": orthogonal_routes_approximated,
+                "connector_waypoint_preservation_scope": (
+                    "public formula-free static orthogonal geometry only; other Visio formulas, "
+                    "frames and dynamic glue are not evaluated"),
                 "connector_links_skipped": sum(skipped_connectors.values()),
                 "connector_links_skipped_by_reason": skipped_connectors,
                 "connector_links_skipped_examples": skipped_connector_examples,
@@ -581,7 +612,7 @@ def import_external_pages(archive):
             [f"{page_extent_expanded} Visio page(s) expanded to contain out-of-page shapes; page layout is approximate"]
             if page_extent_expanded else []) + (
             [f"{orthogonal_routes_approximated} orthogonal Visio connector(s) "
-             "re-routed; original bend coordinates not preserved"]
+             "could not retain their original bend coordinates"]
             if orthogonal_routes_approximated else []) + (
             [f"{sum(skipped_connectors.values())} Visio connector(s) omitted: "
              f"{skipped_connectors['incomplete']} incomplete, "
