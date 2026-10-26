@@ -72,6 +72,9 @@ try {
         '04-Tests/Smoke-Portable-V42.71.ps1' = '5c4e7488e07629cf2386c54ed54d5c24f89b7d1d'
         '04-Tests/Smoke-Installer-V42.71.ps1' = '6adb9f52ed925286fc31a85360886519e2a2ae9f'
         '05-Documentation/V43.27-FORMULA-DRIVEN-VSDX-GEOMETRY.md' = '13b7e342572a4d18b9b64d0cc86231a7b077c5e0'
+        '05-Documentation/V43.27-FORMULA-GEOMETRY-FIDELITY.svg' = '7d00ae0fc66da9adc41016ef4204c5ca4064f465'
+        '05-Documentation/V43.27-WINDOWS-SCREENSHOTS-STATUS.md' = '034f60e3dde2608cb38a8da49fc55ca2c7d7bb34'
+        'README.md' = '9964b383582bd5ceb66922e6f95af8e0df81c12f'
     }
     foreach ($path in $expected.Keys) {
         if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing pinned file: $path" }
