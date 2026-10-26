@@ -48,7 +48,7 @@ try {
         '04-Tests/tests/test_release_git_parity_v4324.py' = 'e6ef32c10ab3d49f9e6e8f2a611b73501dbe9132'
         'python/tests/test_release_git_parity_v4324.py' = 'e6ef32c10ab3d49f9e6e8f2a611b73501dbe9132'
         '02-Compilation/verify_release_archive.py' = 'e5a2b76054f26c7c1b91e50316da7a9788301878'
-        '02-Compilation/verify_release_git_parity.py' = 'd92100b21b78f29a495329b3d99576cb0117a2be'
+        '02-Compilation/verify_release_git_parity.py' = 'bc0feeb9decaa6d74ccb0e35cb363919535ba9d8'
         '02-Compilation/Build-Windows-V43.24-Candidate.ps1' = 'd3789b792169003e207c4d90b61c898c1bada5ec'
         '02-Compilation/package_cumulative_release_v4324.py' = '2320daf68716c4bff956d511e353a1e166dc697d'
         '02-Compilation/generate_release_docs_v4324.py' = 'ef8613a203e352c091cd8a1ae8c300c7db4fde29'
