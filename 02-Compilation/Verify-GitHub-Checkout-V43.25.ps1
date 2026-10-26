@@ -1,0 +1,97 @@
+# OpenVisio V43.25 independent checkout and source-pinning gate.
+# Uses the exact commit selected by GitHub Actions; no secrets or production access.
+# Author: Abdelhalim Talbi.
+[CmdletBinding()]
+param([string]$Destination = (Join-Path $env:TEMP ('openvisio-v4325-independent-' + [guid]::NewGuid().ToString('N'))))
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+$repo = 'https://github.com/alimtalbi-ata/OpenVisio.git'
+$expectedCommit = ([string]$env:OPENVISIO_EXPECTED_SOURCE_SHA).Trim()
+if ($expectedCommit -notmatch '^[0-9a-f]{40}$') { throw 'OPENVISIO_EXPECTED_SOURCE_SHA must be a full commit SHA' }
+if (Test-Path -LiteralPath $Destination) { throw "Destination must not exist: $Destination" }
+New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+git -C $Destination init
+if ($LASTEXITCODE -ne 0) { throw 'Independent git init failed' }
+git -C $Destination remote add origin $repo
+if ($LASTEXITCODE -ne 0) { throw 'Independent origin setup failed' }
+git -C $Destination fetch --depth 1 origin $expectedCommit
+if ($LASTEXITCODE -ne 0) { throw 'Independent fetch of selected commit failed' }
+git -C $Destination checkout --detach FETCH_HEAD
+if ($LASTEXITCODE -ne 0) { throw 'Independent checkout of selected commit failed' }
+Push-Location $Destination
+try {
+    $head = (@(git rev-parse HEAD) -join '').Trim()
+    if ($LASTEXITCODE -ne 0 -or $head -ne $expectedCommit) { throw "Independent checkout commit mismatch: $head" }
+    $expected = @{
+        '03-Sources/openvisio/model.py' = 'e4d0a90ba71f6237a1597c1318aac165db242016'
+        '03-Sources/openvisio/vsdx.py' = '30d99082c90de6b11a3626a28ca20797ecc60e97'
+        '03-Sources/openvisio/render.py' = '7732416abb88f7adbdb64b8ea05c185ab029b5e1'
+        '03-Sources/openvisio/routing.py' = '227f2220263efb345fecda7508f20cc9d5d739cd'
+        '03-Sources/openvisio/parallel_geometry.py' = '74776b436e0c6425eda4bc44fb060c8ab1e878f9'
+        '03-Sources/openvisio/validation.py' = '01af42939e84f9b94e7877ae88bac373c0b055e2'
+        '03-Sources/openvisio/vsdx_external.py' = 'd4cac43468c1e41f7c19cfb78536219c795a324d'
+        '03-Sources/openvisio/vsdx_package.py' = 'a32b0c21b00a2d3c220644d5db67d015ca0b521c'
+        '03-Sources/openvisio/node_geometry.py' = 'd14a6b5fc2b4d36247ad23d3b0a8dbb83eb43275'
+        '03-Sources/openvisio/visio_route.py' = '7b76ca1b300baa5a24fd45514cc12e5ff83bce07'
+        'python/openvisio/model.py' = 'e4d0a90ba71f6237a1597c1318aac165db242016'
+        'python/openvisio/vsdx.py' = '30d99082c90de6b11a3626a28ca20797ecc60e97'
+        'python/openvisio/render.py' = '7732416abb88f7adbdb64b8ea05c185ab029b5e1'
+        'python/openvisio/routing.py' = '227f2220263efb345fecda7508f20cc9d5d739cd'
+        'python/openvisio/parallel_geometry.py' = '74776b436e0c6425eda4bc44fb060c8ab1e878f9'
+        'python/openvisio/validation.py' = '01af42939e84f9b94e7877ae88bac373c0b055e2'
+        'python/openvisio/vsdx_external.py' = 'd4cac43468c1e41f7c19cfb78536219c795a324d'
+        'python/openvisio/vsdx_package.py' = 'a32b0c21b00a2d3c220644d5db67d015ca0b521c'
+        'python/openvisio/node_geometry.py' = 'd14a6b5fc2b4d36247ad23d3b0a8dbb83eb43275'
+        'python/openvisio/visio_route.py' = '7b76ca1b300baa5a24fd45514cc12e5ff83bce07'
+        '04-Tests/tests/test_vsdx_route_endpoint_attachment_v4324.py' = '7e48620355d8516fb8863d5983b62b960df84fc4'
+        'python/tests/test_vsdx_route_endpoint_attachment_v4324.py' = '7e48620355d8516fb8863d5983b62b960df84fc4'
+        '04-Tests/tests/test_release_git_parity_v4324.py' = 'e6ef32c10ab3d49f9e6e8f2a611b73501dbe9132'
+        'python/tests/test_release_git_parity_v4324.py' = 'e6ef32c10ab3d49f9e6e8f2a611b73501dbe9132'
+        '02-Compilation/verify_release_archive.py' = 'e5a2b76054f26c7c1b91e50316da7a9788301878'
+        '02-Compilation/verify_release_git_parity.py' = 'd92100b21b78f29a495329b3d99576cb0117a2be'
+        '02-Compilation/Build-Windows-V43.24-Candidate.ps1' = 'd3789b792169003e207c4d90b61c898c1bada5ec'
+        '02-Compilation/package_cumulative_release_v4324.py' = '2320daf68716c4bff956d511e353a1e166dc697d'
+        '02-Compilation/generate_release_docs_v4324.py' = 'ef8613a203e352c091cd8a1ae8c300c7db4fde29'
+        '02-Compilation/release_document_guard_v4324.py' = 'b2f08359e0948ac3f4a8118d423c869e2d20f50a'
+        '02-Compilation/requirements-build.txt' = '23feee4dfbc0ba8ee8e1c2062ea083ed5bf9d6c7'
+        '02-Compilation/installer/OpenVisio-V43.24-Candidate.iss' = '85c5d3a56c5592eba0b4a3caa97d13516bbe34b0'
+        '.gitattributes' = 'a373238348b68914c446bd3473e804a5d0897378'
+        '.github/workflows/openvisio-v43.24-windows-candidate.yml' = '7c1c0ef032df9a22e59da0263ae7c62fc6c775be'
+        '05-Documentation/V43.24-GIT-BLOB-PARITY.md' = '5c4ecbc5b4f303fcd4a2fa1251418e75a54f1621'
+        '05-Documentation/V43.24-STATIC-VSDX-ROUTE-ATTACHMENT.md' = '9ea8ae90a3720310e3b34391fc4503c6b38a88c2'
+        '05-Documentation/V43.24-VSDX-ENDPOINT-ATTACHMENT.svg' = '6320c1a451561b5cd840956f7b2806055cb92bbf'
+        'README.md' = 'cb38b7c76516b9d8b4965b87824f8236f7ffb48f'
+        'verify_source_parity.py' = '7b392e310452c37c26f4f254f2860fbea4f7dbae'
+        '02-Compilation/Build-Windows-V43.25-Candidate.ps1' = '836fcd06246fde04baec5e263ca338dba5772a63'
+        '02-Compilation/package_cumulative_release_v4325.py' = 'b7eb00e85bb15659aec37c41f1fc002351035d03'
+        '02-Compilation/generate_release_docs_v4325.py' = 'b14f093b190b131959083c251b847066965e5988'
+        '02-Compilation/release_document_guard_v4325.py' = 'cf4f5bfa84a3ed5c62c4c04757048f03598fd6cb'
+        '02-Compilation/installer/OpenVisio-V43.25-Candidate.iss' = '322b3d8ea69fa5de4ef50f4a68e47243b95cecee'
+        '.github/workflows/openvisio-v43.25-windows-candidate.yml' = '506e33e94fc09dee6f35edf7307b956bb67f051e'
+        '05-Documentation/V43.25-GIT-BLOB-PARITY.md' = '3b0addcf3a9d819c58dee0b83598fa8106518cc5'
+        '05-Documentation/V43.25-STATIC-VSDX-ROUTE-PREFILTER.md' = '6020bce68a432879b87a32e519ad35f76319bb2e'
+        '05-Documentation/V43.25-STATIC-VSDX-ROUTE-PREFILTER.svg' = 'e0bf937fcf9d2da1a58d9e6134a55131724d87c1'
+        '05-Documentation/V43.25-WINDOWS-SCREENSHOTS-STATUS.md' = 'd65adad1829d072b268a4072063be3e6c5a69b95'
+        '04-Tests/tests/test_vsdx_route_spatial_prefilter_v4325.py' = 'c413b3178c1a65dfa5dbd012bf017ff3a75b54d7'
+        'python/tests/test_vsdx_route_spatial_prefilter_v4325.py' = 'c413b3178c1a65dfa5dbd012bf017ff3a75b54d7'
+    }
+    foreach ($path in $expected.Keys) {
+        if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing critical file: $path" }
+        $actual = (@(git rev-parse "HEAD:$path") -join '').Trim()
+        if ($LASTEXITCODE -ne 0 -or $actual -ne $expected[$path]) {
+            throw "Git blob mismatch: $path (expected $($expected[$path]), got $actual)"
+        }
+    }
+    $status = (@(git status --porcelain) -join '').Trim()
+    if ($LASTEXITCODE -ne 0 -or $status) { throw "Independent checkout not clean: $status" }
+    $env:PYTHONPATH = Join-Path $Destination 'python'
+    python verify_source_parity.py
+    if ($LASTEXITCODE -ne 0) { throw 'Mirror source/test parity failed' }
+    python 02-Compilation/verify_release_archive.py --checkout $Destination --version V43.25 --json-report (Join-Path $Destination 'v43.24-independent-checkout-audit.json')
+    if ($LASTEXITCODE -ne 0) { throw 'Independent checkout archive/source gate failed' }
+    python -m unittest discover -s python/tests -p 'test_*.py' -q
+    if ($LASTEXITCODE -ne 0) { throw 'Full Python suite failed in the independent checkout' }
+    Write-Host "PASS exact independent checkout $head; critical engine/test blobs pinned; clean worktree; parity and complete suite passed"
+} finally {
+    Pop-Location
+}

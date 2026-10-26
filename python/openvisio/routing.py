@@ -95,6 +95,36 @@ class RectangleIndex:
         return [rect for _, rect in self.query_items(window)]
 
 
+def _static_route_window(edge):
+    """Return a bounded world-space envelope for a candidate static VSDX route.
+
+    This is only a broad-phase filter: strict route validation and exact
+    rectangle/segment checks remain authoritative. Invalid metadata returns
+    None so callers conservatively inspect every node.
+    """
+    record = edge.get('visio_route') if isinstance(edge, dict) else None
+    if not isinstance(record, dict):
+        return None
+    points = record.get('points')
+    if not isinstance(points, (list, tuple)) or not 2 <= len(points) <= 2048:
+        return None
+    xs, ys = [], []
+    for point in points:
+        if not isinstance(point, (list, tuple)) or len(point) != 2:
+            return None
+        x, y = point
+        if (isinstance(x, bool) or not isinstance(x, (int, float))
+                or isinstance(y, bool) or not isinstance(y, (int, float))):
+            return None
+        x, y = float(x), float(y)
+        if not (isfinite(x) and isfinite(y) and abs(x) <= 10_000_000.0
+                and abs(y) <= 10_000_000.0):
+            return None
+        xs.append(x)
+        ys.append(y)
+    return min(xs), min(ys), max(xs), max(ys)
+
+
 class RoutingScene:
     """Immutable node-geometry snapshot with bounded per-edge route memoization.
 
@@ -151,7 +181,19 @@ class RoutingScene:
                 source = self.nodes[edge['from']]
                 target = self.nodes[edge['to']]
                 from .visio_route import active_visio_route
-                preserved = active_visio_route(edge, source, target, self.nodes.values())
+                # Broad phase: the route envelope is queried against the existing
+                # rectangle index. Its padded bounds can add candidates, never
+                # remove a real blocker. Exact endpoint/segment checks remain the
+                # authority. Untrusted metadata retains the full-scan fail-safe.
+                window = _static_route_window(edge)
+                route_nodes = self.nodes.values()
+                if window is not None:
+                    candidate_ids = {node_id for node_id, _ in
+                                     self.routing_obstacle_index().query_items(window)}
+                    candidate_ids.update((edge['from'], edge['to']))
+                    route_nodes = tuple(self.nodes[node_id] for node_id in candidate_ids
+                                        if node_id in self.nodes)
+                preserved = active_visio_route(edge, source, target, route_nodes)
             except (KeyError, TypeError, ValueError, OverflowError):
                 preserved = None
             if preserved is not None:
