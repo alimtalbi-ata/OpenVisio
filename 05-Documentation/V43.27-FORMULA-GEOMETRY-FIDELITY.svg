@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="460" viewBox="0 0 1180 460" role="img" aria-labelledby="title desc">
+<title id="title">OpenVisio V43.27 — traitement des formules de géométrie VSDX</title>
+<desc id="desc">Détection des cellules de géométrie Visio qui contiennent une formule. L'import standard conserve le comportement existant mais signale la géométrie en cache. Le mode strict refuse un document présentant cette perte de fidélité connue.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#415a77"/></marker></defs>
+<rect width="1180" height="460" fill="#f7f9fc" rx="14"/>
+<text x="40" y="42" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" fill="#18324b">OpenVisio V43.27 — fidélité de la géométrie VSDX</text>
+<text x="40" y="70" font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#44566c">Auteur : Abdelhalim Talbi · Import prudent, sans exécution du langage de formules Visio</text>
+<g font-family="Segoe UI,Arial,sans-serif">
+<rect x="40" y="132" width="235" height="105" rx="10" fill="#e7f0fb" stroke="#4b719b" stroke-width="2"/>
+<text x="157" y="162" font-size="17" font-weight="700" text-anchor="middle" fill="#18324b">Package VSDX</text>
+<text x="157" y="188" font-size="14" text-anchor="middle" fill="#18324b">Cellule géométrique</text>
+<text x="157" y="209" font-size="14" text-anchor="middle" fill="#18324b">V + formule F ?</text>
+<path d="M275 184 H325" fill="none" stroke="#415a77" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M360 131 L408 184 L360 237 L312 184 Z" fill="#fff1cc" stroke="#a8791b" stroke-width="2"/>
+<text x="360" y="180" font-size="13" text-anchor="middle" fill="#68490b">F présente</text>
+<text x="360" y="197" font-size="13" text-anchor="middle" fill="#68490b">?</text>
+<path d="M408 184 H454 V133 H490" fill="none" stroke="#415a77" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M408 184 H454 V303 H490" fill="none" stroke="#415a77" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="430" y="120" font-size="12" fill="#44566c">Oui</text><text x="430" y="327" font-size="12" fill="#44566c">Non</text>
+<rect x="490" y="95" width="290" height="105" rx="10" fill="#fff0e9" stroke="#bd5a36" stroke-width="2"/>
+<text x="635" y="124" font-size="17" text-anchor="middle" font-weight="700" fill="#71351f">Import standard</text>
+<text x="635" y="150" font-size="14" text-anchor="middle" fill="#71351f">Utilise la valeur en cache</text>
+<text x="635" y="172" font-size="14" text-anchor="middle" fill="#71351f">+ avertissement de fidélité</text>
+<rect x="490" y="260" width="290" height="85" rx="10" fill="#e7f5ec" stroke="#3f865d" stroke-width="2"/>
+<text x="635" y="291" font-size="17" text-anchor="middle" font-weight="700" fill="#1e5a38">Géométrie numérique</text>
+<text x="635" y="317" font-size="14" text-anchor="middle" fill="#1e5a38">Pas d'avertissement de formule</text>
+<path d="M780 145 H822 V145 H860" fill="none" stroke="#415a77" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M780 302 H820 V302 H860" fill="none" stroke="#415a77" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="860" y="95" width="280" height="105" rx="10" fill="#fde8e8" stroke="#b23a48" stroke-width="2"/>
+<text x="1000" y="125" font-size="17" text-anchor="middle" font-weight="700" fill="#842029">Mode strict</text>
+<text x="1000" y="150" font-size="14" text-anchor="middle" fill="#842029">Refus via VsdxFidelityError</text>
+<text x="1000" y="173" font-size="13" text-anchor="middle" fill="#842029">Pas de perte silencieuse connue</text>
+<rect x="860" y="260" width="280" height="85" rx="10" fill="#e7f5ec" stroke="#3f865d" stroke-width="2"/>
+<text x="1000" y="291" font-size="17" text-anchor="middle" font-weight="700" fill="#1e5a38">Mode strict possible</text>
+<text x="1000" y="317" font-size="13" text-anchor="middle" fill="#1e5a38">Sous réserve des autres contrôles</text>
+<text x="40" y="397" font-size="14" fill="#44566c">Limite : les formules, maîtres, styles, rotations natives et transformations de groupes Visio ne sont pas évalués intégralement.</text>
+<text x="40" y="421" font-size="14" font-weight="700" fill="#842029">Ce diagramme décrit le code de l'importeur ; ce n'est ni une capture de l'application ni une certification Microsoft Visio.</text>
+</g></svg>
