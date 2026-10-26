@@ -1,0 +1,101 @@
+name: OpenVisio V43.26 Windows cumulative candidate
+on:
+  push:
+    branches: ['develop/v43.26-infrastructure-glyphs-20261026']
+  pull_request:
+    branches: ['develop/v43.25-static-route-spatial-prefilter-20261026']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-native-candidate:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Verify independent checkout and pinned source blobs
+        shell: pwsh
+        env:
+          OPENVISIO_EXPECTED_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: ./02-Compilation/Verify-GitHub-Checkout-V43.26.ps1
+      - name: Archive the exact checked-out source
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          git archive --format=zip --output=dist/OpenVisio-V43.26-GitHub-Source-Checkout.zip HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'Git source archive failed' }
+      - name: Upload exact source checkout
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V43.26-GitHub-Source-Checkout
+          path: dist/OpenVisio-V43.26-GitHub-Source-Checkout.zip
+          if-no-files-found: error
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'Inno Setup installation failed' }
+      - name: Build Windows portable, installer, docs and cumulative ZIP
+        shell: pwsh
+        run: ./02-Compilation/Build-Windows-V43.26-Candidate.ps1
+      - name: Compare the cumulative ZIP with exact Git blob identities
+        shell: pwsh
+        run: |
+          python 02-Compilation/verify_release_git_parity.py --archive dist/OpenVisio-V43.26-Cumulative-Windows-x64.zip --checkout $PWD --version V43.26 --json-report dist/V43.26-git-blob-parity.json
+          if ($LASTEXITCODE -ne 0) { throw 'Cumulative ZIP source diverges from exact Git blobs or recorded commit' }
+          Write-Host 'PASS: cumulative ZIP engine, test mirrors, dependencies and critical build inputs match Git HEAD byte-for-byte'
+      - name: Run the complete bundled test suite from a clean extracted ZIP
+        shell: pwsh
+        run: |
+          $archive = 'dist/OpenVisio-V43.26-Cumulative-Windows-x64.zip'
+          if (!(Test-Path -LiteralPath $archive -PathType Leaf)) { throw 'Cumulative ZIP missing before packaged-suite gate' }
+          $extract = Join-Path $env:TEMP ('openvisio-v4326-extracted-' + [guid]::NewGuid().ToString('N'))
+          New-Item -ItemType Directory -Path $extract -Force | Out-Null
+          try {
+            Expand-Archive -LiteralPath $archive -DestinationPath $extract -Force
+            $env:PYTHONPATH = Join-Path $extract 'python'
+            python (Join-Path $extract 'verify_source_parity.py')
+            if ($LASTEXITCODE -ne 0) { throw 'Source/test parity failed in extracted ZIP' }
+            python -m unittest discover -s (Join-Path $extract 'python/tests') -p 'test_*.py' -q
+            if ($LASTEXITCODE -ne 0) { throw 'Bundled test suite failed when run from extracted cumulative ZIP' }
+            Write-Host 'PASS: bundled full Python suite from clean cumulative ZIP extraction'
+          } finally {
+            Remove-Item -LiteralPath $extract -Recurse -Force -ErrorAction SilentlyContinue
+          }
+      - name: Independently re-audit final cumulative ZIP and sidecar
+        shell: pwsh
+        run: |
+          $zip = 'dist/OpenVisio-V43.26-Cumulative-Windows-x64.zip'
+          $sidecar = "$zip.sha256"
+          if (!(Test-Path -LiteralPath $zip) -or !(Test-Path -LiteralPath $sidecar)) { throw 'Cumulative ZIP or SHA-256 sidecar absent' }
+          $actual = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          $line = (Get-Content -LiteralPath $sidecar -Raw).Trim()
+          if (!$line.StartsWith($actual + '  ')) { throw 'Cumulative ZIP SHA-256 sidecar mismatch' }
+          python 02-Compilation/verify_release_archive.py --archive $zip --version V43.26 --json-report dist/V43.26-final-archive-audit.json
+          if ($LASTEXITCODE -ne 0) { throw 'Independent cumulative ZIP audit failed' }
+          Write-Host "PASS cumulative ZIP SHA256=$actual"
+      - name: Upload one cumulative Windows release kit
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V43.26-Cumulative-Windows-Release
+          path: |
+            dist/OpenVisio-V43.26-Cumulative-Windows-x64.zip
+            dist/OpenVisio-V43.26-Cumulative-Windows-x64.zip.sha256
+            dist/V43.26-cumulative-archive-validation.json
+            dist/V43.26-final-archive-audit.json
+            dist/V43.26-git-blob-parity.json
+          if-no-files-found: error
+      - name: Upload PDF render QA previews (not application screenshots)
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenVisio-V43.26-PDF-Document-QA-Previews
+          path: |
+            dist/release-docs/pdf-page-renders/*.png
+            dist/release-docs/document-qa.json
+          if-no-files-found: error

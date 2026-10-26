@@ -1,4 +1,4 @@
-"""V42.92: differentiated equipment symbols, Tk capture and SVG parity.
+"""V42.92+: differentiated equipment body glyphs, Tk capture and SVG parity.
 
 Synthetic visual-contract tests; no Microsoft Visio Desktop fidelity claim.
 Author: Abdelhalim Talbi.
@@ -6,7 +6,7 @@ Author: Abdelhalim Talbi.
 import unittest
 from xml.etree import ElementTree as ET
 
-from openvisio.shape_icons import equipment_icon
+from openvisio.shape_icons import equipment_icon, equipment_outline, equipment_detail_primitives
 from openvisio.render import draw_document
 from openvisio.export import to_svg
 from openvisio.retained_canvas import _CaptureCanvas
@@ -36,14 +36,28 @@ class ShapeIconTests(unittest.TestCase):
         doc = create_template('SAN multipath FC (2 fabrics)')
         canvas = _Canvas()
         draw_document(canvas, doc)
-        polygons = [item for item in canvas.items if item[0] == 'polygon']
-        self.assertEqual(len(polygons), 5)
-        self.assertEqual(len({item[2]['tags'][0] for item in polygons}), 5)
+        bodies = [item for item in canvas.items if item[0] == 'polygon'
+                  and item[2]['tags'][0].endswith(':body')]
+        icons = [item for item in canvas.items if item[0] == 'polygon'
+                 and item[2]['tags'][0].endswith(':icon')]
+        details = [item for item in canvas.items if ':detail:' in item[2]['tags'][0]]
+        self.assertEqual(len(bodies), 5)
+        self.assertEqual(len({item[2]['tags'][0] for item in bodies}), 5)
+        self.assertEqual(len(icons), 5)
+        self.assertGreaterEqual(len(details), 30)
         root = ET.fromstring(to_svg(doc))
-        svg_icons = [item for item in root if item.tag.endswith('polygon')]
+        svg_icons = [item for item in root if item.get('data-openvisio-node-icon') is not None]
+        svg_bodies = [item for item in root if item.get('data-openvisio-node-body') is not None]
+        svg_details = [item for item in root if item.get('data-openvisio-node-detail') is not None]
         self.assertEqual(len(svg_icons), 5)
+        self.assertEqual(len(svg_bodies), 5)
+        self.assertEqual(len(svg_details), len(details))
         self.assertEqual({i.get('data-openvisio-node-icon') for i in svg_icons},
                          {n['id'] for n in doc['nodes']})
+        self.assertEqual({i.get('data-openvisio-node-body') for i in svg_bodies},
+                         {n['id'] for n in doc['nodes']})
+        self.assertEqual({i.get('data-openvisio-shape') for i in svg_bodies},
+                         {n['shape'] for n in doc['nodes']})
 
     def test_retained_capture_supports_stable_polygon_tag(self):
         doc = create_template('SAN multipath FC (2 fabrics)')
@@ -51,14 +65,23 @@ class ShapeIconTests(unittest.TestCase):
         draw_document(capture, doc)
         icons = {key: item for key, item in capture.commands.items()
                  if key.endswith(':icon')}
+        bodies = {key: item for key, item in capture.commands.items()
+                  if key.endswith(':body')}
+        details = {key: item for key, item in capture.commands.items()
+                   if ':detail:' in key}
         self.assertEqual(len(icons), 5)
+        self.assertEqual(len(bodies), 5)
+        self.assertGreaterEqual(len(details), 30)
         self.assertTrue(all(item.kind == 'polygon' for item in icons.values()))
 
     def test_small_and_legacy_nodes_keep_old_geometry(self):
         self.assertIsNone(equipment_icon({'id':'a','x':0,'y':0}))
+        self.assertIsNone(equipment_outline({'id':'a','x':0,'y':0,'shape':'visio-group'}))
         self.assertIsNone(equipment_icon({'id':'a','x':0,'y':0,'shape':'visio-group'}))
         self.assertIsNone(equipment_icon({'id':'a','x':0,'y':0,'shape':'server',
                                           'width':60,'height':40}))
+        self.assertIsNone(equipment_outline({'id':'a','x':0,'y':0,'shape':'server',
+                                             'width':60,'height':40}))
         doc = {'nodes':[{'id':'a','x':0,'y':0,'shape':'server',
                          'width':60,'height':40}], 'edges':[]}
         canvas = _Canvas()
