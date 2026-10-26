@@ -1,6 +1,6 @@
 """Structural validation for generated OpenVisio release documents.
 
-The PDF is rendered and text-inspected by generate_release_docs_v4325.py before
+The PDF is rendered and text-inspected by generate_release_docs_v4327.py before
 this guard runs. This module adds format-level DOCX validation and checks PDF
 signature/EOF and observed page/text counts. It deliberately avoids arbitrary
 minimum file-size assumptions. Author: Abdelhalim Talbi.
