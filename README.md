@@ -42,12 +42,12 @@ Voir QUALIFICATION-V41.16.md : raccordement transactionnel du rendu, 1747 tests 
 ## v41.18
 Benchmark comparatif synthétique du cache et tests de conservation des routes non invalidées. Voir QUALIFICATION-V41.18.md.
 
-## OpenVisio V43.27 — formule de géométrie et import VSDX strict
+## OpenVisio V43.27 — formules ShapeSheet bornées et import VSDX
 
-Auteur : **Abdelhalim Talbi**. Branche de candidat : `develop/v43.27-formula-driven-vsdx-geometry-20261026`.
+Auteur : Abdelhalim Talbi. Branche candidate : develop/v43.27-formula-driven-vsdx-geometry-20261026.
 
-L'import externe inspecte désormais les cellules géométriques `PinX`, `PinY`, `Width`, `Height`, `LocPinX`, `LocPinY` et `Angle`. Lorsqu'une formule Visio est présente dans l'une de ces cellules, OpenVisio indique que la valeur en cache est utilisée sans évaluer la formule. Le mode API/éditeur `strict_fidelity=True` refuse l'import si cette perte de fidélité connue est signalée, plutôt que de donner une fausse assurance de conservation.
+L'import VSDX évalue un sous-ensemble scalaire borné des formules de géométrie ShapeSheet : arithmétique, références numériques explicites, dimensions de page numériques sans formule et fonctions autorisées. Le parseur n'emploie pas eval et applique des limites de taille, de jetons, d'imbrication et de magnitude. Pour une formule inconnue, cyclique, non finie ou hors du sous-ensemble, il préserve le cache complet de la forme, émet un avertissement de fidélité et le mode strict_fidelity=True refuse l'import.
 
-La couverture de régression V43.27 ajoute quatre tests synthétiques couvrant l'absence de formule, l'avertissement en mode standard et le refus strict des cellules `PinX` et `Width`. Ce correctif ne constitue pas une certification Microsoft Visio : le langage de formules, tous les maîtres et styles, la rotation native et toutes les transformations de groupes ne sont pas intégralement reproduits.
+Les tests couvrent le parseur borné et son intégration avec l'importeur VSDX synthétique. Ce changement n'est pas un interpréteur complet ShapeSheet et ne certifie pas Microsoft Visio Desktop ; les maîtres, styles, rotations natives, transformations de groupes et colle dynamique restent partiellement pris en charge.
 
-Voir `05-Documentation/V43.27-FORMULA-DRIVEN-VSDX-GEOMETRY.md` et le diagramme `05-Documentation/V43.27-FORMULA-GEOMETRY-FIDELITY.svg`. Aucun changement de `main` ni aucune fusion automatique.
+Voir 05-Documentation/V43.27-FORMULA-DRIVEN-VSDX-GEOMETRY.md et le diagramme de fidélité ShapeSheet. Aucun changement de main ni fusion automatique.

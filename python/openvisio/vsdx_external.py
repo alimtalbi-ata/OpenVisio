@@ -12,6 +12,7 @@ from xml.etree import ElementTree as ET
 from xml.parsers import expat
 from .vsdx_geometry import (shape_center_inches, shape_axis_aligned_dimensions_inches,
                             nested_shape_geometry_inches)
+from .visio_formula import evaluate_geometry_formula_cells, GEOMETRY_CELL_NAMES
 
 V = "http://schemas.microsoft.com/office/visio/2011/1/core"
 OR = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -64,7 +65,7 @@ def _pages(archive):
     if pages_xml not in names:
         if "visio/pages/page1.xml" not in names:
             raise ValueError("Page Visio absente")
-        return [("Page 1", "visio/pages/page1.xml", None)]
+        return [("Page 1", "visio/pages/page1.xml", None, {})]
     pages = _parse_xml(archive, pages_xml, expected_root=f"{{{V}}}Pages")
     relations = {}
     if rels_xml in names:
@@ -106,16 +107,20 @@ def _pages(archive):
         if part in seen_page_parts:
             raise ValueError("Partie de page VSDX réutilisée par plusieurs pages : " + part)
         seen_page_parts.add(part)
-        height = None
+        page_values = {}
         for cell in page.findall(f"./{{{V}}}PageSheet/{{{V}}}Cell"):
-            if cell.get("N") == "PageHeight":
-                try:
-                    value = float(cell.get("V", ""))
-                    if math.isfinite(value) and 0 < value <= 100000:
-                        height = value * PX_PER_IN
-                except ValueError:
-                    pass
-        result.append((page.get("Name") or page.get("NameU") or f"Page {i}", part, height))
+            name = cell.get("N")
+            if name not in {"PageWidth", "PageHeight"} or cell.get("F") is not None:
+                continue
+            try:
+                value = float(cell.get("V", ""))
+                if math.isfinite(value) and 0 < value <= 100000:
+                    page_values[name] = value
+            except (TypeError, ValueError, OverflowError):
+                pass
+        height = page_values.get("PageHeight")
+        height = height * PX_PER_IN if height is not None else None
+        result.append((page.get("Name") or page.get("NameU") or f"Page {i}", part, height, page_values))
     if not result or len(result) > 128:
         raise ValueError("Nombre de pages VSDX invalide")
     return result
@@ -304,10 +309,14 @@ def import_external_pages(archive):
     nodes, edges, layers = [], [], []
     offset = 0.0
     rotated_count = 0
-    # Formula-driven geometry must not be silently described as strict.
-    # The importer uses cached V values but never evaluates Visio formulas.
+    # Only a bounded ShapeSheet scalar subset is evaluated; other formulas
+    # retain cached values and are reported as a fidelity loss.
     formula_geometry_shapes = 0
     formula_geometry_examples = []
+    formula_geometry_evaluated_shapes = 0
+    formula_geometry_cells_evaluated = 0
+    formula_geometry_unresolved_shapes = 0
+    formula_geometry_unresolved_examples = []
     orthogonal_routes_preserved = 0
     orthogonal_routes_approximated = 0
     # External Visio pages may contain one-ended or unsupported connectors.
@@ -319,7 +328,7 @@ def import_external_pages(archive):
     page_extent_expanded = 0
     page_bottom_overflow_total = 0.0
     MAX_GROUP_DEPTH = 16
-    for index, (page_name, part, declared_height) in enumerate(pages, 1):
+    for index, (page_name, part, declared_height, page_values) in enumerate(pages, 1):
         page = _parse_xml(archive, part, expected_root=f"{{{V}}}PageContents")
         layer_id = f"vsdx-page-{index}"
         layers.append({"id": layer_id, "name": page_name[:256], "visible": True})
@@ -333,10 +342,13 @@ def import_external_pages(archive):
             return len(shape.findall(f".//{{{V}}}Shapes/{{{V}}}Shape"))
 
         def visit(shape, ancestors=(), parent_id=None, depth=0):
-            nonlocal rotated_count, grouped_children_omitted, grouped_children_imported, formula_geometry_shapes
+            nonlocal rotated_count, grouped_children_omitted, grouped_children_imported
+            nonlocal formula_geometry_shapes, formula_geometry_evaluated_shapes
+            nonlocal formula_geometry_cells_evaluated, formula_geometry_unresolved_shapes
             children = shape.findall(f"./{{{V}}}Shapes/{{{V}}}Shape")
             sid = shape.get("ID")
-            cells = {c.get("N"): c.get("V") for c in shape.findall(f"./{{{V}}}Cell")}
+            shape_cells = shape.findall(f"./{{{V}}}Cell")
+            cells = {c.get("N"): c.get("V") for c in shape_cells if c.get("N")}
             if depth > MAX_GROUP_DEPTH:
                 grouped_children_omitted += 1 + descendants_count(shape)
                 return
@@ -344,18 +356,26 @@ def import_external_pages(archive):
                     key in cells for key in ("PinX", "PinY")):
                 grouped_children_omitted += descendants_count(shape) + (1 if parent_id is not None else 0)
                 return
-            geometry_cell_names = {
-                "PinX", "PinY", "Width", "Height", "LocPinX", "LocPinY", "Angle"
+            shape_formulas = {
+                cell.get("N"): cell.get("F") for cell in shape_cells
+                if cell.get("N") and cell.get("F") is not None
             }
-            formula_cells = sorted({
-                cell.get("N") for cell in shape.findall(f"./{{{V}}}Cell")
-                if cell.get("N") in geometry_cell_names and cell.get("F") is not None
-            })
+            formula_cells = sorted(name for name in shape_formulas if name in GEOMETRY_CELL_NAMES)
             if formula_cells:
                 formula_geometry_shapes += 1
+                example = f"page {index} / sheet {sid}: {', '.join(formula_cells)}"
                 if len(formula_geometry_examples) < 12:
-                    formula_geometry_examples.append(
-                        f"page {index} / sheet {sid}: {', '.join(formula_cells)}")
+                    formula_geometry_examples.append(example)
+                evaluated, unresolved = evaluate_geometry_formula_cells(cells, shape_formulas, page_values)
+                if unresolved:
+                    formula_geometry_unresolved_shapes += 1
+                    if len(formula_geometry_unresolved_examples) < 12:
+                        formula_geometry_unresolved_examples.append(
+                            example + " (unresolved: " + ", ".join(unresolved) + ")")
+                else:
+                    cells.update({name: format(value, ".17g") for name, value in evaluated.items()})
+                    formula_geometry_evaluated_shapes += 1
+                    formula_geometry_cells_evaluated += len(evaluated)
             try:
                 x_in, y_in, width_in, height_in, total_angle = nested_shape_geometry_inches(
                     cells, ancestors)
@@ -600,8 +620,8 @@ def import_external_pages(archive):
         offset += max(height, 600) + 96 + bottom_overflow
     metadata = {"import_format": "VSDX", "page_count": len(pages),
                 "import_mode": "flattened-pages",
-                "limitations": ["masters", "group-rotation", "rotation", "styles", "formulas",
-                                "connector-waypoints"],
+                "limitations": ["masters", "group-rotation", "rotation", "styles",
+                                "unsupported-formulas", "connector-waypoints"],
                 "orthogonal_connector_routes_preserved": orthogonal_routes_preserved,
                 "orthogonal_connector_routes_approximated": orthogonal_routes_approximated,
                 "connector_waypoint_preservation_scope": (
@@ -613,11 +633,16 @@ def import_external_pages(archive):
                 "rotated_shapes_as_bounding_boxes": rotated_count,
                 "formula_driven_geometry_shapes": formula_geometry_shapes,
                 "formula_driven_geometry_examples": formula_geometry_examples,
+                "formula_driven_geometry_evaluated_shapes": formula_geometry_evaluated_shapes,
+                "formula_driven_geometry_cells_evaluated": formula_geometry_cells_evaluated,
+                "formula_driven_geometry_unresolved_shapes": formula_geometry_unresolved_shapes,
+                "formula_driven_geometry_unresolved_examples": formula_geometry_unresolved_examples,
+                "formula_evaluation_scope": "bounded arithmetic, cached scalar cell references, numeric ThePage dimensions and allowlisted scalar functions; no complete ShapeSheet interpreter",
                 "group_children_omitted": grouped_children_omitted,
                 "group_children_imported": grouped_children_imported,
                 "page_extent_expanded": page_extent_expanded,
                 "page_bottom_overflow_px_total": round(page_bottom_overflow_total, 3)}
-    if (rotated_count or formula_geometry_shapes or grouped_children_omitted
+    if (rotated_count or formula_geometry_unresolved_shapes or grouped_children_omitted
             or grouped_children_imported or page_extent_expanded
             or orthogonal_routes_approximated or sum(skipped_connectors.values())):
         metadata["fidelity_warnings"] = (
@@ -638,9 +663,9 @@ def import_external_pages(archive):
              f"{skipped_connectors['unresolved']} unsupported endpoints; "
              "review connector_links_skipped_examples before relying on SAN topology"]
             if sum(skipped_connectors.values()) else []) + (
-            [f"{formula_geometry_shapes} Visio shape(s) use formula-driven geometry; "
-             "cached cell values were used because formulas are not evaluated"
-             + (": " + "; ".join(formula_geometry_examples)
-                if formula_geometry_examples else "")]
-            if formula_geometry_shapes else [])
+            [f"{formula_geometry_unresolved_shapes} Visio shape(s) use formula-driven geometry outside the supported scalar subset; "
+             "cached cell values were used because these formulas could not be evaluated safely"
+             + (": " + "; ".join(formula_geometry_unresolved_examples)
+                if formula_geometry_unresolved_examples else "")]
+            if formula_geometry_unresolved_shapes else [])
     return validate({"nodes": nodes, "edges": edges, "layers": layers, "metadata": metadata})

@@ -22,6 +22,7 @@ SCOPED_DIRS = ENGINE_DIRS + TEST_DIRS
 REQUIRED_ENGINE = (
     "model.py", "vsdx.py", "render.py", "routing.py", "parallel_geometry.py",
     "validation.py", "vsdx_external.py", "vsdx_package.py", "visio_route.py",
+    "visio_formula.py",
 )
 MANIFEST_PATH = "07-Manifestes/manifest.json"
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
@@ -59,6 +60,8 @@ CRITICAL_FILES = (
     "python/tests/test_vsdx_route_segment_prefilter_v4325.py",
     "04-Tests/tests/test_vsdx_formula_geometry_fidelity_v4327.py",
     "python/tests/test_vsdx_formula_geometry_fidelity_v4327.py",
+    "04-Tests/tests/test_visio_formula_v4327.py",
+    "python/tests/test_visio_formula_v4327.py",
     "04-Tests/tests/test_release_git_parity_v4324.py",
     "python/tests/test_release_git_parity_v4324.py",
 )

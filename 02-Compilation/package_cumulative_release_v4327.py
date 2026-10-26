@@ -168,7 +168,7 @@ def main() -> int:
     required = {
         f"{tree}/{module}"
         for tree in ENGINE_DIRS
-        for module in ("model.py", "vsdx.py", "render.py", "routing.py", "parallel_geometry.py")
+        for module in ("model.py", "vsdx.py", "render.py", "routing.py", "parallel_geometry.py", "visio_formula.py")
     }
     missing = sorted(required - payload.keys())
     if missing:

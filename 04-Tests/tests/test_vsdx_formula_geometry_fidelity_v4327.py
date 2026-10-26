@@ -25,7 +25,9 @@ class FormulaDrivenVsdxGeometryFidelityTests(unittest.TestCase):
         })
         self._convert_to_external_vsdx()
 
-    def _convert_to_external_vsdx(self, formula_cell=None):
+    def _convert_to_external_vsdx(
+        self, formula_cell=None, formula_expression="GUARD(ThePage!PageWidth*0.5)"
+    ):
         with ZipFile(self.path) as source:
             parts = {
                 name: source.read(name)
@@ -49,9 +51,8 @@ class FormulaDrivenVsdxGeometryFidelityTests(unittest.TestCase):
                         break
             if candidate is None:
                 raise AssertionError("No eligible shape cell found: " + formula_cell)
-            # Visio stores both a formula and a cached V result. OpenVisio uses
-            # the cache today; the formula semantics cannot be evaluated here.
-            candidate.set("F", "GUARD(ThePage!PageWidth*0.5)")
+            # Keep cached V unchanged; only the bounded formula allowlist is evaluated.
+            candidate.set("F", formula_expression)
             parts[page_name] = ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
         with ZipFile(self.path, "w", ZIP_DEFLATED) as target:
@@ -63,25 +64,43 @@ class FormulaDrivenVsdxGeometryFidelityTests(unittest.TestCase):
         self.assertEqual(imported["metadata"]["formula_driven_geometry_shapes"], 0)
         self.assertNotIn("fidelity_warnings", imported["metadata"])
 
-    def test_formula_driven_pin_reports_cached_value_fallback(self):
+    def test_supported_page_formula_is_evaluated_in_strict_mode(self):
         self._convert_to_external_vsdx("PinX")
-        imported = import_vsdx(self.path)
+        with ZipFile(self.path) as archive:
+            root = ET.fromstring(archive.read("visio/pages/pages.xml"))
+        page = root.find(f"./{{{V}}}Page")
+        sheet = page.find(f"./{{{V}}}PageSheet")
+        page_width = float(next(
+            cell.get("V") for cell in sheet.findall(f"./{{{V}}}Cell")
+            if cell.get("N") == "PageWidth"
+        ))
+        imported = import_vsdx(self.path, strict_fidelity=True)
+        self.assertAlmostEqual(imported["nodes"][0]["x"], page_width * 96.0 * 0.5, places=2)
         metadata = imported["metadata"]
         self.assertEqual(metadata["formula_driven_geometry_shapes"], 1)
+        self.assertEqual(metadata["formula_driven_geometry_evaluated_shapes"], 1)
+        self.assertEqual(metadata["formula_driven_geometry_cells_evaluated"], 1)
+        self.assertEqual(metadata["formula_driven_geometry_unresolved_shapes"], 0)
+
+    def test_unsupported_formula_reports_cached_value_fallback(self):
+        self._convert_to_external_vsdx("PinX", "GUARD(UnsupportedCell*0.5)")
+        metadata = import_vsdx(self.path)["metadata"]
+        self.assertEqual(metadata["formula_driven_geometry_shapes"], 1)
+        self.assertEqual(metadata["formula_driven_geometry_unresolved_shapes"], 1)
         self.assertEqual(len(metadata["formula_driven_geometry_examples"]), 1)
         self.assertTrue(any(
-            "formula-driven geometry" in warning
+            "outside the supported scalar subset" in warning
             and "cached cell values were used" in warning
             for warning in metadata["fidelity_warnings"]
         ))
 
     def test_strict_mode_rejects_formula_driven_pin_geometry(self):
-        self._convert_to_external_vsdx("PinX")
+        self._convert_to_external_vsdx("PinX", "GUARD(UnsupportedCell*0.5)")
         with self.assertRaisesRegex(VsdxFidelityError, "formula-driven geometry"):
             import_vsdx(self.path, strict_fidelity=True)
 
     def test_formula_driven_dimensions_are_not_silently_accepted(self):
-        self._convert_to_external_vsdx("Width")
+        self._convert_to_external_vsdx("Width", "UnsupportedFunction(2)")
         imported = import_vsdx(self.path)
         self.assertEqual(imported["metadata"]["formula_driven_geometry_shapes"], 1)
         with self.assertRaisesRegex(VsdxFidelityError, "formula-driven geometry"):

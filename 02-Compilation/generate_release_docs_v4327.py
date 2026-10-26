@@ -110,7 +110,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
     doc.addPageTemplates([PageTemplate(id="all", frames=[frame], onPage=_footer)])
     story = [
         Paragraph("OpenVisio V43.27", styles["OVTitle"]),
-        Paragraph("Spatially bounded static VSDX route validation and reproducible Windows candidate", styles["OVH1"]),
+        Paragraph("Bounded ShapeSheet scalar formulas + reproducible Windows candidate", styles["OVH1"]),
         Paragraph(
             "Release candidate brief. This package contains the real Python engine source, "
             "tests, build scripts, and Windows executables produced by the associated CI job. "
@@ -119,7 +119,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         Spacer(1, 2*mm),
         Paragraph("Functional change", styles["OVH1"]),
         Paragraph(
-            "Static route validation now queries the existing clearance-padded rectangle index once per orthogonal segment, skipping off-path objects that lie only inside a large meandering route bounding box. Exact endpoint signatures and segment/obstacle checks remain authoritative. Malformed or over-complex routes (more than 256 segments) use the full-scan path; unsafe preserved routes fall back to the obstacle-avoiding router. Arbitrary Visio formulas and dynamic glue are not assumed.", styles["OVBody"]),
+            "Static route validation keeps its per-segment obstacle prefilter and exact intersection checks. External ShapeSheet geometry now evaluates a bounded scalar subset: arithmetic, numeric cached cell references, numeric ThePage dimensions and an explicit function allowlist. Unsupported, cyclic, non-finite or over-budget formulas keep cached V values and emit fidelity warnings; strict mode rejects unresolved geometry formulas. No Python eval is used, and this is not a complete ShapeSheet interpreter.", styles["OVBody"]),
         Paragraph(
             "Both mirrored VSDX importers also reject case variants of the reserved "
             "openvisio/document.json and openvisio/manifest.json members. These aliases previously "
@@ -135,7 +135,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         Paragraph(
             "03-Sources/openvisio and python/openvisio are compared byte-for-byte (line endings "
             "normalized by the parity gate). The required engine modules include model.py, "
-            "vsdx.py, render.py, routing.py and parallel_geometry.py. Test mirrors are "
+            "vsdx.py, render.py, routing.py, parallel_geometry.py and visio_formula.py. Test mirrors are "
             "04-Tests/tests and python/tests.", styles["OVBody"]),
         Paragraph("Qualification summary", styles["OVH1"]),
     ]
@@ -210,7 +210,7 @@ def _docx(output: Path, report: dict, commit: str):
     normal.paragraph_format.space_after = Pt(4)
     title = document.add_heading("OpenVisio V43.27", 0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    subtitle = document.add_paragraph("Spatially bounded static VSDX route validation and reproducible Windows candidate")
+    subtitle = document.add_paragraph("Bounded ShapeSheet scalar formulas + reproducible Windows candidate")
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
     subtitle.runs[0].bold = True
     p = document.add_paragraph(
@@ -220,12 +220,12 @@ def _docx(output: Path, report: dict, commit: str):
     )
     document.add_heading("Functional improvement", level=1)
     document.add_paragraph(
-        "Static route validation queries the existing clearance-padded rectangle index per orthogonal segment, so off-path shapes inside a large meandering route bounding box are excluded from exact checks. Endpoint signatures and segment/obstacle checks remain authoritative. Malformed routes and routes with more than 256 segments use a conservative full scan; unsafe preserved routes fall back to the standard obstacle-avoiding router. The existing importer also rejects case variants of reserved openvisio/document.json and openvisio/manifest.json members to prevent a lossy public-geometry fallback. Arbitrary Visio formulas and dynamic glue are not inferred. CI verifies source/test parity and SHA-256 coverage, then reruns the full suite from the extracted ZIP."
+        "Static route validation uses per-segment obstacle prefiltering with exact intersection checks. External ShapeSheet geometry now evaluates a bounded scalar subset: arithmetic, numeric cached cell references, numeric ThePage dimensions and an explicit function allowlist. Unsupported, cyclic, non-finite or over-budget formulas keep cached V values and emit fidelity warnings; strict mode rejects unresolved formulas. No Python eval is used. The importer also rejects case variants of reserved openvisio/document.json and openvisio/manifest.json members. CI checks source/test parity and reruns the full suite from the extracted ZIP."
     )
     document.add_heading("Source layout", level=1)
     document.add_paragraph(
         "Engine source: 03-Sources/openvisio and python/openvisio. Required modules include "
-        "model.py, vsdx.py, render.py, routing.py and parallel_geometry.py. Test mirrors: "
+        "model.py, vsdx.py, render.py, routing.py, parallel_geometry.py and visio_formula.py. Test mirrors: "
         "04-Tests/tests and python/tests. The independent checkout verifier pins the candidate "
         "commit and critical Git blob identifiers."
     )

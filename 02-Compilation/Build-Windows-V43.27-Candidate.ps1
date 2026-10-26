@@ -46,6 +46,7 @@ try {
     Invoke-UnitPattern -Pattern 'test_vsdx_route_endpoint_attachment_v4324.py'
     Invoke-UnitPattern -Pattern 'test_vsdx_route_spatial_prefilter_v4325.py'
     Invoke-UnitPattern -Pattern 'test_vsdx_formula_geometry_fidelity_v4327.py'
+    Invoke-UnitPattern -Pattern 'test_visio_formula_v4327.py'
     Invoke-UnitPattern -Pattern 'test_low_zoom_label_lod_v4320.py'
     # Exercise real Tk callbacks on the Windows runner, not only headless model tests.
     $env:OPENVISIO_GUI_TESTS = '1'
