@@ -348,7 +348,24 @@ def import_external_pages(archive):
             children = shape.findall(f"./{{{V}}}Shapes/{{{V}}}Shape")
             sid = shape.get("ID")
             shape_cells = shape.findall(f"./{{{V}}}Cell")
-            cells = {c.get("N"): c.get("V") for c in shape_cells if c.get("N")}
+            # Direct ShapeSheet cells are unique. Building a dict without first
+            # checking the XML silently made the last duplicate win, allowing a
+            # malformed VSDX to alter geometry based on source order.
+            cells = {}
+            seen_cell_names = {}
+            for cell in shape_cells:
+                cell_name = cell.get("N")
+                if not cell_name:
+                    continue
+                folded_name = cell_name.casefold()
+                if folded_name in seen_cell_names:
+                    previous = seen_cell_names[folded_name]
+                    raise ValueError(
+                        "Duplicate ShapeSheet cell name (case-insensitive): "
+                        f"{previous!r} / {cell_name!r} on sheet {sid or '<unnamed>'}"
+                    )
+                seen_cell_names[folded_name] = cell_name
+                cells[cell_name] = cell.get("V")
             if depth > MAX_GROUP_DEPTH:
                 grouped_children_omitted += 1 + descendants_count(shape)
                 return
