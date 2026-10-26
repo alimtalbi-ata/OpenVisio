@@ -122,5 +122,24 @@ class FormulaDrivenVsdxGeometryFidelityTests(unittest.TestCase):
             import_vsdx(self.path, strict_fidelity=True)
 
 
+    def test_mixed_case_page_reference_is_imported_in_strict_mode(self):
+        self._convert_to_external_vsdx("PinX", "gUaRd(tHePaGe!pAgEwIdTh*0.5)")
+        with ZipFile(self.path) as archive:
+            root = ET.fromstring(archive.read("visio/pages/pages.xml"))
+        sheet = root.find(f"./{{{V}}}Page/{{{V}}}PageSheet")
+        page_width = float(next(cell.get("V") for cell in sheet.findall(f"./{{{V}}}Cell")
+                                if cell.get("N") == "PageWidth"))
+        imported = import_vsdx(self.path, strict_fidelity=True)
+        self.assertAlmostEqual(imported["nodes"][0]["x"], page_width * 96.0 * 0.5, places=2)
+        self.assertEqual(imported["metadata"]["formula_driven_geometry_unresolved_shapes"], 0)
+
+    def test_mixed_case_cached_cell_reference_is_imported_in_strict_mode(self):
+        self._convert_to_external_vsdx("PinX", "gUaRd(wIdTh*0.5)")
+        imported = import_vsdx(self.path, strict_fidelity=True)
+        self.assertEqual(imported["metadata"]["formula_driven_geometry_evaluated_shapes"], 1)
+        self.assertEqual(imported["metadata"]["formula_driven_geometry_unresolved_shapes"], 0)
+        self.assertGreater(imported["nodes"][0]["x"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

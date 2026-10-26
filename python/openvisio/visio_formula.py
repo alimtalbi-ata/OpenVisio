@@ -195,42 +195,94 @@ def evaluate_numeric_formula(expression: str, resolve: Callable[[str], float]) -
     return _Parser(expression, resolve).parse()
 
 
+def _casefold_index(mapping: Mapping[str, object]) -> dict[str, list[tuple[str, object]]]:
+    """Index ShapeSheet names without losing evidence of ambiguous case aliases."""
+    index: dict[str, list[tuple[str, object]]] = {}
+    for key, value in mapping.items():
+        spelling = str(key)
+        index.setdefault(spelling.casefold(), []).append((spelling, value))
+    return index
+
+
+def _unique_casefold_value(
+    index: Mapping[str, list[tuple[str, object]]], folded_name: str, description: str,
+) -> object:
+    """Return one case-insensitive entry; refuse missing or colliding aliases."""
+    matches = index.get(folded_name, ())
+    if not matches:
+        raise FormulaEvaluationError(f"unknown {description} reference")
+    if len(matches) != 1:
+        raise FormulaEvaluationError(f"ambiguous case-insensitive {description} reference")
+    return matches[0][1]
+
+
 def evaluate_geometry_formula_cells(
     values: Mapping[str, object], formulas: Mapping[str, object],
     page_values: Mapping[str, object] | None = None,
 ) -> tuple[dict[str, float], tuple[str, ...]]:
-    """Evaluate geometry formulas all-or-none; return unresolved target names on failure."""
-    targets = {str(k): str(v) for k, v in formulas.items()
-               if k in GEOMETRY_CELL_NAMES and v is not None}
+    """Evaluate geometry formulas all-or-none using case-insensitive cell names.
+
+    Microsoft ShapeSheet references are normalized by cell spelling, not by the
+    capitalization used by a formula author. Case-fold collisions are refused
+    rather than resolved by dictionary iteration order. A failed dependency
+    rejects the whole candidate geometry set so callers can safely keep cached
+    V values and report the limitation.
+    """
+    geometry_names = {name.casefold() for name in GEOMETRY_CELL_NAMES}
+    targets = {
+        str(key): str(expression)
+        for key, expression in formulas.items()
+        if str(key).casefold() in geometry_names and expression is not None
+    }
     if not targets:
         return {}, ()
-    page_values = page_values or {}
+
+    target_index = _casefold_index(targets)
+    # Two formula cells that differ only by case are ambiguous even if only one
+    # would happen to be reached first. Never let input ordering select a cell.
+    if any(len(entries) != 1 for entries in target_index.values()):
+        return {}, tuple(sorted(targets))
+
+    formula_index = _casefold_index(formulas)
+    value_index = _casefold_index(values)
+    page_index = _casefold_index(page_values or {})
+    target_name_by_fold = {folded: entries[0][0] for folded, entries in target_index.items()}
     resolved: dict[str, float] = {}
     active: set[str] = set()
 
     def resolve(name: str) -> float:
-        if name.startswith("ThePage!"):
-            cell = name.split("!", 1)[1]
-            if cell not in {"PageWidth", "PageHeight"} or cell not in page_values:
-                raise FormulaEvaluationError("unsupported page-cell reference")
-            return _number(page_values[cell])
-        if name in targets:
-            if name in resolved:
-                return resolved[name]
-            if name in active:
+        if "!" in name:
+            object_name, cell_name = name.split("!", 1)
+            if object_name.casefold() == "thepage":
+                folded_cell = cell_name.casefold()
+                if folded_cell not in {"pagewidth", "pageheight"}:
+                    raise FormulaEvaluationError("unsupported page-cell reference")
+                value = _unique_casefold_value(page_index, folded_cell, "page-cell")
+                return _number(value)
+
+        folded = name.casefold()
+        if folded in target_name_by_fold:
+            target_name = target_name_by_fold[folded]
+            if target_name in resolved:
+                return resolved[target_name]
+            if folded in active:
                 raise FormulaEvaluationError("cyclic geometry formula")
-            active.add(name)
+            active.add(folded)
             try:
-                value = evaluate_numeric_formula(targets[name].strip(), resolve)
-                resolved[name] = _checked(value)
-                return resolved[name]
+                value = evaluate_numeric_formula(targets[target_name].strip(), resolve)
+                resolved[target_name] = _checked(value)
+                return resolved[target_name]
             finally:
-                active.discard(name)
-        if name in formulas:
+                active.discard(folded)
+
+        # A formula-bearing non-geometry dependency must never be mistaken for
+        # its cached V value, even when the formula changes capitalization.
+        if folded in formula_index:
+            _unique_casefold_value(formula_index, folded, "formula-cell")
             raise FormulaEvaluationError("formula-bearing non-geometry dependency")
-        if name not in values:
-            raise FormulaEvaluationError("unknown ShapeSheet cell reference")
-        return _number(values[name])
+        if folded in value_index:
+            return _number(_unique_casefold_value(value_index, folded, "cached-cell"))
+        raise FormulaEvaluationError("unknown ShapeSheet cell reference")
 
     unresolved = []
     for name in sorted(targets):

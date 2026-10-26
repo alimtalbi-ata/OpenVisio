@@ -67,5 +67,49 @@ class NumericFormulaTests(unittest.TestCase):
             evaluate_numeric_formula(expression, lambda _: 0.0)
 
 
+    def test_geometry_cell_references_ignore_formula_capitalization(self):
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {"wIdTh": "4", "HeIgHt": "2"},
+            {"pInX": "gUaRd(wIDTH*0.5)", "lOcPiNx": "width/2"},
+        )
+        self.assertEqual(unresolved, ())
+        self.assertEqual(actual, {"pInX": 2.0, "lOcPiNx": 2.0})
+
+    def test_page_object_and_page_cell_references_ignore_case(self):
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {}, {"PinX": "GUARD(tHePaGe!pAgEwIdTh*0.5)"},
+            {"pAgEwIdTh": "10", "PAGEHEIGHT": "7"},
+        )
+        self.assertEqual(unresolved, ())
+        self.assertEqual(actual, {"PinX": 5.0})
+
+    def test_casefold_collision_in_geometry_targets_refuses_entire_set(self):
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {}, {"PinX": "1", "pinx": "2", "PinY": "3"},
+        )
+        self.assertEqual(actual, {})
+        self.assertEqual(set(unresolved), {"PinX", "pinx", "PinY"})
+
+    def test_casefold_collision_in_cached_values_is_not_iteration_order_dependent(self):
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {"Width": "4", "wIdTh": "8"}, {"PinX": "width/2"},
+        )
+        self.assertEqual(actual, {})
+        self.assertEqual(unresolved, ("PinX",))
+
+    def test_non_geometry_formula_dependency_is_refused_case_insensitively(self):
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {"Prop.Width": "4"},
+            {"PinX": "pRoP.wIdTh*2", "prop.width": "Width/2"},
+        )
+        self.assertEqual(actual, {})
+        self.assertEqual(unresolved, ("PinX",))
+
+    def test_numeric_formula_resolution_callback_receives_original_spelling(self):
+        seen = []
+        value = evaluate_numeric_formula("wIdTh + 1", lambda name: seen.append(name) or 4)
+        self.assertEqual(value, 5)
+
+
 if __name__ == "__main__":
     unittest.main()
