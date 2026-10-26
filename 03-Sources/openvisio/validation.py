@@ -88,6 +88,14 @@ def validate_document(data):
                 raise ValueError("Propriété liaison invalide : " + key)
         if "routing" in edge and edge["routing"] not in ("straight", "orthogonal"):
             raise ValueError("Mode de routage invalide")
+        if "visio_route" in edge:
+            if edge.get("routing") != "orthogonal":
+                raise ValueError("Une route VSDX statique doit être orthogonale")
+            from .visio_route import validate_visio_route
+            try:
+                validate_visio_route(edge["visio_route"])
+            except ValueError as exc:
+                raise ValueError("Route statique VSDX invalide : " + str(exc)) from exc
         if "layer" in edge and (not isinstance(edge["layer"], str) or edge["layer"] not in layer_ids):
             raise ValueError("Calque de liaison inexistant")
         # Validate metadata types before using them as hash keys. This also
