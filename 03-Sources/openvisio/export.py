@@ -13,7 +13,7 @@ from .routing import routing_scene
 from .node_geometry import node_bounds, node_dimensions
 from .parallel_geometry import display_edges
 from .connector_labels import layout_connector_labels
-from .shape_icons import equipment_icon
+from .shape_icons import equipment_icon, equipment_outline, equipment_detail_primitives
 from .node_labels import fit_node_label
 
 
@@ -133,18 +133,38 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
         label = escape(_xml10_text(node.get('label', 'Équipement')))
         fill = get_shape(node.get('shape', 'server'))['fill']
         w, h = node_dimensions(node)
-        lines.append(f'<rect x="{x-w/2:g}" y="{y-h/2:g}" width="{w:g}" height="{h:g}" rx="8" fill="{fill}" stroke="#1d4ed8"/>')
+        shape_name = node.get('shape', 'server')
+        outline = equipment_outline(node) if shape_name != 'visio-group' else None
+        if outline is not None:
+            points = ' '.join(f'{px:g},{py:g}' for px, py in outline)
+            lines.append(f'<polygon data-openvisio-node-body={quoteattr(_xml10_text(node["id"]))} '
+                         f'data-openvisio-shape={quoteattr(_xml10_text(shape_name))} '
+                         f'points="{points}" fill="{fill}" stroke="#1d4ed8"/>')
+        else:
+            lines.append(f'<rect x="{x-w/2:g}" y="{y-h/2:g}" width="{w:g}" height="{h:g}" rx="8" fill="{fill}" stroke="#1d4ed8"/>')
         icon = equipment_icon(node)
         if icon is not None:
             points = ' '.join(f'{px:g},{py:g}' for px, py in icon)
             lines.append(f'<polygon data-openvisio-node-icon={quoteattr(_xml10_text(node["id"]))} '
                          f'points="{points}" fill="#f8fafc" stroke="#334155"/>')
+            for detail_index, detail in enumerate(equipment_detail_primitives(node)):
+                detail_points = ' '.join(f'{px:g},{py:g}' for px, py in detail['points'])
+                detail_id = quoteattr(_xml10_text(f"{node['id']}:{detail_index}"))
+                if detail['kind'] == 'line':
+                    commands = ' '.join((f"M {detail['points'][0][0]:g} {detail['points'][0][1]:g}" if i == 0
+                                         else f"L {point[0]:g} {point[1]:g}")
+                                        for i, point in enumerate(detail['points']))
+                    lines.append(f'<path data-openvisio-node-detail={detail_id} d="{commands}" '
+                                 f'fill="none" stroke="{detail["stroke"]}" stroke-width="{detail["width"]:g}" stroke-linecap="round"/>')
+                elif detail['kind'] == 'polygon':
+                    lines.append(f'<polygon data-openvisio-node-detail={detail_id} points="{detail_points}" '
+                                 f'fill="{detail["fill"]}" stroke="{detail["stroke"]}" stroke-width="{detail["width"]:g}"/>')
         raw_label = _xml10_text(node.get('label', 'Équipement'))
         label_padding = 20 if node.get('shape') == 'visio-group' else 12
         visual_rows, label_font_size = fit_node_label(
             raw_label, w, h, font_size=13, padding=label_padding,
             vertical_padding=8, minimum_font_size=6)
-        icon_reserve = 32.0 if icon is not None and node.get('shape') != 'visio-group' and len(visual_rows) > 1 else 0.0
+        icon_reserve = 34.0 if icon is not None and node.get('shape') != 'visio-group' and len(visual_rows) > 1 else 0.0
         if icon_reserve:
             visual_rows, label_font_size = fit_node_label(
                 raw_label, w - icon_reserve, h, font_size=label_font_size,
