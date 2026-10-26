@@ -42,3 +42,8 @@ Voir QUALIFICATION-V41.16.md : raccordement transactionnel du rendu, 1747 tests 
 ## v41.18
 Benchmark comparatif synthétique du cache et tests de conservation des routes non invalidées. Voir QUALIFICATION-V41.18.md.
 
+## V43.26 candidate — infrastructure glyphs (26 October 2026)
+
+The dedicated branch `develop/v43.26-infrastructure-glyphs-20261026` adds original shape-specific vector silhouettes and internal pictogram details for server, storage, SAN switch, generic/network switch, NAS, firewall, database and application nodes. The Tk renderer and SVG exporter consume the same model-space primitives. Hit-test/routing bounds remain unchanged, and unknown/group/small nodes retain the rectangular fallback.
+
+Windows portable/installer and cumulative-ZIP status must be confirmed against the GitHub Actions run for the final commit. These schematic symbols are not Visio/vendor stencils; Microsoft Visio Desktop round-trip and manual Windows UI acceptance are not claimed by synthetic tests.
