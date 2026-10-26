@@ -20,6 +20,46 @@ from .vsdx_package import (V, R, OR, CT, PX_PER_IN, ET, _cell, _xml,
 class VsdxExternalChangesError(ValueError):
     """Embedded OpenVisio data no longer matches the Visio drawing pages."""
 
+
+class VsdxFidelityError(ValueError):
+    """Strict import refused a VSDX whose known fidelity losses are non-empty."""
+
+    def __init__(self, issues):
+        if isinstance(issues, str):
+            issues = (issues,)
+        self.issues = tuple(str(item) for item in issues)
+        detail = "; ".join(self.issues) or "Fidélité non vérifiable"
+        super().__init__("Import VSDX refusé en mode fidélité stricte : " + detail)
+
+
+def _require_reported_fidelity(document, strict_fidelity):
+    """Refuse a public-geometry import when the importer reports known loss.
+
+    This is an opt-in safety gate, not a Microsoft Visio certification. It
+    blocks known omissions/approximations that the importer explicitly records.
+    """
+    if not strict_fidelity:
+        return document
+    metadata = document.get("metadata", {}) if isinstance(document, dict) else {}
+    if not isinstance(metadata, dict):
+        raise VsdxFidelityError("Métadonnées de fidélité absentes")
+    issues = []
+    warnings = metadata.get("fidelity_warnings", [])
+    if isinstance(warnings, (list, tuple)):
+        issues.extend(str(item) for item in warnings if str(item).strip())
+    elif warnings:
+        issues.append(str(warnings))
+    warning = metadata.get("import_warning")
+    if isinstance(warning, str) and warning.strip() and warning not in issues:
+        issues.append(warning)
+    if metadata.get("embedded_payload_discarded"):
+        issues.append("modèle OpenVisio embarqué écarté")
+    if not issues and metadata.get("connector_links_skipped", 0):
+        issues.append(f"{metadata['connector_links_skipped']} liaison(s) non importée(s)")
+    if issues:
+        raise VsdxFidelityError(issues)
+    return document
+
 def export_vsdx(path, document, *, expected_sha256=None, require_absent=False, lock_timeout=5.0):
     """Export VSDX with optional no-clobber / optimistic concurrency guards.
 
@@ -110,16 +150,18 @@ def _require_canonical_openvisio_parts(member_names):
                 raise ValueError("Nom de partie OpenVisio non canonique : " + actual)
 
 
-def import_vsdx(path, *, changed_pages="reject"):
-    """Import VSDX, refusing to silently discard edits made in Visio.
+def import_vsdx(path, *, changed_pages="reject", strict_fidelity=False):
+    """Import VSDX with optional refusal of importer-known fidelity losses.
 
-    For a VSDX exported with schema 2/3, changed drawing XML raises
-    VsdxExternalChangesError. Set changed_pages="flatten" explicitly to
-    recover supported external geometry with documented fidelity limitations.
-    Legacy schema-1 VSDX files lack page checksums and cannot be verified.
+    strict_fidelity=True rejects skipped/approximated geometry, explicit
+    flatten recovery that discards the embedded model, and legacy schema-1
+    payloads whose public pages have no integrity checksums. It is not a
+    Microsoft Visio compatibility certificate.
     """
     if changed_pages not in ("reject", "flatten"):
         raise ValueError("Mode d'import des pages VSDX invalide")
+    if type(strict_fidelity) is not bool:
+        raise ValueError("strict_fidelity doit être un booléen")
     with ZipFile(path) as archive:
         entries = archive.infolist()
         if len(entries) > 5000 or sum(entry.file_size for entry in entries) > 50_000_000:
@@ -170,6 +212,10 @@ def import_vsdx(path, *, changed_pages="reject"):
                             + ", ".join(changed)
                             + ". L'import du modèle embarqué ignorerait ces changements. "
                               "Choisissez explicitement l'import géométrique partiel.")
+                    if strict_fidelity:
+                        raise VsdxFidelityError(
+                            ["les pages Visio ont été modifiées ; le repli géométrique "
+                             "écarterait le modèle OpenVisio embarqué", *changed])
                     from .vsdx_external import import_external_pages
                     imported = import_external_pages(archive)
                     imported.setdefault("metadata", {}).update({
@@ -178,7 +224,12 @@ def import_vsdx(path, *, changed_pages="reject"):
                         "import_warning": "Pages modifiées : import géométrique partiel, "
                                           "sans conservation intégrale des propriétés OpenVisio.",
                     })
-                    return validate(imported)
+                    return _require_reported_fidelity(validate(imported), strict_fidelity)
+            if strict_fidelity and schema == 1:
+                raise VsdxFidelityError(
+                    "VSDX de schéma 1 : les pages publiques ne disposent pas d'empreintes "
+                    "permettant de vérifier les modifications externes")
             return load_bytes(payload)
         from .vsdx_external import import_external_pages
-        return import_external_pages(archive)
+        imported = import_external_pages(archive)
+        return _require_reported_fidelity(imported, strict_fidelity)
