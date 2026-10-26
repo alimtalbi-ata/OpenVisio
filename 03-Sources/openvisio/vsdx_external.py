@@ -304,6 +304,10 @@ def import_external_pages(archive):
     nodes, edges, layers = [], [], []
     offset = 0.0
     rotated_count = 0
+    # Formula-driven geometry must not be silently described as strict.
+    # The importer uses cached V values but never evaluates Visio formulas.
+    formula_geometry_shapes = 0
+    formula_geometry_examples = []
     orthogonal_routes_preserved = 0
     orthogonal_routes_approximated = 0
     # External Visio pages may contain one-ended or unsupported connectors.
@@ -329,7 +333,7 @@ def import_external_pages(archive):
             return len(shape.findall(f".//{{{V}}}Shapes/{{{V}}}Shape"))
 
         def visit(shape, ancestors=(), parent_id=None, depth=0):
-            nonlocal rotated_count, grouped_children_omitted, grouped_children_imported
+            nonlocal rotated_count, grouped_children_omitted, grouped_children_imported, formula_geometry_shapes
             children = shape.findall(f"./{{{V}}}Shapes/{{{V}}}Shape")
             sid = shape.get("ID")
             cells = {c.get("N"): c.get("V") for c in shape.findall(f"./{{{V}}}Cell")}
@@ -340,6 +344,18 @@ def import_external_pages(archive):
                     key in cells for key in ("PinX", "PinY")):
                 grouped_children_omitted += descendants_count(shape) + (1 if parent_id is not None else 0)
                 return
+            geometry_cell_names = {
+                "PinX", "PinY", "Width", "Height", "LocPinX", "LocPinY", "Angle"
+            }
+            formula_cells = sorted({
+                cell.get("N") for cell in shape.findall(f"./{{{V}}}Cell")
+                if cell.get("N") in geometry_cell_names and cell.get("F") is not None
+            })
+            if formula_cells:
+                formula_geometry_shapes += 1
+                if len(formula_geometry_examples) < 12:
+                    formula_geometry_examples.append(
+                        f"page {index} / sheet {sid}: {', '.join(formula_cells)}")
             try:
                 x_in, y_in, width_in, height_in, total_angle = nested_shape_geometry_inches(
                     cells, ancestors)
@@ -595,13 +611,15 @@ def import_external_pages(archive):
                 "connector_links_skipped_by_reason": skipped_connectors,
                 "connector_links_skipped_examples": skipped_connector_examples,
                 "rotated_shapes_as_bounding_boxes": rotated_count,
+                "formula_driven_geometry_shapes": formula_geometry_shapes,
+                "formula_driven_geometry_examples": formula_geometry_examples,
                 "group_children_omitted": grouped_children_omitted,
                 "group_children_imported": grouped_children_imported,
                 "page_extent_expanded": page_extent_expanded,
                 "page_bottom_overflow_px_total": round(page_bottom_overflow_total, 3)}
-    if (rotated_count or grouped_children_omitted or grouped_children_imported
-            or page_extent_expanded or orthogonal_routes_approximated
-            or sum(skipped_connectors.values())):
+    if (rotated_count or formula_geometry_shapes or grouped_children_omitted
+            or grouped_children_imported or page_extent_expanded
+            or orthogonal_routes_approximated or sum(skipped_connectors.values())):
         metadata["fidelity_warnings"] = (
             [f"{rotated_count} rotated Visio shape(s) approximated by axis-aligned bounding boxes"]
             if rotated_count else []) + (
@@ -619,5 +637,10 @@ def import_external_pages(archive):
              f"{skipped_connectors['self_loop']} self-linked, "
              f"{skipped_connectors['unresolved']} unsupported endpoints; "
              "review connector_links_skipped_examples before relying on SAN topology"]
-            if sum(skipped_connectors.values()) else [])
+            if sum(skipped_connectors.values()) else []) + (
+            [f"{formula_geometry_shapes} Visio shape(s) use formula-driven geometry; "
+             "cached cell values were used because formulas are not evaluated"
+             + (": " + "; ".join(formula_geometry_examples)
+                if formula_geometry_examples else "")]
+            if formula_geometry_shapes else [])
     return validate({"nodes": nodes, "edges": edges, "layers": layers, "metadata": metadata})
