@@ -54,8 +54,31 @@ def _require_reported_fidelity(document, strict_fidelity):
         issues.append(warning)
     if metadata.get("embedded_payload_discarded"):
         issues.append("modèle OpenVisio embarqué écarté")
-    if not issues and metadata.get("connector_links_skipped", 0):
-        issues.append(f"{metadata['connector_links_skipped']} liaison(s) non importée(s)")
+    # Loss counters are a second, independent evidence channel. A future importer
+    # refactor must not accidentally make strict mode permissive merely by
+    # forgetting to add a matching human-readable warning string.
+    loss_counters = {
+        "rotated_shapes_as_bounding_boxes": ("rotated Visio shape",),
+        "formula_driven_geometry_unresolved_shapes": ("formula-driven geometry",),
+        "group_children_omitted": ("nested group child shape(s) omitted",),
+        "group_children_imported": ("nested group child shape(s) imported",),
+        "page_extent_expanded": ("Visio page(s) expanded",),
+        "orthogonal_connector_routes_approximated": ("orthogonal Visio connector(s)",),
+        "connector_links_skipped": ("Visio connector(s) omitted", "liaison(s) non importée(s)"),
+    }
+    for key, warning_markers in loss_counters.items():
+        if key not in metadata:
+            continue
+        count = metadata[key]
+        if isinstance(count, bool) or not isinstance(count, int) or count < 0:
+            issues.append(f"Compteur de perte de fidélité invalide : {key}")
+            continue
+        already_described = any(
+            marker.casefold() in issue.casefold()
+            for issue in issues for marker in warning_markers
+        )
+        if count and not already_described:
+            issues.append(f"Compteur de perte de fidélité {key}={count}")
     if issues:
         raise VsdxFidelityError(issues)
     return document

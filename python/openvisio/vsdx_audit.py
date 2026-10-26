@@ -17,7 +17,7 @@ def audit_vsdx(path):
         pages = _pages(archive)
         source_nodes = source_edges = groups = masters = 0
         page_summary = []
-        for name, part, height in pages:
+        for name, part, height, *_page_metadata in pages:
             root = _parse_xml(archive, part)
             shapes = root.findall(f'.//{{{V}}}Shapes/{{{V}}}Shape')
             one_d = 0

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="310" viewBox="0 0 1080 310" role="img" aria-labelledby="title desc">
+  <title id="title">OpenVisio V43.27 — bounded ShapeSheet geometry formula handling</title>
+  <desc id="desc">Formula cells enter a bounded parser. Supported scalar formulas update geometry. Unsupported formulas retain cached values and produce a fidelity warning; strict mode rejects unresolved formulas.</desc>
+  <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 Z" fill="#315a7d"/></marker></defs>
+  <rect width="1080" height="310" fill="#f7fafc"/>
+  <text x="28" y="34" font-family="Segoe UI,Arial" font-size="20" font-weight="700" fill="#18324b">OpenVisio V43.27 — import de géométrie ShapeSheet</text>
+  <g font-family="Segoe UI,Arial" font-size="14" text-anchor="middle">
+    <rect x="28" y="78" width="205" height="66" rx="8" fill="#e5eef7" stroke="#315a7d"/>
+    <text x="130" y="104" fill="#18324b" font-weight="700">Cellule avec F</text><text x="130" y="125" fill="#18324b">PinX / Width / Angle</text>
+    <rect x="292" y="78" width="224" height="66" rx="8" fill="#e5eef7" stroke="#315a7d"/>
+    <text x="404" y="104" fill="#18324b" font-weight="700">Parseur borné</text><text x="404" y="125" fill="#18324b">arithmétique + références</text>
+    <rect x="575" y="56" width="210" height="66" rx="8" fill="#d9f3e5" stroke="#23734d"/>
+    <text x="680" y="82" fill="#14532d" font-weight="700">Sous-ensemble supporté</text><text x="680" y="103" fill="#14532d">géométrie évaluée</text>
+    <rect x="575" y="170" width="210" height="66" rx="8" fill="#fff0d6" stroke="#a86100"/>
+    <text x="680" y="196" fill="#7c3f00" font-weight="700">Formule inconnue</text><text x="680" y="217" fill="#7c3f00">cache + avertissement</text>
+    <rect x="850" y="56" width="202" height="66" rx="8" fill="#d9f3e5" stroke="#23734d"/>
+    <text x="951" y="82" fill="#14532d" font-weight="700">Import standard</text><text x="951" y="103" fill="#14532d">géométrie calculée</text>
+    <rect x="850" y="170" width="202" height="66" rx="8" fill="#fde2e2" stroke="#b42318"/>
+    <text x="951" y="196" fill="#912018" font-weight="700">Mode strict</text><text x="951" y="217" fill="#912018">refus si non résolu</text>
+  </g>
+  <g stroke="#315a7d" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <path d="M233 111 H285"/><path d="M516 96 H568"/><path d="M516 123 C540 123 540 203 568 203"/><path d="M785 89 H843"/><path d="M785 203 H843"/>
+  </g>
+  <text x="28" y="278" font-family="Segoe UI,Arial" font-size="13" fill="#475569">Limite : sous-ensemble borné, pas un interpréteur complet ShapeSheet ; aucune certification Visio Desktop.</text>
+</svg>
