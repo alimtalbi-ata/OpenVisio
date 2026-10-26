@@ -7,6 +7,14 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$sourceBranch = ([string]$env:OPENVISIO_SOURCE_BRANCH).Trim()
+if (!$sourceBranch) { $sourceBranch = ([string]$env:GITHUB_HEAD_REF).Trim() }
+if (!$sourceBranch) { $sourceBranch = ([string]$env:GITHUB_REF_NAME).Trim() }
+if (!$sourceBranch) { $sourceBranch = (@(git -C $root branch --show-current) -join '').Trim() }
+if (!$sourceBranch -or $sourceBranch -notmatch '^[A-Za-z0-9._/-]{1,200}$' -or $sourceBranch.StartsWith('/') -or (($sourceBranch -split '/') -contains '..')) {
+    throw 'Unable to identify a safe, exact source branch; set OPENVISIO_SOURCE_BRANCH explicitly'
+}
+$env:OPENVISIO_SOURCE_BRANCH = $sourceBranch
 Push-Location $root
 try {
     $env:PYTHONPATH = Join-Path $root 'python'
@@ -97,7 +105,7 @@ try {
     $qualification = [ordered]@{
         version = 'V43.27'
         author = 'Abdelhalim Talbi'
-        source_branch = 'develop/v43.27-formula-driven-vsdx-geometry-20261026'
+        source_branch = $sourceBranch
         source_commit = $sourceCommit
         generated_utc = [DateTime]::UtcNow.ToString('o')
         runner = 'GitHub Actions windows-2022'
