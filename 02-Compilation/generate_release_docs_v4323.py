@@ -274,13 +274,7 @@ def _docx(output: Path, report: dict, commit: str):
         "tree differ from the GitHub candidate. The cumulative archive is built from the exact "
         "checkout. No production data is read or changed."
     )
-    document.add_heading("Known qualification limits", level=1)
-    document.add_paragraph(
-        "The synthetic VSDX fixtures and automated Windows smoke are not equivalent to Microsoft "
-        "Visio Desktop round-trip testing or a manual interactive Windows acceptance session. "
-        "The internal version string remains 42.50.0."
-    )
-    footer = section.footer.paragraphs[0]
+footer = section.footer.paragraphs[0]
     footer.text = "OpenVisio V43.23 candidate | Author: Abdelhalim Talbi"
     footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
     output.parent.mkdir(parents=True, exist_ok=True)
