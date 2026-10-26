@@ -79,7 +79,7 @@ try {
         '05-Documentation/V43.27-FORMULA-DRIVEN-VSDX-GEOMETRY.md' = '357ac0bcdc556e71994a199b64385775ef8ebf48'
         '05-Documentation/V43.27-FORMULA-GEOMETRY-FIDELITY.svg' = '462f3bec8c22633ce75e03c0072fbce5d8eab8bc'
         '05-Documentation/V43.27-WINDOWS-SCREENSHOTS-STATUS.md' = '034f60e3dde2608cb38a8da49fc55ca2c7d7bb34'
-        'README.md' = '4bd954c548c391fc70b5c42acc9dc2ff87aa97cd'
+        'README.md' = 'cf4e7164c39bc0fa4f9a7a0d917969f8495937ed'
     }
     foreach ($path in $expected.Keys) {
         if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing pinned file: $path" }
