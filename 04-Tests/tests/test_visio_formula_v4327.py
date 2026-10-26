@@ -61,7 +61,7 @@ class NumericFormulaTests(unittest.TestCase):
 
     def test_token_and_nesting_limits_are_enforced(self):
         with self.assertRaises(FormulaEvaluationError):
-            evaluate_numeric_formula("1+" * 300 + "1", lambda _: 0.0)
+            evaluate_numeric_formula("1+" * 130 + "1", lambda _: 0.0)
         expression = "(" * 40 + "1" + ")" * 40
         with self.assertRaises(FormulaEvaluationError):
             evaluate_numeric_formula(expression, lambda _: 0.0)
