@@ -14,6 +14,10 @@ SCHEMA = 1
 MAX_POINTS = 2048
 MAX_COORDINATE = 10_000_000.0
 EPSILON = 1e-3
+# Public VSDX connector endpoints can differ from the imported shape boundary
+# by a few sub-pixel units after inch-to-pixel conversion. Larger gaps mean
+# the serialized route is dangling and must not be preserved.
+ENDPOINT_ATTACH_TOLERANCE = 2.0
 _REQUIRED_KEYS = {"schema", "source", "target", "points"}
 
 
@@ -71,6 +75,26 @@ def validate_visio_route(record):
             raise ValueError("Segment nul dans la route VSDX")
         if dx > EPSILON and dy > EPSILON:
             raise ValueError("Route VSDX diagonale non prise en charge")
+
+    def attached(point, signature):
+        cx, cy, width, height = signature
+        left, right = cx - width / 2, cx + width / 2
+        top, bottom = cy - height / 2, cy + height / 2
+        x, y = point
+        tolerance = ENDPOINT_ATTACH_TOLERANCE
+        # The point must remain within the rectangle's tolerant envelope and
+        # be close to at least one outline edge. Merely lying inside the shape
+        # is not enough: that would hide a dangling connector under its node.
+        if not (left - tolerance <= x <= right + tolerance and
+                top - tolerance <= y <= bottom + tolerance):
+            return False
+        return min(abs(x - left), abs(x - right),
+                   abs(y - top), abs(y - bottom)) <= tolerance
+
+    if not attached(normalized[0], source):
+        raise ValueError("Départ de route VSDX détaché de l'équipement source")
+    if not attached(normalized[-1], target):
+        raise ValueError("Arrivée de route VSDX détachée de l'équipement cible")
     return {"schema": SCHEMA, "source": source, "target": target,
             "points": normalized}
 
