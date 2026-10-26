@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="370" viewBox="0 0 1200 370" role="img" aria-labelledby="title desc">
+<title id="title">OpenVisio V43.26 original schematic infrastructure glyphs</title>
+<desc id="desc">Nine shape categories with body silhouettes and internal details. These are illustrative OpenVisio symbols, not Visio/vendor stencils.</desc>
+<rect width="1200" height="370" fill="#f8fafc" rx="14"/>
+<text x="28" y="32" fill="#0f172a" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">Infrastructure glyphs — shared Tk / SVG vector contract</text>
+<g font-family="Segoe UI,Arial,sans-serif" font-size="13" text-anchor="middle" stroke="#334155" stroke-width="2" fill="#e0f2fe">
+ <g transform="translate(46,63)"><rect width="106" height="87" rx="8"/><path d="M18 17 H88 M18 38 H88 M18 59 H88" fill="none"/><circle cx="25" cy="17" r="3" fill="#16a34a"/><circle cx="25" cy="38" r="3" fill="#16a34a"/><circle cx="25" cy="59" r="3" fill="#16a34a"/><text x="53" y="111" fill="#0f172a" stroke="none">Server</text></g>
+ <g transform="translate(175,63)"><path d="M17 0 H89 L106 14 V73 L89 87 H17 L0 73 V14 Z"/><path d="M35 10 V77 M70 10 V77 M16 30 H90 M16 54 H90" fill="none"/><text x="53" y="111" fill="#0f172a" stroke="none">Storage</text></g>
+ <g transform="translate(304,63)"><path d="M9 0 H97 L106 18 L101 87 H5 L0 18 Z"/><path d="M16 30 H90 M14 50 H92 M14 69 H92" fill="none"/><g stroke-width="1.5"><path d="M25 53 V68 M39 53 V68 M53 53 V68 M67 53 V68 M81 53 V68"/></g><text x="53" y="111" fill="#0f172a" stroke="none">SAN switch</text></g>
+ <g transform="translate(433,63)"><path d="M15 0 H91 L106 18 V69 L91 87 H15 L0 69 V18 Z"/><path d="M53 18 V69 M18 43 H88" fill="none"/><circle cx="28" cy="26" r="4" fill="#f8fafc"/><circle cx="78" cy="26" r="4" fill="#f8fafc"/><circle cx="28" cy="60" r="4" fill="#f8fafc"/><circle cx="78" cy="60" r="4" fill="#f8fafc"/><text x="53" y="111" fill="#0f172a" stroke="none">Switch</text></g>
+ <g transform="translate(562,63)"><path d="M53 0 L106 43.5 L53 87 L0 43.5 Z"/><path d="M22 43 H84 M53 18 V69 M29 27 L77 60 M29 60 L77 27" fill="none"/><text x="53" y="111" fill="#0f172a" stroke="none">Network</text></g>
+ <g transform="translate(691,63)"><path d="M24 0 H82 L106 24 V87 H0 V24 Z"/><path d="M22 39 H84 M22 62 H84" fill="none"/><circle cx="30" cy="15" r="3" fill="#16a34a"/><text x="53" y="111" fill="#0f172a" stroke="none">NAS</text></g>
+ <g transform="translate(820,63)"><path d="M53 0 L106 18 L96 68 L53 87 L10 68 L0 18 Z"/><path d="M17 31 H89 M13 52 H93 M34 18 V31 M72 31 V52 M26 52 V70 M80 52 V70" fill="none"/><text x="53" y="111" fill="#0f172a" stroke="none">Firewall</text></g>
+ <g transform="translate(949,63)"><rect x="0" y="15" width="106" height="58" rx="3"/><path d="M0 15 C20 -1 86 -1 106 15 C106 31 0 31 0 15 Z" fill="#f8fafc"/><path d="M0 44 C20 60 86 60 106 44 M0 73 C20 89 86 89 106 73" fill="none"/><text x="53" y="111" fill="#0f172a" stroke="none">Database</text></g>
+ <g transform="translate(1078,63)"><path d="M23 0 H83 L106 43.5 L83 87 H23 L0 43.5 Z"/><rect x="22" y="19" width="62" height="35" fill="#f8fafc"/><path d="M53 54 V69 M34 72 H72" fill="none"/><text x="53" y="111" fill="#0f172a" stroke="none">Application</text></g>
+</g>
+<line x1="28" y1="205" x2="1172" y2="205" stroke="#cbd5e1"/>
+<text x="28" y="236" font-family="Segoe UI,Arial,sans-serif" font-size="15" fill="#0f172a" font-weight="700">Geometry contract</text>
+<g font-family="Segoe UI,Arial,sans-serif" font-size="14" fill="#334155">
+ <text x="28" y="264">• Visual outline is projected inside the node's existing bounding box.</text>
+ <text x="28" y="290">• Connector anchors, hit testing and routing still use model dimensions — no silent geometry changes.</text>
+ <text x="28" y="316">• Unknown, grouped and small legacy shapes keep the original rectangle fallback.</text>
+ <text x="28" y="346" font-size="12">Illustrative OpenVisio vectors only; not Microsoft Visio Desktop or vendor-stencil certification. Author: Abdelhalim Talbi.</text>
+</g>
+</svg>
