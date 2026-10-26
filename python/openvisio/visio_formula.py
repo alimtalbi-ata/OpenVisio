@@ -26,7 +26,13 @@ class FormulaEvaluationError(ValueError):
 
 
 def _checked(value: float) -> float:
-    value = float(value)
+    # ShapeSheet scalar geometry is real-valued. Python exponentiation can
+    # produce a complex result (for example (-1)^0.5); normalize that to the
+    # same conservative refusal path as every other unsupported expression.
+    try:
+        value = float(value)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise FormulaEvaluationError("non-real numeric result") from exc
     if not math.isfinite(value) or abs(value) > MAX_INTERMEDIATE_MAGNITUDE:
         raise FormulaEvaluationError("non-finite or out-of-bounds intermediate")
     return value

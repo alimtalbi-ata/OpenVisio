@@ -55,7 +55,7 @@ class NumericFormulaTests(unittest.TestCase):
                 evaluate_numeric_formula(expression, lambda _: 0.0)
 
     def test_nonfinite_and_overlarge_results_are_rejected(self):
-        for expression in ("1e999", "1e11*100", "SQRT(-1)"):
+        for expression in ("1e999", "1e11*100", "SQRT(-1)", "(-1)^0.5"):
             with self.subTest(expression=expression), self.assertRaises(FormulaEvaluationError):
                 evaluate_numeric_formula(expression, lambda _: 0.0)
 
