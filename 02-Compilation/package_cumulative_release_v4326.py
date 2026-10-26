@@ -123,7 +123,7 @@ def main() -> int:
         if not path.is_file():
             raise SystemExit(f"Required root source is missing: {name}")
         payload[name] = path.read_bytes()
-    workflow = root / ".github" / "workflows" / "openvisio-v43.25-windows-candidate.yml"
+    workflow = root / ".github" / "workflows" / "openvisio-v43.26-windows-candidate.yml"
     if not workflow.is_file():
         raise SystemExit("Versioned Windows candidate workflow is missing")
     payload[workflow.relative_to(root).as_posix()] = workflow.read_bytes()
