@@ -59,6 +59,45 @@ class FormulaDrivenVsdxGeometryFidelityTests(unittest.TestCase):
             for name, payload in parts.items():
                 target.writestr(name, payload)
 
+    def _duplicate_shape_cell(self, name="PinX", duplicate_name=None):
+        duplicate_name = duplicate_name or name
+        with ZipFile(self.path) as source:
+            parts = {
+                part: source.read(part)
+                for part in source.namelist()
+                if not part.startswith("openvisio/")
+            }
+        page_name = "visio/pages/page1.xml"
+        root = ET.fromstring(parts[page_name])
+        candidate = None
+        for shape in root.findall(f".//{{{V}}}Shape"):
+            cells = shape.findall(f"./{{{V}}}Cell")
+            names = {cell.get("N") for cell in cells}
+            if {"PinX", "PinY"}.issubset(names):
+                candidate = next((cell for cell in cells if cell.get("N") == name), None)
+                if candidate is not None:
+                    index = list(shape).index(candidate)
+                    duplicate = ET.fromstring(ET.tostring(candidate))
+                    duplicate.set("N", duplicate_name)
+                    shape.insert(index + 1, duplicate)
+                    break
+        if candidate is None:
+            raise AssertionError("No eligible shape cell found: " + name)
+        parts[page_name] = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+        with ZipFile(self.path, "w", ZIP_DEFLATED) as target:
+            for part, payload in parts.items():
+                target.writestr(part, payload)
+
+    def test_duplicate_direct_shape_cell_is_rejected_before_dict_overwrite(self):
+        self._duplicate_shape_cell("PinX", "PinX")
+        with self.assertRaisesRegex(ValueError, "Duplicate ShapeSheet cell name"):
+            import_vsdx(self.path)
+
+    def test_case_variant_duplicate_direct_shape_cell_is_rejected(self):
+        self._duplicate_shape_cell("PinX", "pinx")
+        with self.assertRaisesRegex(ValueError, "Duplicate ShapeSheet cell name"):
+            import_vsdx(self.path)
+
     def test_numeric_geometry_without_formula_remains_eligible_for_strict_mode(self):
         imported = import_vsdx(self.path, strict_fidelity=True)
         self.assertEqual(imported["metadata"]["formula_driven_geometry_shapes"], 0)
