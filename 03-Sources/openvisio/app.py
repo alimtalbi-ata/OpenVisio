@@ -16,7 +16,8 @@ from .document_service import (open_document, open_document_with_revision,
                                save_document, save_document_with_revision,
                                restore_previous, inspect_previous, restore_inspected)
 from .export import export_svg
-from .vsdx import import_vsdx, export_vsdx, VsdxExternalChangesError
+from .vsdx import (import_vsdx, export_vsdx, VsdxExternalChangesError,
+                    VsdxFidelityError)
 from .shapes import SHAPES, get_shape
 from .properties import normalize_properties
 from .links import normalize_link, PROTOCOLS
@@ -97,7 +98,7 @@ class Editor(tk.Tk):
         self.canvas.bind("<ButtonRelease-2>", lambda event: self.end_pan())
         bar = tk.Menu(self)
         filemenu = tk.Menu(bar, tearoff=False)
-        for label, command in [("Nouveau", self.new), ("Ouvrir", self.open), ("Enregistrer", self.store), ("Enregistrer sous", self.store_as), ("Exporter en SVG", self.export_as_svg), ("Importer Visio VSDX (expérimental)", self.import_from_vsdx), ("Exporter Visio VSDX (expérimental)", self.export_as_vsdx)]:
+        for label, command in [("Nouveau", self.new), ("Ouvrir", self.open), ("Enregistrer", self.store), ("Enregistrer sous", self.store_as), ("Exporter en SVG", self.export_as_svg), ("Importer Visio VSDX (expérimental)", self.import_from_vsdx), ("Importer VSDX (fidélité stricte)", lambda: self.import_from_vsdx(strict_fidelity=True)), ("Exporter Visio VSDX (expérimental)", self.export_as_vsdx)]:
             filemenu.add_command(label=label, command=command)
         filemenu.add_separator()
         filemenu.add_command(label="Restaurer la sauvegarde précédente (.bak)", command=self.restore_backup)
@@ -1213,15 +1214,21 @@ class Editor(tk.Tk):
             self.status.set("SVG exporté : " + path)
         except (ValueError, OSError) as exc:
             messagebox.showerror("Export impossible", str(exc))
-    def import_from_vsdx(self, path=None):
+    def import_from_vsdx(self, path=None, *, strict_fidelity=False):
         if path is None:
             path = filedialog.askopenfilename(filetypes=[("Visio VSDX", "*.vsdx")])
         if not path:
             return
         try:
             try:
-                document = import_vsdx(path)
+                document = import_vsdx(path, strict_fidelity=strict_fidelity)
             except VsdxExternalChangesError as exc:
+                if strict_fidelity:
+                    messagebox.showerror(
+                        "Fidélité VSDX insuffisante",
+                        str(exc) + "\n\nLe mode strict refuse de basculer vers un import partiel.",
+                        parent=self)
+                    return
                 if not messagebox.askyesno(
                         "VSDX modifié dans un éditeur externe",
                         str(exc) + "\n\nImporter seulement les formes et liaisons reconnues ? "
@@ -1229,8 +1236,11 @@ class Editor(tk.Tk):
                         parent=self):
                     return
                 document = import_vsdx(path, changed_pages="flatten")
+        except VsdxFidelityError as exc:
+            messagebox.showerror("Fidélité VSDX insuffisante", str(exc), parent=self)
+            return
         except (ValueError, OSError, UnicodeError, KeyError, __import__("zipfile").BadZipFile) as exc:
-            messagebox.showerror("Import VSDX impossible", str(exc))
+            messagebox.showerror("Import VSDX impossible", str(exc), parent=self)
             return
         if not self._confirm_discard():
             return
