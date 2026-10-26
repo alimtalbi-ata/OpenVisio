@@ -14,6 +14,14 @@ from .vsdx_geometry import (shape_center_inches, shape_axis_aligned_dimensions_i
                             nested_shape_geometry_inches)
 from .visio_formula import evaluate_geometry_formula_cells, GEOMETRY_CELL_NAMES
 
+# ShapeSheet geometry cells are resolved case-insensitively by the bounded
+# formula evaluator. Normalize their XML cell names at the importer boundary as
+# well, so a spelling alias cannot bypass formula detection or omit the shape.
+_GEOMETRY_CELL_CANONICAL = {name.casefold(): name for name in GEOMETRY_CELL_NAMES}
+
+def _canonical_geometry_cell_name(name):
+    return _GEOMETRY_CELL_CANONICAL.get(name.casefold(), name)
+
 V = "http://schemas.microsoft.com/office/visio/2011/1/core"
 OR = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 R = "http://schemas.openxmlformats.org/package/2006/relationships"
@@ -365,7 +373,12 @@ def import_external_pages(archive):
                         f"{previous!r} / {cell_name!r} on sheet {sid or '<unnamed>'}"
                     )
                 seen_cell_names[folded_name] = cell_name
-                cells[cell_name] = cell.get("V")
+                # Keep original spelling for ambiguity diagnostics but use
+                # canonical names for the seven supported geometry cells. The
+                # downstream geometry reader uses canonical ShapeSheet keys;
+                # without this normalization a valid pinx cell was skipped
+                # before its formula could be evaluated.
+                cells[_canonical_geometry_cell_name(cell_name)] = cell.get("V")
             if depth > MAX_GROUP_DEPTH:
                 grouped_children_omitted += 1 + descendants_count(shape)
                 return
@@ -374,7 +387,8 @@ def import_external_pages(archive):
                 grouped_children_omitted += descendants_count(shape) + (1 if parent_id is not None else 0)
                 return
             shape_formulas = {
-                cell.get("N"): cell.get("F") for cell in shape_cells
+                _canonical_geometry_cell_name(cell.get("N")): cell.get("F")
+                for cell in shape_cells
                 if cell.get("N") and cell.get("F") is not None
             }
             formula_cells = sorted(name for name in shape_formulas if name in GEOMETRY_CELL_NAMES)
