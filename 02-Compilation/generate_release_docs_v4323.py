@@ -274,7 +274,7 @@ def _docx(output: Path, report: dict, commit: str):
         "tree differ from the GitHub candidate. The cumulative archive is built from the exact "
         "checkout. No production data is read or changed."
     )
-footer = section.footer.paragraphs[0]
+    footer = section.footer.paragraphs[0]
     footer.text = "OpenVisio V43.23 candidate | Author: Abdelhalim Talbi"
     footer.alignment = WD_ALIGN_PARAGRAPH.CENTER
     output.parent.mkdir(parents=True, exist_ok=True)
