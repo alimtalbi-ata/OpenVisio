@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from datetime import date
 from pathlib import Path
@@ -25,6 +26,15 @@ from reportlab.platypus import (
 )
 import fitz
 from release_document_guard_v4327 import audit_document_artifacts
+
+
+def source_branch_name() -> str:
+    """Read the branch selected by the Windows build orchestrator."""
+    value = os.environ.get("OPENVISIO_SOURCE_BRANCH", "").strip()
+    if (not value or not re.fullmatch(r"[A-Za-z0-9._/-]{1,200}", value)
+            or value.startswith("/") or ".." in value.split("/")):
+        raise SystemExit("OPENVISIO_SOURCE_BRANCH must contain the exact source branch name")
+    return value
 
 
 class PipelineDiagram(Flowable):
@@ -177,7 +187,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         table,
         Spacer(1, 3*mm),
         Paragraph("Candidate provenance", styles["OVH1"]),
-        Paragraph(f"Branch: develop/v43.27-formula-driven-vsdx-geometry-20261026", styles["OVBody"]),
+        Paragraph(f"Branch: {source_branch_name()}", styles["OVBody"]),
         Paragraph(f"Source commit: {commit}", styles["OVBody"]),
         Paragraph(f"Generated on: {date.today().isoformat()}", styles["OVBody"]),
         Paragraph("Known limits", styles["OVH1"]),
@@ -254,7 +264,7 @@ def _docx(output: Path, report: dict, commit: str):
         for cell, value in zip(cells, values):
             cell.text = value
     document.add_heading("Provenance", level=1)
-    document.add_paragraph("Branch: develop/v43.27-formula-driven-vsdx-geometry-20261026")
+    document.add_paragraph(f"Branch: {source_branch_name()}")
     document.add_paragraph(f"Source commit: {commit}")
     document.add_paragraph(f"Generated on: {date.today().isoformat()}")
     document.add_paragraph("Internal application version remains 42.50.0 due to legacy build contracts.")
