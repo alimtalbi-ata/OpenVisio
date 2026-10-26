@@ -47,7 +47,7 @@ jobs:
       - name: Compare the cumulative ZIP with exact Git blob identities
         shell: pwsh
         run: |
-          python 02-Compilation/verify_release_git_parity.py --archive dist/OpenVisio-V43.27-Cumulative-Windows-x64.zip --checkout $PWD --version V43.27 --json-report dist/V43.27-git-blob-parity.json
+          python 02-Compilation/verify_release_git_parity_v4327.py --archive dist/OpenVisio-V43.27-Cumulative-Windows-x64.zip --checkout $PWD --version V43.27 --json-report dist/V43.27-git-blob-parity.json
           if ($LASTEXITCODE -ne 0) { throw 'Cumulative ZIP source diverges from exact Git blobs or recorded commit' }
           Write-Host 'PASS: cumulative ZIP engine, test mirrors, dependencies and critical build inputs match Git HEAD byte-for-byte'
       - name: Run the complete bundled test suite from a clean extracted ZIP
