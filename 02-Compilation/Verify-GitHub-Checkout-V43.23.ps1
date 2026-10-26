@@ -58,7 +58,7 @@ try {
         'verify_source_parity.py' = '7b392e310452c37c26f4f254f2860fbea4f7dbae'
         '.gitattributes' = 'a9b945c66de7ab90436001ee76aafe91a22ee20f'
         '02-Compilation/Build-Windows-V43.23-Candidate.ps1' = 'e89ea32c2372ba89d947172fee18dd548467ff36'
-        '02-Compilation/generate_release_docs_v4323.py' = 'ec02beb3cc00e3fd1c7a057489bf05362e67aa81'
+        '02-Compilation/generate_release_docs_v4323.py' = 'cf07ca16a66db07b4bdeb2d0533f66ed304d7da1'
         '02-Compilation/package_cumulative_release_v4323.py' = 'bdebef4de9ec9be031a07d0a48f7d8ef5386ddcc'
         '02-Compilation/release_document_guard_v4323.py' = '62ce7295c71e419add52fdb31ce115d6aea647aa'
         '02-Compilation/installer/OpenVisio-V43.23-Candidate.iss' = '02f473a82c8c29adf6adb104e9a552b79a07e432'

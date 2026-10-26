@@ -119,11 +119,17 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         Spacer(1, 2*mm),
         Paragraph("Functional change", styles["OVH1"]),
         Paragraph(
-            "The two mirrored VSDX importers reject case variants of reserved "
-            "openvisio/document.json and openvisio/manifest.json members. Those aliases previously "
-            "missed the lossless embedded-model path and could fall back to flattened public Visio "
-            "geometry, dropping editor metadata, layers and other model-only fields. Raw path, "
-            "Win32 alias, collision and decompression-amplification checks remain active.", styles["OVBody"]),
+            "The external VSDX importer preserves only a narrow public connector subset: static, "
+            "numeric, finite, bounded, formula-free orthogonal waypoints. The stored path remains "
+            "active only while source/target geometry signatures match and no unrelated equipment "
+            "rectangle intersects a segment; otherwise the obstacle-avoiding router recalculates it. "
+            "Arbitrary Visio formulas and dynamic glue are not assumed.", styles["OVBody"]),
+        Paragraph(
+            "Both mirrored VSDX importers also reject case variants of the reserved "
+            "openvisio/document.json and openvisio/manifest.json members. These aliases previously "
+            "could bypass embedded-model import and fall back to lossy public geometry, dropping "
+            "editor metadata and layers. Path, Win32 alias, collision and decompression-amplification "
+            "guards remain active.", styles["OVBody"]),
         Paragraph(
             "The cumulative ZIP validator checks file and directory entries for unsafe paths, "
             "Windows case-fold collisions and file/directory aliases before checking source/test "
@@ -218,12 +224,14 @@ def _docx(output: Path, report: dict, commit: str):
     )
     document.add_heading("Functional improvement", level=1)
     document.add_paragraph(
-        "Both VSDX importer mirrors reject case variants of reserved "
-        "openvisio/document.json and openvisio/manifest.json members. Those aliases previously "
-        "missed embedded JSON import and could silently trigger a lossy public-geometry fallback. "
-        "The regression tests verify that canonical names preserve metadata, nodes and links, "
-        "while case variants are rejected. The release validator also checks paths, source/test "
-        "parity and SHA-256 coverage; CI reruns the complete suite from an extracted ZIP."
+        "The external VSDX importer preserves a constrained public route format: numeric, finite, "
+        "bounded, formula-free orthogonal waypoints. It uses the stored path only while both endpoint "
+        "geometry signatures match and no unrelated equipment rectangle intersects a segment; otherwise "
+        "the obstacle-avoiding router recalculates it. Arbitrary Visio formulas and dynamic glue are "
+        "not inferred. Both importer mirrors also reject case variants of reserved "
+        "openvisio/document.json and openvisio/manifest.json members, preventing a lossy public-geometry "
+        "fallback that could drop editor metadata and layers. The release validator checks unsafe paths, "
+        "source/test parity and SHA-256 coverage, and CI reruns the complete suite from an extracted ZIP."
     )
     document.add_heading("Source layout", level=1)
     document.add_paragraph(
