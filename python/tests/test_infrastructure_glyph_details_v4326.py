@@ -1,6 +1,8 @@
 """V43.26 infrastructure glyph body/details contracts; no Visio stencil claim."""
 import unittest
+from xml.etree import ElementTree as ET
 
+from openvisio.export import to_svg
 from openvisio.shape_icons import equipment_outline, equipment_detail_primitives, equipment_icon
 
 
@@ -55,6 +57,17 @@ class InfrastructureGlyphTests(unittest.TestCase):
                 self.assertIsNone(equipment_outline(node))
                 self.assertIsNone(equipment_icon(node))
                 self.assertEqual(equipment_detail_primitives(node), ())
+
+    def test_outline_only_detail_exports_as_svg_fill_none(self):
+        node = {'id': 'app1', 'shape': 'application', 'label': 'application',
+                'x': 200.0, 'y': 120.0, 'width': 140.0, 'height': 60.0}
+        root = ET.fromstring(to_svg({'nodes': [node], 'edges': []}))
+        detail_polygons = [item for item in root
+                           if item.get('data-openvisio-node-detail') is not None
+                           and item.tag.endswith('polygon')]
+        self.assertGreaterEqual(len(detail_polygons), 1)
+        self.assertIn('none', {item.get('fill') for item in detail_polygons})
+        self.assertNotIn('', {item.get('fill') for item in detail_polygons})
 
     def test_outlines_do_not_expand_routing_or_hit_test_bounds(self):
         # Rendering is a pure projection: glyph vertices remain within the same
