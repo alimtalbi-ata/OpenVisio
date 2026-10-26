@@ -55,7 +55,7 @@ try {
         '02-Compilation/release_document_guard_v4324.py' = 'b2f08359e0948ac3f4a8118d423c869e2d20f50a'
         '02-Compilation/requirements-build.txt' = '23feee4dfbc0ba8ee8e1c2062ea083ed5bf9d6c7'
         '02-Compilation/installer/OpenVisio-V43.24-Candidate.iss' = '85c5d3a56c5592eba0b4a3caa97d13516bbe34b0'
-        '.gitattributes' = '9eaad06937c9c364b583c7bdff26511640c2d7f9'
+        '.gitattributes' = 'a373238348b68914c446bd3473e804a5d0897378'
         '.github/workflows/openvisio-v43.24-windows-candidate.yml' = '7c1c0ef032df9a22e59da0263ae7c62fc6c775be'
         '05-Documentation/V43.24-GIT-BLOB-PARITY.md' = '5c4ecbc5b4f303fcd4a2fa1251418e75a54f1621'
         '05-Documentation/V43.24-STATIC-VSDX-ROUTE-ATTACHMENT.md' = '9ea8ae90a3720310e3b34391fc4503c6b38a88c2'
