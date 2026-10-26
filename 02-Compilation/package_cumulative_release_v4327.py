@@ -26,6 +26,15 @@ ALLOWED_DOCS = {".md", ".svg", ".json", ".txt"}
 BINARY_MIN_BYTES = 1_000_000
 
 
+def source_branch_name() -> str:
+    """Return the exact branch ref supplied by the build orchestrator."""
+    value = os.environ.get("OPENVISIO_SOURCE_BRANCH", "").strip()
+    if (not value or not re.fullmatch(r"[A-Za-z0-9._/-]{1,200}", value)
+            or value.startswith("/") or ".." in value.split("/")):
+        raise SystemExit("OPENVISIO_SOURCE_BRANCH must contain the exact source branch name")
+    return value
+
+
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -189,7 +198,7 @@ def main() -> int:
         "project": "OpenVisio",
         "version": VERSION,
         "author": AUTHOR,
-        "source_branch": "develop/v43.27-formula-driven-vsdx-geometry-20261026",
+        "source_branch": source_branch_name(),
         "source_commit": commit,
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "windows_candidate_qualified": True,
