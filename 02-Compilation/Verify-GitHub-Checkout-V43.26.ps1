@@ -65,7 +65,7 @@ try {
         '02-Compilation/verify_release_archive.py' = 'e5a2b76054f26c7c1b91e50316da7a9788301878'
         '02-Compilation/verify_release_git_parity.py' = 'f831d76bfb50f8634ba94f702238317baf52d257'
         '02-Compilation/Build-Windows-V43.26-Candidate.ps1' = 'dd6f6aca9c7f3fffd152ded4d64c23122b4bb2c8'
-        '02-Compilation/package_cumulative_release_v4326.py' = '83c7f806008fcca7f65f5ef1fa4e8a4a2774796c'
+        '02-Compilation/package_cumulative_release_v4326.py' = 'd50ca10f5d1d4f71c9f368dfaa70abf0564f53e5'
         '02-Compilation/generate_release_docs_v4326.py' = '91a86681ce07eaa1714b375c575c0aa2c0f35cb5'
         '02-Compilation/release_document_guard_v4326.py' = '7c8a34b69d5f1f6dc47ca2dab65aa61b998efa42'
         '02-Compilation/requirements-build.txt' = '23feee4dfbc0ba8ee8e1c2062ea083ed5bf9d6c7'
