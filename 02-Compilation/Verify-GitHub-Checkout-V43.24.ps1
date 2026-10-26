@@ -33,6 +33,21 @@ try {
         'python/openvisio/visio_route.py' = '7b76ca1b300baa5a24fd45514cc12e5ff83bce07'
         '04-Tests/tests/test_vsdx_route_endpoint_attachment_v4324.py' = '7e48620355d8516fb8863d5983b62b960df84fc4'
         'python/tests/test_vsdx_route_endpoint_attachment_v4324.py' = '7e48620355d8516fb8863d5983b62b960df84fc4'
+        '02-Compilation/verify_release_archive.py' = 'e5a2b76054f26c7c1b91e50316da7a9788301878'
+        '02-Compilation/verify_release_git_parity.py' = '279f809dc099ae824f5562ed44adfaf2c1d403f0'
+        '02-Compilation/Build-Windows-V43.24-Candidate.ps1' = '2a2dedd8092d039463326e46b5f231793d227023'
+        '02-Compilation/package_cumulative_release_v4324.py' = '2320daf68716c4bff956d511e353a1e166dc697d'
+        '02-Compilation/generate_release_docs_v4324.py' = 'ef8613a203e352c091cd8a1ae8c300c7db4fde29'
+        '02-Compilation/release_document_guard_v4324.py' = 'b2f08359e0948ac3f4a8118d423c869e2d20f50a'
+        '02-Compilation/installer/OpenVisio-V43.24-Candidate.iss' = '85c5d3a56c5592eba0b4a3caa97d13516bbe34b0'
+        '04-Tests/tests/test_release_git_parity_v4324.py' = 'e6ef32c10ab3d49f9e6e8f2a611b73501dbe9132'
+        'python/tests/test_release_git_parity_v4324.py' = 'e6ef32c10ab3d49f9e6e8f2a611b73501dbe9132'
+        '05-Documentation/V43.24-GIT-BLOB-PARITY.md' = 'e844e6af1a0b0a67b3cfb7d5c0936fb5c7392205'
+        '05-Documentation/V43.24-STATIC-VSDX-ROUTE-ATTACHMENT.md' = '9ea8ae90a3720310e3b34391fc4503c6b38a88c2'
+        '05-Documentation/V43.24-VSDX-ENDPOINT-ATTACHMENT.svg' = '6320c1a451561b5cd840956f7b2806055cb92bbf'
+        '.gitattributes' = '9eaad06937c9c364b583c7bdff26511640c2d7f9'
+        '.github/workflows/openvisio-v43.24-windows-candidate.yml' = '7c1c0ef032df9a22e59da0263ae7c62fc6c775be'
+        '02-Compilation/verify_release_git_parity.py' = '279f809dc099ae824f5562ed44adfaf2c1d403f0'
     }
     foreach ($path in $expected.Keys) {
         if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing critical file: $path" }
