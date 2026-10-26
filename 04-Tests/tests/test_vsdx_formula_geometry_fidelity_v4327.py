@@ -89,7 +89,7 @@ class FormulaDrivenVsdxGeometryFidelityTests(unittest.TestCase):
         self.assertEqual(metadata["formula_driven_geometry_unresolved_shapes"], 1)
         self.assertEqual(len(metadata["formula_driven_geometry_examples"]), 1)
         self.assertTrue(any(
-            "outside the supported scalar subset" in warning
+            "could not be evaluated safely" in warning
             and "cached cell values were used" in warning
             for warning in metadata["fidelity_warnings"]
         ))
@@ -103,6 +103,21 @@ class FormulaDrivenVsdxGeometryFidelityTests(unittest.TestCase):
         self._convert_to_external_vsdx("Width", "UnsupportedFunction(2)")
         imported = import_vsdx(self.path)
         self.assertEqual(imported["metadata"]["formula_driven_geometry_shapes"], 1)
+        self.assertEqual(imported["metadata"]["formula_driven_geometry_unresolved_shapes"], 1)
+        with self.assertRaisesRegex(VsdxFidelityError, "formula-driven geometry"):
+            import_vsdx(self.path, strict_fidelity=True)
+
+    def test_supported_formula_with_invalid_geometry_uses_cache_instead_of_dropping_shape(self):
+        self._convert_to_external_vsdx("Width", "0")
+        imported = import_vsdx(self.path)
+        metadata = imported["metadata"]
+        self.assertEqual(len(imported["nodes"]), 1)
+        self.assertEqual(metadata["formula_driven_geometry_evaluated_shapes"], 0)
+        self.assertEqual(metadata["formula_driven_geometry_unresolved_shapes"], 1)
+        self.assertTrue(any("invalid evaluated geometry" in item
+                            for item in metadata["formula_driven_geometry_unresolved_examples"]))
+        self.assertTrue(any("cached cell values were used" in warning
+                            for warning in metadata["fidelity_warnings"]))
         with self.assertRaisesRegex(VsdxFidelityError, "formula-driven geometry"):
             import_vsdx(self.path, strict_fidelity=True)
 

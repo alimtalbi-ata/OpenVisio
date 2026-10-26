@@ -46,7 +46,7 @@ Benchmark comparatif synthétique du cache et tests de conservation des routes n
 
 Auteur : Abdelhalim Talbi. Branche candidate : develop/v43.27-formula-driven-vsdx-geometry-20261026.
 
-L'import VSDX évalue un sous-ensemble scalaire borné des formules de géométrie ShapeSheet : arithmétique, références numériques explicites, dimensions de page numériques sans formule et fonctions autorisées. Le parseur n'emploie pas eval et applique des limites de taille, de jetons, d'imbrication et de magnitude. Pour une formule inconnue, cyclique, non finie ou hors du sous-ensemble, il préserve le cache complet de la forme, émet un avertissement de fidélité et le mode strict_fidelity=True refuse l'import.
+L'import VSDX évalue un sous-ensemble scalaire borné des formules de géométrie ShapeSheet : arithmétique, références numériques explicites, dimensions de page numériques sans formule et fonctions autorisées. Le parseur n'emploie pas eval et applique des limites de taille, de jetons, d'imbrication et de magnitude. Pour une formule inconnue, cyclique, non réelle, non finie, hors budget ou produisant une géométrie invalide, il préserve le cache complet de la forme, émet un avertissement de fidélité et le mode strict_fidelity=True refuse l'import. Une nouvelle régression vérifie notamment qu'une formule Width=0 ne fait pas disparaître silencieusement la forme.
 
 Les tests couvrent le parseur borné et son intégration avec l'importeur VSDX synthétique. Ce changement n'est pas un interpréteur complet ShapeSheet et ne certifie pas Microsoft Visio Desktop ; les maîtres, styles, rotations natives, transformations de groupes et colle dynamique restent partiellement pris en charge.
 

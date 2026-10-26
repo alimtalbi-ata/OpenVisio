@@ -373,9 +373,23 @@ def import_external_pages(archive):
                         formula_geometry_unresolved_examples.append(
                             example + " (unresolved: " + ", ".join(unresolved) + ")")
                 else:
-                    cells.update({name: format(value, ".17g") for name, value in evaluated.items()})
-                    formula_geometry_evaluated_shapes += 1
-                    formula_geometry_cells_evaluated += len(evaluated)
+                    candidate_cells = dict(cells)
+                    candidate_cells.update({name: format(value, ".17g") for name, value in evaluated.items()})
+                    try:
+                        # A syntactically valid result can still be an unusable
+                        # ShapeSheet geometry (for example Width=0). Validate
+                        # before replacing the cached values so bad formulas do
+                        # not silently drop a shape during the normal geometry pass.
+                        nested_shape_geometry_inches(candidate_cells, ancestors)
+                    except (ValueError, TypeError, OverflowError):
+                        formula_geometry_unresolved_shapes += 1
+                        if len(formula_geometry_unresolved_examples) < 12:
+                            formula_geometry_unresolved_examples.append(
+                                example + " (invalid evaluated geometry)")
+                    else:
+                        cells = candidate_cells
+                        formula_geometry_evaluated_shapes += 1
+                        formula_geometry_cells_evaluated += len(evaluated)
             try:
                 x_in, y_in, width_in, height_in, total_angle = nested_shape_geometry_inches(
                     cells, ancestors)
@@ -663,8 +677,8 @@ def import_external_pages(archive):
              f"{skipped_connectors['unresolved']} unsupported endpoints; "
              "review connector_links_skipped_examples before relying on SAN topology"]
             if sum(skipped_connectors.values()) else []) + (
-            [f"{formula_geometry_unresolved_shapes} Visio shape(s) use formula-driven geometry outside the supported scalar subset; "
-             "cached cell values were used because these formulas could not be evaluated safely"
+            [f"{formula_geometry_unresolved_shapes} Visio shape(s) use formula-driven geometry that could not be evaluated safely within the supported scalar subset and geometry bounds; "
+             "cached cell values were used"
              + (": " + "; ".join(formula_geometry_unresolved_examples)
                 if formula_geometry_unresolved_examples else "")]
             if formula_geometry_unresolved_shapes else [])
