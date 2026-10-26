@@ -29,6 +29,8 @@ MAX_GRID_CELLS = 32000
 INITIAL_CORRIDOR = 160.0
 MAX_CORRIDOR_ATTEMPTS = 12
 BEND_PENALTY = 18.0
+# Cap broad-phase query count for adversarially fragmented imported routes.
+MAX_STATIC_ROUTE_SEGMENT_QUERIES = 256
 
 
 class RoutingError(ValueError):
@@ -95,6 +97,47 @@ class RectangleIndex:
         return [rect for _, rect in self.query_items(window)]
 
 
+def _static_route_segment_windows(edge):
+    """Return one conservative envelope per segment of a valid orthogonal route.
+
+    The rectangle index stores clearance-expanded obstacle bounds. Segment
+    windows avoid admitting unrelated objects that lie only inside the full
+    bounding box of a meandering connector. Untrusted or excessively
+    fragmented metadata returns None so exact validation receives every node.
+    """
+    record = edge.get('visio_route') if isinstance(edge, dict) else None
+    if not isinstance(record, dict):
+        return None
+    points = record.get('points')
+    if not isinstance(points, (list, tuple)) or not 2 <= len(points) <= 2048:
+        return None
+    # Bound index-query overhead for a hostile or excessively fragmented path.
+    if len(points) - 1 > MAX_STATIC_ROUTE_SEGMENT_QUERIES:
+        return None
+    normalized = []
+    for point in points:
+        if not isinstance(point, (list, tuple)) or len(point) != 2:
+            return None
+        x, y = point
+        if (isinstance(x, bool) or not isinstance(x, (int, float))
+                or isinstance(y, bool) or not isinstance(y, (int, float))):
+            return None
+        x, y = float(x), float(y)
+        if not (isfinite(x) and isfinite(y) and abs(x) <= 10_000_000.0
+                and abs(y) <= 10_000_000.0):
+            return None
+        normalized.append((x, y))
+    windows = []
+    for (x1, y1), (x2, y2) in zip(normalized, normalized[1:]):
+        dx, dy = abs(x2 - x1), abs(y2 - y1)
+        # The exact validator rejects zero-length/diagonal routes; avoid
+        # narrowing the scan for malformed metadata.
+        if (dx <= 1e-3 and dy <= 1e-3) or (dx > 1e-3 and dy > 1e-3):
+            return None
+        windows.append((min(x1, x2), min(y1, y2), max(x1, x2), max(y1, y2)))
+    return tuple(windows) or None
+
+
 class RoutingScene:
     """Immutable node-geometry snapshot with bounded per-edge route memoization.
 
@@ -151,7 +194,25 @@ class RoutingScene:
                 source = self.nodes[edge['from']]
                 target = self.nodes[edge['to']]
                 from .visio_route import active_visio_route
-                preserved = active_visio_route(edge, source, target, self.nodes.values())
+                # Broad phase: the route envelope is queried against the existing
+                # rectangle index. Its padded bounds can add candidates, never
+                # remove a real blocker. Exact endpoint/segment checks remain the
+                # authority. Untrusted metadata retains the full-scan fail-safe.
+                # Query each orthogonal segment independently. The exact
+                # endpoint/obstacle validator remains authoritative.
+                segment_windows = _static_route_segment_windows(edge)
+                route_nodes = self.nodes.values()
+                if segment_windows is not None:
+                    index = self.routing_obstacle_index()
+                    candidate_ids = set()
+                    for window in segment_windows:
+                        candidate_ids.update(
+                            node_id for node_id, _ in index.query_items(window)
+                        )
+                    candidate_ids.update((edge['from'], edge['to']))
+                    route_nodes = tuple(self.nodes[node_id] for node_id in candidate_ids
+                                        if node_id in self.nodes)
+                preserved = active_visio_route(edge, source, target, route_nodes)
             except (KeyError, TypeError, ValueError, OverflowError):
                 preserved = None
             if preserved is not None:

@@ -1,3 +1,10 @@
+## V43.25 candidate — spatially bounded static VSDX route validation (26 October 2026)
+
+- Reuses the existing conservative rectangle index to narrow candidate obstacles for preserved, static VSDX routes. Exact endpoint, schema and segment-intersection checks remain authoritative; invalid metadata takes the full-scan fail-safe path.
+- Deterministic regressions cover a route among 1,200 unrelated shapes, an intersecting obstacle, and malformed non-finite route metadata. Engine and test mirrors remain byte-identical.
+- No Microsoft Visio Desktop round-trip or manual Windows UI acceptance is claimed.
+- Author: Abdelhalim Talbi.
+
 # OpenVisio — cumulative source and Windows candidate
 
 ## V43.23 combined candidate — static VSDX waypoints + canonical private-part protection (26 October 2026)
