@@ -1,9 +1,9 @@
 name: OpenVisio V43.27 Windows cumulative candidate
 on:
   push:
-    branches: ['develop/v43.27-formula-driven-vsdx-geometry-20261026']
+    branches: ['develop/v43.27-formula-driven-vsdx-geometry-20261026', 'develop/v43.27-shapesheet-cell-case-normalization-20261026']
   pull_request:
-    branches: ['develop/v43.26-strict-vsdx-import-fidelity-20261026']
+    branches: ['develop/v43.26-strict-vsdx-import-fidelity-20261026', 'develop/v43.27-formula-driven-vsdx-geometry-20261026']
   workflow_dispatch:
 permissions:
   contents: read
