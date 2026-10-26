@@ -63,7 +63,7 @@ try {
         'python/tests/test_vsdx_route_segment_prefilter_v4325.py' = '63a0cc6af4c56d2d0e721e5298acc7842e538d15'
         '04-Tests/tests/test_vsdx_route_segment_prefilter_v4325.py' = '63a0cc6af4c56d2d0e721e5298acc7842e538d15'
         '02-Compilation/Build-Windows-V43.27-Candidate.ps1' = 'd4b97a8de8d5d36ad5f2ab96868d15b61b346b73'
-        '02-Compilation/generate_release_docs_v4327.py' = '746d3d0c3bbeabd2a0535a0961923de7c32b9cd4'
+        '02-Compilation/generate_release_docs_v4327.py' = '6c1526ef1ed57b42ea28c65d03a6f1818378d479'
         '02-Compilation/package_cumulative_release_v4327.py' = 'fa16ae7318ea72fc6485034a28a0943119189aef'
         '02-Compilation/release_document_guard_v4327.py' = 'c48b85da6ef40039fc851e06362456e1b439d568'
         '02-Compilation/installer/OpenVisio-V43.27-Candidate.iss' = 'd9a097349a7d91b19c55bbd6ca984b59b71f5d14'
