@@ -76,7 +76,7 @@ try {
         '.gitattributes' = 'a373238348b68914c446bd3473e804a5d0897378'
         '04-Tests/Smoke-Portable-V42.71.ps1' = '5c4e7488e07629cf2386c54ed54d5c24f89b7d1d'
         '04-Tests/Smoke-Installer-V42.71.ps1' = '6adb9f52ed925286fc31a85360886519e2a2ae9f'
-        '05-Documentation/V43.27-FORMULA-DRIVEN-VSDX-GEOMETRY.md' = '089cf89de78c85941bc1305918dd73bea3978dda'
+        '05-Documentation/V43.27-FORMULA-DRIVEN-VSDX-GEOMETRY.md' = '357ac0bcdc556e71994a199b64385775ef8ebf48'
         '05-Documentation/V43.27-FORMULA-GEOMETRY-FIDELITY.svg' = '462f3bec8c22633ce75e03c0072fbce5d8eab8bc'
         '05-Documentation/V43.27-WINDOWS-SCREENSHOTS-STATUS.md' = '034f60e3dde2608cb38a8da49fc55ca2c7d7bb34'
         'README.md' = '4bd954c548c391fc70b5c42acc9dc2ff87aa97cd'
