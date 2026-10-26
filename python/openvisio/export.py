@@ -157,8 +157,10 @@ def to_svg(data, width=None, height=None, margin=80, *, include_hidden_layers=Fa
                     lines.append(f'<path data-openvisio-node-detail={detail_id} d="{commands}" '
                                  f'fill="none" stroke="{detail["stroke"]}" stroke-width="{detail["width"]:g}" stroke-linecap="round"/>')
                 elif detail['kind'] == 'polygon':
+                    # Empty Tk fill means outline-only; SVG must express that as 'none'.
+                    detail_fill = "none" if detail["fill"] == "" else detail["fill"]
                     lines.append(f'<polygon data-openvisio-node-detail={detail_id} points="{detail_points}" '
-                                 f'fill="{detail["fill"]}" stroke="{detail["stroke"]}" stroke-width="{detail["width"]:g}"/>')
+                                 f'fill="{detail_fill}" stroke="{detail["stroke"]}" stroke-width="{detail["width"]:g}"/>')
         raw_label = _xml10_text(node.get('label', 'Équipement'))
         label_padding = 20 if node.get('shape') == 'visio-group' else 12
         visual_rows, label_font_size = fit_node_label(
