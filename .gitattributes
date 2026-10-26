@@ -6,4 +6,7 @@
 *.svg  text eol=lf
 *.txt  text eol=lf
 *.iss  text eol=lf
+*.ps1  text eol=lf
+*.cmd  text eol=lf
+*.bat  text eol=lf
 /.gitattributes text eol=lf
