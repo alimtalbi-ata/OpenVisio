@@ -44,7 +44,7 @@ try {
     Invoke-UnitPattern -Pattern 'test_vsdx_embedded_part_canonical_v4322.py'
     Invoke-UnitPattern -Pattern 'test_vsdx_static_route_preservation_v4322.py'
     Invoke-UnitPattern -Pattern 'test_vsdx_route_endpoint_attachment_v4324.py'
-    Invoke-UnitPattern -Pattern 'test_vsdx_route_spatial_prefilter_v4326.py'
+    Invoke-UnitPattern -Pattern 'test_vsdx_route_spatial_prefilter_v4325.py'
     Invoke-UnitPattern -Pattern 'test_low_zoom_label_lod_v4320.py'
     # Exercise real Tk callbacks on the Windows runner, not only headless model tests.
     $env:OPENVISIO_GUI_TESTS = '1'
@@ -112,8 +112,8 @@ try {
             'test_vsdx_embedded_part_canonical_v4322.py',
             'test_vsdx_static_route_preservation_v4322.py',
             'test_vsdx_route_endpoint_attachment_v4324.py',
-            'test_vsdx_route_spatial_prefilter_v4326.py',
-            'test_vsdx_route_segment_prefilter_v4326.py',
+            'test_vsdx_route_spatial_prefilter_v4325.py',
+            'test_vsdx_route_segment_prefilter_v4325.py',
             'test_shape_icons_v4292.py',
             'test_infrastructure_glyph_details_v4326.py',
             'test_low_zoom_label_lod_v4320.py',
