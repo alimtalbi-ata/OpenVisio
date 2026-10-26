@@ -119,7 +119,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         Spacer(1, 2*mm),
         Paragraph("Functional change", styles["OVH1"]),
         Paragraph(
-            "Static route validation now uses a conservative spatial prefilter: the full route envelope queries the existing padded rectangle index, so distant equipment is skipped without weakening safety. Exact endpoint signatures and segment/obstacle checks remain authoritative. Malformed metadata takes the full-scan path; an unsafe preserved route falls back to the obstacle-avoiding router. Arbitrary Visio formulas and dynamic glue are not assumed.", styles["OVBody"]),
+            "Static route validation now queries the existing clearance-padded rectangle index once per orthogonal segment, skipping off-path objects that lie only inside a large meandering route bounding box. Exact endpoint signatures and segment/obstacle checks remain authoritative. Malformed or over-complex routes (more than 256 segments) use the full-scan path; unsafe preserved routes fall back to the obstacle-avoiding router. Arbitrary Visio formulas and dynamic glue are not assumed.", styles["OVBody"]),
         Paragraph(
             "Both mirrored VSDX importers also reject case variants of the reserved "
             "openvisio/document.json and openvisio/manifest.json members. These aliases previously "
@@ -220,7 +220,7 @@ def _docx(output: Path, report: dict, commit: str):
     )
     document.add_heading("Functional improvement", level=1)
     document.add_paragraph(
-        "Static route validation now uses a conservative spatial prefilter over the complete route envelope and the existing padded rectangle index, skipping distant equipment in sparse large diagrams. Exact endpoint signatures and segment/obstacle checks remain authoritative; malformed metadata is checked with a full scan, and unsafe preserved routes fall back to the standard obstacle-avoiding router. The existing importer also rejects case variants of reserved openvisio/document.json and openvisio/manifest.json members to prevent a lossy public-geometry fallback. Arbitrary Visio formulas and dynamic glue are not inferred. CI verifies source/test parity and SHA-256 coverage, then reruns the full suite from the extracted ZIP."
+        "Static route validation queries the existing clearance-padded rectangle index per orthogonal segment, so off-path shapes inside a large meandering route bounding box are excluded from exact checks. Endpoint signatures and segment/obstacle checks remain authoritative. Malformed routes and routes with more than 256 segments use a conservative full scan; unsafe preserved routes fall back to the standard obstacle-avoiding router. The existing importer also rejects case variants of reserved openvisio/document.json and openvisio/manifest.json members to prevent a lossy public-geometry fallback. Arbitrary Visio formulas and dynamic glue are not inferred. CI verifies source/test parity and SHA-256 coverage, then reruns the full suite from the extracted ZIP."
     )
     document.add_heading("Source layout", level=1)
     document.add_paragraph(

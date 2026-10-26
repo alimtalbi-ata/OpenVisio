@@ -113,6 +113,7 @@ try {
             'test_vsdx_static_route_preservation_v4322.py',
             'test_vsdx_route_endpoint_attachment_v4324.py',
             'test_vsdx_route_spatial_prefilter_v4325.py',
+            'test_vsdx_route_segment_prefilter_v4325.py',
             'test_low_zoom_label_lod_v4320.py',
             'test_node_label_fidelity_v4319.py'
         )
