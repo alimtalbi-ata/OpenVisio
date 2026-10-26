@@ -27,16 +27,16 @@ MANIFEST_PATH = "07-Manifestes/manifest.json"
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 CRITICAL_FILES = (
     ".gitattributes", "README.md", "verify_source_parity.py",
-    ".github/workflows/openvisio-v43.25-windows-candidate.yml",
+    ".github/workflows/openvisio-v43.26-windows-candidate.yml",
     "02-Compilation/verify_release_archive.py",
     "02-Compilation/verify_release_git_parity.py",
-    "02-Compilation/Build-Windows-V43.25-Candidate.ps1",
-    "02-Compilation/Verify-GitHub-Checkout-V43.25.ps1",
-    "02-Compilation/package_cumulative_release_v4325.py",
-    "02-Compilation/generate_release_docs_v4325.py",
-    "02-Compilation/release_document_guard_v4325.py",
+    "02-Compilation/Build-Windows-V43.26-Candidate.ps1",
+    "02-Compilation/Verify-GitHub-Checkout-V43.26.ps1",
+    "02-Compilation/package_cumulative_release_v4326.py",
+    "02-Compilation/generate_release_docs_v4326.py",
+    "02-Compilation/release_document_guard_v4326.py",
     "02-Compilation/requirements-build.txt",
-    "02-Compilation/installer/OpenVisio-V43.25-Candidate.iss",
+    "02-Compilation/installer/OpenVisio-V43.26-Candidate.iss",
     "05-Documentation/V43.24-STATIC-VSDX-ROUTE-ATTACHMENT.md",
     "05-Documentation/V43.24-VSDX-ENDPOINT-ATTACHMENT.svg",
     "04-Tests/tests/test_vsdx_route_endpoint_attachment_v4324.py",
@@ -47,6 +47,16 @@ CRITICAL_FILES = (
     "05-Documentation/V43.25-WINDOWS-SCREENSHOTS-STATUS.md",
     "04-Tests/tests/test_vsdx_route_spatial_prefilter_v4325.py",
     "python/tests/test_vsdx_route_spatial_prefilter_v4325.py",
+    "04-Tests/tests/test_vsdx_route_segment_prefilter_v4325.py",
+    "python/tests/test_vsdx_route_segment_prefilter_v4325.py",
+    "05-Documentation/V43.26-GIT-BLOB-PARITY.md",
+    "05-Documentation/V43.26-INFRASTRUCTURE-GLYPHS.md",
+    "05-Documentation/V43.26-INFRASTRUCTURE-GLYPHS.svg",
+    "05-Documentation/V43.26-WINDOWS-SCREENSHOTS-STATUS.md",
+    "04-Tests/tests/test_shape_icons_v4292.py",
+    "python/tests/test_shape_icons_v4292.py",
+    "04-Tests/tests/test_infrastructure_glyph_details_v4326.py",
+    "python/tests/test_infrastructure_glyph_details_v4326.py",
     "04-Tests/tests/test_release_git_parity_v4324.py",
     "python/tests/test_release_git_parity_v4324.py",
 )
@@ -187,7 +197,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", required=True, type=Path)
     parser.add_argument("--checkout", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--version", default="V43.25")
+    parser.add_argument("--version", default="V43.26")
     parser.add_argument("--json-report", type=Path)
     args = parser.parse_args(argv)
     try:
