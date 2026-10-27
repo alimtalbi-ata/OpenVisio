@@ -96,6 +96,46 @@ class NumericFormulaTests(unittest.TestCase):
             with self.subTest(expression=expression), self.assertRaises(FormulaEvaluationError):
                 evaluate_numeric_formula(expression, lambda _: 1.0)
 
+    def test_visio_universal_bracket_units_normalize_by_dimension(self):
+        cases = (("5[deg,A]", 5 * 3.141592653589793 / 180),
+                 ("2[ft,D]", 24.0), ("3[in,P]", 3.0),
+                 ("2 DL", 2.0), ("3 DP", 3.0), ("1.5 DA", 1.5))
+        for expression, expected in cases:
+            with self.subTest(expression=expression):
+                self.assertAlmostEqual(
+                    evaluate_numeric_formula(expression, lambda _: 0.0), expected, places=10)
+
+    def test_unit_dimensions_cannot_be_mixed_silently(self):
+        for expression in ("1 in + 90 deg", "MAX(1 in, 90 deg)", "1 in / 1 deg"):
+            with self.subTest(expression=expression), self.assertRaises(FormulaEvaluationError):
+                evaluate_numeric_formula(expression, lambda _: 0.0)
+        for expression in ("1[in,A]", "1[deg,D]", "1[in,X]", "1[eh,E]"):
+            with self.subTest(expression=expression), self.assertRaises(FormulaEvaluationError):
+                evaluate_numeric_formula(expression, lambda _: 0.0)
+
+    def test_geometry_target_rejects_wrong_dimension_and_allows_typed_trigonometry(self):
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {}, {"PinX": "90 deg", "Angle": "2 in"})
+        self.assertEqual(actual, {})
+        self.assertEqual(set(unresolved), {"PinX", "Angle"})
+
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {"Width": "4"},
+            {"PinX": "GUARD(Width*0.5 + 1 in * COS(60 deg))",
+             "Angle": "ATAN(0.5)"})
+        self.assertEqual(unresolved, ())
+        self.assertAlmostEqual(actual["PinX"], 2.5, places=10)
+        self.assertAlmostEqual(actual["Angle"], __import__("math").atan(0.5), places=10)
+
+    def test_geometry_dependency_propagates_length_and_angle_types(self):
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {"Width": "4", "Angle": "0.5"},
+            {"PinX": "Width/2", "PinY": "Width+Angle"})
+        # A length target can derive from a ratio of lengths, but addition of
+        # a length and an angle must not silently produce a coordinate.
+        self.assertEqual(actual, {})
+        self.assertEqual(set(unresolved), {"PinY"})
+
     def test_token_and_nesting_limits_are_enforced(self):
         with self.assertRaises(FormulaEvaluationError):
             evaluate_numeric_formula("1+" * 130 + "1", lambda _: 0.0)
