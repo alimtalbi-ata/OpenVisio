@@ -1,6 +1,7 @@
 """Bounded, dimension-aware subset of Visio ShapeSheet geometry formulas.
 
-Only scalar length/angle geometry is implemented. Unsupported, cyclic,
+Only scalar length/angle geometry is implemented, including basic comparisons
+and lazy IF(condition, when_true, when_false) branches. Unsupported, cyclic,
 mixed-dimension, non-finite, or over-budget expressions are refused so the
 VSDX importer can retain cached V values and report the fidelity loss. This is
 not a complete Visio interpreter. Author: Abdelhalim Talbi.
@@ -51,7 +52,7 @@ _IMPLICIT_UNIT_DIMENSIONS = {"dl": "length", "dp": "length", "da": "angle"}
 _TOKEN_RE = re.compile(
     r"\s*(?:(?P<number>(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)"
     r"|(?P<identifier>[A-Za-z_][A-Za-z0-9_.]*(?:![A-Za-z_][A-Za-z0-9_.]*)?)"
-    r"|(?P<operator>\*\*|[()+\-*/^,\[\]]))"
+    r"|(?P<operator>>=|<=|<>|!=|==|\*\*|[><=()+\-*/^,\[\]]))"
 )
 
 
@@ -123,6 +124,7 @@ class _Parser:
             pos = match.end()
         self.i = 0
         self.depth = 0
+        self.syntax_only = False
 
     def peek(self, value: str | None = None) -> bool:
         return self.i < len(self.tokens) and (value is None or self.tokens[self.i][1] == value)
@@ -135,16 +137,94 @@ class _Parser:
         return token
 
     def parse(self) -> _Quantity:
-        result = self.sum()
+        result = self.comparison()
         if self.i != len(self.tokens):
             raise FormulaEvaluationError("trailing formula token")
         return _Quantity(_checked(result.value), result.dimension)
+
+    def comparison(self) -> _Quantity:
+        """Parse at most one relational comparison, below arithmetic precedence.
+
+        ShapeSheet comparison results are represented as numeric booleans
+        (1.0/0.0). Lengths and angles are compared only with like dimensions;
+        an unqualified numeric operand inherits the other operand's context.
+        Chained comparisons are intentionally rejected instead of guessed.
+        """
+        left = self.sum()
+        if not any(self.peek(op) for op in (">=", "<=", "<>", "!=", "==", "<", ">", "=")):
+            return left
+        operator = self.take()[1]
+        right = self.sum()
+        if self.syntax_only:
+            return _Quantity(1.0)
+        _merge_add_dimension(left, right)  # Reject length/angle comparisons.
+        if operator in ("=", "=="):
+            matched = left.value == right.value
+        elif operator in ("!=", "<>"):
+            matched = left.value != right.value
+        elif operator == "<":
+            matched = left.value < right.value
+        elif operator == ">":
+            matched = left.value > right.value
+        elif operator == "<=":
+            matched = left.value <= right.value
+        else:  # >=
+            matched = left.value >= right.value
+        return _Quantity(1.0 if matched else 0.0)
+
+    def skip_argument(self) -> None:
+        """Skip one unselected IF argument without resolving/evaluating it.
+
+        Delimiters nested in function calls or universal-unit brackets are
+        not treated as IF separators. Lexical errors have already been rejected
+        by the tokenizer. Empty and unbalanced branches are still rejected.
+        """
+        start = self.i
+        parens = 0
+        brackets = 0
+        while self.i < len(self.tokens):
+            token = self.tokens[self.i][1]
+            if token == "(":
+                parens += 1
+                if self.depth + parens > MAX_FORMULA_NESTING:
+                    raise FormulaEvaluationError("formula nesting too deep")
+            elif token == ")":
+                if brackets:
+                    raise FormulaEvaluationError("unbalanced unit bracket in conditional branch")
+                if parens == 0:
+                    break  # Leave the outer IF close for the caller.
+                parens -= 1
+            elif token == "[":
+                brackets += 1
+            elif token == "]":
+                brackets -= 1
+                if brackets < 0:
+                    raise FormulaEvaluationError("unbalanced unit bracket in conditional branch")
+            elif token == "," and parens == 0 and brackets == 0:
+                break
+            self.i += 1
+        if self.i == start:
+            raise FormulaEvaluationError("empty conditional branch")
+        if parens or brackets:
+            raise FormulaEvaluationError("unbalanced conditional branch")
+        # Ensure an unselected expression is grammatically valid without
+        # resolving references, computing arithmetic or invoking functions.
+        validator = object.__new__(_Parser)
+        validator.resolve = lambda _: _Quantity(1.0)
+        validator.tokens = self.tokens[start:self.i]
+        validator.i = 0
+        validator.depth = self.depth
+        validator.syntax_only = True
+        validator.parse()
 
     def sum(self) -> _Quantity:
         result = self.product()
         while self.peek("+") or self.peek("-"):
             op = self.take()[1]
             right = self.product()
+            if self.syntax_only:
+                result = _Quantity(1.0)
+                continue
             dimension = _merge_add_dimension(result, right)
             value = result.value + right.value if op == "+" else result.value - right.value
             result = _Quantity(_checked(value), dimension)
@@ -155,6 +235,9 @@ class _Parser:
         while self.peek("*") or self.peek("/"):
             op = self.take()[1]
             right = self.unary()
+            if self.syntax_only:
+                result = _Quantity(1.0)
+                continue
             if op == "*":
                 if result.dimension and right.dimension:
                     raise FormulaEvaluationError("compound unit multiplication is unsupported")
@@ -189,6 +272,9 @@ class _Parser:
         if self.peek("^") or self.peek("**"):
             self.take()
             exponent = self.unary()
+            if self.syntax_only:
+                result = _Quantity(1.0)
+                return result
             if exponent.dimension:
                 raise FormulaEvaluationError("dimensional exponent is unsupported")
             if result.dimension and exponent.value not in (0, 1):
@@ -227,13 +313,34 @@ class _Parser:
             if self.depth > MAX_FORMULA_NESTING:
                 raise FormulaEvaluationError("formula nesting too deep")
             try:
-                result = self.sum()
+                result = self.comparison()
                 self.take(")")
                 return result
             finally:
                 self.depth -= 1
         kind, value = self.take()
         if kind == "number":
+            if self.syntax_only:
+                if self.peek("["):
+                    self.take("[")
+                    unit_kind, unit = self.take()
+                    if unit_kind != "identifier":
+                        raise FormulaEvaluationError("unit name expected")
+                    self.take(",")
+                    flag_kind, flag = self.take()
+                    if flag_kind != "identifier":
+                        raise FormulaEvaluationError("implicit-unit flag expected")
+                    self.take("]")
+                    self._unit(unit, flag)
+                    return _Quantity(1.0)
+                if self.peek() and self.tokens[self.i][0] == "identifier":
+                    unit = self.tokens[self.i][1].casefold().rstrip(".")
+                    if unit in _LENGTH_UNIT_FACTORS or unit in _ANGLE_UNIT_FACTORS:
+                        self.take()
+                        self._unit(unit)
+                    elif unit in _IMPLICIT_UNIT_DIMENSIONS:
+                        self.take()
+                return _Quantity(1.0)
             result = _Quantity(_checked(float(value)))
             # Universal syntax: 5[deg,A], 5[in,D], 2[ft,P].
             # Supported geometry values normalize to internal inches/radians.
@@ -264,7 +371,7 @@ class _Parser:
         if kind != "identifier":
             raise FormulaEvaluationError("number or cell reference expected")
         name = value.upper()
-        if name in {"NAN", "INF", "INFINITY"}:
+        if name in {"NAN", "INF", "INFINITY"} and not self.syntax_only:
             raise FormulaEvaluationError("non-finite literal is not supported")
         if self.peek("("):
             self.take("(")
@@ -272,6 +379,33 @@ class _Parser:
             if self.depth > MAX_FORMULA_NESTING:
                 raise FormulaEvaluationError("formula nesting too deep")
             try:
+                if name == "IF":
+                    if self.syntax_only:
+                        # Syntax-only validation checks both branches but does
+                        # not resolve or evaluate either one.
+                        self.comparison()
+                        self.take(",")
+                        self.comparison()
+                        self.take(",")
+                        self.comparison()
+                        self.take(")")
+                        return _Quantity(1.0)
+                    # IF is deliberately lazy: an unsupported dependency or a
+                    # divide-by-zero in the unselected branch must not poison
+                    # otherwise valid geometry. The skipped branch receives a
+                    # syntax-only parse to avoid accepting malformed formulas.
+                    condition = self.comparison()
+                    self.take(",")
+                    if condition.value != 0:
+                        chosen = self.comparison()
+                        self.take(",")
+                        self.skip_argument()
+                    else:
+                        self.skip_argument()
+                        self.take(",")
+                        chosen = self.comparison()
+                    self.take(")")
+                    return chosen
                 args = []
                 if not self.peek(")"):
                     while True:
@@ -281,11 +415,15 @@ class _Parser:
                             continue
                         break
                 self.take(")")
+                if self.syntax_only:
+                    return _Quantity(1.0)
                 return self.call(name, args)
             finally:
                 self.depth -= 1
         if name == "PI":
-            return _Quantity(math.pi)
+            return _Quantity(1.0 if self.syntax_only else math.pi)
+        if self.syntax_only:
+            return _Quantity(1.0)
         return _quantity(self.resolve(value))
 
     @staticmethod

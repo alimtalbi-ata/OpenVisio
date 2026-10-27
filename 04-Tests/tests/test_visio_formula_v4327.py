@@ -182,6 +182,63 @@ class NumericFormulaTests(unittest.TestCase):
         self.assertEqual(actual, {})
         self.assertEqual(unresolved, ("PinX",))
 
+
+    def test_shape_sheet_comparison_operators_return_numeric_booleans(self):
+        cases = {
+            "2 > 1": 1.0, "2 >= 2": 1.0, "2 < 2": 0.0,
+            "2 <= 2": 1.0, "1 <> 2": 1.0, "1 != 1": 0.0,
+            "2 = 2": 1.0, "2 == 3": 0.0,
+        }
+        for expression, expected in cases.items():
+            with self.subTest(expression=expression):
+                self.assertEqual(evaluate_numeric_formula(expression, lambda _: 0.0), expected)
+
+    def test_if_uses_dimension_aware_comparison_and_selected_branch(self):
+        self.assertAlmostEqual(evaluate_numeric_formula(
+            "IF(2 in > 25.4 mm, 5 ft, 7 in)", lambda _: 0.0), 60.0)
+        self.assertAlmostEqual(evaluate_numeric_formula(
+            "IF(90 deg < 1 rad, 5, 7)", lambda _: 0.0), 7.0)
+        self.assertEqual(evaluate_numeric_formula("IF(0, 5, 7)", lambda _: 0.0), 7.0)
+
+    def test_if_does_not_resolve_or_evaluate_unselected_branch(self):
+        calls = []
+        result = evaluate_numeric_formula(
+            "IF(Width > 1 in, 3 in, MissingCell/0)",
+            lambda name: calls.append(name) or 2.0,
+        )
+        self.assertEqual(result, 3.0)
+        self.assertEqual(calls, ["Width"])
+        calls.clear()
+        result = evaluate_numeric_formula(
+            "IF(0 > 1, MissingCell, 2)",
+            lambda name: calls.append(name) or 0.0,
+        )
+        self.assertEqual(result, 2.0)
+        self.assertEqual(calls, [])
+
+    def test_if_skips_nested_calls_and_universal_unit_brackets_safely(self):
+        self.assertEqual(evaluate_numeric_formula(
+            "IF(1 > 0, 5, MAX(5[in,D], UnsupportedCell))", lambda _: 0.0), 5.0)
+        self.assertEqual(evaluate_numeric_formula(
+            "IF(0 > 1, 5[in,D], IF(1 = 1, 8, 9))", lambda _: 0.0), 8.0)
+
+    def test_if_rejects_malformed_or_dimension_incompatible_conditions(self):
+        for expression in (
+            "IF(1 > 0, 2,)", "IF(1 > 0,,2)", "IF(1 in > 90 deg, 1, 2)",
+            "IF(1 > 0, 2, MAX(3, 4)", "IF(1 > 0, 2, 3 +)", "1 < 2 < 3",
+        ):
+            with self.subTest(expression=expression), self.assertRaises(FormulaEvaluationError):
+                evaluate_numeric_formula(expression, lambda _: 0.0)
+
+    def test_if_selected_result_keeps_dimension_for_geometry_target_validation(self):
+        actual, unresolved = evaluate_geometry_formula_cells(
+            {"Width": "2"},
+            {"PinX": "IF(Width > 1 in, 10 mm, 5 deg)",
+             "PinY": "IF(Width > 1 in, 5 deg, 10 mm)"},
+        )
+        self.assertEqual(unresolved, ("PinY",))
+        self.assertEqual(actual, {})  # Geometry formula sets publish atomically.
+
     def test_numeric_formula_resolution_callback_receives_original_spelling(self):
         seen = []
         value = evaluate_numeric_formula("wIdTh + 1", lambda name: seen.append(name) or 4)
