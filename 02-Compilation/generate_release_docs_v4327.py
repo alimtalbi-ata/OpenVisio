@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from datetime import date
 from pathlib import Path
@@ -25,6 +26,15 @@ from reportlab.platypus import (
 )
 import fitz
 from release_document_guard_v4327 import audit_document_artifacts
+
+
+def source_branch_name() -> str:
+    """Read the branch selected by the Windows build orchestrator."""
+    value = os.environ.get("OPENVISIO_SOURCE_BRANCH", "").strip()
+    if (not value or not re.fullmatch(r"[A-Za-z0-9._/-]{1,200}", value)
+            or value.startswith("/") or ".." in value.split("/")):
+        raise SystemExit("OPENVISIO_SOURCE_BRANCH must contain the exact source branch name")
+    return value
 
 
 class PipelineDiagram(Flowable):
@@ -119,7 +129,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         Spacer(1, 2*mm),
         Paragraph("Functional change", styles["OVH1"]),
         Paragraph(
-            "Static route validation keeps its per-segment obstacle prefilter and exact intersection checks. External ShapeSheet geometry evaluates a bounded scalar subset: arithmetic, cached-cell references, numeric ThePage dimensions and an explicit function allowlist. Supported cell/object references are resolved case-insensitively; case-fold collisions in geometry targets or cached values are rejected rather than resolved by source order. Formula-bearing non-geometry dependencies remain refused. Unsupported, cyclic, non-real, non-finite, over-budget or geometrically invalid results keep cached V values and emit fidelity warnings; strict mode rejects unresolved geometry formulas. Evaluation results are validated before replacing cached geometry. No Python eval is used, and this is not a complete ShapeSheet interpreter.", styles["OVBody"]),
+            "Static route validation keeps its per-segment obstacle prefilter and exact intersection checks. External ShapeSheet geometry evaluates a bounded scalar subset: arithmetic, cached-cell references, numeric ThePage dimensions, explicit length/angle literals and an explicit function allowlist. Basic comparisons and lazy IF(condition, when_true, when_false) select one numeric geometry branch without evaluating the unselected branch. Length/angle comparisons and target-cell dimensions are checked; case-fold collisions are rejected rather than resolved by source order. Formula-bearing non-geometry dependencies remain refused. Unsupported, cyclic, non-real, non-finite, over-budget or geometrically invalid results keep cached V values and emit fidelity warnings; strict mode rejects unresolved geometry formulas. Evaluation results are validated before replacing cached geometry. No Python eval is used, and this is not a complete ShapeSheet interpreter.", styles["OVBody"]),
         Paragraph(
             "Both mirrored VSDX importers also reject case variants of the reserved "
             "openvisio/document.json and openvisio/manifest.json members. These aliases previously "
@@ -177,7 +187,7 @@ def _pdf(root: Path, output: Path, report: dict, commit: str):
         table,
         Spacer(1, 3*mm),
         Paragraph("Candidate provenance", styles["OVH1"]),
-        Paragraph(f"Branch: develop/v43.27-formula-driven-vsdx-geometry-20261026", styles["OVBody"]),
+        Paragraph(f"Branch: {source_branch_name()}", styles["OVBody"]),
         Paragraph(f"Source commit: {commit}", styles["OVBody"]),
         Paragraph(f"Generated on: {date.today().isoformat()}", styles["OVBody"]),
         Paragraph("Known limits", styles["OVH1"]),
@@ -220,7 +230,7 @@ def _docx(output: Path, report: dict, commit: str):
     )
     document.add_heading("Functional improvement", level=1)
     document.add_paragraph(
-        "Static route validation uses per-segment obstacle prefiltering with exact intersection checks. External ShapeSheet geometry evaluates a bounded scalar subset: arithmetic, cached-cell references, numeric ThePage dimensions and an explicit function allowlist. Supported cell/object references are resolved case-insensitively; case-fold collisions in geometry targets or cached values are rejected rather than resolved by source order. Formula-bearing non-geometry dependencies remain refused. Unsupported, cyclic, non-real, non-finite, over-budget or geometrically invalid formula results keep cached V values and emit fidelity warnings; strict mode rejects unresolved formulas. Result geometry is validated before replacing cached cells. No Python eval is used. The importer also rejects case variants of reserved openvisio/document.json and openvisio/manifest.json members. CI checks source/test parity and reruns the full suite from the extracted ZIP."
+        "Static route validation uses per-segment obstacle prefiltering with exact intersection checks. External ShapeSheet geometry evaluates a bounded scalar subset: arithmetic, cached-cell references, numeric ThePage dimensions, explicit length/angle literals and an explicit function allowlist. Basic comparisons and lazy IF(condition, when_true, when_false) choose one numeric geometry branch without evaluating the unselected branch. Length/angle comparisons and target-cell dimensions are checked; case-fold collisions are refused. Formula-bearing non-geometry dependencies remain refused. Unsupported, cyclic, non-real, non-finite, over-budget or geometrically invalid formula results keep cached V values and emit fidelity warnings; strict mode rejects unresolved formulas. Result geometry is validated before replacing cached cells. No Python eval is used. The importer also rejects case variants of reserved openvisio/document.json and openvisio/manifest.json members. CI checks source/test parity and reruns the full suite from the extracted ZIP."
     )
     document.add_heading("Source layout", level=1)
     document.add_paragraph(
@@ -254,7 +264,7 @@ def _docx(output: Path, report: dict, commit: str):
         for cell, value in zip(cells, values):
             cell.text = value
     document.add_heading("Provenance", level=1)
-    document.add_paragraph("Branch: develop/v43.27-formula-driven-vsdx-geometry-20261026")
+    document.add_paragraph(f"Branch: {source_branch_name()}")
     document.add_paragraph(f"Source commit: {commit}")
     document.add_paragraph(f"Generated on: {date.today().isoformat()}")
     document.add_paragraph("Internal application version remains 42.50.0 due to legacy build contracts.")

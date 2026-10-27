@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import zipfile
@@ -141,6 +142,9 @@ def audit_archive(archive: Path, *, checkout_root: Path, expected_version: str |
         embedded = manifest.get("source_commit")
         if not isinstance(embedded, str) or not HEX40.fullmatch(embedded) or embedded != head:
             errors.append("Manifest source_commit does not equal Git HEAD")
+        expected_branch = os.environ.get("OPENVISIO_SOURCE_BRANCH", "").strip()
+        if expected_branch and manifest.get("source_branch") != expected_branch:
+            errors.append("Manifest source_branch does not equal the selected build branch")
 
     checked = 0
     counts = {}
