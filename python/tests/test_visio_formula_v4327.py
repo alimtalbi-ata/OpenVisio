@@ -59,6 +59,43 @@ class NumericFormulaTests(unittest.TestCase):
             with self.subTest(expression=expression), self.assertRaises(FormulaEvaluationError):
                 evaluate_numeric_formula(expression, lambda _: 0.0)
 
+    def test_explicit_length_units_normalize_to_inches(self):
+        cases = {
+            "1 in": 1.0,
+            "2 ft": 24.0,
+            "25.4 mm": 1.0,
+            "2.54 cm": 1.0,
+            "1 m": 100.0 / 2.54,
+            "1 yd": 36.0,
+            "72 pt": 1.0,
+            "1 IN.": 1.0,
+            "25.4mm": 1.0,
+            "1e1 mm": 10.0 / 25.4,
+        }
+        for expression, expected in cases.items():
+            with self.subTest(expression=expression):
+                self.assertAlmostEqual(
+                    evaluate_numeric_formula(expression, lambda _: 0.0), expected, places=10)
+
+    def test_explicit_angle_units_normalize_to_radians(self):
+        for expression, expected in (("180 deg", 3.141592653589793),
+                                     ("90 degrees", 1.5707963267948966),
+                                     ("1 rad", 1.0)):
+            with self.subTest(expression=expression):
+                self.assertAlmostEqual(
+                    evaluate_numeric_formula(expression, lambda _: 0.0), expected, places=12)
+
+    def test_unit_suffixes_work_inside_guard_and_arithmetic(self):
+        self.assertAlmostEqual(evaluate_numeric_formula(
+            "GUARD(1 ft + 6 in)", lambda _: 0.0), 18.0)
+        self.assertAlmostEqual(evaluate_numeric_formula(
+            "MAX(25.4 mm, 1 in) * 2", lambda _: 0.0), 2.0)
+
+    def test_unknown_or_unattached_unit_suffix_is_rejected(self):
+        for expression in ("1 furlong", "Width mm", "1 in nonsense"):
+            with self.subTest(expression=expression), self.assertRaises(FormulaEvaluationError):
+                evaluate_numeric_formula(expression, lambda _: 1.0)
+
     def test_token_and_nesting_limits_are_enforced(self):
         with self.assertRaises(FormulaEvaluationError):
             evaluate_numeric_formula("1+" * 130 + "1", lambda _: 0.0)

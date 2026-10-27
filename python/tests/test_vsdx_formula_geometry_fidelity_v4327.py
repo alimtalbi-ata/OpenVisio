@@ -124,6 +124,24 @@ class FormulaDrivenVsdxGeometryFidelityTests(unittest.TestCase):
         self.assertEqual(metadata["formula_driven_geometry_cells_evaluated"], 1)
         self.assertEqual(metadata["formula_driven_geometry_unresolved_shapes"], 0)
 
+    def test_explicit_inch_literal_is_evaluated_in_strict_mode(self):
+        self._convert_to_external_vsdx("PinX", "GUARD(12 in)")
+        imported = import_vsdx(self.path, strict_fidelity=True)
+        self.assertEqual(len(imported["nodes"]), 1)
+        self.assertAlmostEqual(imported["nodes"][0]["x"], 12 * 96.0, places=2)
+        metadata = imported["metadata"]
+        self.assertEqual(metadata["formula_driven_geometry_evaluated_shapes"], 1)
+        self.assertEqual(metadata["formula_driven_geometry_unresolved_shapes"], 0)
+
+    def test_explicit_metric_width_is_evaluated_before_geometry_validation(self):
+        self._convert_to_external_vsdx("Width", "GUARD(120 mm)")
+        imported = import_vsdx(self.path, strict_fidelity=True)
+        self.assertEqual(len(imported["nodes"]), 1)
+        self.assertAlmostEqual(imported["nodes"][0]["width"], (120.0 / 25.4) * 96.0, places=2)
+        metadata = imported["metadata"]
+        self.assertEqual(metadata["formula_driven_geometry_evaluated_shapes"], 1)
+        self.assertEqual(metadata["formula_driven_geometry_unresolved_shapes"], 0)
+
     def test_unsupported_formula_reports_cached_value_fallback(self):
         self._convert_to_external_vsdx("PinX", "GUARD(UnsupportedCell*0.5)")
         metadata = import_vsdx(self.path)["metadata"]

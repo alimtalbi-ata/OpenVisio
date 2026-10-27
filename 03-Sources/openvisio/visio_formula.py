@@ -14,6 +14,29 @@ MAX_FORMULA_CHARS = 512
 MAX_FORMULA_TOKENS = 256
 MAX_FORMULA_NESTING = 32
 MAX_INTERMEDIATE_MAGNITUDE = 1.0e12
+
+# Universal ShapeSheet units used in position, size and angle formulas. Lengths
+# normalize to inches and angles to radians, the internal coordinates consumed
+# by the VSDX geometry reader. A suffix is recognized only immediately after a
+# numeric literal; unknown suffixes remain syntax errors.
+_LENGTH_UNIT_FACTORS = {
+    "in": 1.0, "inch": 1.0, "inches": 1.0, "i": 1.0,
+    "ft": 12.0, "foot": 12.0, "feet": 12.0, "f": 12.0,
+    "cm": 1.0 / 2.54,
+    "mm": 1.0 / 25.4,
+    "m": 100.0 / 2.54, "meter": 100.0 / 2.54,
+    "meters": 100.0 / 2.54, "metre": 100.0 / 2.54,
+    "metres": 100.0 / 2.54,
+    "km": 100000.0 / 2.54,
+    "mi": 63360.0, "mile": 63360.0, "miles": 63360.0,
+    "yd": 36.0, "yard": 36.0, "yards": 36.0,
+    "pt": 1.0 / 72.0, "point": 1.0 / 72.0, "points": 1.0 / 72.0,
+}
+_ANGLE_UNIT_FACTORS = {
+    "deg": math.pi / 180.0, "degree": math.pi / 180.0,
+    "degrees": math.pi / 180.0,
+    "rad": 1.0, "radian": 1.0, "radians": 1.0,
+}
 _TOKEN_RE = re.compile(
     r"\s*(?:(?P<number>(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)"
     r"|(?P<identifier>[A-Za-z_][A-Za-z0-9_.]*(?:![A-Za-z_][A-Za-z0-9_.]*)?)"
@@ -140,7 +163,19 @@ class _Parser:
                 self.depth -= 1
         kind, value = self.take()
         if kind == "number":
-            return _checked(float(value))
+            result = _checked(float(value))
+            # ShapeSheet commonly spells literals as ``2400 mm`` or ``90 deg``.
+            # The lexer keeps the suffix as an identifier; only recognized units
+            # immediately after a numeric literal are consumed here.
+            if self.peek() and self.tokens[self.i][0] == "identifier":
+                unit = self.tokens[self.i][1].casefold().rstrip(".")
+                factor = _LENGTH_UNIT_FACTORS.get(unit)
+                if factor is None:
+                    factor = _ANGLE_UNIT_FACTORS.get(unit)
+                if factor is not None:
+                    self.take()
+                    result = _checked(result * factor)
+            return result
         if kind != "identifier":
             raise FormulaEvaluationError("number or cell reference expected")
         name = value.upper()
